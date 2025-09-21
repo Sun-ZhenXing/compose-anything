@@ -1,0 +1,94 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+x-mineru-vllm: &mineru-vllm
+  <<: *default
+  image: ${MINERU_DOCKER_IMAGE:-alexsuntop/mineru:2.5.3}
+  environment:
+    MINERU_MODEL_SOURCE: local
+  ulimits:
+    memlock: -1
+    stack: 67108864
+  ipc: host
+  deploy:
+    resources:
+      limits:
+        cpus: '8.0'
+        memory: 4G
+      reservations:
+        cpus: '2.0'
+        memory: 2G
+        devices:
+          - driver: nvidia
+            device_ids: [ '0' ]
+            capabilities: [ gpu ]
+
+services:
+  mineru-vllm-server:
+    <<: *mineru-vllm
+    container_name: mineru-vllm-server
+    profiles: ["vllm-server"]
+    ports:
+      - ${MINERU_PORT_OVERRIDE_30000:-30000}:30000
+    entrypoint: mineru-vllm-server
+    command:
+      - --host 0.0.0.0
+      - --port 30000
+
+      # If using multiple GPUs, increase throughput using vllm's multi-GPU parallel mode.
+      # - --data-parallel-size 2
+      # If running on a single GPU and encountering VRAM shortage, reduce the KV cache size by this parameter,
+      # if VRAM issues persist, try lowering it further to `0.4` or below.
+      # - --gpu-memory-utilization 0.5
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:30000/health || exit 1"]
+
+
+  mineru-api:
+    <<: *mineru-vllm
+    container_name: mineru-api
+    profiles: ["api"]
+    ports:
+      - ${MINERU_PORT_OVERRIDE_API:-8000}:8000
+    entrypoint: mineru-api
+    command:
+      - --host 0.0.0.0
+      - --port 8000
+
+      # If using multiple GPUs, increase throughput using vllm's multi-GPU parallel mode.
+      # - --data-parallel-size 2
+      # If running on a single GPU and encountering VRAM shortage, reduce the KV cache size by this parameter,
+      # if VRAM issues persist, try lowering it further to `0.4` or below.
+      # - --gpu-memory-utilization 0.5
+
+  mineru-gradio:
+    <<: *mineru-vllm
+    container_name: mineru-gradio
+    profiles: ["gradio"]
+    ports:
+      - ${MINERU_PORT_OVERRIDE_GRADIO:-7860}:7860
+    entrypoint: mineru-gradio
+    command:
+      - --server-name 0.0.0.0
+      - --server-port 7860
+
+      # Enable the vllm engine for Gradio
+      - --enable-vllm-engine true
+      # If you want to disable the API, set this to false
+      # - --enable-api false
+      # If you want to limit the number of pages for conversion, set this to a specific number
+      # - --max-convert-pages 20
+
+      # If using multiple GPUs, increase throughput using vllm's multi-GPU parallel mode.
+      # - --data-parallel-size 2
+      # If running on a single GPU and encountering VRAM shortage, reduce the KV cache size by this parameter,
+      # if VRAM issues persist, try lowering it further to `0.4` or below.
+      # - --gpu-memory-utilization 0.5

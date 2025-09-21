@@ -14,7 +14,7 @@ services:
     image: redis:${REDIS_VERSION:-8.2.1-alpine3.22}
     container_name: redis
     ports:
-      - "${REDIS_PORT_OVERRIDE_6379:-6379}:6379"
+      - "${REDIS_PORT_OVERRIDE:-6379}:6379"
     volumes:
       - *localtime
       - *timezone
