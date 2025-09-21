@@ -1,0 +1,41 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  redis:
+    <<: *default
+    image: redis:${REDIS_VERSION:-8.2.1-alpine3.22}
+    container_name: redis
+    ports:
+      - "${REDIS_PORT_OVERRIDE_6379:-6379}:6379"
+    volumes:
+      - *localtime
+      - *timezone
+      - redis_data:/data
+
+      # !! Uncomment to use a custom redis.conf file
+      # - ./redis.conf:/etc/redis/redis.conf
+    environment:
+      - SKIP_FIX_PERMS=${SKIP_FIX_PERMS:-}
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:-}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+volumes:
+  redis_data:
