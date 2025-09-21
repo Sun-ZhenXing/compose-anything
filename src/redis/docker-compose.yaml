@@ -20,7 +20,7 @@ services:
       - *timezone
       - redis_data:/data
 
-      # !! Uncomment to use a custom redis.conf file
+      # Use a custom redis.conf file
       # - ./redis.conf:/etc/redis/redis.conf
     environment:
       - SKIP_FIX_PERMS=${SKIP_FIX_PERMS:-}
