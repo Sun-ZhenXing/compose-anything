@@ -1,0 +1,31 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  openwebui:
+    <<: *default
+    image: ghcr.io/open-webui/open-webui:${OPEN_WEBUI_VERSION:-main}
+    ports:
+      - "${OPEN_WEBUI_PORT:-8080}:8080"
+    volumes:
+      - open-webui:/app/backend/data
+    env_file:
+      - .env
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+volumes:
+  open-webui:
