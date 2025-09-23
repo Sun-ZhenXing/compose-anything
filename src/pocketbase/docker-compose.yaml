@@ -1,0 +1,47 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  pocketbase:
+    <<: *default
+    image: ghcr.io/muchobien/pocketbase:${PB_VERSION:-0.30.0}
+    environment:
+      # Optional ENCRYPTION (Ensure this is a 32-character long encryption key)
+      # $ openssl rand -hex 16
+      # https://pocketbase.io/docs/going-to-production/#enable-settings-encryption
+      ENCRYPTION: ${PB_ENCRYPTION}
+      PB_ADMIN_EMAIL: ${PB_ADMIN_EMAIL:-admin@example.com}
+      PB_ADMIN_PASSWORD: ${PB_ADMIN_PASSWORD:-supersecret123}
+    ports:
+      - "${PB_PORT:-8090}:8090"
+    volumes:
+      - *localtime
+      - *timezone
+      - pb_data:/pb_data
+
+      # optional public and hooks folders
+      - ./pb_public:/pb_public
+      - ./pb_hooks:/pb_hooks
+    healthcheck: # optional, recommended since v0.10.0
+      test: wget --no-verbose --tries=1 --spider http://localhost:8090/api/health || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+volumes:
+  pb_data:
