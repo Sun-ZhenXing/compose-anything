@@ -13,7 +13,7 @@ services:
     <<: *default
     image: ollama/ollama:${OLLAMA_VERSION:-0.12.0}
     ports:
-      - "${OLLAMA_PORT:-11434}:11434"
+      - "${OLLAMA_PORT_OVERRIDE:-11434}:11434"
     volumes:
       - *localtime
       - *timezone

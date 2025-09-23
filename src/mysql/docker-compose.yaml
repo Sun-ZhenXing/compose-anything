@@ -1,0 +1,30 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  mysql:
+    <<: *default
+    image: mysql:${MYSQL_VERSION:-9.4.0}
+    ports:
+      - "${MYSQL_PORT_OVERRIDE:-3306}:3306"
+    volumes:
+      - *localtime
+      - *timezone
+      - mysql_data:/var/lib/mysql
+
+      # Initialize database with scripts in ./init.sql
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_ROOT_HOST: ${MYSQL_ROOT_HOST:-%}
+
+
+volumes:
+  mysql_data:

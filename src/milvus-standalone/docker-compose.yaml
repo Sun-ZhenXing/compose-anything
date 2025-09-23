@@ -43,8 +43,8 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
     ports:
-      - "${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001"
       - "${MINIO_PORT_OVERRIDE_API:-9000}:9000"
+      - "${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001"
     volumes:
       - *localtime
       - *timezone
