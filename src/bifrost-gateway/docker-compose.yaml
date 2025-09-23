@@ -9,25 +9,21 @@ x-default: &default
       max-size: 100m
 
 services:
-  openwebui:
+  bifrost:
     <<: *default
-    image: ghcr.io/open-webui/open-webui:${OPEN_WEBUI_VERSION:-main}
-    ports:
-      - "${OPEN_WEBUI_PORT:-8080}:8080"
+    image: maximhq/bifrost:${BIFROST_VERSION:-v1.2.15}
     volumes:
-      - *localtime
-      - *timezone
-      - open-webui:/app/backend/data
-    env_file:
-      - .env
+      - bifrost_data:/app/data
+    ports:
+      - "${BIFROST_PORT:-28080}:8080"
     deploy:
       resources:
         limits:
-          cpus: '1'
+          cpus: '0.50'
           memory: 512M
         reservations:
-          cpus: '0.1'
+          cpus: '0.10'
           memory: 128M
 
 volumes:
-  open-webui:
+  bifrost_data:
