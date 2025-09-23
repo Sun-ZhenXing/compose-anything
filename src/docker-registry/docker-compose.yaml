@@ -1,0 +1,40 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  registry:
+    <<: *default
+    image: registry:${REGISTRY_VERSION:-3.0.0}
+    volumes:
+      - *localtime
+      - *timezone
+      - ./certs:/certs:ro
+      - ./config.yml:/etc/distribution/config.yml:ro
+      - registry:/var/lib/registry
+    environment:
+      REGISTRY_AUTH: ${REGISTRY_AUTH:-htpasswd}
+      REGISTRY_AUTH_HTPASSWD_REALM: ${REGISTRY_AUTH_HTPASSWD_REALM:-Registry Realm}
+      REGISTRY_AUTH_HTPASSWD_PATH: ${REGISTRY_AUTH_HTPASSWD_PATH:-/certs/passwd}
+      REGISTRY_HTTP_TLS_CERTIFICATE: ${REGISTRY_HTTP_TLS_CERTIFICATE}
+      REGISTRY_HTTP_TLS_KEY: ${REGISTRY_HTTP_TLS_KEY}
+      OTEL_TRACES_EXPORTER: ${OTEL_TRACES_EXPORTER:-none}
+    ports:
+      - ${REGISTRY_PORT:-5000}:5000
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+volumes:
+  registry:

@@ -1,0 +1,120 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  etcd:
+    <<: *default
+    image: quay.io/coreos/etcd:${ETCD_VERSION:-v3.5.18}
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    volumes:
+      - *localtime
+      - *timezone
+      - etcd_data:/etcd
+    command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  minio:
+    <<: *default
+    image: minio/minio:${MINIO_VERSION:-RELEASE.2024-12-18T13-15-44Z}
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
+    ports:
+      - "${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001"
+      - "${MINIO_PORT_OVERRIDE_API:-9000}:9000"
+    volumes:
+      - *localtime
+      - *timezone
+      - minio_data:/minio_data
+    command: minio server /minio_data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 256M
+
+  milvus-standalone:
+    <<: *default
+    image: milvusdb/milvus:${MILVUS_VERSION:-v2.6.2}
+    command: ["milvus", "run", "standalone"]
+    security_opt:
+    - seccomp:unconfined
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+      MQ_TYPE: woodpecker
+    volumes:
+      - milvus_data:/var/lib/milvus
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+    ports:
+      - "${MILVUS_PORT_OVERRIDE_HTTP:-19530}:19530"
+      - "${MILVUS_PORT_OVERRIDE_WEBUI:-9091}:9091"
+    depends_on:
+      - etcd
+      - minio
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+  attu:
+    <<: *default
+    image: zilliz/attu:${ATTU_VERSION:-v2.6.0}
+    profiles:
+      - attu
+    environment:
+      - MILVUS_URL=${MILVUS_URL:-milvus-standalone:19530}
+    ports:
+      - "${ATTU_PORT_OVERRIDE:-8000}:3000"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+volumes:
+  etcd_data:
+  minio_data:

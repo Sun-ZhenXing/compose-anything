@@ -36,7 +36,7 @@ services:
     container_name: mineru-vllm-server
     profiles: ["vllm-server"]
     ports:
-      - ${MINERU_PORT_OVERRIDE_30000:-30000}:30000
+      - ${MINERU_PORT_OVERRIDE_VLLM:-30000}:30000
     entrypoint: mineru-vllm-server
     command:
       - --host 0.0.0.0
