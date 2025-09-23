@@ -1,0 +1,69 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  milvus-standalone-embed:
+    <<: *default
+    image: milvusdb/milvus:${MILVUS_VERSION:-v2.6.2}
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - ETCD_USE_EMBED=true
+      - ETCD_DATA_DIR=/var/lib/milvus/etcd
+      - ETCD_CONFIG_PATH=/milvus/configs/embed_etcd.yaml
+      - COMMON_STORAGETYPE=local
+      - DEPLOY_MODE=STANDALONE
+    volumes:
+      - *localtime
+      - *timezone
+      - milvus_data:/var/lib/milvus
+      - ./embed_etcd.yaml:/milvus/configs/embed_etcd.yaml
+      - ./user.yaml:/milvus/configs/user.yaml
+    ports:
+      - "${MILVUS_PORT_HTTP:-19530}:19530"
+      - "${MILVUS_PORT_WEBUI:-9091}:9091"
+      - "${MILVUS_PORT_ETCD:-2379}:2379"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+    command: ["milvus", "run", "standalone"]
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+  attu:
+    <<: *default
+    image: zilliz/attu:${ATTU_VERSION:-v2.6.0}
+    profiles:
+      - attu
+    environment:
+      - MILVUS_URL=${MILVUS_URL:-milvus-standalone-embed:19530}
+    ports:
+      - "${ATTU_PORT:-8000}:3000"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+
+volumes:
+  milvus_data:
