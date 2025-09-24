@@ -1,0 +1,32 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  gitea_runner:
+    <<: *default
+    image: gitea/act_runner:0.2.12
+    environment:
+      CONFIG_FILE: /config.yaml
+      GITEA_INSTANCE_URL: ${INSTANCE_URL:-http://localhost:3000}
+      GITEA_RUNNER_REGISTRATION_TOKEN: ${REGISTRATION_TOKEN}
+      GITEA_RUNNER_NAME: ${RUNNER_NAME:-Gitea-Runner}
+      GITEA_RUNNER_LABELS: ${RUNNER_LABELS:-DockerRunner}
+    volumes:
+      - *localtime
+      - *timezone
+      - ./config.yaml:/config.yaml:ro
+      - gitea_runner_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+
+volumes:
+  gitea_runner_data:

@@ -1,0 +1,14 @@
+services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:alpine3.21-v17.10.1
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config:/etc/gitlab-runner
+    network_mode: host
+networks:
+  host:
+    name: host
+    external: true

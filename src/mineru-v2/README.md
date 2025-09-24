@@ -1,28 +1,45 @@
 # MinerU v2
 
-[Reference Documentation](https://opendatalab.github.io/MinerU/zh/usage/quick_usage/).
+[English](./README.md) | [中文](./README.zh.md)
 
-VLM backend server:
+This service runs MinerU v2. See the [Reference Documentation](https://opendatalab.github.io/MinerU/zh/usage/quick_usage/).
 
-```bash
-docker compose --profile vllm-server up -d
-```
+## Start Services
 
-Document parse API:
+- **VLM backend server**:
 
-```bash
-docker compose --profile api up -d
-```
+  ```bash
+  docker compose --profile vllm-server up -d
+  ```
 
-Gradio WebUI:
+- **Document parse API**:
 
-```bash
-docker compose --profile gradio up -d
-```
+  ```bash
+  docker compose --profile api up -d
+  ```
 
-Test vLLM backend:
+- **Gradio WebUI**:
+
+  ```bash
+  docker compose --profile gradio up -d
+  ```
+
+## Test vLLM backend
 
 ```bash
 pip install mineru
 mineru -p demo.pdf -o ./output -b vlm-http-client -u http://localhost:30000
 ```
+
+## Services
+
+- `mineru-vllm-server`: The VLM backend server.
+- `mineru-api`: The document parsing API.
+- `mineru-gradio`: The Gradio WebUI.
+
+## Configuration
+
+- `MINERU_DOCKER_IMAGE`: The Docker image for MinerU, default is `alexsuntop/mineru:2.5.3`.
+- `MINERU_PORT_OVERRIDE_VLLM`: The host port for the VLLM server, default is `30000`.
+- `MINERU_PORT_OVERRIDE_API`: The host port for the API service, default is `8000`.
+- `MINERU_PORT_OVERRIDE_GRADIO`: The host port for the Gradio WebUI, default is `7860`.

@@ -1,0 +1,62 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  gitea:
+    <<: *default
+    image: gitea/gitea:${GITEA_VERSION:-1.24.6-rootless}
+    environment:
+      - GITEA__database__DB_TYPE=${GITEA_DB_TYPE:-postgres}
+      - GITEA__database__HOST=${GITEA_POSTGRES_HOST:-db:5432}
+      - GITEA__database__USER=${POSTGRES_USER:-gitea}
+      - GITEA__database__NAME=${POSTGRES_DB:-gitea}
+      - GITEA__database__PASSWD=${POSTGRES_PASSWORD:-gitea}
+    volumes:
+      - *localtime
+      - *timezone
+      - gitea_data:/var/lib/gitea
+      - ./config:/etc/gitea
+    ports:
+      - "${GITEA_HTTP_PORT:-3000}:3000"
+      - "${GITEA_SSH_PORT:-3022}:22"
+    depends_on:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  db:
+    <<: *default
+    image: postgres:${POSTGRES_VERSION:-17.6}
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-gitea}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-gitea}
+      - POSTGRES_DB=${POSTGRES_DB:-gitea}
+    volumes:
+      - *localtime
+      - *timezone
+      - postgres:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  gitea_data:
+  postgres:

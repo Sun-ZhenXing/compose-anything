@@ -1,0 +1,21 @@
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:17.10.4-ce.0
+    container_name: gitlab
+    restart: unless-stopped
+    ports:
+      - "5443:443"
+      - "5080:80"
+      - "5022:22"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./config:/etc/gitlab
+      - logs:/var/log/gitlab
+      - data:/var/opt/gitlab
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+volumes:
+  logs:
+  data:

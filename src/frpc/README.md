@@ -1,23 +1,27 @@
-# FRPC
+# FRPC (Intranet Penetration Client)
 
-内网穿透客户端。
+[English](./README.md) | [中文](./README.zh.md)
 
-以 SSH 服务穿透为例，新建 `frpc.toml` 配置文件，内容如下：
+This is an FRPC (Intranet Penetration Client) service.
+
+## Example
+
+Taking SSH service penetration as an example, create a new `frpc.toml` configuration file with the following content:
 
 ```toml
-[common]
-server_addr = {{ .Envs.FRP_SERVER_ADDR }}
-server_port = {{ .Envs.FRP_SERVER_PORT }}
-token       = {{ .Envs.FRP_SERVER_TOKEN }}
+serverAddr = "{{ .Envs.FRP_SERVER_ADDR }}"
+serverPort = {{ .Envs.FRP_SERVER_PORT }}
+auth.token = "{{ .Envs.FRP_SERVER_TOKEN }}"
 
-[app_22]
+[[proxies]]
+name = "app_22"
 type = "tcp"
-remote_port = 23922
-local_ip    = 192.168.10.100
-local_port  = 22
+remotePort = 23922
+localIP = "192.168.10.100"
+localPort = 22
 ```
 
-配置远程 FRPS 服务地址到 `.env` 文件中：
+Configure the remote FRPS service address in the `.env` file:
 
 ```properties
 FRP_SERVER_ADDR=frps.example.com
@@ -25,8 +29,23 @@ FRP_SERVER_PORT=9870
 FRP_SERVER_TOKEN=password
 ```
 
-启动服务，即可代理 `192.168.10.100:22` 到 `FRP_SERVER_ADDR:23922`。
+Start the service to proxy `192.168.10.100:22` to `FRP_SERVER_ADDR:23922`.
 
 ```bash
 docker compose up -d
 ```
+
+## Services
+
+- `frpc`: The FRPC client service.
+
+## Configuration
+
+- `FRPC_VERSION`: The version of the FRPC image, default is `0.64.0`.
+- `FRP_SERVER_ADDR`: The remote FRPS server address.
+- `FRP_SERVER_PORT`: The remote FRPS server port.
+- `FRP_SERVER_TOKEN`: The token for connecting to FRPS.
+
+## Volumes
+
+- `frpc.toml`: The configuration file for FRPC.

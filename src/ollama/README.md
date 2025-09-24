@@ -1,19 +1,38 @@
 # Ollama
 
-拉取 DeepSeek R1 7B 模型：
+[English](./README.md) | [中文](./README.zh.md)
 
-```bash
-docker exec -it ollama ollama pull deepseek-r1:7b
-```
+This service deploys Ollama for running local LLM models.
 
-列出本地所有模型：
+## Usage
 
-```bash
-docker exec -it ollama ollama list
-```
+- Pull DeepSeek R1 7B model:
 
-API 请求获取本地所有模型：
+  ```bash
+  docker exec -it ollama ollama pull deepseek-r1:7b
+  ```
 
-```bash
-curl http://localhost:11434/api/tags 2> /dev/null | jq
-```
+- List all local models:
+
+  ```bash
+  docker exec -it ollama ollama list
+  ```
+
+- Get all local models via API:
+
+  ```bash
+  curl http://localhost:11434/api/tags 2> /dev/null | jq
+  ```
+
+## Services
+
+- `ollama`: The Ollama service.
+
+## Configuration
+
+- `OLLAMA_VERSION`: The version of the Ollama image, default is `0.12.0`.
+- `OLLAMA_PORT_OVERRIDE`: The host port for Ollama, default is `11434`.
+
+## Volumes
+
+- `ollama_models`: A volume for storing Ollama models.
