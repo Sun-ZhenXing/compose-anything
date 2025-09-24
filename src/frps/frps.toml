@@ -1,0 +1,8 @@
+[common]
+bind_port = {{ .Envs.FRP_SERVER_PORT }}
+token = {{ .Envs.FRP_SERVER_TOKEN }}
+
+dashboard_addr = 0.0.0.0
+dashboard_port = {{ .Envs.FRP_ADMIN_PORT }}
+dashboard_user = {{ .Envs.FRP_ADMIN_USER }}
+dashboard_pwd = {{ .Envs.FRP_ADMIN_PASS }}

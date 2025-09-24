@@ -1,0 +1,30 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  frpc:
+    <<: *default
+    image: snowdreamtech/frpc:${FRPC_VERSION:-0.64.0}
+    volumes:
+      - *localtime
+      - *timezone
+      - ./frpc.toml:/etc/frp/frpc.toml:ro
+    environment:
+      FRP_SERVER_ADDR: ${FRP_SERVER_ADDR}
+      FRP_SERVER_PORT: ${FRP_SERVER_PORT}
+      FRP_SERVER_TOKEN: ${FRP_SERVER_TOKEN}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.1'
+          memory: 64M

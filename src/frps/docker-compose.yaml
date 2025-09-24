@@ -1,0 +1,35 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  frps:
+    <<: *default
+    image: snowdreamtech/frps:${FRPS_VERSION:-0.64.0}
+    volumes:
+      - *localtime
+      - *timezone
+      - ./frps.toml:/etc/frp/frps.toml:ro
+    ports:
+      - ${FRP_PORT_OVERRIDE_SERVER:-9870}:${FRP_SERVER_PORT:-9870}
+      - ${FRP_PORT_OVERRIDE_ADMIN:-7890}:${FRP_ADMIN_PORT:-7890}
+    environment:
+      FRP_SERVER_TOKEN: ${FRP_SERVER_TOKEN}
+      FRP_SERVER_PORT: ${FRP_SERVER_PORT:-9870}
+      FRP_ADMIN_PORT: ${FRP_ADMIN_PORT:-7890}
+      FRP_ADMIN_USER: ${FRP_ADMIN_USER:-admin}
+      FRP_ADMIN_PASS: ${FRP_ADMIN_PASS:-password}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.1'
+          memory: 64M

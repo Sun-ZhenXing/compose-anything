@@ -4,10 +4,12 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 
 ## 已经支持的服务
 
-| 服务                         | 版本  |
-| ---------------------------- | ----- |
-| [Redis](./src/redis)         | 8.2.1 |
-| [MinerU v2](./src/mineru-v2) | 2.5.3 |
+| 服务                                     | 版本   |
+| ---------------------------------------- | ------ |
+| [Redis](./src/redis)                     | 8.2.1  |
+| [MinerU v2](./src/mineru-v2)             | 2.5.3  |
+| [Bifrost Gateway](./src/bifrost-gateway) | 1.2.15 |
+| [Docker Registry](./src/docker-registry) | 3.0.0  |
 
 ## 规范
 

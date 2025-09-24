@@ -4,10 +4,12 @@ Compose Anything helps users quickly deploy various services by providing a set 
 
 ## Supported Services
 
-| Service                      | Version |
-| ---------------------------- | ------- |
-| [Redis](./src/redis)         | 8.2.1   |
-| [MinerU v2](./src/mineru-v2) | 2.5.3   |
+| Service                                  | Version |
+| ---------------------------------------- | ------- |
+| [Redis](./src/redis)                     | 8.2.1   |
+| [MinerU v2](./src/mineru-v2)             | 2.5.3   |
+| [Bifrost Gateway](./src/bifrost-gateway) | 1.2.15  |
+| [Docker Registry](./src/docker-registry) | 3.0.0   |
 
 ## Guidelines
 

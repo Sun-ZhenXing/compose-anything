@@ -8,9 +8,9 @@ x-default: &default
     options:
       max-size: 100m
 
-x-mineru-vllm: &mineru-vllm
+x-mineru-sglang: &mineru-sglang
   <<: *default
-  image: ${MINERU_DOCKER_IMAGE:-alexsuntop/mineru:2.5.3}
+  image: ${MINERU_DOCKER_IMAGE:-alexsuntop/mineru-sglang:2.2.2}
   environment:
     MINERU_MODEL_SOURCE: local
   ulimits:
@@ -31,13 +31,12 @@ x-mineru-vllm: &mineru-vllm
             capabilities: [ gpu ]
 
 services:
-  mineru-vllm-server:
-    <<: *mineru-vllm
-    container_name: mineru-vllm-server
-    profiles: ["vllm-server"]
+  mineru-sglang-server:
+    <<: *mineru-sglang
+    profiles: ["sglang-server"]
     ports:
-      - ${MINERU_PORT_OVERRIDE_VLLM:-30000}:30000
-    entrypoint: mineru-vllm-server
+      - ${MINERU_PORT_OVERRIDE_SGLANG:-30000}:30000
+    entrypoint: mineru-sglang-server
     command:
       - --host 0.0.0.0
       - --port 30000
@@ -51,10 +50,8 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:30000/health || exit 1"]
 
-
   mineru-api:
-    <<: *mineru-vllm
-    container_name: mineru-api
+    <<: *mineru-sglang
     profiles: ["api"]
     ports:
       - ${MINERU_PORT_OVERRIDE_API:-8000}:8000
@@ -70,8 +67,7 @@ services:
       # - --gpu-memory-utilization 0.5
 
   mineru-gradio:
-    <<: *mineru-vllm
-    container_name: mineru-gradio
+    <<: *mineru-sglang
     profiles: ["gradio"]
     ports:
       - ${MINERU_PORT_OVERRIDE_GRADIO:-7860}:7860

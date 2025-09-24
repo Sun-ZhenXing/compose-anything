@@ -1,0 +1,10 @@
+[common]
+server_addr = {{ .Envs.FRP_SERVER_ADDR }}
+server_port = {{ .Envs.FRP_SERVER_PORT }}
+token       = {{ .Envs.FRP_SERVER_TOKEN }}
+
+[app]
+type = "tcp"
+remote_port = 22
+local_ip    = {{ .Envs.APP_HOST }}
+local_port  = 22
