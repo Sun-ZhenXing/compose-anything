@@ -24,9 +24,14 @@ services:
       - ./config.yaml:/config.yaml:ro
       - gitea_runner_data:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    extra_hosts:
-      - host.docker.internal:host-gateway
-
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
 
 volumes:
   gitea_runner_data:

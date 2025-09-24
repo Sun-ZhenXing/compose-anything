@@ -4,12 +4,30 @@ Compose Anything helps users quickly deploy various services by providing a set 
 
 ## Supported Services
 
-| Service                                  | Version |
-| ---------------------------------------- | ------- |
-| [Redis](./src/redis)                     | 8.2.1   |
-| [MinerU v2](./src/mineru-v2)             | 2.5.3   |
-| [Bifrost Gateway](./src/bifrost-gateway) | 1.2.15  |
-| [Docker Registry](./src/docker-registry) | 3.0.0   |
+| Service                                                  | Version                      |
+| -------------------------------------------------------- | ---------------------------- |
+| [Bifrost Gateway](./src/bifrost-gateway)                 | 1.2.15                       |
+| [Docker Registry](./src/docker-registry)                 | 3.0.0                        |
+| [frpc](./src/frpc)                                       | 0.64.0                       |
+| [frps](./src/frps)                                       | 0.64.0                       |
+| [Gitea](./src/gitea)                                     | 1.24.6                       |
+| [Gitea Runner](./src/gitea-runner)                       | 0.2.12                       |
+| [GitLab](./src/gitlab)                                   | 17.10.4-ce.0                 |
+| [GitLab Runner](./src/gitlab-runner)                     | 17.10.1                      |
+| [Milvus Standalone](./src/milvus-standalone)             | 2.6.2                        |
+| [Milvus Standalone Embed](./src/milvus-standalone-embed) | 2.6.2                        |
+| [MinerU SGALNG](./src/mineru-sgalng)                     | 2.2.2                        |
+| [MinerU v2](./src/mineru-v2)                             | 2.5.3                        |
+| [MinIO](./src/minio)                                     | RELEASE.2025-09-07T16-13-09Z |
+| [MongoDB ReplicaSet](./src/mongodb-replicaset)           | 8.0.13                       |
+| [MySQL](./src/mysql)                                     | 9.4.0                        |
+| [Ollama](./src/ollama)                                   | 0.12.0                       |
+| [Open WebUI](./src/open-webui)                           | main                         |
+| [PocketBase](./src/pocketbase)                           | 0.30.0                       |
+| [PostgreSQL](./src/postgres)                             | 17.6                         |
+| [Qdrant](./src/qdrant)                                   | 1.15.4                       |
+| [RabbitMQ](./src/rabbitmq)                               | 4.1.4                        |
+| [Redis](./src/redis)                                     | 8.2.1                        |
 
 ## Guidelines
 

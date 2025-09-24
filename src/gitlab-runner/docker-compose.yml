@@ -1,14 +1,27 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
 services:
   gitlab-runner:
-    image: gitlab/gitlab-runner:alpine3.21-v17.10.1
-    restart: unless-stopped
+    <<: *default
+    image: gitlab/gitlab-runner:${GITLAB_RUNNER_VERSION:-alpine3.21-v18.4.0}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
+      - *localtime
+      - *timezone
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config:/etc/gitlab-runner
-    network_mode: host
-networks:
-  host:
-    name: host
-    external: true
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G

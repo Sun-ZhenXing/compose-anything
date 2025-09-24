@@ -1,21 +1,36 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
 services:
   gitlab:
-    image: gitlab/gitlab-ce:17.10.4-ce.0
-    container_name: gitlab
-    restart: unless-stopped
+    <<: *default
+    image: gitlab/gitlab-ce:${GITLAB_VERSION:-18.4.0-ce.0}
     ports:
-      - "5443:443"
-      - "5080:80"
-      - "5022:22"
+      - "${GITLAB_PORT_OVERRIDE_HTTPS:-5443}:443"
+      - "${GITLAB_PORT_OVERRIDE_HTTP:-5080}:80"
+      - "${GITLAB_PORT_OVERRIDE_SSH:-5022}:22"
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
+      - *localtime
+      - *timezone
       - ./config:/etc/gitlab
-      - logs:/var/log/gitlab
-      - data:/var/opt/gitlab
-    extra_hosts:
-      - host.docker.internal:host-gateway
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 8G
+        reservations:
+          cpus: '1.0'
+          memory: 4G
 
 volumes:
-  logs:
-  data:
+  gitlab_logs:
+  gitlab_data:
