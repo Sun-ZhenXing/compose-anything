@@ -13,8 +13,8 @@
 ## 配置
 
 - `OPEN_WEBUI_VERSION`: Open WebUI 镜像的版本，默认为 `main`。
-- `OPEN_WEBUI_PORT`: Open WebUI 的主机端口，默认为 `8080`。
+- `OPEN_WEBUI_PORT_OVERRIDE`: Open WebUI 的主机端口，默认为 `8080`。
 
 ## 卷
 
-- `open-webui`: 用于存储 Open WebUI 数据的卷。
+- `open_webui_data`: 用于存储 Open WebUI 数据的卷。

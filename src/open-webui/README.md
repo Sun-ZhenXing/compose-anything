@@ -13,8 +13,8 @@ This service deploys Open WebUI, a web-based interface for LLMs.
 ## Configuration
 
 - `OPEN_WEBUI_VERSION`: The version of the Open WebUI image, default is `main`.
-- `OPEN_WEBUI_PORT`: The host port for Open WebUI, default is `8080`.
+- `OPEN_WEBUI_PORT_OVERRIDE`: The host port for Open WebUI, default is `8080`.
 
 ## Volumes
 
-- `open-webui`: A volume for storing Open WebUI data.
+- `open_webui_data`: A volume for storing Open WebUI data.

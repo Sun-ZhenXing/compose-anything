@@ -14,7 +14,7 @@
 - `POSTGRES_USER`: 数据库用户名，默认为 `postgres`。
 - `POSTGRES_PASSWORD`: 数据库密码，默认为 `postgres`。
 - `POSTGRES_DB`: 数据库名称，默认为 `postgres`。
-- `POSTGRES_PORT`: PostgreSQL 的主机端口，默认为 `5432`。
+- `POSTGRES_PORT_OVERRIDE`: PostgreSQL 的主机端口，默认为 `5432`。
 
 ## 卷
 

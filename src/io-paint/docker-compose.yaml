@@ -1,0 +1,39 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  lama-cleaner:
+    <<: *default
+    image: ${DOCKER_REGISTRY:-docker.io}/local/lama-cleaner:${BUILD_VERSION:-latest}
+    ports:
+      - 8080:8080
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # environment:
+    #   HF_ENDPOINT: https://hf-mirror.com
+    volumes:
+      - *localtime
+      - *timezone
+      - ./models:/root/.cache
+    command:
+      - iopaint
+      - start
+      - --model=lama
+      - --device=cuda
+      - --port=8080
+      - --host=0.0.0.0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [compute, utility]

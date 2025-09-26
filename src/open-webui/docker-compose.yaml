@@ -9,15 +9,15 @@ x-default: &default
       max-size: 100m
 
 services:
-  openwebui:
+  open_webui:
     <<: *default
     image: ghcr.io/open-webui/open-webui:${OPEN_WEBUI_VERSION:-main}
     ports:
-      - "${OPEN_WEBUI_PORT:-8080}:8080"
+      - "${OPEN_WEBUI_PORT_OVERRIDE:-8080}:8080"
     volumes:
       - *localtime
       - *timezone
-      - open-webui:/app/backend/data
+      - open_webui_data:/app/backend/data
     env_file:
       - .env
     deploy:
@@ -30,4 +30,4 @@ services:
           memory: 128M
 
 volumes:
-  open-webui:
+  open_webui_data:

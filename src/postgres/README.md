@@ -14,7 +14,7 @@ This service deploys a PostgreSQL database.
 - `POSTGRES_USER`: The database username, default is `postgres`.
 - `POSTGRES_PASSWORD`: The database password, default is `postgres`.
 - `POSTGRES_DB`: The database name, default is `postgres`.
-- `POSTGRES_PORT`: The host port for PostgreSQL, default is `5432`.
+- `POSTGRES_PORT_OVERRIDE`: The host port for PostgreSQL, default is `5432`.
 
 ## Volumes
 
