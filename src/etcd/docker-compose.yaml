@@ -1,0 +1,64 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  etcd:
+    <<: *default
+    image: quay.io/coreos/etcd:${ETCD_VERSION:-v3.6.0}
+    container_name: etcd
+    ports:
+      - "${ETCD_CLIENT_PORT_OVERRIDE:-2379}:2379"
+      - "${ETCD_PEER_PORT_OVERRIDE:-2380}:2380"
+    volumes:
+      - *localtime
+      - *timezone
+      - etcd_data:/etcd-data
+    environment:
+      - ETCD_NAME=${ETCD_NAME:-etcd-node}
+      - ETCD_DATA_DIR=/etcd-data
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://localhost:2379
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://localhost:2380
+      - ETCD_INITIAL_CLUSTER=${ETCD_INITIAL_CLUSTER:-etcd-node=http://localhost:2380}
+      - ETCD_INITIAL_CLUSTER_STATE=${ETCD_INITIAL_CLUSTER_STATE:-new}
+      - ETCD_INITIAL_CLUSTER_TOKEN=${ETCD_INITIAL_CLUSTER_TOKEN:-etcd-cluster}
+      - ETCD_AUTO_COMPACTION_RETENTION=${ETCD_AUTO_COMPACTION_RETENTION:-1}
+      - ETCD_QUOTA_BACKEND_BYTES=${ETCD_QUOTA_BACKEND_BYTES:-2147483648}
+      - ETCD_HEARTBEAT_INTERVAL=${ETCD_HEARTBEAT_INTERVAL:-100}
+      - ETCD_ELECTION_TIMEOUT=${ETCD_ELECTION_TIMEOUT:-1000}
+      - ETCD_ENABLE_V2=${ETCD_ENABLE_V2:-false}
+    command:
+      - etcd
+      - --name=${ETCD_NAME:-etcd-node}
+      - --data-dir=/etcd-data
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --advertise-client-urls=http://localhost:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-advertise-peer-urls=http://localhost:2380
+      - --initial-cluster=${ETCD_INITIAL_CLUSTER:-etcd-node=http://localhost:2380}
+      - --initial-cluster-state=${ETCD_INITIAL_CLUSTER_STATE:-new}
+      - --initial-cluster-token=${ETCD_INITIAL_CLUSTER_TOKEN:-etcd-cluster}
+      - --auto-compaction-retention=${ETCD_AUTO_COMPACTION_RETENTION:-1}
+      - --quota-backend-bytes=${ETCD_QUOTA_BACKEND_BYTES:-2147483648}
+      - --heartbeat-interval=${ETCD_HEARTBEAT_INTERVAL:-100}
+      - --election-timeout=${ETCD_ELECTION_TIMEOUT:-1000}
+      - --enable-v2=${ETCD_ENABLE_V2:-false}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+volumes:
+  etcd_data:

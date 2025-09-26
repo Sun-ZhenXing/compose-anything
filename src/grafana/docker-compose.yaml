@@ -1,0 +1,46 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  grafana:
+    <<: *default
+    image: grafana/grafana:${GRAFANA_VERSION:-12.1.1}
+    container_name: grafana
+    ports:
+      - "${GRAFANA_PORT_OVERRIDE:-3000}:3000"
+    volumes:
+      - *localtime
+      - *timezone
+      - grafana_data:/var/lib/grafana
+      - grafana_logs:/var/log/grafana
+
+      # Optional: Mount custom configuration
+      # - ./grafana.ini:/etc/grafana/grafana.ini
+      # - ./provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=${GRAFANA_ALLOW_SIGN_UP:-false}
+      - GF_INSTALL_PLUGINS=${GRAFANA_PLUGINS:-}
+      - GF_SERVER_ROOT_URL=${GRAFANA_ROOT_URL:-http://localhost:3000}
+      - GF_SECURITY_SECRET_KEY=${GRAFANA_SECRET_KEY:-}
+    user: "472:472"  # Grafana user
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+volumes:
+  grafana_data:
+  grafana_logs:

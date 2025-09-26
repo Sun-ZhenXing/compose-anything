@@ -6,15 +6,18 @@ Compose Anything helps users quickly deploy various services by providing a set 
 
 | Service                                                  | Version                      |
 | -------------------------------------------------------- | ---------------------------- |
+| [Apache APISIX](./src/apisix)                            | 3.13.0                       |
 | [Bifrost Gateway](./src/bifrost-gateway)                 | 1.2.15                       |
 | [Clash](./src/clash)                                     | 1.18.0                       |
 | [Docker Registry](./src/docker-registry)                 | 3.0.0                        |
+| [etcd](./src/etcd)                                       | 3.6.0                        |
 | [frpc](./src/frpc)                                       | 0.64.0                       |
 | [frps](./src/frps)                                       | 0.64.0                       |
 | [Gitea](./src/gitea)                                     | 1.24.6                       |
 | [Gitea Runner](./src/gitea-runner)                       | 0.2.12                       |
 | [GitLab](./src/gitlab)                                   | 17.10.4-ce.0                 |
 | [GitLab Runner](./src/gitlab-runner)                     | 17.10.1                      |
+| [Grafana](./src/grafana)                                 | 12.1.1                       |
 | [IOPaint](./src/io-paint)                                | latest                       |
 | [Milvus Standalone](./src/milvus-standalone)             | 2.6.2                        |
 | [Milvus Standalone Embed](./src/milvus-standalone-embed) | 2.6.2                        |
@@ -29,6 +32,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [OpenCut](./src/opencut)                                 | latest                       |
 | [PocketBase](./src/pocketbase)                           | 0.30.0                       |
 | [PostgreSQL](./src/postgres)                             | 17.6                         |
+| [Prometheus](./src/prometheus)                           | 3.5.0                        |
 | [Qdrant](./src/qdrant)                                   | 1.15.4                       |
 | [RabbitMQ](./src/rabbitmq)                               | 4.1.4                        |
 | [Redis](./src/redis)                                     | 8.2.1                        |

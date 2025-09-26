@@ -1,0 +1,50 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  prometheus:
+    <<: *default
+    image: prom/prometheus:${PROMETHEUS_VERSION:-v3.5.0}
+    container_name: prometheus
+    ports:
+      - "${PROMETHEUS_PORT_OVERRIDE:-9090}:9090"
+    volumes:
+      - *localtime
+      - *timezone
+      - prometheus_data:/prometheus
+
+      # Optional: Mount custom configuration
+      # - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      # - ./rules:/etc/prometheus/rules
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION_TIME:-15d}'
+      - '--storage.tsdb.retention.size=${PROMETHEUS_RETENTION_SIZE:-}'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+      - '--web.external-url=${PROMETHEUS_EXTERNAL_URL:-http://localhost:9090}'
+    environment:
+      - PROMETHEUS_RETENTION_TIME=${PROMETHEUS_RETENTION_TIME:-15d}
+      - PROMETHEUS_RETENTION_SIZE=${PROMETHEUS_RETENTION_SIZE:-}
+    user: "65534:65534"  # nobody user
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+volumes:
+  prometheus_data:

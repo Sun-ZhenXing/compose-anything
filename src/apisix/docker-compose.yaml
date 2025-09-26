@@ -1,0 +1,121 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  apisix:
+    <<: *default
+    image: apache/apisix:${APISIX_VERSION:-3.13.0-debian}
+    container_name: apisix
+    ports:
+      - "${APISIX_HTTP_PORT_OVERRIDE:-9080}:9080"
+      - "${APISIX_HTTPS_PORT_OVERRIDE:-9443}:9443"
+      - "${APISIX_ADMIN_PORT_OVERRIDE:-9180}:9180"
+    volumes:
+      - *localtime
+      - *timezone
+      - apisix_logs:/usr/local/apisix/logs
+
+      # Optional: Mount custom configuration
+      # - ./config.yaml:/usr/local/apisix/conf/config.yaml
+      # - ./apisix.yaml:/usr/local/apisix/conf/apisix.yaml
+    environment:
+      - APISIX_STAND_ALONE=${APISIX_STAND_ALONE:-false}
+    depends_on:
+      - etcd
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  etcd:
+    <<: *default
+    image: quay.io/coreos/etcd:${ETCD_VERSION:-v3.6.0}
+    container_name: apisix-etcd
+    ports:
+      - "${ETCD_CLIENT_PORT_OVERRIDE:-2379}:2379"
+    volumes:
+      - *localtime
+      - *timezone
+      - etcd_data:/etcd-data
+    environment:
+      - ETCD_NAME=apisix-etcd
+      - ETCD_DATA_DIR=/etcd-data
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd:2380
+      - ETCD_INITIAL_CLUSTER=apisix-etcd=http://etcd:2380
+      - ETCD_INITIAL_CLUSTER_STATE=new
+      - ETCD_INITIAL_CLUSTER_TOKEN=apisix-etcd-cluster
+      - ETCD_AUTO_COMPACTION_RETENTION=1
+      - ETCD_QUOTA_BACKEND_BYTES=2147483648
+      - ETCD_HEARTBEAT_INTERVAL=100
+      - ETCD_ELECTION_TIMEOUT=1000
+      - ETCD_ENABLE_V2=false
+    command:
+      - etcd
+      - --name=apisix-etcd
+      - --data-dir=/etcd-data
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --advertise-client-urls=http://etcd:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-advertise-peer-urls=http://etcd:2380
+      - --initial-cluster=apisix-etcd=http://etcd:2380
+      - --initial-cluster-state=new
+      - --initial-cluster-token=apisix-etcd-cluster
+      - --auto-compaction-retention=1
+      - --quota-backend-bytes=2147483648
+      - --heartbeat-interval=100
+      - --election-timeout=1000
+      - --enable-v2=false
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # Optional: APISIX Dashboard
+  apisix-dashboard:
+    <<: *default
+    image: apache/apisix-dashboard:${APISIX_DASHBOARD_VERSION:-3.0.1-alpine}
+    container_name: apisix-dashboard
+    ports:
+      - "${APISIX_DASHBOARD_PORT_OVERRIDE:-9000}:9000"
+    volumes:
+      - *localtime
+      - *timezone
+      - dashboard_conf:/usr/local/apisix-dashboard/conf
+    environment:
+      - APISIX_DASHBOARD_USER=${APISIX_DASHBOARD_USER:-admin}
+      - APISIX_DASHBOARD_PASSWORD=${APISIX_DASHBOARD_PASSWORD:-admin}
+    depends_on:
+      - apisix
+    profiles:
+      - dashboard
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+volumes:
+  apisix_logs:
+  etcd_data:
+  dashboard_conf:
