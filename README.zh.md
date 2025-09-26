@@ -7,6 +7,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | 服务                                                     | 版本                         |
 | -------------------------------------------------------- | ---------------------------- |
 | [Bifrost Gateway](./src/bifrost-gateway)                 | 1.2.15                       |
+| [Clash](./src/clash)                                     | 1.18.0                       |
 | [Docker Registry](./src/docker-registry)                 | 3.0.0                        |
 | [frpc](./src/frpc)                                       | 0.64.0                       |
 | [frps](./src/frps)                                       | 0.64.0                       |
@@ -14,15 +15,18 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Gitea Runner](./src/gitea-runner)                       | 0.2.12                       |
 | [GitLab](./src/gitlab)                                   | 17.10.4-ce.0                 |
 | [GitLab Runner](./src/gitlab-runner)                     | 17.10.1                      |
+| [IOPaint](./src/io-paint)                                | latest                       |
 | [Milvus Standalone](./src/milvus-standalone)             | 2.6.2                        |
 | [Milvus Standalone Embed](./src/milvus-standalone-embed) | 2.6.2                        |
 | [MinerU SGALNG](./src/mineru-sgalng)                     | 2.2.2                        |
 | [MinerU v2](./src/mineru-v2)                             | 2.5.3                        |
 | [MinIO](./src/minio)                                     | RELEASE.2025-09-07T16-13-09Z |
 | [MongoDB ReplicaSet](./src/mongodb-replicaset)           | 8.0.13                       |
+| [MongoDB Standalone](./src/mongodb-standalone)           | 8.0.13                       |
 | [MySQL](./src/mysql)                                     | 9.4.0                        |
 | [Ollama](./src/ollama)                                   | 0.12.0                       |
 | [Open WebUI](./src/open-webui)                           | main                         |
+| [OpenCut](./src/opencut)                                 | latest                       |
 | [PocketBase](./src/pocketbase)                           | 0.30.0                       |
 | [PostgreSQL](./src/postgres)                             | 17.6                         |
 | [Qdrant](./src/qdrant)                                   | 1.15.4                       |
