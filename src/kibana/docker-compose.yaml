@@ -1,0 +1,49 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  kibana:
+    <<: *default
+    image: docker.elastic.co/kibana/kibana:${KIBANA_VERSION:-8.16.1}
+    container_name: kibana
+    ports:
+      - "${KIBANA_PORT_OVERRIDE:-5601}:5601"
+    volumes:
+      - *localtime
+      - *timezone
+      - kibana_data:/usr/share/kibana/data
+
+      # Custom configuration
+      # - ./kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    environment:
+      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=${ELASTICSEARCH_HOSTS:-http://elasticsearch:9200}
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-}
+      - XPACK_SECURITY_ENABLED=${KIBANA_SECURITY_ENABLED:-false}
+      - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=${KIBANA_ENCRYPTION_KEY:-}
+      - LOGGING_ROOT_LEVEL=${KIBANA_LOG_LEVEL:-info}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  kibana_data:

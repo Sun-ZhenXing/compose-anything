@@ -1,0 +1,41 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  apache:
+    <<: *default
+    image: httpd:${APACHE_VERSION:-2.4.62-alpine3.20}
+    container_name: apache
+    ports:
+      - "${APACHE_HTTP_PORT_OVERRIDE:-80}:80"
+      - "${APACHE_HTTPS_PORT_OVERRIDE:-443}:443"
+    volumes:
+      - *localtime
+      - *timezone
+      - apache_logs:/usr/local/apache2/logs
+      - ./htdocs:/usr/local/apache2/htdocs:ro
+
+      # Custom configuration
+      # - ./httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+      # - ./ssl:/usr/local/apache2/conf/ssl:ro
+    environment:
+      - APACHE_RUN_USER=${APACHE_RUN_USER:-www-data}
+      - APACHE_RUN_GROUP=${APACHE_RUN_GROUP:-www-data}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+volumes:
+  apache_logs:

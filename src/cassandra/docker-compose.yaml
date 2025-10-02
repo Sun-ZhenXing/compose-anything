@@ -1,0 +1,54 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  cassandra:
+    <<: *default
+    image: cassandra:${CASSANDRA_VERSION:-5.0.2}
+    container_name: cassandra
+    ports:
+      - "${CASSANDRA_CQL_PORT_OVERRIDE:-9042}:9042"
+      - "${CASSANDRA_THRIFT_PORT_OVERRIDE:-9160}:9160"
+    volumes:
+      - *localtime
+      - *timezone
+      - cassandra_data:/var/lib/cassandra
+      - cassandra_logs:/var/log/cassandra
+
+      # Custom configuration
+      # - ./cassandra.yaml:/etc/cassandra/cassandra.yaml:ro
+    environment:
+      - CASSANDRA_CLUSTER_NAME=${CASSANDRA_CLUSTER_NAME:-Test Cluster}
+      - CASSANDRA_DC=${CASSANDRA_DC:-datacenter1}
+      - CASSANDRA_RACK=${CASSANDRA_RACK:-rack1}
+      - CASSANDRA_ENDPOINT_SNITCH=${CASSANDRA_ENDPOINT_SNITCH:-GossipingPropertyFileSnitch}
+      - CASSANDRA_NUM_TOKENS=${CASSANDRA_NUM_TOKENS:-256}
+      - CASSANDRA_SEEDS=${CASSANDRA_SEEDS:-cassandra}
+      - CASSANDRA_START_RPC=${CASSANDRA_START_RPC:-false}
+      - MAX_HEAP_SIZE=${MAX_HEAP_SIZE:-1G}
+      - HEAP_NEWSIZE=${HEAP_NEWSIZE:-100M}
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2G
+        reservations:
+          cpus: '0.50'
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'DESCRIBE CLUSTER'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  cassandra_data:
+  cassandra_logs:

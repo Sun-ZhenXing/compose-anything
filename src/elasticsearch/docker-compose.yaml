@@ -1,0 +1,57 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  elasticsearch:
+    <<: *default
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION:-8.16.1}
+    container_name: elasticsearch
+    ports:
+      - "${ELASTICSEARCH_HTTP_PORT_OVERRIDE:-9200}:9200"
+      - "${ELASTICSEARCH_TRANSPORT_PORT_OVERRIDE:-9300}:9300"
+    volumes:
+      - *localtime
+      - *timezone
+      - elasticsearch_data:/usr/share/elasticsearch/data
+      - elasticsearch_logs:/usr/share/elasticsearch/logs
+
+      # Custom configuration
+      # - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=${ELASTICSEARCH_CLUSTER_NAME:-docker-cluster}
+      - discovery.type=${ELASTICSEARCH_DISCOVERY_TYPE:-single-node}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=${ELASTICSEARCH_SECURITY_ENABLED:-false}
+      - xpack.security.http.ssl.enabled=${ELASTICSEARCH_SSL_ENABLED:-false}
+      - xpack.security.transport.ssl.enabled=${ELASTICSEARCH_SSL_ENABLED:-false}
+      - "ES_JAVA_OPTS=-Xms${ELASTICSEARCH_HEAP_SIZE:-1g} -Xmx${ELASTICSEARCH_HEAP_SIZE:-1g}"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2G
+        reservations:
+          cpus: '0.50'
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  elasticsearch_data:
+  elasticsearch_logs:

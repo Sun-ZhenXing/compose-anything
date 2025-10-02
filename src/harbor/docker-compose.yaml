@@ -1,0 +1,150 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  # Harbor Core
+  harbor-core:
+    <<: *default
+    image: goharbor/harbor-core:${HARBOR_VERSION:-v2.12.0}
+    container_name: harbor-core
+    depends_on:
+      - harbor-db
+      - harbor-redis
+    volumes:
+      - *localtime
+      - *timezone
+      - harbor_config:/etc/core
+      - harbor_ca_download:/etc/core/ca
+      - harbor_secret:/etc/core/certificates
+    environment:
+      - CORE_SECRET=${HARBOR_CORE_SECRET:-}
+      - JOBSERVICE_SECRET=${HARBOR_JOBSERVICE_SECRET:-}
+      - DATABASE_TYPE=postgresql
+      - POSTGRESQL_HOST=harbor-db
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=${HARBOR_DB_PASSWORD:-password}
+      - POSTGRESQL_DATABASE=registry
+      - REGISTRY_URL=http://registry:5000
+      - TOKEN_SERVICE_URL=http://harbor-core:8080/service/token
+      - HARBOR_ADMIN_PASSWORD=${HARBOR_ADMIN_PASSWORD:-Harbor12345}
+      - CORE_URL=http://harbor-core:8080
+      - JOBSERVICE_URL=http://harbor-jobservice:8080
+      - REGISTRY_STORAGE_PROVIDER_NAME=filesystem
+      - READ_ONLY=false
+      - RELOAD_KEY=${HARBOR_RELOAD_KEY:-}
+
+  # Harbor JobService
+  harbor-jobservice:
+    <<: *default
+    image: goharbor/harbor-jobservice:${HARBOR_VERSION:-v2.12.0}
+    container_name: harbor-jobservice
+    depends_on:
+      - harbor-db
+      - harbor-redis
+    volumes:
+      - *localtime
+      - *timezone
+      - harbor_job_logs:/var/log/jobs
+    environment:
+      - CORE_SECRET=${HARBOR_CORE_SECRET:-}
+      - JOBSERVICE_SECRET=${HARBOR_JOBSERVICE_SECRET:-}
+      - CORE_URL=http://harbor-core:8080
+      - DATABASE_TYPE=postgresql
+      - POSTGRESQL_HOST=harbor-db
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=${HARBOR_DB_PASSWORD:-password}
+      - POSTGRESQL_DATABASE=registry
+
+  # Harbor Registry
+  harbor-registry:
+    <<: *default
+    image: goharbor/registry-photon:${HARBOR_VERSION:-v2.12.0}
+    container_name: harbor-registry
+    volumes:
+      - *localtime
+      - *timezone
+      - harbor_registry:/storage
+    environment:
+      - REGISTRY_HTTP_SECRET=${HARBOR_REGISTRY_SECRET:-}
+
+  # Harbor Portal (UI)
+  harbor-portal:
+    <<: *default
+    image: goharbor/harbor-portal:${HARBOR_VERSION:-v2.12.0}
+    container_name: harbor-portal
+    volumes:
+      - *localtime
+      - *timezone
+
+  # Harbor Proxy (Nginx)
+  harbor-proxy:
+    <<: *default
+    image: goharbor/nginx-photon:${HARBOR_VERSION:-v2.12.0}
+    container_name: harbor-proxy
+    ports:
+      - "${HARBOR_HTTP_PORT_OVERRIDE:-80}:8080"
+      - "${HARBOR_HTTPS_PORT_OVERRIDE:-443}:8443"
+    depends_on:
+      - harbor-core
+      - harbor-portal
+      - harbor-registry
+    volumes:
+      - *localtime
+      - *timezone
+
+  # Harbor Database
+  harbor-db:
+    <<: *default
+    image: goharbor/harbor-db:${HARBOR_VERSION:-v2.12.0}
+    container_name: harbor-db
+    volumes:
+      - *localtime
+      - *timezone
+      - harbor_db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${HARBOR_DB_PASSWORD:-password}
+      - POSTGRES_DB=registry
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # Harbor Redis
+  harbor-redis:
+    <<: *default
+    image: goharbor/redis-photon:${HARBOR_VERSION:-v2.12.0}
+    container_name: harbor-redis
+    volumes:
+      - *localtime
+      - *timezone
+      - harbor_redis:/var/lib/redis
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+        reservations:
+          cpus: '0.10'
+          memory: 64M
+
+volumes:
+  harbor_config:
+  harbor_ca_download:
+  harbor_secret:
+  harbor_job_logs:
+  harbor_registry:
+  harbor_db:
+  harbor_redis:

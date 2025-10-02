@@ -6,10 +6,14 @@ Compose Anything helps users quickly deploy various services by providing a set 
 
 | Service                                                  | Version                      |
 | -------------------------------------------------------- | ---------------------------- |
+| [Apache HTTP Server](./src/apache)                       | 2.4.62                       |
 | [Apache APISIX](./src/apisix)                            | 3.13.0                       |
 | [Bifrost Gateway](./src/bifrost-gateway)                 | 1.2.15                       |
+| [Apache Cassandra](./src/cassandra)                      | 5.0.2                        |
 | [Clash](./src/clash)                                     | 1.18.0                       |
+| [HashiCorp Consul](./src/consul)                         | 1.20.3                       |
 | [Docker Registry](./src/docker-registry)                 | 3.0.0                        |
+| [Elasticsearch](./src/elasticsearch)                     | 8.16.1                       |
 | [etcd](./src/etcd)                                       | 3.6.0                        |
 | [frpc](./src/frpc)                                       | 0.64.0                       |
 | [frps](./src/frps)                                       | 0.64.0                       |
@@ -18,7 +22,13 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [GitLab](./src/gitlab)                                   | 17.10.4-ce.0                 |
 | [GitLab Runner](./src/gitlab-runner)                     | 17.10.1                      |
 | [Grafana](./src/grafana)                                 | 12.1.1                       |
+| [Harbor](./src/harbor)                                   | v2.12.0                      |
 | [IOPaint](./src/io-paint)                                | latest                       |
+| [Jenkins](./src/jenkins)                                 | 2.486-lts                    |
+| [Apache Kafka](./src/kafka)                              | 7.8.0                        |
+| [Kibana](./src/kibana)                                   | 8.16.1                       |
+| [Kong](./src/kong)                                       | 3.8.0                        |
+| [Logstash](./src/logstash)                               | 8.16.1                       |
 | [Milvus Standalone](./src/milvus-standalone)             | 2.6.2                        |
 | [Milvus Standalone Embed](./src/milvus-standalone-embed) | 2.6.2                        |
 | [MinerU SGALNG](./src/mineru-sgalng)                     | 2.2.2                        |
@@ -27,6 +37,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [MongoDB ReplicaSet](./src/mongodb-replicaset)           | 8.0.13                       |
 | [MongoDB Standalone](./src/mongodb-standalone)           | 8.0.13                       |
 | [MySQL](./src/mysql)                                     | 9.4.0                        |
+| [Nginx](./src/nginx)                                     | 1.29.1                       |
 | [Ollama](./src/ollama)                                   | 0.12.0                       |
 | [Open WebUI](./src/open-webui)                           | main                         |
 | [OpenCut](./src/opencut)                                 | latest                       |
