@@ -1,0 +1,52 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  vllm:
+    <<: *default
+    image: vllm/vllm-openai:${VLLM_VERSION:-v0.8.0}
+    container_name: vllm
+    ports:
+      - "${VLLM_PORT_OVERRIDE:-8000}:8000"
+    volumes:
+      - *localtime
+      - *timezone
+      - vllm_models:/root/.cache/huggingface
+    environment:
+      - HF_TOKEN=${HF_TOKEN:-}
+    command:
+      - --model
+      - ${VLLM_MODEL:-facebook/opt-125m}
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8000"
+      - --max-model-len
+      - "${VLLM_MAX_MODEL_LEN:-2048}"
+      - --gpu-memory-utilization
+      - "${VLLM_GPU_MEMORY_UTIL:-0.9}"
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+        reservations:
+          cpus: '2.0'
+          memory: 4G
+          # Uncomment for GPU support
+          # devices:
+          #   - driver: nvidia
+          #     count: 1
+          #     capabilities: [gpu]
+    # runtime: nvidia  # Uncomment for GPU support
+    shm_size: 4g
+
+volumes:
+  vllm_models:

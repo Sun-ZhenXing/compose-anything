@@ -1,0 +1,65 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  odoo:
+    <<: *default
+    image: odoo:${ODOO_VERSION:-19.0}
+    container_name: odoo
+    depends_on:
+      - odoo-db
+    ports:
+      - "${ODOO_PORT_OVERRIDE:-8069}:8069"
+    volumes:
+      - *localtime
+      - *timezone
+      - odoo_web_data:/var/lib/odoo
+      - odoo_addons:/mnt/extra-addons
+    environment:
+      - HOST=odoo-db
+      - USER=${POSTGRES_USER:-odoo}
+      - PASSWORD=${POSTGRES_PASSWORD:-odoopass}
+      - DB_PORT=5432
+      - DB_NAME=${POSTGRES_DB:-postgres}
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
+  odoo-db:
+    <<: *default
+    image: postgres:${POSTGRES_VERSION:-17-alpine}
+    container_name: odoo-db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-odoo}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-odoopass}
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - *localtime
+      - *timezone
+      - odoo_db_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+volumes:
+  odoo_web_data:
+  odoo_addons:
+  odoo_db_data:

@@ -1,0 +1,167 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  dify-api:
+    <<: *default
+    image: langgenius/dify-api:${DIFY_VERSION:-0.18.2}
+    container_name: dify-api
+    depends_on:
+      - dify-db
+      - dify-redis
+    environment:
+      - MODE=api
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SECRET_KEY=${SECRET_KEY:-sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-dify}:${POSTGRES_PASSWORD:-difypass}@dify-db:5432/${POSTGRES_DB:-dify}
+      - REDIS_HOST=dify-redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD:-}@dify-redis:6379/1
+      - STORAGE_TYPE=${STORAGE_TYPE:-local}
+      - VECTOR_STORE=${VECTOR_STORE:-weaviate}
+      - WEAVIATE_ENDPOINT=http://dify-weaviate:8080
+    volumes:
+      - *localtime
+      - *timezone
+      - dify_storage:/app/api/storage
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
+  dify-worker:
+    <<: *default
+    image: langgenius/dify-api:${DIFY_VERSION:-0.18.2}
+    container_name: dify-worker
+    depends_on:
+      - dify-db
+      - dify-redis
+    environment:
+      - MODE=worker
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SECRET_KEY=${SECRET_KEY:-sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-dify}:${POSTGRES_PASSWORD:-difypass}@dify-db:5432/${POSTGRES_DB:-dify}
+      - REDIS_HOST=dify-redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD:-}@dify-redis:6379/1
+      - STORAGE_TYPE=${STORAGE_TYPE:-local}
+      - VECTOR_STORE=${VECTOR_STORE:-weaviate}
+      - WEAVIATE_ENDPOINT=http://dify-weaviate:8080
+    volumes:
+      - *localtime
+      - *timezone
+      - dify_storage:/app/api/storage
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
+  dify-web:
+    <<: *default
+    image: langgenius/dify-web:${DIFY_VERSION:-0.18.2}
+    container_name: dify-web
+    depends_on:
+      - dify-api
+    environment:
+      - NEXT_PUBLIC_API_URL=${DIFY_API_URL:-http://localhost:5001}
+      - NEXT_PUBLIC_APP_URL=${DIFY_APP_URL:-http://localhost:3000}
+    ports:
+      - "${DIFY_PORT_OVERRIDE:-3000}:3000"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  dify-db:
+    <<: *default
+    image: postgres:15-alpine
+    container_name: dify-db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-dify}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-difypass}
+      - POSTGRES_DB=${POSTGRES_DB:-dify}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - *localtime
+      - *timezone
+      - dify_db_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  dify-redis:
+    <<: *default
+    image: redis:7-alpine
+    container_name: dify-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD:-}
+    volumes:
+      - *localtime
+      - *timezone
+      - dify_redis_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  dify-weaviate:
+    <<: *default
+    image: semitechnologies/weaviate:${WEAVIATE_VERSION:-1.28.12}
+    container_name: dify-weaviate
+    profiles:
+      - weaviate
+    environment:
+      - QUERY_DEFAULTS_LIMIT=25
+      - AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED=true
+      - PERSISTENCE_DATA_PATH=/var/lib/weaviate
+      - DEFAULT_VECTORIZER_MODULE=none
+      - CLUSTER_HOSTNAME=node1
+    volumes:
+      - *localtime
+      - *timezone
+      - dify_weaviate_data:/var/lib/weaviate
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+volumes:
+  dify_storage:
+  dify_db_data:
+  dify_redis_data:
+  dify_weaviate_data:

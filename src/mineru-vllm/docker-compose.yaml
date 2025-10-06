@@ -10,7 +10,10 @@ x-default: &default
 
 x-mineru-vllm: &mineru-vllm
   <<: *default
-  image: ${MINERU_DOCKER_IMAGE:-alexsuntop/mineru:2.5.3}
+  image: ${MINERU_DOCKER_IMAGE:-alexsuntop/mineru:2.5.4}
+  build:
+    context: .
+    dockerfile: Dockerfile
   environment:
     MINERU_MODEL_SOURCE: local
   ulimits:
@@ -21,10 +24,10 @@ x-mineru-vllm: &mineru-vllm
     resources:
       limits:
         cpus: '8.0'
-        memory: 4G
+        memory: 16G
       reservations:
-        cpus: '1.0'
-        memory: 2G
+        cpus: '4.0'
+        memory: 8G
         devices:
           - driver: nvidia
             device_ids: [ '0' ]

@@ -1,0 +1,75 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  firecrawl:
+    <<: *default
+    image: mendableai/firecrawl:${FIRECRAWL_VERSION:-v1.16.0}
+    container_name: firecrawl
+    ports:
+      - "${FIRECRAWL_PORT_OVERRIDE:-3002}:3002"
+    environment:
+      REDIS_URL: redis://:${REDIS_PASSWORD:-firecrawl}@redis:6379
+      PLAYWRIGHT_MICROSERVICE_URL: http://playwright:3000
+      PORT: 3002
+      NUM_WORKERS_PER_QUEUE: ${NUM_WORKERS_PER_QUEUE:-8}
+      SCRAPE_RATE_LIMIT_TOKEN_BUCKET_SIZE: ${SCRAPE_RATE_LIMIT_TOKEN_BUCKET_SIZE:-20}
+      SCRAPE_RATE_LIMIT_TOKEN_BUCKET_REFILL: ${SCRAPE_RATE_LIMIT_TOKEN_BUCKET_REFILL:-1}
+    depends_on:
+      - redis
+      - playwright
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+  redis:
+    <<: *default
+    image: redis:${REDIS_VERSION:-7.4.2-alpine}
+    container_name: firecrawl-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD:-firecrawl} --appendonly yes
+    volumes:
+      - *localtime
+      - *timezone
+      - redis_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  playwright:
+    <<: *default
+    image: mendableai/firecrawl-playwright:${PLAYWRIGHT_VERSION:-latest}
+    container_name: firecrawl-playwright
+    environment:
+      PORT: 3000
+      PROXY_SERVER: ${PROXY_SERVER:-}
+      PROXY_USERNAME: ${PROXY_USERNAME:-}
+      PROXY_PASSWORD: ${PROXY_PASSWORD:-}
+      BLOCK_MEDIA: ${BLOCK_MEDIA:-true}
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+
+volumes:
+  redis_data:

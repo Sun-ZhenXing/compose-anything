@@ -1,0 +1,29 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  # Note: OpenCoze is a complex platform that requires multiple services.
+  # This is a placeholder configuration. For full deployment, please refer to:
+  # https://github.com/coze-dev/coze-studio/tree/main/docker
+
+  opencoze-info:
+    image: alpine:latest
+    container_name: opencoze-info
+    command: >
+      sh -c "echo 'OpenCoze requires a complex multi-service setup.' &&
+             echo 'Please visit https://github.com/coze-dev/coze-studio for full deployment instructions.' &&
+             echo 'The official docker-compose includes: MySQL, Redis, Elasticsearch, MinIO, etcd, Milvus, NSQ, and the Coze server.' &&
+             echo 'For production deployment, consider using their official docker-compose.yml directly.' &&
+             tail -f /dev/null"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 64M

@@ -1,0 +1,55 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  stirling-pdf:
+    <<: *default
+    image: stirlingtools/stirling-pdf:${STIRLING_VERSION:-latest}
+    container_name: stirling-pdf
+    ports:
+      - "${PORT_OVERRIDE:-8080}:8080"
+    volumes:
+      - *localtime
+      - *timezone
+      - stirling_trainingData:/usr/share/tessdata
+      - stirling_configs:/configs
+      - stirling_logs:/logs
+      - stirling_customFiles:/customFiles
+    environment:
+      - DOCKER_ENABLE_SECURITY=${ENABLE_SECURITY:-false}
+      - SECURITY_ENABLELOGIN=${ENABLE_LOGIN:-false}
+      - SECURITY_INITIALLOGIN_USERNAME=${INITIAL_USERNAME:-admin}
+      - SECURITY_INITIALLOGIN_PASSWORD=${INITIAL_PASSWORD:-admin}
+      - INSTALL_BOOK_AND_ADVANCED_HTML_OPS=${INSTALL_ADVANCED_OPS:-false}
+      - LANGS=${LANGUAGES:-en_GB}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - UMASK=${UMASK:-022}
+      - SYSTEM_DEFAULTLOCALE=${DEFAULT_LOCALE:-en-US}
+      - UI_APPNAME=${APP_NAME:-Stirling-PDF}
+      - UI_HOMEDESCRIPTION=${HOME_DESCRIPTION:-}
+      - UI_APPNAMENAVBAR=${NAVBAR_NAME:-}
+      - SYSTEM_MAXFILESIZE=${MAX_FILE_SIZE:-2000}
+      - METRICS_ENABLED=${METRICS_ENABLED:-false}
+      - SYSTEM_GOOGLEVISIBILITY=${GOOGLE_VISIBILITY:-false}
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+volumes:
+  stirling_trainingData:
+  stirling_configs:
+  stirling_logs:
+  stirling_customFiles:

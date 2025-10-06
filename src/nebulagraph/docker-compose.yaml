@@ -1,0 +1,104 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  metad:
+    <<: *default
+    image: vesoft/nebula-metad:${NEBULA_VERSION:-v3.8.0}
+    container_name: nebula-metad
+    environment:
+      - USER=root
+    command:
+      - --meta_server_addrs=metad:9559
+      - --local_ip=metad
+      - --ws_ip=metad
+      - --port=9559
+      - --data_path=/data/meta
+      - --log_dir=/logs
+    volumes:
+      - *localtime
+      - *timezone
+      - nebula_meta_data:/data/meta
+      - nebula_meta_logs:/logs
+    ports:
+      - "9559:9559"
+      - "19559:19559"
+      - "19560:19560"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  storaged:
+    <<: *default
+    image: vesoft/nebula-storaged:${NEBULA_VERSION:-v3.8.0}
+    container_name: nebula-storaged
+    environment:
+      - USER=root
+    command:
+      - --meta_server_addrs=metad:9559
+      - --local_ip=storaged
+      - --ws_ip=storaged
+      - --port=9779
+      - --data_path=/data/storage
+      - --log_dir=/logs
+    depends_on:
+      - metad
+    volumes:
+      - *localtime
+      - *timezone
+      - nebula_storage_data:/data/storage
+      - nebula_storage_logs:/logs
+    ports:
+      - "9779:9779"
+      - "19779:19779"
+      - "19780:19780"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  graphd:
+    <<: *default
+    image: vesoft/nebula-graphd:${NEBULA_VERSION:-v3.8.0}
+    container_name: nebula-graphd
+    environment:
+      - USER=root
+    command:
+      - --meta_server_addrs=metad:9559
+      - --port=9669
+      - --local_ip=graphd
+      - --ws_ip=graphd
+      - --log_dir=/logs
+    depends_on:
+      - metad
+      - storaged
+    volumes:
+      - *localtime
+      - *timezone
+      - nebula_graph_logs:/logs
+    ports:
+      - "${NEBULA_GRAPHD_PORT_OVERRIDE:-9669}:9669"
+      - "19669:19669"
+      - "19670:19670"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+volumes:
+  nebula_meta_data:
+  nebula_meta_logs:
+  nebula_storage_data:
+  nebula_storage_logs:
+  nebula_graph_logs:

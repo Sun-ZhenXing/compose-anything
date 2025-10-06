@@ -22,12 +22,15 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [GitLab](./src/gitlab)                                   | 17.10.4-ce.0                 |
 | [GitLab Runner](./src/gitlab-runner)                     | 17.10.1                      |
 | [Grafana](./src/grafana)                                 | 12.1.1                       |
+| [Halo](./src/halo)                                       | 2.21.9                       |
 | [Harbor](./src/harbor)                                   | v2.12.0                      |
 | [IOPaint](./src/io-paint)                                | latest                       |
 | [Jenkins](./src/jenkins)                                 | 2.486-lts                    |
 | [Apache Kafka](./src/kafka)                              | 7.8.0                        |
 | [Kibana](./src/kibana)                                   | 8.16.1                       |
+| [Kodbox](./src/kodbox)                                   | 1.62                         |
 | [Kong](./src/kong)                                       | 3.8.0                        |
+| [Langfuse](./src/langfuse)                               | 3.115.0                      |
 | [Logstash](./src/logstash)                               | 8.16.1                       |
 | [Milvus Standalone](./src/milvus-standalone)             | 2.6.2                        |
 | [Milvus Standalone Embed](./src/milvus-standalone-embed) | 2.6.2                        |
@@ -37,6 +40,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [MongoDB ReplicaSet](./src/mongodb-replicaset)           | 8.0.13                       |
 | [MongoDB Standalone](./src/mongodb-standalone)           | 8.0.13                       |
 | [MySQL](./src/mysql)                                     | 9.4.0                        |
+| [n8n](./src/n8n)                                         | 1.114.0                      |
 | [Nginx](./src/nginx)                                     | 1.29.1                       |
 | [Ollama](./src/ollama)                                   | 0.12.0                       |
 | [Open WebUI](./src/open-webui)                           | main                         |
@@ -47,6 +51,20 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Qdrant](./src/qdrant)                                   | 1.15.4                       |
 | [RabbitMQ](./src/rabbitmq)                               | 4.1.4                        |
 | [Redis](./src/redis)                                     | 8.2.1                        |
+| [Redis Cluster](./src/redis-cluster)                     | 8.2.1                        |
+| [ZooKeeper](./src/zookeeper)                             | 3.9.3                        |
+| [Nacos](./src/nacos)                                     | v3.1.0                       |
+| [Dify](./src/dify)                                       | 0.18.2                       |
+| [GPUStack](./src/gpustack)                               | v0.5.3                       |
+| [vLLM](./src/vllm)                                       | v0.8.0                       |
+| [Bytebot](./src/bytebot)                                 | edge                         |
+| [Neo4j](./src/neo4j)                                     | 5.27.4                       |
+| [NebulaGraph](./src/nebulagraph)                         | v3.8.0                       |
+| [Kuzu](./src/kuzu)                                       | N/A (Embedded)               |
+| [Odoo](./src/odoo)                                       | 19.0                         |
+| [OpenCoze](./src/opencoze)                               | See Docs                     |
+| [OpenList](./src/openlist)                               | latest                       |
+| [Node Exporter](./src/node-exporter)                     | v1.8.2                       |
 
 ## Guidelines
 

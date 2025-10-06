@@ -1,0 +1,110 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  postgres:
+    <<: *default
+    image: postgres:${POSTGRES_VERSION:-17.6-alpine}
+    container_name: mlflow-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-mlflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mlflow}
+      POSTGRES_DB: ${POSTGRES_DB:-mlflow}
+    volumes:
+      - *localtime
+      - *timezone
+      - postgres_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  minio:
+    <<: *default
+    image: minio/minio:${MINIO_VERSION:-RELEASE.2025-01-07T16-13-09Z}
+    container_name: mlflow-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio123}
+    ports:
+      - "${MINIO_PORT_OVERRIDE:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT_OVERRIDE:-9001}:9001"
+    volumes:
+      - *localtime
+      - *timezone
+      - minio_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  minio-init:
+    <<: *default
+    image: minio/mc:${MINIO_MC_VERSION:-RELEASE.2025-01-07T17-25-52Z}
+    container_name: mlflow-minio-init
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      /usr/bin/mc config host add minio http://minio:9000 ${MINIO_ROOT_USER:-minio} ${MINIO_ROOT_PASSWORD:-minio123};
+      /usr/bin/mc mb minio/${MINIO_BUCKET:-mlflow} --ignore-existing;
+      exit 0;
+      "
+    restart: "no"
+
+  mlflow:
+    <<: *default
+    image: ghcr.io/mlflow/mlflow:${MLFLOW_VERSION:-v2.20.2}
+    container_name: mlflow
+    depends_on:
+      - postgres
+      - minio
+      - minio-init
+    ports:
+      - "${MLFLOW_PORT_OVERRIDE:-5000}:5000"
+    environment:
+      MLFLOW_BACKEND_STORE_URI: postgresql://${POSTGRES_USER:-mlflow}:${POSTGRES_PASSWORD:-mlflow}@postgres:5432/${POSTGRES_DB:-mlflow}
+      MLFLOW_ARTIFACT_ROOT: s3://${MINIO_BUCKET:-mlflow}/
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minio}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-minio123}
+    command:
+      - mlflow
+      - server
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "5000"
+      - --backend-store-uri
+      - postgresql://${POSTGRES_USER:-mlflow}:${POSTGRES_PASSWORD:-mlflow}@postgres:5432/${POSTGRES_DB:-mlflow}
+      - --default-artifact-root
+      - s3://${MINIO_BUCKET:-mlflow}/
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+
+volumes:
+  postgres_data:
+  minio_data:

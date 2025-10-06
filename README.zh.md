@@ -4,49 +4,67 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 
 ## 已经支持的服务
 
-| 服务                                                     | 版本                         |
-| -------------------------------------------------------- | ---------------------------- |
-| [Apache HTTP Server](./src/apache)                       | 2.4.62                       |
-| [Apache APISIX](./src/apisix)                            | 3.13.0                       |
-| [Bifrost Gateway](./src/bifrost-gateway)                 | 1.2.15                       |
-| [Apache Cassandra](./src/cassandra)                      | 5.0.2                        |
-| [Clash](./src/clash)                                     | 1.18.0                       |
-| [HashiCorp Consul](./src/consul)                         | 1.20.3                       |
-| [Docker Registry](./src/docker-registry)                 | 3.0.0                        |
-| [Elasticsearch](./src/elasticsearch)                     | 8.16.1                       |
-| [etcd](./src/etcd)                                       | 3.6.0                        |
-| [frpc](./src/frpc)                                       | 0.64.0                       |
-| [frps](./src/frps)                                       | 0.64.0                       |
-| [Gitea](./src/gitea)                                     | 1.24.6                       |
-| [Gitea Runner](./src/gitea-runner)                       | 0.2.12                       |
-| [GitLab](./src/gitlab)                                   | 17.10.4-ce.0                 |
-| [GitLab Runner](./src/gitlab-runner)                     | 17.10.1                      |
-| [Grafana](./src/grafana)                                 | 12.1.1                       |
-| [Harbor](./src/harbor)                                   | v2.12.0                      |
-| [IOPaint](./src/io-paint)                                | latest                       |
-| [Jenkins](./src/jenkins)                                 | 2.486-lts                    |
-| [Apache Kafka](./src/kafka)                              | 7.8.0                        |
-| [Kibana](./src/kibana)                                   | 8.16.1                       |
-| [Kong](./src/kong)                                       | 3.8.0                        |
-| [Logstash](./src/logstash)                               | 8.16.1                       |
-| [Milvus Standalone](./src/milvus-standalone)             | 2.6.2                        |
-| [Milvus Standalone Embed](./src/milvus-standalone-embed) | 2.6.2                        |
-| [MinerU SGALNG](./src/mineru-sgalng)                     | 2.2.2                        |
-| [MinerU v2](./src/mineru-v2)                             | 2.5.3                        |
-| [MinIO](./src/minio)                                     | RELEASE.2025-09-07T16-13-09Z |
-| [MongoDB ReplicaSet](./src/mongodb-replicaset)           | 8.0.13                       |
-| [MongoDB Standalone](./src/mongodb-standalone)           | 8.0.13                       |
-| [MySQL](./src/mysql)                                     | 9.4.0                        |
-| [Nginx](./src/nginx)                                     | 1.29.1                       |
-| [Ollama](./src/ollama)                                   | 0.12.0                       |
-| [Open WebUI](./src/open-webui)                           | main                         |
-| [OpenCut](./src/opencut)                                 | latest                       |
-| [PocketBase](./src/pocketbase)                           | 0.30.0                       |
-| [PostgreSQL](./src/postgres)                             | 17.6                         |
-| [Prometheus](./src/prometheus)                           | 3.5.0                        |
-| [Qdrant](./src/qdrant)                                   | 1.15.4                       |
-| [RabbitMQ](./src/rabbitmq)                               | 4.1.4                        |
-| [Redis](./src/redis)                                     | 8.2.1                        |
+| 服务                                                          | 版本                          |
+| ------------------------------------------------------------- | ----------------------------- |
+| [Apache HTTP Server](./src/apache)                            | 2.4.62                        |
+| [Apache APISIX](./src/apisix)                                 | 3.13.0                        |
+| [Bifrost Gateway](./src/bifrost-gateway)                      | 1.2.15                        |
+| [Apache Cassandra](./src/cassandra)                           | 5.0.2                         |
+| [Clash](./src/clash)                                          | 1.18.0                        |
+| [HashiCorp Consul](./src/consul)                              | 1.20.3                        |
+| [Dify](./src/dify)                                            | latest                        |
+| [Dockge](./src/dockge)                                        | 1                             |
+| [Docker Registry](./src/docker-registry)                      | 3.0.0                         |
+| [Elasticsearch](./src/elasticsearch)                          | 8.16.1                        |
+| [etcd](./src/etcd)                                            | 3.6.0                         |
+| [Firecrawl](./src/firecrawl)                                  | v1.16.0                       |
+| [frpc](./src/frpc)                                            | 0.64.0                        |
+| [frps](./src/frps)                                            | 0.64.0                        |
+| [Gitea](./src/gitea)                                          | 1.24.6                        |
+| [Gitea Runner](./src/gitea-runner)                            | 0.2.12                        |
+| [GitLab](./src/gitlab)                                        | 17.10.4-ce.0                  |
+| [GitLab Runner](./src/gitlab-runner)                          | 17.10.1                       |
+| [Grafana](./src/grafana)                                      | 12.1.1                        |
+| [Halo](./src/halo)                                            | 2.21.9                        |
+| [Harbor](./src/harbor)                                        | v2.12.0                       |
+| [IOPaint](./src/io-paint)                                     | latest                        |
+| [Jenkins](./src/jenkins)                                      | 2.486-lts                     |
+| [Apache Kafka](./src/kafka)                                   | 7.8.0                         |
+| [Kibana](./src/kibana)                                        | 8.16.1                        |
+| [Kodbox](./src/kodbox)                                        | 1.62                          |
+| [Kong](./src/kong)                                            | 3.8.0                         |
+| [Langfuse](./src/langfuse)                                    | 3.115.0                       |
+| [Logstash](./src/logstash)                                    | 8.16.1                        |
+| [MariaDB Galera](./src/mariadb-galera)                        | 11.7.2                        |
+| [Minecraft Bedrock Server](./src/minecraft-bedrock-server)    | latest                        |
+| [Milvus Standalone](./src/milvus-standalone)                  | 2.6.2                         |
+| [Milvus Standalone Embed](./src/milvus-standalone-embed)      | 2.6.2                         |
+| [MinerU SGALNG](./src/mineru-sgalng)                          | 2.2.2                         |
+| [MinerU v2](./src/mineru-v2)                                  | 2.5.3                         |
+| [MinIO](./src/minio)                                          | RELEASE.2025-09-07T16-13-09Z  |
+| [MLflow](./src/mlflow)                                        | v2.20.2                       |
+| [MongoDB ReplicaSet](./src/mongodb-replicaset)                | 8.0.13                        |
+| [MongoDB Standalone](./src/mongodb-standalone)                | 8.0.13                        |
+| [MySQL](./src/mysql)                                          | 9.4.0                         |
+| [n8n](./src/n8n)                                              | 1.114.0                       |
+| [Nginx](./src/nginx)                                          | 1.29.1                        |
+| [Ollama](./src/ollama)                                        | 0.12.0                        |
+| [Open WebUI](./src/open-webui)                                | main                          |
+| [OpenCoze](./src/opencoze)                                    | 见文档                        |
+| [OpenCut](./src/opencut)                                      | latest                        |
+| [OpenSearch](./src/opensearch)                                | 2.19.0                        |
+| [PocketBase](./src/pocketbase)                                | 0.30.0                        |
+| [PostgreSQL](./src/postgres)                                  | 17.6                          |
+| [Prometheus](./src/prometheus)                                | 3.5.0                         |
+| [PyTorch](./src/pytorch)                                      | 2.6.0-cuda12.6-cudnn9-runtime |
+| [Qdrant](./src/qdrant)                                        | 1.15.4                        |
+| [RabbitMQ](./src/rabbitmq)                                    | 4.1.4                         |
+| [Ray](./src/ray)                                              | 2.42.1-py312                  |
+| [Redis](./src/redis)                                          | 8.2.1                         |
+| [Stable Diffusion WebUI](./src/stable-diffusion-webui-docker) | latest                        |
+| [Stirling PDF](./src/stirling-pdf)                            | latest                        |
+| [Valkey](./src/valkey)                                        | 8.0-alpine                    |
+| [Valkey Cluster](./src/valkey-cluster)                        | 8.0-alpine                    |
 
 ## 规范
 

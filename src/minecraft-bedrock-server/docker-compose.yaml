@@ -1,0 +1,51 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  minecraft-bedrock:
+    <<: *default
+    image: itzg/minecraft-bedrock-server:${BEDROCK_VERSION:-latest}
+    container_name: minecraft-bedrock-server
+    environment:
+      EULA: "${EULA:-TRUE}"
+      VERSION: "${MINECRAFT_VERSION:-LATEST}"
+      GAMEMODE: "${GAMEMODE:-survival}"
+      DIFFICULTY: "${DIFFICULTY:-easy}"
+      SERVER_NAME: "${SERVER_NAME:-Dedicated Server}"
+      MAX_PLAYERS: "${MAX_PLAYERS:-10}"
+      ALLOW_CHEATS: "${ALLOW_CHEATS:-false}"
+      LEVEL_NAME: "${LEVEL_NAME:-Bedrock level}"
+      LEVEL_SEED: "${LEVEL_SEED:-}"
+      ONLINE_MODE: "${ONLINE_MODE:-true}"
+      WHITE_LIST: "${WHITE_LIST:-false}"
+      SERVER_PORT: "${SERVER_PORT:-19132}"
+      SERVER_PORT_V6: "${SERVER_PORT_V6:-19133}"
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
+    ports:
+      - "${SERVER_PORT_OVERRIDE:-19132}:19132/udp"
+      - "${SERVER_PORT_V6_OVERRIDE:-19133}:19133/udp"
+    volumes:
+      - *localtime
+      - *timezone
+      - bedrock_data:/data
+    stdin_open: true
+    tty: true
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+
+volumes:
+  bedrock_data:

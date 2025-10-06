@@ -1,0 +1,42 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  stable-diffusion-webui:
+    <<: *default
+    image: ghcr.io/absolutelyludicrous/sdnext:${SD_WEBUI_VERSION:-latest}
+    container_name: stable-diffusion-webui
+    ports:
+      - "${SD_WEBUI_PORT_OVERRIDE:-7860}:7860"
+    environment:
+      CLI_ARGS: ${CLI_ARGS:---listen --api --skip-version-check}
+      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
+      NVIDIA_DRIVER_CAPABILITIES: ${NVIDIA_DRIVER_CAPABILITIES:-compute,utility}
+    volumes:
+      - *localtime
+      - *timezone
+      - sd_webui_data:/data
+      - sd_webui_output:/output
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 16G
+        reservations:
+          cpus: '2.0'
+          memory: 8G
+          devices:
+            - driver: nvidia
+              count: ${GPU_COUNT:-1}
+              capabilities: [gpu]
+
+volumes:
+  sd_webui_data:
+  sd_webui_output:

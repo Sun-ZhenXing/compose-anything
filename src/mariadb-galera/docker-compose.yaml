@@ -1,0 +1,119 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+x-mariadb-galera: &mariadb-galera
+  <<: *default
+  image: mariadb:${MARIADB_VERSION:-11.7.2}
+  environment: &galera-env
+    MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-galera}
+    MARIADB_GALERA_CLUSTER_NAME: ${MARIADB_GALERA_CLUSTER_NAME:-galera_cluster}
+    MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://mariadb-galera-1,mariadb-galera-2,mariadb-galera-3
+  command:
+    - --wsrep-new-cluster
+    - --wsrep_node_address=${WSREP_NODE_ADDRESS}
+    - --wsrep_cluster_name=${MARIADB_GALERA_CLUSTER_NAME:-galera_cluster}
+    - --wsrep_cluster_address=gcomm://mariadb-galera-1,mariadb-galera-2,mariadb-galera-3
+    - --wsrep_sst_method=rsync
+    - --wsrep_on=ON
+    - --wsrep_provider=/usr/lib/galera/libgalera_smm.so
+    - --binlog_format=row
+    - --default_storage_engine=InnoDB
+    - --innodb_autoinc_lock_mode=2
+  deploy:
+    resources:
+      limits:
+        cpus: '2.0'
+        memory: 2G
+      reservations:
+        cpus: '1.0'
+        memory: 1G
+
+services:
+  mariadb-galera-1:
+    <<: *mariadb-galera
+    container_name: mariadb-galera-1
+    hostname: mariadb-galera-1
+    ports:
+      - "${MARIADB_PORT_1_OVERRIDE:-3306}:3306"
+    environment:
+      <<: *galera-env
+      WSREP_NODE_ADDRESS: mariadb-galera-1
+    command:
+      - --wsrep-new-cluster
+      - --wsrep_node_address=mariadb-galera-1
+      - --wsrep_cluster_name=${MARIADB_GALERA_CLUSTER_NAME:-galera_cluster}
+      - --wsrep_cluster_address=gcomm://mariadb-galera-1,mariadb-galera-2,mariadb-galera-3
+      - --wsrep_sst_method=rsync
+      - --wsrep_on=ON
+      - --wsrep_provider=/usr/lib/galera/libgalera_smm.so
+      - --binlog_format=row
+      - --default_storage_engine=InnoDB
+      - --innodb_autoinc_lock_mode=2
+    volumes:
+      - *localtime
+      - *timezone
+      - mariadb_galera_1_data:/var/lib/mysql
+
+  mariadb-galera-2:
+    <<: *mariadb-galera
+    container_name: mariadb-galera-2
+    hostname: mariadb-galera-2
+    ports:
+      - "${MARIADB_PORT_2_OVERRIDE:-3307}:3306"
+    environment:
+      <<: *galera-env
+      WSREP_NODE_ADDRESS: mariadb-galera-2
+    command:
+      - --wsrep_node_address=mariadb-galera-2
+      - --wsrep_cluster_name=${MARIADB_GALERA_CLUSTER_NAME:-galera_cluster}
+      - --wsrep_cluster_address=gcomm://mariadb-galera-1,mariadb-galera-2,mariadb-galera-3
+      - --wsrep_sst_method=rsync
+      - --wsrep_on=ON
+      - --wsrep_provider=/usr/lib/galera/libgalera_smm.so
+      - --binlog_format=row
+      - --default_storage_engine=InnoDB
+      - --innodb_autoinc_lock_mode=2
+    volumes:
+      - *localtime
+      - *timezone
+      - mariadb_galera_2_data:/var/lib/mysql
+    depends_on:
+      - mariadb-galera-1
+
+  mariadb-galera-3:
+    <<: *mariadb-galera
+    container_name: mariadb-galera-3
+    hostname: mariadb-galera-3
+    ports:
+      - "${MARIADB_PORT_3_OVERRIDE:-3308}:3306"
+    environment:
+      <<: *galera-env
+      WSREP_NODE_ADDRESS: mariadb-galera-3
+    command:
+      - --wsrep_node_address=mariadb-galera-3
+      - --wsrep_cluster_name=${MARIADB_GALERA_CLUSTER_NAME:-galera_cluster}
+      - --wsrep_cluster_address=gcomm://mariadb-galera-1,mariadb-galera-2,mariadb-galera-3
+      - --wsrep_sst_method=rsync
+      - --wsrep_on=ON
+      - --wsrep_provider=/usr/lib/galera/libgalera_smm.so
+      - --binlog_format=row
+      - --default_storage_engine=InnoDB
+      - --innodb_autoinc_lock_mode=2
+    volumes:
+      - *localtime
+      - *timezone
+      - mariadb_galera_3_data:/var/lib/mysql
+    depends_on:
+      - mariadb-galera-1
+
+volumes:
+  mariadb_galera_1_data:
+  mariadb_galera_2_data:
+  mariadb_galera_3_data:

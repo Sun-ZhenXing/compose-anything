@@ -1,0 +1,101 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  kodbox:
+    <<: *default
+    image: kodcloud/kodbox:${KODBOX_VERSION:-1.62}
+    container_name: kodbox
+    ports:
+      - "${KODBOX_PORT:-80}:80"
+    volumes:
+      - kodbox_data:/var/www/html
+    environment:
+      - MYSQL_HOST=${MYSQL_HOST:-kodbox-db}
+      - MYSQL_PORT=${MYSQL_PORT:-3306}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-kodbox}
+      - MYSQL_USER=${MYSQL_USER:-kodbox}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-kodbox123}
+      - REDIS_HOST=${REDIS_HOST:-kodbox-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+    depends_on:
+      kodbox-db:
+        condition: service_healthy
+      kodbox-redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  kodbox-db:
+    <<: *default
+    image: mysql:${MYSQL_VERSION:-9.4.0}
+    container_name: kodbox-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root123}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-kodbox}
+      - MYSQL_USER=${MYSQL_USER:-kodbox}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-kodbox123}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+    volumes:
+      - kodbox_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root123}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  kodbox-redis:
+    <<: *default
+    image: redis:${REDIS_VERSION:-8.2.1-alpine3.22}
+    container_name: kodbox-redis
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD:-}
+    volumes:
+      - kodbox_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+volumes:
+  kodbox_data:
+  kodbox_db_data:
+  kodbox_redis_data:

@@ -1,0 +1,68 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  halo:
+    <<: *default
+    image: halohub/halo:${HALO_VERSION:-2.21.9}
+    container_name: halo
+    ports:
+      - "${HALO_PORT:-8090}:8090"
+    volumes:
+      - halo_data:/root/.halo2
+    environment:
+      - SPRING_R2DBC_URL=${SPRING_R2DBC_URL:-r2dbc:pool:postgresql://halo-db:5432/halo}
+      - SPRING_R2DBC_USERNAME=${POSTGRES_USER:-postgres}
+      - SPRING_R2DBC_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - SPRING_SQL_INIT_PLATFORM=${SPRING_SQL_INIT_PLATFORM:-postgresql}
+      - HALO_EXTERNAL_URL=${HALO_EXTERNAL_URL:-http://localhost:8090}
+      - HALO_SECURITY_INITIALIZER_SUPERADMINUSERNAME=${HALO_ADMIN_USERNAME:-admin}
+      - HALO_SECURITY_INITIALIZER_SUPERADMINPASSWORD=${HALO_ADMIN_PASSWORD:-}
+    depends_on:
+      halo-db:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  halo-db:
+    <<: *default
+    image: postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
+    container_name: halo-db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-halo}
+      - PGUSER=${POSTGRES_USER:-postgres}
+    volumes:
+      - halo_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+volumes:
+  halo_data:
+  halo_db_data:

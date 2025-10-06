@@ -1,0 +1,82 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  ray-head:
+    <<: *default
+    image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
+    container_name: ray-head
+    command: ray start --head --dashboard-host=0.0.0.0 --port=6379 --block
+    ports:
+      - "${RAY_DASHBOARD_PORT_OVERRIDE:-8265}:8265"
+      - "${RAY_CLIENT_PORT_OVERRIDE:-10001}:10001"
+      - "${RAY_GCS_PORT_OVERRIDE:-6379}:6379"
+    environment:
+      RAY_NUM_CPUS: ${RAY_HEAD_NUM_CPUS:-4}
+      RAY_MEMORY: ${RAY_HEAD_MEMORY:-8589934592}
+    volumes:
+      - *localtime
+      - *timezone
+      - ray_storage:/tmp/ray
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+        reservations:
+          cpus: '2.0'
+          memory: 4G
+
+  ray-worker-1:
+    <<: *default
+    image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
+    container_name: ray-worker-1
+    command: ray start --address=ray-head:6379 --block
+    depends_on:
+      - ray-head
+    environment:
+      RAY_NUM_CPUS: ${RAY_WORKER_NUM_CPUS:-2}
+      RAY_MEMORY: ${RAY_WORKER_MEMORY:-4294967296}
+    volumes:
+      - *localtime
+      - *timezone
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+  ray-worker-2:
+    <<: *default
+    image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
+    container_name: ray-worker-2
+    command: ray start --address=ray-head:6379 --block
+    depends_on:
+      - ray-head
+    environment:
+      RAY_NUM_CPUS: ${RAY_WORKER_NUM_CPUS:-2}
+      RAY_MEMORY: ${RAY_WORKER_MEMORY:-4294967296}
+    volumes:
+      - *localtime
+      - *timezone
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+volumes:
+  ray_storage:

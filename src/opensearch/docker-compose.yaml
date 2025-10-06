@@ -1,0 +1,68 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  opensearch:
+    <<: *default
+    image: opensearchproject/opensearch:${OPENSEARCH_VERSION:-2.19.0}
+    container_name: opensearch
+    environment:
+      cluster.name: ${CLUSTER_NAME:-opensearch-cluster}
+      node.name: opensearch
+      discovery.type: single-node
+      bootstrap.memory_lock: true
+      OPENSEARCH_JAVA_OPTS: "-Xms${OPENSEARCH_HEAP_SIZE:-512m} -Xmx${OPENSEARCH_HEAP_SIZE:-512m}"
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_ADMIN_PASSWORD:-Admin@123}
+      DISABLE_SECURITY_PLUGIN: ${DISABLE_SECURITY_PLUGIN:-false}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "${OPENSEARCH_PORT_OVERRIDE:-9200}:9200"
+      - "${OPENSEARCH_PERF_ANALYZER_PORT_OVERRIDE:-9600}:9600"
+    volumes:
+      - *localtime
+      - *timezone
+      - opensearch_data:/usr/share/opensearch/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+
+  opensearch-dashboards:
+    <<: *default
+    image: opensearchproject/opensearch-dashboards:${OPENSEARCH_DASHBOARDS_VERSION:-2.19.0}
+    container_name: opensearch-dashboards
+    ports:
+      - "${OPENSEARCH_DASHBOARDS_PORT_OVERRIDE:-5601}:5601"
+    environment:
+      OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
+      DISABLE_SECURITY_DASHBOARDS_PLUGIN: ${DISABLE_SECURITY_PLUGIN:-false}
+    depends_on:
+      - opensearch
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  opensearch_data:

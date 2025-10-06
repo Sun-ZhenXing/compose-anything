@@ -1,0 +1,45 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  nacos:
+    <<: *default
+    image: nacos/nacos-server:${NACOS_VERSION:-v3.1.0-slim}
+    container_name: nacos
+    ports:
+      - "${NACOS_HTTP_PORT_OVERRIDE:-8848}:8848"
+      - "${NACOS_GRPC_PORT_OVERRIDE:-9848}:9848"
+      - "${NACOS_GRPC_PORT2_OVERRIDE:-9849}:9849"
+    volumes:
+      - *localtime
+      - *timezone
+      - nacos_logs:/home/nacos/logs
+    environment:
+      - MODE=${NACOS_MODE:-standalone}
+      - PREFER_HOST_MODE=hostname
+      - NACOS_AUTH_ENABLE=${NACOS_AUTH_ENABLE:-true}
+      - NACOS_AUTH_TOKEN=${NACOS_AUTH_TOKEN:-SecretKey012345678901234567890123456789012345678901234567890123456789}
+      - NACOS_AUTH_IDENTITY_KEY=${NACOS_AUTH_IDENTITY_KEY:-serverIdentity}
+      - NACOS_AUTH_IDENTITY_VALUE=${NACOS_AUTH_IDENTITY_VALUE:-security}
+      - SPRING_DATASOURCE_PLATFORM=${SPRING_DATASOURCE_PLATFORM:-}
+      - JVM_XMS=${JVM_XMS:-512m}
+      - JVM_XMX=${JVM_XMX:-512m}
+      - JVM_XMN=${JVM_XMN:-256m}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  nacos_logs:

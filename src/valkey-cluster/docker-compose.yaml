@@ -1,0 +1,145 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+x-valkey-node: &valkey-node
+  <<: *default
+  image: valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
+  volumes:
+    - *localtime
+    - *timezone
+  command:
+    - valkey-server
+    - --cluster-enabled
+    - "yes"
+    - --cluster-config-file
+    - nodes.conf
+    - --cluster-node-timeout
+    - "5000"
+    - --appendonly
+    - "yes"
+    - --requirepass
+    - ${VALKEY_PASSWORD:-passw0rd}
+    - --masterauth
+    - ${VALKEY_PASSWORD:-passw0rd}
+  deploy:
+    resources:
+      limits:
+        cpus: '0.50'
+        memory: 512M
+      reservations:
+        cpus: '0.25'
+        memory: 256M
+
+services:
+  valkey-node-1:
+    <<: *valkey-node
+    container_name: valkey-node-1
+    ports:
+      - "${VALKEY_PORT_1:-7001}:6379"
+      - "${VALKEY_BUS_PORT_1:-17001}:16379"
+    volumes:
+      - *localtime
+      - *timezone
+      - valkey_data_1:/data
+
+  valkey-node-2:
+    <<: *valkey-node
+    container_name: valkey-node-2
+    ports:
+      - "${VALKEY_PORT_2:-7002}:6379"
+      - "${VALKEY_BUS_PORT_2:-17002}:16379"
+    volumes:
+      - *localtime
+      - *timezone
+      - valkey_data_2:/data
+
+  valkey-node-3:
+    <<: *valkey-node
+    container_name: valkey-node-3
+    ports:
+      - "${VALKEY_PORT_3:-7003}:6379"
+      - "${VALKEY_BUS_PORT_3:-17003}:16379"
+    volumes:
+      - *localtime
+      - *timezone
+      - valkey_data_3:/data
+
+  valkey-node-4:
+    <<: *valkey-node
+    container_name: valkey-node-4
+    ports:
+      - "${VALKEY_PORT_4:-7004}:6379"
+      - "${VALKEY_BUS_PORT_4:-17004}:16379"
+    volumes:
+      - *localtime
+      - *timezone
+      - valkey_data_4:/data
+
+  valkey-node-5:
+    <<: *valkey-node
+    container_name: valkey-node-5
+    ports:
+      - "${VALKEY_PORT_5:-7005}:6379"
+      - "${VALKEY_BUS_PORT_5:-17005}:16379"
+    volumes:
+      - *localtime
+      - *timezone
+      - valkey_data_5:/data
+
+  valkey-node-6:
+    <<: *valkey-node
+    container_name: valkey-node-6
+    ports:
+      - "${VALKEY_PORT_6:-7006}:6379"
+      - "${VALKEY_BUS_PORT_6:-17006}:16379"
+    volumes:
+      - *localtime
+      - *timezone
+      - valkey_data_6:/data
+
+  valkey-cluster-init:
+    <<: *default
+    image: valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
+    container_name: valkey-cluster-init
+    depends_on:
+      - valkey-node-1
+      - valkey-node-2
+      - valkey-node-3
+      - valkey-node-4
+      - valkey-node-5
+      - valkey-node-6
+    command:
+      - sh
+      - -c
+      - |
+        sleep 10
+        valkey-cli -a ${VALKEY_PASSWORD:-passw0rd} --cluster create \
+          valkey-node-1:6379 \
+          valkey-node-2:6379 \
+          valkey-node-3:6379 \
+          valkey-node-4:6379 \
+          valkey-node-5:6379 \
+          valkey-node-6:6379 \
+          --cluster-replicas 1 \
+          --cluster-yes
+    restart: "no"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.10'
+          memory: 128M
+
+volumes:
+  valkey_data_1:
+  valkey_data_2:
+  valkey_data_3:
+  valkey_data_4:
+  valkey_data_5:
+  valkey_data_6:

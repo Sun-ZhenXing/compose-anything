@@ -9,27 +9,29 @@ x-default: &default
       max-size: 100m
 
 services:
-  mongo:
+  openlist:
     <<: *default
-    image: mongo:${MONGO_VERSION:-8.0.13}
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-password}
-      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-admin}
+    image: openlistteam/openlist:${OPENLIST_VERSION:-latest}
+    container_name: openlist
     ports:
-      - "${MONGO_PORT_OVERRIDE:-27017}:27017"
+      - "${OPENLIST_PORT_OVERRIDE:-5244}:5244"
     volumes:
       - *localtime
       - *timezone
-      - mongo_data:/data/db
+      - openlist_data:/opt/openlist/data
+    environment:
+      - PUID=${PUID:-0}
+      - PGID=${PGID:-0}
+      - UMASK=${UMASK:-022}
+      - TZ=${TZ:-Asia/Shanghai}
     deploy:
       resources:
         limits:
-          cpus: '0.50'
+          cpus: '1.0'
           memory: 1G
         reservations:
           cpus: '0.25'
           memory: 256M
 
 volumes:
-  mongo_data:
+  openlist_data:

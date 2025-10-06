@@ -1,0 +1,104 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  bytebot-desktop:
+    <<: *default
+    image: ghcr.io/bytebot-ai/bytebot-desktop:${BYTEBOT_VERSION:-edge}
+    container_name: bytebot-desktop
+    ports:
+      - "${BYTEBOT_DESKTOP_PORT_OVERRIDE:-9990}:9990"
+    volumes:
+      - *localtime
+      - *timezone
+    shm_size: 2gb
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+  bytebot-agent:
+    <<: *default
+    image: ghcr.io/bytebot-ai/bytebot-agent:${BYTEBOT_VERSION:-edge}
+    container_name: bytebot-agent
+    depends_on:
+      - bytebot-desktop
+      - bytebot-db
+    ports:
+      - "${BYTEBOT_AGENT_PORT_OVERRIDE:-9991}:9991"
+    environment:
+      - BYTEBOTD_URL=http://bytebot-desktop:9990
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-bytebot}:${POSTGRES_PASSWORD:-bytebotpass}@bytebot-db:5432/${POSTGRES_DB:-bytebot}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    volumes:
+      - *localtime
+      - *timezone
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  bytebot-ui:
+    <<: *default
+    image: ghcr.io/bytebot-ai/bytebot-ui:${BYTEBOT_VERSION:-edge}
+    container_name: bytebot-ui
+    depends_on:
+      - bytebot-agent
+    ports:
+      - "${BYTEBOT_UI_PORT_OVERRIDE:-9992}:9992"
+    environment:
+      - BYTEBOT_AGENT_BASE_URL=http://localhost:9991
+      - BYTEBOT_DESKTOP_VNC_URL=http://localhost:9990/websockify
+    volumes:
+      - *localtime
+      - *timezone
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  bytebot-db:
+    <<: *default
+    image: postgres:${POSTGRES_VERSION:-17-alpine}
+    container_name: bytebot-db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-bytebot}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-bytebotpass}
+      - POSTGRES_DB=${POSTGRES_DB:-bytebot}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - *localtime
+      - *timezone
+      - bytebot_db_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+volumes:
+  bytebot_db_data:

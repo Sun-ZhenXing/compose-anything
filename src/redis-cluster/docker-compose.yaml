@@ -1,0 +1,142 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  redis-cluster-init:
+    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    container_name: redis-cluster-init
+    command: >
+      sh -c "
+      echo 'Waiting for all Redis instances to start...' &&
+      sleep 5 &&
+      redis-cli --cluster create
+      redis-1:6379 redis-2:6379 redis-3:6379
+      redis-4:6379 redis-5:6379 redis-6:6379
+      --cluster-replicas 1 --cluster-yes
+      "
+    depends_on:
+      - redis-1
+      - redis-2
+      - redis-3
+      - redis-4
+      - redis-5
+      - redis-6
+    profiles:
+      - init
+
+  redis-1:
+    <<: *default
+    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    container_name: redis-1
+    command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    ports:
+      - "7000:6379"
+    volumes:
+      - *localtime
+      - *timezone
+      - redis_1_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  redis-2:
+    <<: *default
+    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    container_name: redis-2
+    command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    ports:
+      - "7001:6379"
+    volumes:
+      - *localtime
+      - *timezone
+      - redis_2_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  redis-3:
+    <<: *default
+    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    container_name: redis-3
+    command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    ports:
+      - "7002:6379"
+    volumes:
+      - *localtime
+      - *timezone
+      - redis_3_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  redis-4:
+    <<: *default
+    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    container_name: redis-4
+    command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    ports:
+      - "7003:6379"
+    volumes:
+      - *localtime
+      - *timezone
+      - redis_4_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  redis-5:
+    <<: *default
+    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    container_name: redis-5
+    command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    ports:
+      - "7004:6379"
+    volumes:
+      - *localtime
+      - *timezone
+      - redis_5_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  redis-6:
+    <<: *default
+    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    container_name: redis-6
+    command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
+    ports:
+      - "7005:6379"
+    volumes:
+      - *localtime
+      - *timezone
+      - redis_6_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  redis_1_data:
+  redis_2_data:
+  redis_3_data:
+  redis_4_data:
+  redis_5_data:
+  redis_6_data:

@@ -9,29 +9,26 @@ x-default: &default
       max-size: 100m
 
 services:
-  redis:
+  valkey:
     <<: *default
-    image: redis:${REDIS_VERSION:-8.2.1-alpine3.22}
-    container_name: redis
+    image: valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
+    container_name: valkey
     ports:
-      - "${REDIS_PORT_OVERRIDE:-6379}:6379"
+      - "${VALKEY_PORT_OVERRIDE:-6379}:6379"
     volumes:
       - *localtime
       - *timezone
-      - redis_data:/data
-
-      # Use a custom redis.conf file
-      # - ./redis.conf:/etc/redis/redis.conf
-    environment:
-      - SKIP_FIX_PERMS=${SKIP_FIX_PERMS:-}
+      - valkey_data:/data
+      # Use a custom valkey.conf file
+      # - ./valkey.conf:/etc/valkey/valkey.conf
     command:
       - sh
       - -c
       - |
-        if [ -n "$${REDIS_PASSWORD}" ]; then
-          redis-server --requirepass "$${REDIS_PASSWORD}"
+        if [ -n "$${VALKEY_PASSWORD}" ]; then
+          valkey-server --requirepass "$${VALKEY_PASSWORD}" --appendonly yes
         else
-          redis-server
+          valkey-server --appendonly yes
         fi
     deploy:
       resources:
@@ -43,4 +40,4 @@ services:
           memory: 256M
 
 volumes:
-  redis_data:
+  valkey_data:

@@ -1,0 +1,38 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  dockge:
+    <<: *default
+    image: louislam/dockge:${DOCKGE_VERSION:-1}
+    container_name: dockge
+    ports:
+      - "${PORT_OVERRIDE:-5001}:5001"
+    volumes:
+      - *localtime
+      - *timezone
+      - /var/run/docker.sock:/var/run/docker.sock
+      - dockge_data:/app/data
+      - ${STACKS_DIR:-./stacks}:/opt/stacks
+    environment:
+      - DOCKGE_STACKS_DIR=${DOCKGE_STACKS_DIR:-/opt/stacks}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+volumes:
+  dockge_data:

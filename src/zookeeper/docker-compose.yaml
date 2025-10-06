@@ -1,0 +1,45 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  zookeeper:
+    <<: *default
+    image: zookeeper:${ZOOKEEPER_VERSION:-3.9.3}
+    container_name: zookeeper
+    ports:
+      - "${ZOOKEEPER_CLIENT_PORT_OVERRIDE:-2181}:2181"
+      - "${ZOOKEEPER_ADMIN_PORT_OVERRIDE:-8080}:8080"
+    volumes:
+      - *localtime
+      - *timezone
+      - zookeeper_data:/data
+      - zookeeper_datalog:/datalog
+      - zookeeper_logs:/logs
+    environment:
+      - ZOO_MY_ID=1
+      - ZOO_PORT=2181
+      - ZOO_TICK_TIME=${ZOO_TICK_TIME:-2000}
+      - ZOO_INIT_LIMIT=${ZOO_INIT_LIMIT:-10}
+      - ZOO_SYNC_LIMIT=${ZOO_SYNC_LIMIT:-5}
+      - ZOO_MAX_CLIENT_CNXNS=${ZOO_MAX_CLIENT_CNXNS:-60}
+      - ZOO_4LW_COMMANDS_WHITELIST=${ZOO_4LW_COMMANDS_WHITELIST:-srvr,mntr,ruok}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+volumes:
+  zookeeper_data:
+  zookeeper_datalog:
+  zookeeper_logs:

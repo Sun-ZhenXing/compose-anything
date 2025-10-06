@@ -1,0 +1,47 @@
+x-default: &default
+  restart: unless-stopped
+  volumes:
+    - &localtime /etc/localtime:/etc/localtime:ro
+    - &timezone /etc/timezone:/etc/timezone:ro
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+  gpustack:
+    <<: *default
+    image: gpustack/gpustack:${GPUSTACK_VERSION:-v0.5.3}
+    container_name: gpustack
+    ports:
+      - "${GPUSTACK_PORT_OVERRIDE:-80}:80"
+    volumes:
+      - *localtime
+      - *timezone
+      - gpustack_data:/var/lib/gpustack
+    environment:
+      - GPUSTACK_DEBUG=${GPUSTACK_DEBUG:-false}
+      - GPUSTACK_HOST=${GPUSTACK_HOST:-0.0.0.0}
+      - GPUSTACK_PORT=${GPUSTACK_PORT:-80}
+      - GPUSTACK_TOKEN=${GPUSTACK_TOKEN:-}
+      - GPUSTACK_BOOTSTRAP_PASSWORD=${GPUSTACK_BOOTSTRAP_PASSWORD:-admin}
+      - HF_TOKEN=${HF_TOKEN:-}
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+        # Uncomment below for GPU support
+        # reservations:
+        #   devices:
+        #     - driver: nvidia
+        #       count: 1
+        #       capabilities: [gpu]
+    # For GPU support, uncomment the following section
+    # runtime: nvidia
+
+volumes:
+  gpustack_data:
