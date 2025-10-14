@@ -18,6 +18,7 @@ services:
       - *localtime
       - *timezone
       - ollama_models:/root/.ollama
+    ipc: host
     deploy:
       resources:
         limits:

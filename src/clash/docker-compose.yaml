@@ -19,3 +19,11 @@ services:
       - *localtime
       - *timezone
       - ./config.yaml:/home/runner/.config/clash/config.yaml
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
