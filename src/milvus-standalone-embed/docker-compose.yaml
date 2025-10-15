@@ -11,7 +11,7 @@ x-default: &default
 services:
   milvus-standalone-embed:
     <<: *default
-    image: milvusdb/milvus:${MILVUS_VERSION:-v2.6.2}
+    image: milvusdb/milvus:${MILVUS_VERSION:-v2.6.3}
     security_opt:
       - seccomp:unconfined
     environment:
@@ -48,7 +48,7 @@ services:
 
   attu:
     <<: *default
-    image: zilliz/attu:${ATTU_VERSION:-v2.6.0}
+    image: zilliz/attu:${ATTU_VERSION:-v2.6.1}
     profiles:
       - attu
     environment:
