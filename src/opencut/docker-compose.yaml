@@ -1,41 +1,67 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
 services:
   db:
-    image: postgres:17
-    restart: unless-stopped
+    <<: *default
+    image: postgres:${POSTGRES_VERSION:-17}
     environment:
-      POSTGRES_USER: opencut
-      POSTGRES_PASSWORD: opencutthegoat
-      POSTGRES_DB: opencut
+      TZ: ${TZ:-UTC}
+      POSTGRES_USER: ${POSTGRES_USER:-opencut}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-opencut}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT_OVERRIDE:-5432}:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U opencut"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-opencut}"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 1G
+        reservations:
+          cpus: '0.50'
+          memory: 256M
 
   redis:
-    image: redis:7-alpine
-    restart: unless-stopped
+    <<: *default
+    image: redis:${REDIS_VERSION:-7-alpine}
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT_OVERRIDE:-6379}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
 
   serverless-redis-http:
-    image: hiett/serverless-redis-http:latest
+    <<: *default
+    image: hiett/serverless-redis-http:${SERVERLESS_REDIS_HTTP_VERSION:-latest}
     ports:
-      - "8079:80"
+      - "${SERVERLESS_REDIS_HTTP_PORT_OVERRIDE:-8079}:80"
     environment:
       SRH_MODE: env
-      SRH_TOKEN: example_token
+      SRH_TOKEN: ${SERVERLESS_REDIS_HTTP_TOKEN:?SERVERLESS_REDIS_HTTP_TOKEN is required}
       SRH_CONNECTION_STRING: "redis://redis:6379"
     depends_on:
       redis:
@@ -46,31 +72,36 @@ services:
       timeout: 10s
       retries: 5
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 64M
+
   web:
-    build:
-      context: .
-      dockerfile: ./apps/web/Dockerfile
-      args:
-        - FREESOUND_CLIENT_ID=${FREESOUND_CLIENT_ID}
-        - FREESOUND_API_KEY=${FREESOUND_API_KEY}
-    restart: unless-stopped
+    <<: *default
+    image: ${OPENCUT_WEB_IMAGE:-opencut/web:latest}
     ports:
-      - "3100:3000" # app is running on 3000 so we run this at 3100
+      - "${OPENCUT_WEB_PORT_OVERRIDE:-3100}:3000"
     environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://opencut:opencutthegoat@db:5432/opencut
-      - BETTER_AUTH_URL=http://localhost:3000
-      - BETTER_AUTH_SECRET=your-production-secret-key-here
-      - UPSTASH_REDIS_REST_URL=http://serverless-redis-http:80
-      - UPSTASH_REDIS_REST_TOKEN=example_token
-      - FREESOUND_CLIENT_ID=${FREESOUND_CLIENT_ID}
-      - FREESOUND_API_KEY=${FREESOUND_API_KEY}
+      TZ: ${TZ:-UTC}
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-opencut}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-opencut}
+      BETTER_AUTH_URL: ${OPENCUT_BETTER_AUTH_URL:-http://localhost:3100}
+      BETTER_AUTH_SECRET: ${OPENCUT_BETTER_AUTH_SECRET:?OPENCUT_BETTER_AUTH_SECRET is required}
+      UPSTASH_REDIS_REST_URL: http://serverless-redis-http:80
+      UPSTASH_REDIS_REST_TOKEN: ${SERVERLESS_REDIS_HTTP_TOKEN}
+      FREESOUND_CLIENT_ID: ${OPENCUT_FREESOUND_CLIENT_ID:?OPENCUT_FREESOUND_CLIENT_ID is required}
+      FREESOUND_API_KEY: ${OPENCUT_FREESOUND_API_KEY:?OPENCUT_FREESOUND_API_KEY is required}
       # Transcription (Optional - leave blank to disable auto-captions)
-      - CLOUDFLARE_ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID}
-      - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
-      - R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}
-      - R2_BUCKET_NAME=${R2_BUCKET_NAME}
-      - MODAL_TRANSCRIPTION_URL=${MODAL_TRANSCRIPTION_URL}
+      CLOUDFLARE_ACCOUNT_ID: ${OPENCUT_CLOUDFLARE_ACCOUNT_ID:-}
+      R2_ACCESS_KEY_ID: ${OPENCUT_R2_ACCESS_KEY_ID:-}
+      R2_SECRET_ACCESS_KEY: ${OPENCUT_R2_SECRET_ACCESS_KEY:-}
+      R2_BUCKET_NAME: ${OPENCUT_R2_BUCKET_NAME:-}
+      MODAL_TRANSCRIPTION_URL: ${OPENCUT_MODAL_TRANSCRIPTION_URL:-}
     depends_on:
       db:
         condition: service_healthy
@@ -82,10 +113,14 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2G
+        reservations:
+          cpus: '0.50'
+          memory: 512M
 
 volumes:
   postgres_data:
-
-networks:
-  default:
-    name: opencut-network
