@@ -1,12 +1,10 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   open_webui:
@@ -15,9 +13,9 @@ services:
     ports:
       - "${OPEN_WEBUI_PORT_OVERRIDE:-8080}:8080"
     volumes:
-      - *localtime
-      - *timezone
       - open_webui_data:/app/backend/data
+    environment:
+      - TZ=${TZ:-UTC}
     env_file:
       - .env
     deploy:
@@ -28,6 +26,12 @@ services:
         reservations:
           cpus: '0.1'
           memory: 128M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   open_webui_data:

@@ -1,25 +1,21 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   vllm:
     <<: *default
     image: vllm/vllm-openai:${VLLM_VERSION:-v0.8.0}
-    container_name: vllm
     ports:
       - "${VLLM_PORT_OVERRIDE:-8000}:8000"
     volumes:
-      - *localtime
-      - *timezone
       - vllm_models:/root/.cache/huggingface
     environment:
+      - TZ=${TZ:-UTC}
       - HF_TOKEN=${HF_TOKEN:-}
     command:
       - --model
@@ -47,6 +43,12 @@ services:
           #     capabilities: [gpu]
     # runtime: nvidia  # Uncomment for GPU support
     shm_size: 4g
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
 volumes:
   vllm_models:

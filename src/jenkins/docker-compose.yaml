@@ -1,30 +1,26 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   jenkins:
     <<: *default
     image: jenkins/jenkins:${JENKINS_VERSION:-2.486-lts-jdk17}
-    container_name: jenkins
     ports:
       - "${JENKINS_HTTP_PORT_OVERRIDE:-8080}:8080"
       - "${JENKINS_AGENT_PORT_OVERRIDE:-50000}:50000"
     volumes:
-      - *localtime
-      - *timezone
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
       # Custom configuration
       # - ./jenkins.yaml:/var/jenkins_home/casc_configs/jenkins.yaml:ro
     environment:
+      - TZ=${TZ:-UTC}
       - JENKINS_OPTS=${JENKINS_OPTS:---httpPort=8080}
       - JAVA_OPTS=${JAVA_OPTS:--Djenkins.install.runSetupWizard=false -Xmx2g}
       - CASC_JENKINS_CONFIG=${CASC_JENKINS_CONFIG:-/var/jenkins_home/casc_configs}

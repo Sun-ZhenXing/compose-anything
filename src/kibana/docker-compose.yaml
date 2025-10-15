@@ -1,28 +1,24 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   kibana:
     <<: *default
     image: docker.elastic.co/kibana/kibana:${KIBANA_VERSION:-8.16.1}
-    container_name: kibana
     ports:
       - "${KIBANA_PORT_OVERRIDE:-5601}:5601"
     volumes:
-      - *localtime
-      - *timezone
       - kibana_data:/usr/share/kibana/data
 
       # Custom configuration
       # - ./kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     environment:
+      - TZ=${TZ:-UTC}
       - SERVERNAME=kibana
       - ELASTICSEARCH_HOSTS=${ELASTICSEARCH_HOSTS:-http://elasticsearch:9200}
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-}

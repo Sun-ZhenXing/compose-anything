@@ -1,24 +1,19 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   apache:
     <<: *default
     image: httpd:${APACHE_VERSION:-2.4.62-alpine3.20}
-    container_name: apache
     ports:
       - "${APACHE_HTTP_PORT_OVERRIDE:-80}:80"
       - "${APACHE_HTTPS_PORT_OVERRIDE:-443}:443"
     volumes:
-      - *localtime
-      - *timezone
       - apache_logs:/usr/local/apache2/logs
       - ./htdocs:/usr/local/apache2/htdocs:ro
 
@@ -26,6 +21,7 @@ services:
       # - ./httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
       # - ./ssl:/usr/local/apache2/conf/ssl:ro
     environment:
+      - TZ=${TZ:-UTC}
       - APACHE_RUN_USER=${APACHE_RUN_USER:-www-data}
       - APACHE_RUN_GROUP=${APACHE_RUN_GROUP:-www-data}
     deploy:
@@ -36,6 +32,12 @@ services:
         reservations:
           cpus: '0.25'
           memory: 128M
+    healthcheck:
+      test: ["CMD", "httpd", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 volumes:
   apache_logs:

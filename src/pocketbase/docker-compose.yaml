@@ -1,18 +1,17 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   pocketbase:
     <<: *default
     image: ghcr.io/muchobien/pocketbase:${PB_VERSION:-0.30.0}
     environment:
+      TZ: ${TZ:-UTC}
       # Optional ENCRYPTION (Ensure this is a 32-character long encryption key)
       # $ openssl rand -hex 16
       # https://pocketbase.io/docs/going-to-production/#enable-settings-encryption
@@ -22,8 +21,6 @@ services:
     ports:
       - "${PB_PORT:-8090}:8090"
     volumes:
-      - *localtime
-      - *timezone
       - pb_data:/pb_data
 
       # optional public and hooks folders
@@ -34,6 +31,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+      start_period: 10s
     deploy:
       resources:
         limits:

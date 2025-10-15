@@ -1,23 +1,18 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   prometheus:
     <<: *default
     image: prom/prometheus:${PROMETHEUS_VERSION:-v3.5.0}
-    container_name: prometheus
     ports:
       - "${PROMETHEUS_PORT_OVERRIDE:-9090}:9090"
     volumes:
-      - *localtime
-      - *timezone
       - prometheus_data:/prometheus
 
       # Optional: Mount custom configuration
@@ -34,6 +29,7 @@ services:
       - '--web.enable-admin-api'
       - '--web.external-url=${PROMETHEUS_EXTERNAL_URL:-http://localhost:9090}'
     environment:
+      - TZ=${TZ:-UTC}
       - PROMETHEUS_RETENTION_TIME=${PROMETHEUS_RETENTION_TIME:-15d}
       - PROMETHEUS_RETENTION_SIZE=${PROMETHEUS_RETENTION_SIZE:-}
     user: "65534:65534"  # nobody user
@@ -45,6 +41,12 @@ services:
         reservations:
           cpus: '0.25'
           memory: 512M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   prometheus_data:

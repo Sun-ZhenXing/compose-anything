@@ -1,18 +1,15 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   node-exporter:
     <<: *default
     image: prom/node-exporter:${NODE_EXPORTER_VERSION:-v1.8.2}
-    container_name: node-exporter
     ports:
       - "${NODE_EXPORTER_PORT_OVERRIDE:-9100}:9100"
     command:
@@ -20,6 +17,8 @@ services:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    environment:
+      - TZ=${TZ:-UTC}
     volumes:
       - '/:/host:ro,rslave'
     deploy:
@@ -30,6 +29,12 @@ services:
         reservations:
           cpus: '0.1'
           memory: 64M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9100/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     # Run with host network for accurate metrics
     # network_mode: host
 

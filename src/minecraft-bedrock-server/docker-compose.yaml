@@ -1,19 +1,17 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   minecraft-bedrock:
     <<: *default
     image: itzg/minecraft-bedrock-server:${BEDROCK_VERSION:-latest}
-    container_name: minecraft-bedrock-server
     environment:
+      TZ: ${TZ:-UTC}
       EULA: "${EULA:-TRUE}"
       VERSION: "${MINECRAFT_VERSION:-LATEST}"
       GAMEMODE: "${GAMEMODE:-survival}"
@@ -33,8 +31,6 @@ services:
       - "${SERVER_PORT_OVERRIDE:-19132}:19132/udp"
       - "${SERVER_PORT_V6_OVERRIDE:-19133}:19133/udp"
     volumes:
-      - *localtime
-      - *timezone
       - bedrock_data:/data
     stdin_open: true
     tty: true
@@ -46,6 +42,12 @@ services:
         reservations:
           cpus: '1.0'
           memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /data/valid_known_packs.json ]"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
 volumes:
   bedrock_data:

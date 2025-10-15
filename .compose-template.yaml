@@ -1,0 +1,41 @@
+# Docker Compose Template for Compose Anything
+# This template provides a standardized structure for all services
+# Copy this template when creating new services
+
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+# Example service structure:
+# services:
+#   service-name:
+#     <<: *default
+#     image: image:${VERSION:-latest}
+#     ports:
+#       - "${PORT_OVERRIDE:-8080}:8080"
+#     volumes:
+#       - service_data:/data
+#     environment:
+#       - TZ=${TZ:-UTC}
+#       - ENV_VAR=${ENV_VAR:-default_value}
+#     healthcheck:
+#       test: ["CMD", "command", "to", "check", "health"]
+#       interval: 30s
+#       timeout: 10s
+#       retries: 3
+#       start_period: 10s
+#     deploy:
+#       resources:
+#         limits:
+#           cpus: '1.00'
+#           memory: 512M
+#         reservations:
+#           cpus: '0.25'
+#           memory: 128M
+#
+# volumes:
+#   service_data:

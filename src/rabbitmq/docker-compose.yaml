@@ -1,12 +1,10 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   rabbitmq:
@@ -14,12 +12,11 @@ services:
     image: rabbitmq:${RABBITMQ_VERSION:-4.1.4-management-alpine}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-      - *localtime
-      - *timezone
     ports:
       - ${RABBITMQ_PORT:-5672}:5672
       - ${RABBITMQ_MANAGEMENT_PORT:-15672}:15672
     environment:
+      TZ: ${TZ:-UTC}
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-admin}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-password}
     deploy:
@@ -30,6 +27,12 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   rabbitmq_data:

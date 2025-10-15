@@ -1,21 +1,19 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   langfuse-server:
     <<: *default
     image: langfuse/langfuse:${LANGFUSE_VERSION:-3.115.0}
-    container_name: langfuse-server
     ports:
       - "${LANGFUSE_PORT:-3000}:3000"
     environment:
+      - TZ=${TZ:-UTC}
       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@langfuse-db:5432/${POSTGRES_DB:-langfuse}
       - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
@@ -33,12 +31,18 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/public/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   langfuse-db:
     <<: *default
     image: postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
-    container_name: langfuse-db
     environment:
+      - TZ=${TZ:-UTC}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - POSTGRES_DB=${POSTGRES_DB:-langfuse}

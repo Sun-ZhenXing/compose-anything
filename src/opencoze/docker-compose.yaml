@@ -1,12 +1,10 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   # Note: OpenCoze is a complex platform that requires multiple services.
@@ -15,7 +13,8 @@ services:
 
   opencoze-info:
     image: alpine:latest
-    container_name: opencoze-info
+    environment:
+      - TZ=${TZ:-UTC}
     command: >
       sh -c "echo 'OpenCoze requires a complex multi-service setup.' &&
              echo 'Please visit https://github.com/coze-dev/coze-studio for full deployment instructions.' &&

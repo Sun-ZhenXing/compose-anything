@@ -1,29 +1,25 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   ray-head:
     <<: *default
     image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
-    container_name: ray-head
     command: ray start --head --dashboard-host=0.0.0.0 --port=6379 --block
     ports:
       - "${RAY_DASHBOARD_PORT_OVERRIDE:-8265}:8265"
       - "${RAY_CLIENT_PORT_OVERRIDE:-10001}:10001"
       - "${RAY_GCS_PORT_OVERRIDE:-6379}:6379"
     environment:
+      TZ: ${TZ:-UTC}
       RAY_NUM_CPUS: ${RAY_HEAD_NUM_CPUS:-4}
       RAY_MEMORY: ${RAY_HEAD_MEMORY:-8589934592}
     volumes:
-      - *localtime
-      - *timezone
       - ray_storage:/tmp/ray
     deploy:
       resources:
@@ -33,20 +29,24 @@ services:
         reservations:
           cpus: '2.0'
           memory: 4G
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8265/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   ray-worker-1:
     <<: *default
     image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
-    container_name: ray-worker-1
     command: ray start --address=ray-head:6379 --block
     depends_on:
-      - ray-head
+      ray-head:
+        condition: service_healthy
     environment:
+      TZ: ${TZ:-UTC}
       RAY_NUM_CPUS: ${RAY_WORKER_NUM_CPUS:-2}
       RAY_MEMORY: ${RAY_WORKER_MEMORY:-4294967296}
-    volumes:
-      - *localtime
-      - *timezone
     deploy:
       resources:
         limits:
@@ -59,16 +59,14 @@ services:
   ray-worker-2:
     <<: *default
     image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
-    container_name: ray-worker-2
     command: ray start --address=ray-head:6379 --block
     depends_on:
-      - ray-head
+      ray-head:
+        condition: service_healthy
     environment:
+      TZ: ${TZ:-UTC}
       RAY_NUM_CPUS: ${RAY_WORKER_NUM_CPUS:-2}
       RAY_MEMORY: ${RAY_WORKER_MEMORY:-4294967296}
-    volumes:
-      - *localtime
-      - *timezone
     deploy:
       resources:
         limits:

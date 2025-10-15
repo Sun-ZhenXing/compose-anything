@@ -1,12 +1,10 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 x-mineru-vllm: &mineru-vllm
   <<: *default
@@ -15,6 +13,7 @@ x-mineru-vllm: &mineru-vllm
     context: .
     dockerfile: Dockerfile
   environment:
+    TZ: ${TZ:-UTC}
     MINERU_MODEL_SOURCE: local
   ulimits:
     memlock: -1
@@ -36,7 +35,6 @@ x-mineru-vllm: &mineru-vllm
 services:
   mineru-vllm-server:
     <<: *mineru-vllm
-    container_name: mineru-vllm-server
     profiles: ["vllm-server"]
     ports:
       - ${MINERU_PORT_OVERRIDE_VLLM:-30000}:30000
@@ -53,11 +51,14 @@ services:
 
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:30000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
 
   mineru-api:
     <<: *mineru-vllm
-    container_name: mineru-api
     profiles: ["api"]
     ports:
       - ${MINERU_PORT_OVERRIDE_API:-8000}:8000
@@ -71,10 +72,15 @@ services:
       # If running on a single GPU and encountering VRAM shortage, reduce the KV cache size by this parameter,
       # if VRAM issues persist, try lowering it further to `0.4` or below.
       # - --gpu-memory-utilization 0.5
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   mineru-gradio:
     <<: *mineru-vllm
-    container_name: mineru-gradio
     profiles: ["gradio"]
     ports:
       - ${MINERU_PORT_OVERRIDE_GRADIO:-7860}:7860
@@ -95,3 +101,9 @@ services:
       # If running on a single GPU and encountering VRAM shortage, reduce the KV cache size by this parameter,
       # if VRAM issues persist, try lowering it further to `0.4` or below.
       # - --gpu-memory-utilization 0.5
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7860/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s

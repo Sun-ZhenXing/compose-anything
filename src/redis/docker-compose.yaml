@@ -1,28 +1,24 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   redis:
     <<: *default
     image: redis:${REDIS_VERSION:-8.2.1-alpine3.22}
-    container_name: redis
     ports:
       - "${REDIS_PORT_OVERRIDE:-6379}:6379"
     volumes:
-      - *localtime
-      - *timezone
       - redis_data:/data
-
       # Use a custom redis.conf file
       # - ./redis.conf:/etc/redis/redis.conf
     environment:
+      - TZ=${TZ:-UTC}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - SKIP_FIX_PERMS=${SKIP_FIX_PERMS:-}
     command:
       - sh
@@ -33,6 +29,12 @@ services:
         else
           redis-server
         fi
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
     deploy:
       resources:
         limits:

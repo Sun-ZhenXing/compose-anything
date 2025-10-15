@@ -1,12 +1,10 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   qdrant:
@@ -16,10 +14,9 @@ services:
       - "${QDRANT_HTTP_PORT:-6333}:6333"
       - "${QDRANT_GRPC_PORT:-6334}:6334"
     volumes:
-      - *localtime
-      - *timezone
       - qdrant_data:/qdrant/storage:z
     environment:
+      - TZ=${TZ:-UTC}
       - QDRANT__SERVICE__API_KEY=${QDRANT_API_KEY}
       - QDRANT__SERVICE__JWT_RBAC=${QDRANT_JWT_RBAC:-false}
     deploy:
@@ -30,6 +27,12 @@ services:
         reservations:
           cpus: '0.5'
           memory: 256M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:6333/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   qdrant_data:

@@ -48,6 +48,7 @@ This service sets up a MongoDB replica set with three members.
 
 ## Configuration
 
+- `TZ`: The timezone for the container, default is `UTC`.
 - `MONGO_VERSION`: The version of the MongoDB image, default is `8.0.13`.
 - `MONGO_INITDB_ROOT_USERNAME`: The root username for the database, default is `root`.
 - `MONGO_INITDB_ROOT_PASSWORD`: The root password for the database, default is `password`.
@@ -60,3 +61,7 @@ This service sets up a MongoDB replica set with three members.
 ## Volumes
 
 - `secrets/rs0.key`: The key file for authenticating members of the replica set.
+
+## Security
+
+The replica set key file is mounted read-only and copied to `/tmp` inside the container with proper permissions (400). This approach ensures cross-platform compatibility (Windows/Linux/macOS) while maintaining security requirements. The key file is never modified on the host system.

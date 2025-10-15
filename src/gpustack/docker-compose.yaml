@@ -1,25 +1,21 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   gpustack:
     <<: *default
     image: gpustack/gpustack:${GPUSTACK_VERSION:-v0.5.3}
-    container_name: gpustack
     ports:
       - "${GPUSTACK_PORT_OVERRIDE:-80}:80"
     volumes:
-      - *localtime
-      - *timezone
       - gpustack_data:/var/lib/gpustack
     environment:
+      - TZ=${TZ:-UTC}
       - GPUSTACK_DEBUG=${GPUSTACK_DEBUG:-false}
       - GPUSTACK_HOST=${GPUSTACK_HOST:-0.0.0.0}
       - GPUSTACK_PORT=${GPUSTACK_PORT:-80}
@@ -34,14 +30,19 @@ services:
         reservations:
           cpus: '1.0'
           memory: 2G
-        # Uncomment below for GPU support
-        # reservations:
-        #   devices:
-        #     - driver: nvidia
-        #       count: 1
-        #       capabilities: [gpu]
+          # Uncomment below for GPU support
+          # devices:
+          #   - driver: nvidia
+          #     count: 1
+          #     capabilities: [gpu]
     # For GPU support, uncomment the following section
     # runtime: nvidia
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   gpustack_data:

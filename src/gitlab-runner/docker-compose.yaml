@@ -1,22 +1,20 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   gitlab-runner:
     <<: *default
     image: gitlab/gitlab-runner:${GITLAB_RUNNER_VERSION:-alpine3.21-v18.4.0}
     volumes:
-      - *localtime
-      - *timezone
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config:/etc/gitlab-runner
+    environment:
+      - TZ=${TZ:-UTC}
     deploy:
       resources:
         limits:

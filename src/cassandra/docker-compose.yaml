@@ -1,30 +1,26 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   cassandra:
     <<: *default
     image: cassandra:${CASSANDRA_VERSION:-5.0.2}
-    container_name: cassandra
     ports:
       - "${CASSANDRA_CQL_PORT_OVERRIDE:-9042}:9042"
       - "${CASSANDRA_THRIFT_PORT_OVERRIDE:-9160}:9160"
     volumes:
-      - *localtime
-      - *timezone
       - cassandra_data:/var/lib/cassandra
       - cassandra_logs:/var/log/cassandra
 
       # Custom configuration
       # - ./cassandra.yaml:/etc/cassandra/cassandra.yaml:ro
     environment:
+      - TZ=${TZ:-UTC}
       - CASSANDRA_CLUSTER_NAME=${CASSANDRA_CLUSTER_NAME:-Test Cluster}
       - CASSANDRA_DC=${CASSANDRA_DC:-datacenter1}
       - CASSANDRA_RACK=${CASSANDRA_RACK:-rack1}

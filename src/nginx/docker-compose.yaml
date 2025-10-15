@@ -1,24 +1,19 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   nginx:
     <<: *default
     image: nginx:${NGINX_VERSION:-1.29.2-alpine3.22}
-    container_name: nginx
     ports:
       - "${NGINX_HTTP_PORT_OVERRIDE:-80}:80"
       - "${NGINX_HTTPS_PORT_OVERRIDE:-443}:443"
     volumes:
-      - *localtime
-      - *timezone
       - nginx_logs:/var/log/nginx
       - ./html:/usr/share/nginx/html:ro
 
@@ -27,6 +22,7 @@ services:
       # - ./conf.d:/etc/nginx/conf.d:ro
       # - ./ssl:/etc/nginx/ssl:ro
     environment:
+      - TZ=${TZ:-UTC}
       - NGINX_HOST=${NGINX_HOST:-localhost}
       - NGINX_PORT=${NGINX_PORT:-80}
     deploy:
@@ -37,6 +33,12 @@ services:
         reservations:
           cpus: '0.25'
           memory: 64M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 volumes:
   nginx_logs:

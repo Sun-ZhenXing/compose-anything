@@ -1,22 +1,20 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   pytorch:
     <<: *default
     image: pytorch/pytorch:${PYTORCH_VERSION:-2.6.0-cuda12.6-cudnn9-runtime}
-    container_name: pytorch
     ports:
       - "${JUPYTER_PORT_OVERRIDE:-8888}:8888"
       - "${TENSORBOARD_PORT_OVERRIDE:-6006}:6006"
     environment:
+      TZ: ${TZ:-UTC}
       NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
       NVIDIA_DRIVER_CAPABILITIES: ${NVIDIA_DRIVER_CAPABILITIES:-compute,utility}
       JUPYTER_ENABLE_LAB: ${JUPYTER_ENABLE_LAB:-yes}
@@ -25,8 +23,6 @@ services:
                jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root
                --NotebookApp.token='${JUPYTER_TOKEN:-pytorch}'"
     volumes:
-      - *localtime
-      - *timezone
       - pytorch_notebooks:/workspace
       - pytorch_data:/data
     working_dir: /workspace
@@ -42,6 +38,12 @@ services:
             - driver: nvidia
               count: ${GPU_COUNT:-1}
               capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8888/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
 volumes:
   pytorch_notebooks:

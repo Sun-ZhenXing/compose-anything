@@ -48,6 +48,7 @@
 
 ## 配置
 
+- `TZ`: 容器的时区，默认为 `UTC`。
 - `MONGO_VERSION`: MongoDB 镜像的版本，默认为 `8.0.13`。
 - `MONGO_INITDB_ROOT_USERNAME`: 数据库的 root 用户名，默认为 `root`。
 - `MONGO_INITDB_ROOT_PASSWORD`: 数据库的 root 密码，默认为 `password`。
@@ -60,3 +61,7 @@
 ## 卷
 
 - `secrets/rs0.key`: 用于副本集成员之间认证的密钥文件。
+
+## 安全性
+
+副本集密钥文件以只读方式挂载，并在容器内复制到 `/tmp` 目录，设置适当的权限（400）。这种方法确保了跨平台兼容性（Windows/Linux/macOS），同时满足安全要求。主机系统上的密钥文件永远不会被修改。

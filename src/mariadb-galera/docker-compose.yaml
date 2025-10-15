@@ -1,17 +1,16 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 x-mariadb-galera: &mariadb-galera
   <<: *default
   image: mariadb:${MARIADB_VERSION:-11.7.2}
   environment: &galera-env
+    TZ: ${TZ:-UTC}
     MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-galera}
     MARIADB_GALERA_CLUSTER_NAME: ${MARIADB_GALERA_CLUSTER_NAME:-galera_cluster}
     MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://mariadb-galera-1,mariadb-galera-2,mariadb-galera-3
@@ -34,11 +33,16 @@ x-mariadb-galera: &mariadb-galera
       reservations:
         cpus: '1.0'
         memory: 1G
+  healthcheck:
+    test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+    start_period: 60s
 
 services:
   mariadb-galera-1:
     <<: *mariadb-galera
-    container_name: mariadb-galera-1
     hostname: mariadb-galera-1
     ports:
       - "${MARIADB_PORT_1_OVERRIDE:-3306}:3306"
@@ -57,13 +61,10 @@ services:
       - --default_storage_engine=InnoDB
       - --innodb_autoinc_lock_mode=2
     volumes:
-      - *localtime
-      - *timezone
       - mariadb_galera_1_data:/var/lib/mysql
 
   mariadb-galera-2:
     <<: *mariadb-galera
-    container_name: mariadb-galera-2
     hostname: mariadb-galera-2
     ports:
       - "${MARIADB_PORT_2_OVERRIDE:-3307}:3306"
@@ -81,15 +82,13 @@ services:
       - --default_storage_engine=InnoDB
       - --innodb_autoinc_lock_mode=2
     volumes:
-      - *localtime
-      - *timezone
       - mariadb_galera_2_data:/var/lib/mysql
     depends_on:
-      - mariadb-galera-1
+      mariadb-galera-1:
+        condition: service_healthy
 
   mariadb-galera-3:
     <<: *mariadb-galera
-    container_name: mariadb-galera-3
     hostname: mariadb-galera-3
     ports:
       - "${MARIADB_PORT_3_OVERRIDE:-3308}:3306"
@@ -107,11 +106,10 @@ services:
       - --default_storage_engine=InnoDB
       - --innodb_autoinc_lock_mode=2
     volumes:
-      - *localtime
-      - *timezone
       - mariadb_galera_3_data:/var/lib/mysql
     depends_on:
-      - mariadb-galera-1
+      mariadb-galera-1:
+        condition: service_healthy
 
 volumes:
   mariadb_galera_1_data:

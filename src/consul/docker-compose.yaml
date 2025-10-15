@@ -1,18 +1,15 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   consul:
     <<: *default
     image: consul:${CONSUL_VERSION:-1.20.3}
-    container_name: consul
     ports:
       - "${CONSUL_HTTP_PORT_OVERRIDE:-8500}:8500"
       - "${CONSUL_DNS_PORT_OVERRIDE:-8600}:8600/udp"
@@ -20,14 +17,13 @@ services:
       - "${CONSUL_SERF_WAN_PORT_OVERRIDE:-8302}:8302"
       - "${CONSUL_SERVER_RPC_PORT_OVERRIDE:-8300}:8300"
     volumes:
-      - *localtime
-      - *timezone
       - consul_data:/consul/data
       - consul_config:/consul/config
 
       # Custom configuration
       # - ./consul.json:/consul/config/consul.json:ro
     environment:
+      - TZ=${TZ:-UTC}
       - CONSUL_BIND_INTERFACE=${CONSUL_BIND_INTERFACE:-eth0}
       - CONSUL_CLIENT_INTERFACE=${CONSUL_CLIENT_INTERFACE:-eth0}
       - CONSUL_LOCAL_CONFIG=${CONSUL_LOCAL_CONFIG:-'{"datacenter":"dc1","server":true,"ui_config":{"enabled":true},"bootstrap_expect":1,"log_level":"INFO"}'}

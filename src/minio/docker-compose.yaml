@@ -1,12 +1,10 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   minio:
@@ -16,11 +14,10 @@ services:
       - "${MINIO_PORT_OVERRIDE_API:-9000}:9000"
       - "${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001"
     environment:
+      TZ: ${TZ:-UTC}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
     volumes:
-      - *localtime
-      - *timezone
       - minio_data:/data
       - ./config:/root/.minio/
     command: server --console-address ':9001' /data
@@ -30,6 +27,14 @@ services:
       timeout: 20s
       retries: 5
       start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
 
 volumes:

@@ -1,12 +1,10 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   lama-cleaner:
@@ -17,11 +15,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    # environment:
-    #   HF_ENDPOINT: https://hf-mirror.com
+    environment:
+      TZ: ${TZ:-UTC}
+      # HF_ENDPOINT: https://hf-mirror.com
     volumes:
-      - *localtime
-      - *timezone
       - ./models:/root/.cache
     command:
       - iopaint
@@ -32,8 +29,19 @@ services:
       - --host=0.0.0.0
     deploy:
       resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
         reservations:
+          cpus: '1.0'
+          memory: 2G
           devices:
             - driver: nvidia
               device_ids: ['0']
               capabilities: [compute, utility]
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s

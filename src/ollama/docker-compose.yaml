@@ -1,12 +1,10 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   ollama:
@@ -15,9 +13,9 @@ services:
     ports:
       - "${OLLAMA_PORT_OVERRIDE:-11434}:11434"
     volumes:
-      - *localtime
-      - *timezone
       - ollama_models:/root/.ollama
+    environment:
+      - TZ=${TZ:-UTC}
     ipc: host
     deploy:
       resources:
@@ -31,6 +29,12 @@ services:
             - driver: nvidia
               device_ids: [ '0' ]
               capabilities: [ gpu ]
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:11434/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   ollama_models:

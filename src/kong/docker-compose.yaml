@@ -1,24 +1,20 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   # Kong Database
   kong-db:
     <<: *default
     image: postgres:${POSTGRES_VERSION:-16.6-alpine3.21}
-    container_name: kong-db
     volumes:
-      - *localtime
-      - *timezone
       - kong_db_data:/var/lib/postgresql/data
     environment:
+      - TZ=${TZ:-UTC}
       - POSTGRES_USER=kong
       - POSTGRES_DB=kong
       - POSTGRES_PASSWORD=${KONG_DB_PASSWORD:-kongpass}
@@ -35,15 +31,17 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
   # Kong Database Migration
   kong-migrations:
     <<: *default
     image: kong:${KONG_VERSION:-3.8.0-alpine}
-    container_name: kong-migrations
     depends_on:
-      - kong-db
+      kong-db:
+        condition: service_healthy
     environment:
+      - TZ=${TZ:-UTC}
       - KONG_DATABASE=postgres
       - KONG_PG_HOST=kong-db
       - KONG_PG_USER=kong
@@ -56,22 +54,21 @@ services:
   kong:
     <<: *default
     image: kong:${KONG_VERSION:-3.8.0-alpine}
-    container_name: kong
     depends_on:
-      - kong-db
-      - kong-migrations
+      kong-db:
+        condition: service_healthy
+      kong-migrations:
+        condition: service_completed_successfully
     ports:
       - "${KONG_PROXY_PORT_OVERRIDE:-8000}:8000"
       - "${KONG_PROXY_SSL_PORT_OVERRIDE:-8443}:8443"
       - "${KONG_ADMIN_API_PORT_OVERRIDE:-8001}:8001"
       - "${KONG_ADMIN_SSL_PORT_OVERRIDE:-8444}:8444"
-    volumes:
-      - *localtime
-      - *timezone
 
       # Custom configuration
       # - ./kong.conf:/etc/kong/kong.conf:ro
     environment:
+      - TZ=${TZ:-UTC}
       - KONG_DATABASE=postgres
       - KONG_PG_HOST=kong-db
       - KONG_PG_USER=kong
@@ -102,16 +99,15 @@ services:
   kong-gui:
     <<: *default
     image: pantsel/konga:${KONGA_VERSION:-latest}
-    container_name: kong-gui
     depends_on:
-      - kong
+      kong:
+        condition: service_healthy
     ports:
       - "${KONG_GUI_PORT_OVERRIDE:-1337}:1337"
     volumes:
-      - *localtime
-      - *timezone
       - konga_data:/app/kongadata
     environment:
+      - TZ=${TZ:-UTC}
       - NODE_ENV=production
       - KONGA_HOOK_TIMEOUT=120000
     deploy:

@@ -1,28 +1,25 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   odoo:
     <<: *default
     image: odoo:${ODOO_VERSION:-19.0}
-    container_name: odoo
     depends_on:
-      - odoo-db
+      odoo-db:
+        condition: service_healthy
     ports:
       - "${ODOO_PORT_OVERRIDE:-8069}:8069"
     volumes:
-      - *localtime
-      - *timezone
       - odoo_web_data:/var/lib/odoo
       - odoo_addons:/mnt/extra-addons
     environment:
+      - TZ=${TZ:-UTC}
       - HOST=odoo-db
       - USER=${POSTGRES_USER:-odoo}
       - PASSWORD=${POSTGRES_PASSWORD:-odoopass}
@@ -36,19 +33,23 @@ services:
         reservations:
           cpus: '0.5'
           memory: 1G
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8069/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   odoo-db:
     <<: *default
     image: postgres:${POSTGRES_VERSION:-17-alpine}
-    container_name: odoo-db
     environment:
+      - TZ=${TZ:-UTC}
       - POSTGRES_USER=${POSTGRES_USER:-odoo}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-odoopass}
       - POSTGRES_DB=${POSTGRES_DB:-postgres}
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - *localtime
-      - *timezone
       - odoo_db_data:/var/lib/postgresql/data
     deploy:
       resources:
@@ -58,6 +59,12 @@ services:
         reservations:
           cpus: '0.25'
           memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-odoo}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 volumes:
   odoo_web_data:

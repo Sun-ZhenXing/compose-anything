@@ -1,26 +1,21 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   logstash:
     <<: *default
     image: docker.elastic.co/logstash/logstash:${LOGSTASH_VERSION:-8.16.1}
-    container_name: logstash
     ports:
       - "${LOGSTASH_BEATS_PORT_OVERRIDE:-5044}:5044"
       - "${LOGSTASH_TCP_PORT_OVERRIDE:-5000}:5000/tcp"
       - "${LOGSTASH_UDP_PORT_OVERRIDE:-5000}:5000/udp"
       - "${LOGSTASH_HTTP_PORT_OVERRIDE:-9600}:9600"
     volumes:
-      - *localtime
-      - *timezone
       - logstash_data:/usr/share/logstash/data
       - logstash_logs:/usr/share/logstash/logs
       - ./pipeline:/usr/share/logstash/pipeline:ro
@@ -29,6 +24,7 @@ services:
       # - ./logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       # - ./pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
     environment:
+      - TZ=${TZ:-UTC}
       - XPACK_MONITORING_ENABLED=${LOGSTASH_MONITORING_ENABLED:-false}
       - XPACK_MONITORING_ELASTICSEARCH_HOSTS=${ELASTICSEARCH_HOSTS:-http://elasticsearch:9200}
       - ELASTICSEARCH_HOSTS=${ELASTICSEARCH_HOSTS:-http://elasticsearch:9200}

@@ -1,25 +1,22 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   etcd:
     <<: *default
     image: quay.io/coreos/etcd:${ETCD_VERSION:-v3.5.18}
     environment:
+      - TZ=${TZ:-UTC}
       - ETCD_AUTO_COMPACTION_MODE=revision
       - ETCD_AUTO_COMPACTION_RETENTION=1000
       - ETCD_QUOTA_BACKEND_BYTES=4294967296
       - ETCD_SNAPSHOT_COUNT=50000
     volumes:
-      - *localtime
-      - *timezone
       - etcd_data:/etcd
     command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
     healthcheck:
@@ -27,6 +24,7 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+      start_period: 30s
     deploy:
       resources:
         limits:
@@ -40,14 +38,13 @@ services:
     <<: *default
     image: minio/minio:${MINIO_VERSION:-RELEASE.2024-12-18T13-15-44Z}
     environment:
+      TZ: ${TZ:-UTC}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
     ports:
       - "${MINIO_PORT_OVERRIDE_API:-9000}:9000"
       - "${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001"
     volumes:
-      - *localtime
-      - *timezone
       - minio_data:/minio_data
     command: minio server /minio_data --console-address ":9001"
     healthcheck:
@@ -55,6 +52,7 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+      start_period: 30s
     deploy:
       resources:
         limits:
@@ -66,11 +64,12 @@ services:
 
   milvus-standalone:
     <<: *default
-    image: milvusdb/milvus:${MILVUS_VERSION:-v2.6.2}
+    image: milvusdb/milvus:${MILVUS_VERSION:-v2.6.3}
     command: ["milvus", "run", "standalone"]
     security_opt:
     - seccomp:unconfined
     environment:
+      TZ: ${TZ:-UTC}
       ETCD_ENDPOINTS: etcd:2379
       MINIO_ADDRESS: minio:9000
       MQ_TYPE: woodpecker
@@ -86,8 +85,10 @@ services:
       - "${MILVUS_PORT_OVERRIDE_HTTP:-19530}:19530"
       - "${MILVUS_PORT_OVERRIDE_WEBUI:-9091}:9091"
     depends_on:
-      - etcd
-      - minio
+      etcd:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -99,13 +100,17 @@ services:
 
   attu:
     <<: *default
-    image: zilliz/attu:${ATTU_VERSION:-v2.6.0}
+    image: zilliz/attu:${ATTU_VERSION:-v2.6.1}
     profiles:
       - attu
     environment:
+      - TZ=${TZ:-UTC}
       - MILVUS_URL=${MILVUS_URL:-milvus-standalone:19530}
     ports:
       - "${ATTU_PORT_OVERRIDE:-8000}:3000"
+    depends_on:
+      milvus-standalone:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -114,6 +119,12 @@ services:
         reservations:
           cpus: '0.1'
           memory: 128M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 volumes:
   etcd_data:

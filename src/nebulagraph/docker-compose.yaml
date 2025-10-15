@@ -1,19 +1,17 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   metad:
     <<: *default
     image: vesoft/nebula-metad:${NEBULA_VERSION:-v3.8.0}
-    container_name: nebula-metad
     environment:
+      - TZ=${TZ:-UTC}
       - USER=root
     command:
       - --meta_server_addrs=metad:9559
@@ -23,8 +21,6 @@ services:
       - --data_path=/data/meta
       - --log_dir=/logs
     volumes:
-      - *localtime
-      - *timezone
       - nebula_meta_data:/data/meta
       - nebula_meta_logs:/logs
     ports:
@@ -36,12 +32,21 @@ services:
         limits:
           cpus: '0.5'
           memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "/usr/local/nebula/bin/nebula-metad", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   storaged:
     <<: *default
     image: vesoft/nebula-storaged:${NEBULA_VERSION:-v3.8.0}
-    container_name: nebula-storaged
     environment:
+      - TZ=${TZ:-UTC}
       - USER=root
     command:
       - --meta_server_addrs=metad:9559
@@ -51,10 +56,9 @@ services:
       - --data_path=/data/storage
       - --log_dir=/logs
     depends_on:
-      - metad
+      metad:
+        condition: service_healthy
     volumes:
-      - *localtime
-      - *timezone
       - nebula_storage_data:/data/storage
       - nebula_storage_logs:/logs
     ports:
@@ -66,12 +70,21 @@ services:
         limits:
           cpus: '1.0'
           memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "/usr/local/nebula/bin/nebula-storaged", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   graphd:
     <<: *default
     image: vesoft/nebula-graphd:${NEBULA_VERSION:-v3.8.0}
-    container_name: nebula-graphd
     environment:
+      - TZ=${TZ:-UTC}
       - USER=root
     command:
       - --meta_server_addrs=metad:9559
@@ -80,11 +93,11 @@ services:
       - --ws_ip=graphd
       - --log_dir=/logs
     depends_on:
-      - metad
-      - storaged
+      metad:
+        condition: service_healthy
+      storaged:
+        condition: service_healthy
     volumes:
-      - *localtime
-      - *timezone
       - nebula_graph_logs:/logs
     ports:
       - "${NEBULA_GRAPHD_PORT_OVERRIDE:-9669}:9669"
@@ -95,6 +108,15 @@ services:
         limits:
           cpus: '1.0'
           memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "/usr/local/nebula/bin/nebula-graphd", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   nebula_meta_data:

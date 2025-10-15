@@ -1,34 +1,31 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   apisix:
     <<: *default
     image: apache/apisix:${APISIX_VERSION:-3.13.0-debian}
-    container_name: apisix
     ports:
       - "${APISIX_HTTP_PORT_OVERRIDE:-9080}:9080"
       - "${APISIX_HTTPS_PORT_OVERRIDE:-9443}:9443"
       - "${APISIX_ADMIN_PORT_OVERRIDE:-9180}:9180"
     volumes:
-      - *localtime
-      - *timezone
       - apisix_logs:/usr/local/apisix/logs
 
       # Optional: Mount custom configuration
       # - ./config.yaml:/usr/local/apisix/conf/config.yaml
       # - ./apisix.yaml:/usr/local/apisix/conf/apisix.yaml
     environment:
+      - TZ=${TZ:-UTC}
       - APISIX_STAND_ALONE=${APISIX_STAND_ALONE:-false}
     depends_on:
-      - etcd
+      etcd:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -37,18 +34,22 @@ services:
         reservations:
           cpus: '0.25'
           memory: 256M
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9080/apisix/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   etcd:
     <<: *default
     image: quay.io/coreos/etcd:${ETCD_VERSION:-v3.6.0}
-    container_name: apisix-etcd
     ports:
       - "${ETCD_CLIENT_PORT_OVERRIDE:-2379}:2379"
     volumes:
-      - *localtime
-      - *timezone
       - etcd_data:/etcd-data
     environment:
+      - TZ=${TZ:-UTC}
       - ETCD_NAME=apisix-etcd
       - ETCD_DATA_DIR=/etcd-data
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
@@ -87,23 +88,28 @@ services:
         reservations:
           cpus: '0.1'
           memory: 128M
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   # Optional: APISIX Dashboard
   apisix-dashboard:
     <<: *default
     image: apache/apisix-dashboard:${APISIX_DASHBOARD_VERSION:-3.0.1-alpine}
-    container_name: apisix-dashboard
     ports:
       - "${APISIX_DASHBOARD_PORT_OVERRIDE:-9000}:9000"
     volumes:
-      - *localtime
-      - *timezone
       - dashboard_conf:/usr/local/apisix-dashboard/conf
     environment:
+      - TZ=${TZ:-UTC}
       - APISIX_DASHBOARD_USER=${APISIX_DASHBOARD_USER:-admin}
       - APISIX_DASHBOARD_PASSWORD=${APISIX_DASHBOARD_PASSWORD:-admin}
     depends_on:
-      - apisix
+      apisix:
+        condition: service_healthy
     profiles:
       - dashboard
     deploy:

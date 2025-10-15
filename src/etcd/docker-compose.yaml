@@ -1,26 +1,22 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   etcd:
     <<: *default
     image: quay.io/coreos/etcd:${ETCD_VERSION:-v3.6.0}
-    container_name: etcd
     ports:
       - "${ETCD_CLIENT_PORT_OVERRIDE:-2379}:2379"
       - "${ETCD_PEER_PORT_OVERRIDE:-2380}:2380"
     volumes:
-      - *localtime
-      - *timezone
       - etcd_data:/etcd-data
     environment:
+      - TZ=${TZ:-UTC}
       - ETCD_NAME=${ETCD_NAME:-etcd-node}
       - ETCD_DATA_DIR=/etcd-data
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
@@ -59,6 +55,12 @@ services:
         reservations:
           cpus: '0.25'
           memory: 256M
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 volumes:
   etcd_data:

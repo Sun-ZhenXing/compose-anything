@@ -1,25 +1,21 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   postgres:
     <<: *default
     image: postgres:${POSTGRES_VERSION:-17.6-alpine}
-    container_name: mlflow-postgres
     environment:
+      TZ: ${TZ:-UTC}
       POSTGRES_USER: ${POSTGRES_USER:-mlflow}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mlflow}
       POSTGRES_DB: ${POSTGRES_DB:-mlflow}
     volumes:
-      - *localtime
-      - *timezone
       - postgres_data:/var/lib/postgresql/data
     deploy:
       resources:
@@ -29,21 +25,25 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mlflow}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   minio:
     <<: *default
     image: minio/minio:${MINIO_VERSION:-RELEASE.2025-01-07T16-13-09Z}
-    container_name: mlflow-minio
     command: server /data --console-address ":9001"
     environment:
+      TZ: ${TZ:-UTC}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio123}
     ports:
       - "${MINIO_PORT_OVERRIDE:-9000}:9000"
       - "${MINIO_CONSOLE_PORT_OVERRIDE:-9001}:9001"
     volumes:
-      - *localtime
-      - *timezone
       - minio_data:/data
     deploy:
       resources:
@@ -53,13 +53,19 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   minio-init:
     <<: *default
     image: minio/mc:${MINIO_MC_VERSION:-RELEASE.2025-01-07T17-25-52Z}
-    container_name: mlflow-minio-init
     depends_on:
-      - minio
+      minio:
+        condition: service_healthy
     entrypoint: >
       /bin/sh -c "
       sleep 5;
@@ -72,14 +78,17 @@ services:
   mlflow:
     <<: *default
     image: ghcr.io/mlflow/mlflow:${MLFLOW_VERSION:-v2.20.2}
-    container_name: mlflow
     depends_on:
-      - postgres
-      - minio
-      - minio-init
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
     ports:
       - "${MLFLOW_PORT_OVERRIDE:-5000}:5000"
     environment:
+      TZ: ${TZ:-UTC}
       MLFLOW_BACKEND_STORE_URI: postgresql://${POSTGRES_USER:-mlflow}:${POSTGRES_PASSWORD:-mlflow}@postgres:5432/${POSTGRES_DB:-mlflow}
       MLFLOW_ARTIFACT_ROOT: s3://${MINIO_BUCKET:-mlflow}/
       MLFLOW_S3_ENDPOINT_URL: http://minio:9000
@@ -104,6 +113,12 @@ services:
         reservations:
           cpus: '1.0'
           memory: 1G
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   postgres_data:

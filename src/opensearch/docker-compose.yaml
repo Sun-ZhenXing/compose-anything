@@ -1,19 +1,17 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   opensearch:
     <<: *default
     image: opensearchproject/opensearch:${OPENSEARCH_VERSION:-2.19.0}
-    container_name: opensearch
     environment:
+      TZ: ${TZ:-UTC}
       cluster.name: ${CLUSTER_NAME:-opensearch-cluster}
       node.name: opensearch
       discovery.type: single-node
@@ -32,8 +30,6 @@ services:
       - "${OPENSEARCH_PORT_OVERRIDE:-9200}:9200"
       - "${OPENSEARCH_PERF_ANALYZER_PORT_OVERRIDE:-9600}:9600"
     volumes:
-      - *localtime
-      - *timezone
       - opensearch_data:/usr/share/opensearch/data
     deploy:
       resources:
@@ -43,18 +39,25 @@ services:
         reservations:
           cpus: '1.0'
           memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   opensearch-dashboards:
     <<: *default
     image: opensearchproject/opensearch-dashboards:${OPENSEARCH_DASHBOARDS_VERSION:-2.19.0}
-    container_name: opensearch-dashboards
     ports:
       - "${OPENSEARCH_DASHBOARDS_PORT_OVERRIDE:-5601}:5601"
     environment:
+      TZ: ${TZ:-UTC}
       OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
       DISABLE_SECURITY_DASHBOARDS_PLUGIN: ${DISABLE_SECURITY_PLUGIN:-false}
     depends_on:
-      - opensearch
+      opensearch:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -63,6 +66,12 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5601/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   opensearch_data:

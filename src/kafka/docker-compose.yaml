@@ -1,27 +1,23 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   # Zookeeper for Kafka coordination
   zookeeper:
     <<: *default
     image: confluentinc/cp-zookeeper:${KAFKA_VERSION:-7.8.0}
-    container_name: zookeeper
     ports:
       - "${ZOOKEEPER_CLIENT_PORT_OVERRIDE:-2181}:2181"
     volumes:
-      - *localtime
-      - *timezone
       - zookeeper_data:/var/lib/zookeeper/data
       - zookeeper_log:/var/lib/zookeeper/log
     environment:
+      - TZ=${TZ:-UTC}
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
       - ZOOKEEPER_SYNC_LIMIT=5
@@ -37,22 +33,27 @@ services:
         reservations:
           cpus: '0.25'
           memory: 256M
+    healthcheck:
+      test: ["CMD-SHELL", "echo ruok | nc localhost 2181 | grep imok"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   # Kafka broker
   kafka:
     <<: *default
     image: confluentinc/cp-kafka:${KAFKA_VERSION:-7.8.0}
-    container_name: kafka
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     ports:
       - "${KAFKA_BROKER_PORT_OVERRIDE:-9092}:9092"
       - "${KAFKA_JMX_PORT_OVERRIDE:-9999}:9999"
     volumes:
-      - *localtime
-      - *timezone
       - kafka_data:/var/lib/kafka/data
     environment:
+      - TZ=${TZ:-UTC}
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
@@ -91,16 +92,15 @@ services:
   kafka-ui:
     <<: *default
     image: provectuslabs/kafka-ui:${KAFKA_UI_VERSION:-latest}
-    container_name: kafka-ui
     depends_on:
-      - kafka
-      - zookeeper
+      kafka:
+        condition: service_healthy
+      zookeeper:
+        condition: service_healthy
     ports:
       - "${KAFKA_UI_PORT_OVERRIDE:-8080}:8080"
-    volumes:
-      - *localtime
-      - *timezone
     environment:
+      - TZ=${TZ:-UTC}
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181

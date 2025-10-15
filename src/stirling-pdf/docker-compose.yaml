@@ -1,28 +1,24 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   stirling-pdf:
     <<: *default
     image: stirlingtools/stirling-pdf:${STIRLING_VERSION:-latest}
-    container_name: stirling-pdf
     ports:
       - "${PORT_OVERRIDE:-8080}:8080"
     volumes:
-      - *localtime
-      - *timezone
       - stirling_trainingData:/usr/share/tessdata
       - stirling_configs:/configs
       - stirling_logs:/logs
       - stirling_customFiles:/customFiles
     environment:
+      - TZ=${TZ:-UTC}
       - DOCKER_ENABLE_SECURITY=${ENABLE_SECURITY:-false}
       - SECURITY_ENABLELOGIN=${ENABLE_LOGIN:-false}
       - SECURITY_INITIALLOGIN_USERNAME=${INITIAL_USERNAME:-admin}
@@ -47,6 +43,12 @@ services:
         reservations:
           cpus: '1.0'
           memory: 2G
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   stirling_trainingData:

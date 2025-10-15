@@ -1,26 +1,23 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   valkey:
     <<: *default
     image: valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
-    container_name: valkey
     ports:
       - "${VALKEY_PORT_OVERRIDE:-6379}:6379"
     volumes:
-      - *localtime
-      - *timezone
       - valkey_data:/data
       # Use a custom valkey.conf file
       # - ./valkey.conf:/etc/valkey/valkey.conf
+    environment:
+      - TZ=${TZ:-UTC}
     command:
       - sh
       - -c
@@ -38,6 +35,12 @@ services:
         reservations:
           cpus: '0.25'
           memory: 256M
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
 
 volumes:
   valkey_data:

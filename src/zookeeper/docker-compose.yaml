@@ -1,28 +1,24 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   zookeeper:
     <<: *default
     image: zookeeper:${ZOOKEEPER_VERSION:-3.9.3}
-    container_name: zookeeper
     ports:
       - "${ZOOKEEPER_CLIENT_PORT_OVERRIDE:-2181}:2181"
       - "${ZOOKEEPER_ADMIN_PORT_OVERRIDE:-8080}:8080"
     volumes:
-      - *localtime
-      - *timezone
       - zookeeper_data:/data
       - zookeeper_datalog:/datalog
       - zookeeper_logs:/logs
     environment:
+      - TZ=${TZ:-UTC}
       - ZOO_MY_ID=1
       - ZOO_PORT=2181
       - ZOO_TICK_TIME=${ZOO_TICK_TIME:-2000}
@@ -38,6 +34,12 @@ services:
         reservations:
           cpus: '0.25'
           memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "echo ruok | nc localhost 2181 | grep imok"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   zookeeper_data:

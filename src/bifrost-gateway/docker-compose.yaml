@@ -1,12 +1,10 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   bifrost:
@@ -16,6 +14,8 @@ services:
       - bifrost_data:/app/data
     ports:
       - "${BIFROST_PORT:-28080}:8080"
+    environment:
+      - TZ=${TZ:-UTC}
     deploy:
       resources:
         limits:
@@ -24,6 +24,12 @@ services:
         reservations:
           cpus: '0.10'
           memory: 128M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 volumes:
   bifrost_data:

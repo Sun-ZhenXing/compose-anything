@@ -1,12 +1,10 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   gitlab:
@@ -17,11 +15,12 @@ services:
       - "${GITLAB_PORT_OVERRIDE_HTTP:-5080}:80"
       - "${GITLAB_PORT_OVERRIDE_SSH:-5022}:22"
     volumes:
-      - *localtime
-      - *timezone
       - ./config:/etc/gitlab
       - gitlab_logs:/var/log/gitlab
       - gitlab_data:/var/opt/gitlab
+    environment:
+      - TZ=${TZ:-UTC}
+      - GITLAB_OMNIBUS_CONFIG=${GITLAB_OMNIBUS_CONFIG:-}
     deploy:
       resources:
         limits:
@@ -30,6 +29,12 @@ services:
         reservations:
           cpus: '1.0'
           memory: 4G
+    healthcheck:
+      test: ["CMD", "/opt/gitlab/bin/gitlab-healthcheck", "--fail"]
+      interval: 60s
+      timeout: 30s
+      retries: 5
+      start_period: 300s
 
 volumes:
   gitlab_logs:

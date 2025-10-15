@@ -1,26 +1,23 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   mongo:
     <<: *default
     image: mongo:${MONGO_VERSION:-8.0.13}
     environment:
+      TZ: ${TZ:-UTC}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-password}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-admin}
     ports:
       - "${MONGO_PORT_OVERRIDE:-27017}:27017"
     volumes:
-      - *localtime
-      - *timezone
       - mongo_data:/data/db
     deploy:
       resources:
@@ -30,6 +27,12 @@ services:
         reservations:
           cpus: '0.25'
           memory: 256M
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   mongo_data:

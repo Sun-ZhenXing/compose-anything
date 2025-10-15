@@ -1,29 +1,24 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   openlist:
     <<: *default
     image: openlistteam/openlist:${OPENLIST_VERSION:-latest}
-    container_name: openlist
     ports:
       - "${OPENLIST_PORT_OVERRIDE:-5244}:5244"
     volumes:
-      - *localtime
-      - *timezone
       - openlist_data:/opt/openlist/data
     environment:
+      - TZ=${TZ:-UTC}
       - PUID=${PUID:-0}
       - PGID=${PGID:-0}
       - UMASK=${UMASK:-022}
-      - TZ=${TZ:-Asia/Shanghai}
     deploy:
       resources:
         limits:
@@ -32,6 +27,12 @@ services:
         reservations:
           cpus: '0.25'
           memory: 256M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5244/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   openlist_data:

@@ -1,23 +1,21 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   n8n:
     <<: *default
     image: n8nio/n8n:${N8N_VERSION:-1.114.0}
-    container_name: n8n
     ports:
       - "${N8N_PORT:-5678}:5678"
     volumes:
       - n8n_data:/home/node/.n8n
     environment:
+      - TZ=${TZ:-UTC}
       - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE:-true}
       - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-}
@@ -26,7 +24,6 @@ services:
       - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
       - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678/}
       - GENERIC_TIMEZONE=${GENERIC_TIMEZONE:-UTC}
-      - TZ=${TZ:-UTC}
       # Database configuration (optional, uses SQLite by default)
       - DB_TYPE=${DB_TYPE:-sqlite}
       - DB_POSTGRESDB_DATABASE=${DB_POSTGRESDB_DATABASE:-n8n}
@@ -50,12 +47,18 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   n8n-db:
     <<: *default
     image: postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
-    container_name: n8n-db
     environment:
+      - TZ=${TZ:-UTC}
       - POSTGRES_USER=${DB_POSTGRESDB_USER:-n8n}
       - POSTGRES_PASSWORD=${DB_POSTGRESDB_PASSWORD:-n8n123}
       - POSTGRES_DB=${DB_POSTGRESDB_DATABASE:-n8n}

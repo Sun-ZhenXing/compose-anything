@@ -1,8 +1,5 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
@@ -12,26 +9,21 @@ x-mongo: &mongo
   <<: *default
   image: mongo:${MONGO_VERSION:-8.0.13}
   environment:
+    TZ: ${TZ:-UTC}
     MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
     MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-password}
     MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-admin}
-  command:
-    - mongod
-    - --replSet
-    - ${MONGO_REPLICA_SET_NAME:-rs0}
-    - --keyFile
-    - /secrets/rs0.key
   volumes:
-    - *localtime
-    - *timezone
-    - ./secrets/rs0.key:/secrets/rs0.key
+    - ./secrets/rs0.key:/data/rs0.key:ro
   entrypoint:
     - bash
     - -c
     - |
-      chmod 400 /secrets/rs0.key
-      chown 999:999 /secrets/rs0.key
-      exec docker-entrypoint.sh $$@
+      cp /data/rs0.key /tmp/rs0.key
+      chmod 400 /tmp/rs0.key
+      chown 999:999 /tmp/rs0.key
+      export MONGO_INITDB_ROOT_USERNAME MONGO_INITDB_ROOT_PASSWORD MONGO_INITDB_DATABASE
+      exec docker-entrypoint.sh mongod --replSet ${MONGO_REPLICA_SET_NAME:-rs0} --keyFile /tmp/rs0.key
   deploy:
     resources:
       limits:

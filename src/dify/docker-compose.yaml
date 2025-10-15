@@ -1,22 +1,22 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   dify-api:
     <<: *default
     image: langgenius/dify-api:${DIFY_VERSION:-0.18.2}
-    container_name: dify-api
     depends_on:
-      - dify-db
-      - dify-redis
+      dify-db:
+        condition: service_healthy
+      dify-redis:
+        condition: service_healthy
     environment:
+      - TZ=${TZ:-UTC}
       - MODE=api
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - SECRET_KEY=${SECRET_KEY:-sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U}
@@ -30,8 +30,6 @@ services:
       - VECTOR_STORE=${VECTOR_STORE:-weaviate}
       - WEAVIATE_ENDPOINT=http://dify-weaviate:8080
     volumes:
-      - *localtime
-      - *timezone
       - dify_storage:/app/api/storage
     deploy:
       resources:
@@ -41,15 +39,23 @@ services:
         reservations:
           cpus: '0.5'
           memory: 1G
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   dify-worker:
     <<: *default
     image: langgenius/dify-api:${DIFY_VERSION:-0.18.2}
-    container_name: dify-worker
     depends_on:
-      - dify-db
-      - dify-redis
+      dify-db:
+        condition: service_healthy
+      dify-redis:
+        condition: service_healthy
     environment:
+      - TZ=${TZ:-UTC}
       - MODE=worker
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - SECRET_KEY=${SECRET_KEY:-sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U}
@@ -63,8 +69,6 @@ services:
       - VECTOR_STORE=${VECTOR_STORE:-weaviate}
       - WEAVIATE_ENDPOINT=http://dify-weaviate:8080
     volumes:
-      - *localtime
-      - *timezone
       - dify_storage:/app/api/storage
     deploy:
       resources:
@@ -78,10 +82,11 @@ services:
   dify-web:
     <<: *default
     image: langgenius/dify-web:${DIFY_VERSION:-0.18.2}
-    container_name: dify-web
     depends_on:
-      - dify-api
+      dify-api:
+        condition: service_healthy
     environment:
+      - TZ=${TZ:-UTC}
       - NEXT_PUBLIC_API_URL=${DIFY_API_URL:-http://localhost:5001}
       - NEXT_PUBLIC_APP_URL=${DIFY_APP_URL:-http://localhost:3000}
     ports:
@@ -98,15 +103,13 @@ services:
   dify-db:
     <<: *default
     image: postgres:15-alpine
-    container_name: dify-db
     environment:
+      - TZ=${TZ:-UTC}
       - POSTGRES_USER=${POSTGRES_USER:-dify}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-difypass}
       - POSTGRES_DB=${POSTGRES_DB:-dify}
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - *localtime
-      - *timezone
       - dify_db_data:/var/lib/postgresql/data
     deploy:
       resources:
@@ -116,15 +119,20 @@ services:
         reservations:
           cpus: '0.25'
           memory: 256M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   dify-redis:
     <<: *default
     image: redis:7-alpine
-    container_name: dify-redis
     command: redis-server --requirepass ${REDIS_PASSWORD:-}
+    environment:
+      - TZ=${TZ:-UTC}
     volumes:
-      - *localtime
-      - *timezone
       - dify_redis_data:/data
     deploy:
       resources:
@@ -134,22 +142,26 @@ services:
         reservations:
           cpus: '0.1'
           memory: 128M
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
 
   dify-weaviate:
     <<: *default
     image: semitechnologies/weaviate:${WEAVIATE_VERSION:-1.28.12}
-    container_name: dify-weaviate
     profiles:
       - weaviate
     environment:
+      - TZ=${TZ:-UTC}
       - QUERY_DEFAULTS_LIMIT=25
       - AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED=true
       - PERSISTENCE_DATA_PATH=/var/lib/weaviate
       - DEFAULT_VECTORIZER_MODULE=none
       - CLUSTER_HOSTNAME=node1
     volumes:
-      - *localtime
-      - *timezone
       - dify_weaviate_data:/var/lib/weaviate
     deploy:
       resources:
@@ -159,6 +171,12 @@ services:
         reservations:
           cpus: '0.25'
           memory: 512M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/v1/.well-known/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 volumes:
   dify_storage:

@@ -1,24 +1,21 @@
 x-default: &default
   restart: unless-stopped
-  volumes:
-    - &localtime /etc/localtime:/etc/localtime:ro
-    - &timezone /etc/timezone:/etc/timezone:ro
   logging:
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 services:
   registry:
     <<: *default
     image: registry:${REGISTRY_VERSION:-3.0.0}
     volumes:
-      - *localtime
-      - *timezone
       - ./certs:/certs:ro
       - ./config.yml:/etc/distribution/config.yml:ro
       - registry:/var/lib/registry
     environment:
+      TZ: ${TZ:-UTC}
       REGISTRY_AUTH: ${REGISTRY_AUTH:-htpasswd}
       REGISTRY_AUTH_HTPASSWD_REALM: ${REGISTRY_AUTH_HTPASSWD_REALM:-Registry Realm}
       REGISTRY_AUTH_HTPASSWD_PATH: ${REGISTRY_AUTH_HTPASSWD_PATH:-/certs/passwd}
@@ -35,6 +32,12 @@ services:
         reservations:
           cpus: '0.1'
           memory: 128M
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 volumes:
   registry:
