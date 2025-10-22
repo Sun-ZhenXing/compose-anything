@@ -20,24 +20,16 @@
    docker compose up -d
    ```
 
-2. 连接到主节点：
+   这些服务将通过 `mongo-init` init 容器自动初始化副本集。该容器会：
+   - 等待所有 MongoDB 节点就绪
+   - 连接到主节点
+   - 使用容器名初始化副本集
+   - 通过容器网络进行通信
+
+2. 验证副本集状态：
 
    ```bash
-   docker exec -it mongodb-replicaset-mongo1-1 mongosh
-   ```
-
-3. 初始化副本集。**请记得将 host IP 替换为你的实际主机 IP。**
-
-   ```js
-   config = {
-     _id: "rs0",
-     members: [
-       {_id: 0, host: "192.168.31.38:27017"},
-       {_id: 1, host: "192.168.31.38:27018"},
-       {_id: 2, host: "192.168.31.38:27019"},
-     ]
-   }
-   rs.initiate(config)
+   docker exec -it mongodb-replicaset-mongo1-1 mongosh -u root -p password --authenticationDatabase admin --eval "rs.status()"
    ```
 
 ## 服务

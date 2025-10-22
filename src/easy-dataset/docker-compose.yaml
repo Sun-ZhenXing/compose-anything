@@ -1,0 +1,40 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  easy-dataset:
+    <<: *default
+    image: ghcr.io/conardli/easy-dataset:${EASY_DATASET_VERSION:-1.5.1}
+    ports:
+      - "${EASY_DATASET_PORT_OVERRIDE:-1717}:1717"
+    volumes:
+      - easy_dataset_db:/app/local-db
+      # Uncomment the following line if you need to mount Prisma database files
+      # Note: You need to run 'npm run db:push' first to initialize the database
+      # - easy_dataset_prisma:/app/prisma
+    environment:
+      - TZ=${TZ:-UTC}
+      - NODE_ENV=production
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:1717"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  easy_dataset_db:
+  # easy_dataset_prisma:

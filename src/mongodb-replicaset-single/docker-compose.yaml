@@ -15,6 +15,7 @@ x-mongo: &mongo
     MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-admin}
   volumes:
     - ./secrets/rs0.key:/data/rs0.key:ro
+    - mongo_data:/data/db
   entrypoint:
     - bash
     - -c
@@ -45,25 +46,11 @@ services:
     ports:
       - "${MONGO_PORT_OVERRIDE_1:-27017}:27017"
 
-  mongo2:
-    <<: *mongo
-    ports:
-      - "${MONGO_PORT_OVERRIDE_2:-27018}:27017"
-
-  mongo3:
-    <<: *mongo
-    ports:
-      - "${MONGO_PORT_OVERRIDE_3:-27019}:27017"
-
   mongo-init:
     <<: *default
     image: mongo:${MONGO_VERSION:-8.0.13}
     depends_on:
       mongo1:
-        condition: service_healthy
-      mongo2:
-        condition: service_healthy
-      mongo3:
         condition: service_healthy
     environment:
       TZ: ${TZ:-UTC}
@@ -71,8 +58,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-password}
       MONGO_REPLICA_SET_NAME: ${MONGO_REPLICA_SET_NAME:-rs0}
       MONGO_PORT_1: ${MONGO_PORT_OVERRIDE_1:-27017}
-      MONGO_PORT_2: ${MONGO_PORT_OVERRIDE_2:-27018}
-      MONGO_PORT_3: ${MONGO_PORT_OVERRIDE_3:-27019}
       MONGO_HOST: ${MONGO_HOST:-mongo1}
     volumes:
       - ./secrets/rs0.key:/data/rs0.key:ro
@@ -81,7 +66,7 @@ services:
       - -c
       - |
         set -e
-        echo "Waiting for MongoDB nodes to be ready..."
+        echo "Waiting for MongoDB node to be ready..."
         sleep 5
 
         mongosh \
@@ -91,9 +76,7 @@ services:
             const config = {
               _id: '$${MONGO_REPLICA_SET_NAME}',
               members: [
-                { _id: 0, host: 'mongo1:27017' },
-                { _id: 1, host: 'mongo2:27017' },
-                { _id: 2, host: 'mongo3:27017' }
+                { _id: 0, host: 'mongo1:27017' }
               ]
             };
 
@@ -116,3 +99,7 @@ services:
         reservations:
           cpus: '0.10'
           memory: 128M
+
+volumes:
+  mongo_data:
+    driver: local
