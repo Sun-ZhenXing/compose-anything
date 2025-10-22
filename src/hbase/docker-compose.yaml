@@ -1,0 +1,42 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  hbase:
+    <<: *default
+    image: harisekhon/hbase:${HBASE_VERSION:-2.6}
+    hostname: hbase
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - hbase_data:/hbase-data
+      - hbase_zookeeper_data:/zookeeper-data
+    ports:
+      - "${HBASE_MASTER_PORT_OVERRIDE:-16000}:16000"
+      - "${HBASE_MASTER_INFO_PORT_OVERRIDE:-16010}:16010"
+      - "${HBASE_REGIONSERVER_PORT_OVERRIDE:-16020}:16020"
+      - "${HBASE_REGIONSERVER_INFO_PORT_OVERRIDE:-16030}:16030"
+      - "${HBASE_ZOOKEEPER_PORT_OVERRIDE:-2181}:2181"
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'status' | hbase shell -n || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  hbase_data:
+  hbase_zookeeper_data:

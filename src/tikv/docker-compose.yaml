@@ -1,0 +1,81 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  pd:
+    <<: *default
+    image: pingcap/pd:${TIKV_VERSION:-v8.5.0}
+    command:
+      - --name=pd
+      - --client-urls=http://0.0.0.0:2379
+      - --peer-urls=http://0.0.0.0:2380
+      - --advertise-client-urls=http://pd:2379
+      - --advertise-peer-urls=http://pd:2380
+      - --data-dir=/data
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - pd_data:/data
+    ports:
+      - "${TIKV_PD_PORT_OVERRIDE:-2379}:2379"
+      - "${TIKV_PD_PEER_PORT_OVERRIDE:-2380}:2380"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:2379/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  tikv:
+    <<: *default
+    image: pingcap/tikv:${TIKV_VERSION:-v8.5.0}
+    command:
+      - --addr=0.0.0.0:20160
+      - --advertise-addr=tikv:20160
+      - --status-addr=0.0.0.0:20180
+      - --pd=http://pd:2379
+      - --data-dir=/data
+      - --log-file=/logs/tikv.log
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - tikv_data:/data
+      - tikv_logs:/logs
+    ports:
+      - "${TIKV_PORT_OVERRIDE:-20160}:20160"
+      - "${TIKV_STATUS_PORT_OVERRIDE:-20180}:20180"
+    depends_on:
+      pd:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 2G
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:20180/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  pd_data:
+  tikv_data:
+  tikv_logs:

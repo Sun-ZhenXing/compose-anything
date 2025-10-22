@@ -1,0 +1,98 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  namesrv:
+    <<: *default
+    image: apache/rocketmq:${ROCKETMQ_VERSION:-5.3.1}
+    command: sh mqnamesrv
+    environment:
+      TZ: ${TZ:-UTC}
+      JAVA_OPT_EXT: "-Xms512m -Xmx512m"
+    ports:
+      - "${ROCKETMQ_NAMESRV_PORT_OVERRIDE:-9876}:9876"
+    volumes:
+      - namesrv_logs:/home/rocketmq/logs
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "mqadmin clusterList -n localhost:9876 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  broker:
+    <<: *default
+    image: apache/rocketmq:${ROCKETMQ_VERSION:-5.3.1}
+    command: sh mqbroker -n namesrv:9876 -c /home/rocketmq/broker.conf
+    environment:
+      TZ: ${TZ:-UTC}
+      JAVA_OPT_EXT: "-Xms1g -Xmx1g"
+    ports:
+      - "${ROCKETMQ_BROKER_PORT_OVERRIDE:-10909}:10909"
+      - "${ROCKETMQ_BROKER_VIP_PORT_OVERRIDE:-10911}:10911"
+      - "${ROCKETMQ_BROKER_HA_PORT_OVERRIDE:-10912}:10912"
+    volumes:
+      - broker_logs:/home/rocketmq/logs
+      - broker_store:/home/rocketmq/store
+      - ./broker.conf:/home/rocketmq/broker.conf:ro
+    depends_on:
+      namesrv:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "mqadmin clusterList -n namesrv:9876 | grep -q broker || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  dashboard:
+    <<: *default
+    image: apacherocketmq/rocketmq-dashboard:${ROCKETMQ_DASHBOARD_VERSION:-2.0.0}
+    environment:
+      TZ: ${TZ:-UTC}
+      JAVA_OPTS: "-Xms256m -Xmx256m -Drocketmq.namesrv.addr=namesrv:9876"
+    ports:
+      - "${ROCKETMQ_DASHBOARD_PORT_OVERRIDE:-8080}:8080"
+    depends_on:
+      namesrv:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  namesrv_logs:
+  broker_logs:
+  broker_store:

@@ -1,0 +1,44 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  oceanbase:
+    <<: *default
+    image: oceanbase/oceanbase-ce:${OCEANBASE_VERSION:-4.3.3.1-106000012024110114}
+    environment:
+      TZ: ${TZ:-UTC}
+      MODE: slim
+      OB_ROOT_PASSWORD: ${OB_ROOT_PASSWORD:-oceanbase}
+      OB_CLUSTER_NAME: ${OB_CLUSTER_NAME:-obcluster}
+      OB_TENANT_NAME: ${OB_TENANT_NAME:-test}
+      OB_TENANT_PASSWORD: ${OB_TENANT_PASSWORD:-oceanbase}
+      OB_MEMORY_LIMIT: ${OB_MEMORY_LIMIT:-8G}
+      OB_DATAFILE_SIZE: ${OB_DATAFILE_SIZE:-10G}
+      OB_LOG_DISK_SIZE: ${OB_LOG_DISK_SIZE:-6G}
+    volumes:
+      - oceanbase_data:/root/ob
+    ports:
+      - "${OCEANBASE_SQL_PORT_OVERRIDE:-2881}:2881"
+      - "${OCEANBASE_RPC_PORT_OVERRIDE:-2882}:2882"
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 10G
+        reservations:
+          cpus: '2.0'
+          memory: 8G
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -h127.0.0.1 -P2881 -uroot -p$$OB_ROOT_PASSWORD -e 'SELECT 1' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+volumes:
+  oceanbase_data:

@@ -1,0 +1,38 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  duckdb:
+    <<: *default
+    image: davidgasquez/duckdb:${DUCKDB_VERSION:-v1.1.3}
+    command: ["duckdb", "/data/duckdb.db"]
+    stdin_open: true
+    tty: true
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - duckdb_data:/data
+      # Mount additional data files
+      # - ./data:/import:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "duckdb /data/duckdb.db -c 'SELECT 1' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  duckdb_data:

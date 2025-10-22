@@ -1,0 +1,52 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  clickhouse:
+    <<: *default
+    image: clickhouse/clickhouse-server:${CLICKHOUSE_VERSION:-24.11.1.2557}
+    hostname: clickhouse
+    environment:
+      TZ: ${TZ:-UTC}
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB:-default}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-clickhouse}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: ${CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT:-1}
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
+      # Custom configuration
+      # - ./config.xml:/etc/clickhouse-server/config.d/config.xml
+      # - ./users.xml:/etc/clickhouse-server/users.d/users.xml
+    ports:
+      - "${CLICKHOUSE_HTTP_PORT_OVERRIDE:-8123}:8123"
+      - "${CLICKHOUSE_NATIVE_PORT_OVERRIDE:-9000}:9000"
+      - "${CLICKHOUSE_MYSQL_PORT_OVERRIDE:-9004}:9004"
+      - "${CLICKHOUSE_POSTGRES_PORT_OVERRIDE:-9005}:9005"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  clickhouse_data:
+  clickhouse_logs:
