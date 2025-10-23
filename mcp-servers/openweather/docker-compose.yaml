@@ -1,0 +1,32 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  mcp-openweather:
+    <<: *default
+    image: mcp/openweather:${MCP_OPENWEATHER_VERSION:-latest}
+    environment:
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - MCP_HOST=0.0.0.0
+      - TZ=${TZ:-UTC}
+    ports:
+      - "${MCP_OPENWEATHER_PORT_OVERRIDE:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M

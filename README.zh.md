@@ -70,6 +70,41 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [vLLM](./src/vllm)                                       | v0.8.0                       |
 | [ZooKeeper](./src/zookeeper)                             | 3.9.3                        |
 
+## MCP 服务器
+
+| 服务                                                     | 版本   |
+| -------------------------------------------------------- | ------ |
+| [API 网关](./mcp-servers/api-gateway)                    | latest |
+| [ArXiv MCP 服务器](./mcp-servers/arxiv-mcp-server)       | latest |
+| [基础内存](./mcp-servers/basic-memory)                   | latest |
+| [ClickHouse](./mcp-servers/clickhouse)                   | latest |
+| [Docker](./mcp-servers/docker)                           | latest |
+| [Dockerhub](./mcp-servers/dockerhub)                     | latest |
+| [E2B](./mcp-servers/e2b)                                 | latest |
+| [Fetch](./mcp-servers/fetch)                             | latest |
+| [文件系统](./mcp-servers/filesystem)                     | latest |
+| [Grafana](./mcp-servers/grafana)                         | latest |
+| [Markdownify](./mcp-servers/markdownify)                 | latest |
+| [Markitdown](./mcp-servers/markitdown)                   | latest |
+| [内存](./mcp-servers/memory)                             | latest |
+| [MongoDB](./mcp-servers/mongodb)                         | latest |
+| [Neo4j Cypher](./mcp-servers/neo4j-cypher)               | latest |
+| [Neo4j 内存](./mcp-servers/neo4j-memory)                 | latest |
+| [Notion](./mcp-servers/notion)                           | latest |
+| [OpenAPI](./mcp-servers/openapi)                         | latest |
+| [OpenAPI Schema](./mcp-servers/openapi-schema)           | latest |
+| [OpenWeather](./mcp-servers/openweather)                 | latest |
+| [论文搜索](./mcp-servers/paper-search)                   | latest |
+| [Playwright](./mcp-servers/playwright)                   | latest |
+| [Redis MCP](./mcp-servers/redis-mcp)                     | latest |
+| [Rust 文件系统](./mcp-servers/rust-mcp-filesystem)       | latest |
+| [顺序思考](./mcp-servers/sequentialthinking)             | latest |
+| [SQLite](./mcp-servers/sqlite)                           | latest |
+| [Tavily](./mcp-servers/tavily)                           | latest |
+| [文本转 GraphQL](./mcp-servers/text-to-graphql)          | latest |
+| [时间](./mcp-servers/time)                               | latest |
+| [Wolfram Alpha](./mcp-servers/wolfram-alpha)             | latest |
+
 ## 规范
 
 1. 开箱即用

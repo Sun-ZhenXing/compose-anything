@@ -70,6 +70,41 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [vLLM](./src/vllm)                                       | v0.8.0                       |
 | [ZooKeeper](./src/zookeeper)                             | 3.9.3                        |
 
+## MCP Servers
+
+| Server                                                  | Version |
+| ------------------------------------------------------- | ------- |
+| [API Gateway](./mcp-servers/api-gateway)                | latest  |
+| [ArXiv MCP Server](./mcp-servers/arxiv-mcp-server)      | latest  |
+| [Basic Memory](./mcp-servers/basic-memory)              | latest  |
+| [ClickHouse](./mcp-servers/clickhouse)                  | latest  |
+| [Docker](./mcp-servers/docker)                          | latest  |
+| [Dockerhub](./mcp-servers/dockerhub)                    | latest  |
+| [E2B](./mcp-servers/e2b)                                | latest  |
+| [Fetch](./mcp-servers/fetch)                            | latest  |
+| [Filesystem](./mcp-servers/filesystem)                  | latest  |
+| [Grafana](./mcp-servers/grafana)                        | latest  |
+| [Markdownify](./mcp-servers/markdownify)                | latest  |
+| [Markitdown](./mcp-servers/markitdown)                  | latest  |
+| [Memory](./mcp-servers/memory)                          | latest  |
+| [MongoDB](./mcp-servers/mongodb)                        | latest  |
+| [Neo4j Cypher](./mcp-servers/neo4j-cypher)              | latest  |
+| [Neo4j Memory](./mcp-servers/neo4j-memory)              | latest  |
+| [Notion](./mcp-servers/notion)                          | latest  |
+| [OpenAPI](./mcp-servers/openapi)                        | latest  |
+| [OpenAPI Schema](./mcp-servers/openapi-schema)          | latest  |
+| [OpenWeather](./mcp-servers/openweather)                | latest  |
+| [Paper Search](./mcp-servers/paper-search)              | latest  |
+| [Playwright](./mcp-servers/playwright)                  | latest  |
+| [Redis MCP](./mcp-servers/redis-mcp)                    | latest  |
+| [Rust Filesystem](./mcp-servers/rust-mcp-filesystem)    | latest  |
+| [Sequential Thinking](./mcp-servers/sequentialthinking) | latest  |
+| [SQLite](./mcp-servers/sqlite)                          | latest  |
+| [Tavily](./mcp-servers/tavily)                          | latest  |
+| [Text to GraphQL](./mcp-servers/text-to-graphql)        | latest  |
+| [Time](./mcp-servers/time)                              | latest  |
+| [Wolfram Alpha](./mcp-servers/wolfram-alpha)            | latest  |
+
 ## Guidelines
 
 1. Out-of-the-box
