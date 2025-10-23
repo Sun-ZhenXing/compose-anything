@@ -49,6 +49,7 @@ services:
   mongo-init:
     <<: *default
     image: mongo:${MONGO_VERSION:-8.0.13}
+    restart: on-failure
     depends_on:
       mongo1:
         condition: service_healthy
@@ -66,11 +67,13 @@ services:
       - -c
       - |
         set -e
-        echo "Waiting for MongoDB node to be ready..."
+        echo "Waiting for MongoDB nodes to be ready..."
         sleep 5
 
         mongosh \
-          --host "mongodb://$${MONGO_INITDB_ROOT_USERNAME}:$${MONGO_INITDB_ROOT_PASSWORD}@$${MONGO_HOST}:$${MONGO_PORT_1}" \
+          --host "$${MONGO_HOST}:$${MONGO_PORT_1}" \
+          --username "$${MONGO_INITDB_ROOT_USERNAME}" \
+          --password "$${MONGO_INITDB_ROOT_PASSWORD}" \
           --authenticationDatabase admin \
           --eval "
             const config = {
