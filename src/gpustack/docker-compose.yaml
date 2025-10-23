@@ -9,7 +9,7 @@ x-default: &default
 services:
   gpustack:
     <<: *default
-    image: gpustack/gpustack:${GPUSTACK_VERSION:-v0.5.3}
+    image: gpustack/gpustack:${GPUSTACK_VERSION:-v0.7.1}
     ports:
       - "${GPUSTACK_PORT_OVERRIDE:-80}:80"
     volumes:
@@ -22,21 +22,19 @@ services:
       - GPUSTACK_TOKEN=${GPUSTACK_TOKEN:-}
       - GPUSTACK_BOOTSTRAP_PASSWORD=${GPUSTACK_BOOTSTRAP_PASSWORD:-admin}
       - HF_TOKEN=${HF_TOKEN:-}
+    ipc: host
     deploy:
       resources:
         limits:
+          cpus: '8.0'
+          memory: 8G
+        reservations:
           cpus: '2.0'
           memory: 4G
-        reservations:
-          cpus: '1.0'
-          memory: 2G
-          # Uncomment below for GPU support
-          # devices:
-          #   - driver: nvidia
-          #     count: 1
-          #     capabilities: [gpu]
-    # For GPU support, uncomment the following section
-    # runtime: nvidia
+          devices:
+            - driver: nvidia
+              device_ids: [ '0' ]
+              capabilities: [ gpu ]
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
       interval: 30s

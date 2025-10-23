@@ -51,4 +51,8 @@ Reference template: `.compose-template.yaml` in the repo root.
 
 If you want to find image tags, try fetch url like `https://hub.docker.com/v2/repositories/library/nginx/tags?page_size=1&ordering=last_updated`.
 
-注意：所有中文的文档都使用中文的标点符号，如 “，”、“（）” 等，中文和英文之间要留有空格。
+Every service must have `.env.example`.
+
+After update all of the services, please update `/README.md` & `/README.zh.md` to reflect the changes.
+
+**注意**：所有中文的文档都使用中文的标点符号，如 “，”、“（）” 等，中文和英文之间要留有空格。对于 Docker Compose 文件和 `.env.example` 文件中的注释部分，请使用英语而不是中文。请为每个服务提供英文说明 README.md 和中文说明 `README.zh.md`。

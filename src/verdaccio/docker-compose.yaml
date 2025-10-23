@@ -1,0 +1,41 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  verdaccio:
+    <<: *default
+    image: verdaccio/verdaccio:${VERDACCIO_VERSION:-6.1.2}
+    networks:
+      - verdaccio
+    environment:
+      - VERDACCIO_PORT=${VERDACCIO_PORT:-4873}
+      - TZ=${TZ:-UTC}
+    ports:
+      - "${VERDACCIO_PORT_OVERRIDE:-4873}:4873"
+    volumes:
+      - ./storage:/verdaccio/storage
+      - ./config:/verdaccio/conf
+      - ./plugins:/verdaccio/plugins
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4873/-/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+networks:
+  verdaccio:
+    driver: bridge

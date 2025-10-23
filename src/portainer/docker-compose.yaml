@@ -1,0 +1,39 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  portainer:
+    <<: *default
+    image: portainer/portainer-ce:${PORTAINER_VERSION:-2.27.3-alpine}
+    ports:
+      - "${PORTAINER_WEB_PORT_OVERRIDE:-9000}:9000"
+      - "${PORTAINER_EDGE_PORT_OVERRIDE:-8000}:8000"
+    volumes:
+      # ⚠️ Security Warning: Mounting Docker socket grants full control of Docker daemon
+      # This is required for Portainer to function, but ensure access is properly secured
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9000/api/system/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+volumes:
+  portainer_data:

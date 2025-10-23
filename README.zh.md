@@ -14,6 +14,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Bytebot](./src/bytebot)                                 | edge                         |
 | [Clash](./src/clash)                                     | 1.18.0                       |
 | [Dify](./src/dify)                                       | 0.18.2                       |
+| [DNSMasq](./src/dnsmasq)                                 | 2.91                         |
 | [Docker Registry](./src/docker-registry)                 | 3.0.0                        |
 | [Elasticsearch](./src/elasticsearch)                     | 8.16.1                       |
 | [etcd](./src/etcd)                                       | 3.6.0                        |
@@ -34,6 +35,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Kodbox](./src/kodbox)                                   | 1.62                         |
 | [Kong](./src/kong)                                       | 3.8.0                        |
 | [Langfuse](./src/langfuse)                               | 3.115.0                      |
+| [LiteLLM](./src/litellm)                                 | main-stable                  |
 | [Logstash](./src/logstash)                               | 8.16.1                       |
 | [Milvus Standalone Embed](./src/milvus-standalone-embed) | 2.6.2                        |
 | [Milvus Standalone](./src/milvus-standalone)             | 2.6.2                        |
@@ -55,6 +57,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [OpenCoze](./src/opencoze)                               | See Docs                     |
 | [OpenCut](./src/opencut)                                 | latest                       |
 | [OpenList](./src/openlist)                               | latest                       |
+| [Portainer](./src/portainer)                             | 2.27.3-alpine                |
 | [PocketBase](./src/pocketbase)                           | 0.30.0                       |
 | [PostgreSQL](./src/postgres)                             | 17.6                         |
 | [Prometheus](./src/prometheus)                           | 3.5.0                        |
@@ -62,6 +65,8 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [RabbitMQ](./src/rabbitmq)                               | 4.1.4                        |
 | [Redis Cluster](./src/redis-cluster)                     | 8.2.1                        |
 | [Redis](./src/redis)                                     | 8.2.1                        |
+| [SearXNG](./src/searxng)                                 | 2025.1.20-1ce14ef99          |
+| [Verdaccio](./src/verdaccio)                             | 6.1.2                        |
 | [vLLM](./src/vllm)                                       | v0.8.0                       |
 | [ZooKeeper](./src/zookeeper)                             | 3.9.3                        |
 

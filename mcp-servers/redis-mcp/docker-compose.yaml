@@ -1,0 +1,64 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  mcp:
+    <<: *default
+    image: mcp/redis:${MCP_REDIS_VERSION:-latest}
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MCP_HOST=0.0.0.0
+      - TZ=${TZ:-UTC}
+    ports:
+      - "${MCP_PORT_OVERRIDE:-8000}:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  redis:
+    <<: *default
+    image: redis:${REDIS_VERSION:-7-alpine}
+    command: redis-server --appendonly yes
+    ports:
+      - "${REDIS_PORT_OVERRIDE:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+        reservations:
+          cpus: '0.10'
+          memory: 64M
+
+volumes:
+  redis_data:

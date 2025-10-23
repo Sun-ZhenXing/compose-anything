@@ -2,26 +2,39 @@
 
 [English](./README.md) | [中文](./README.zh.md)
 
-This service deploys GPUStack, an open-source GPU cluster manager for running large language models (LLMs).
+GPUStack is an open-source GPU cluster manager for running and scaling large language models (LLMs).
+
+## Quick Start
+
+```bash
+docker compose up -d
+```
+
+Access the web UI at <http://localhost:80> with default credentials `admin` / `admin`.
 
 ## Services
 
-- `gpustack`: GPUStack server with built-in worker
+- `gpustack`: GPUStack server with GPU support enabled by default
+
+## Ports
+
+| Service  | Port |
+| -------- | ---- |
+| gpustack | 80   |
 
 ## Environment Variables
 
-| Variable Name               | Description                            | Default Value |
-| --------------------------- | -------------------------------------- | ------------- |
-| GPUSTACK_VERSION            | GPUStack image version                 | `v0.5.3`      |
-| GPUSTACK_HOST               | Host to bind the server to             | `0.0.0.0`     |
-| GPUSTACK_PORT               | Port to bind the server to             | `80`          |
-| GPUSTACK_DEBUG              | Enable debug mode                      | `false`       |
-| GPUSTACK_BOOTSTRAP_PASSWORD | Password for the bootstrap admin user  | `admin`       |
-| GPUSTACK_TOKEN              | Token for worker registration          | (auto)        |
-| HF_TOKEN                    | Hugging Face token for model downloads | `""`          |
-| GPUSTACK_PORT_OVERRIDE      | Host port mapping                      | `80`          |
-
-Please modify the `.env` file as needed for your use case.
+| Variable                    | Description                            | Default   |
+| --------------------------- | -------------------------------------- | --------- |
+| GPUSTACK_VERSION            | GPUStack image version                 | `v0.7.1`  |
+| TZ                          | Timezone setting                       | `UTC`     |
+| GPUSTACK_HOST               | Host to bind the server to             | `0.0.0.0` |
+| GPUSTACK_PORT               | Port to bind the server to             | `80`      |
+| GPUSTACK_DEBUG              | Enable debug mode                      | `false`   |
+| GPUSTACK_BOOTSTRAP_PASSWORD | Password for the bootstrap admin user  | `admin`   |
+| GPUSTACK_TOKEN              | Token for worker registration          | (auto)    |
+| HF_TOKEN                    | Hugging Face token for model downloads | (empty)   |
+| GPUSTACK_PORT_OVERRIDE      | Host port mapping                      | `80`      |
 
 ## Volumes
 
@@ -29,84 +42,79 @@ Please modify the `.env` file as needed for your use case.
 
 ## GPU Support
 
-### NVIDIA GPU
-
-Uncomment the GPU-related configuration in `docker-compose.yaml`:
+This service is configured with NVIDIA GPU support enabled by default. The configuration uses:
 
 ```yaml
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    runtime: nvidia
+deploy:
+  resources:
+    reservations:
+      devices:
+        - driver: nvidia
+          device_ids: [ '0' ]
+          capabilities: [ gpu ]
 ```
+
+### Requirements
+
+- NVIDIA GPU with CUDA support
+- NVIDIA Container Toolkit installed on the host
+- Docker 19.03+ with GPU support
 
 ### AMD GPU (ROCm)
 
-Use the ROCm-specific image:
+To use AMD GPUs with ROCm support:
 
-```yaml
-image: gpustack/gpustack:v0.5.3-rocm
-```
+1. Use the ROCm-specific image in `docker-compose.yaml`:
+
+   ```yaml
+   image: gpustack/gpustack:${GPUSTACK_VERSION:-v0.7.1}-rocm
+   ```
+
+2. Change the device driver to `amdgpu`:
+
+   ```yaml
+   deploy:
+     resources:
+       reservations:
+         devices:
+           - driver: amdgpu
+             device_ids: [ '0' ]
+             capabilities: [ gpu ]
+   ```
 
 ## Usage
 
-### Start GPUStack
-
-```bash
-docker compose up -d
-```
-
-### Access
-
-- Web UI: <http://localhost:80>
-- Default credentials: `admin` / `admin` (configured via `GPUSTACK_BOOTSTRAP_PASSWORD`)
-
 ### Deploy a Model
 
-1. Log in to the web UI
-2. Navigate to Models
-3. Click "Deploy Model"
-4. Select a model from the catalog or add a custom model
-5. Configure the model parameters
-6. Click "Deploy"
+1. Log in to the web UI at <http://localhost:80>
+2. Navigate to **Models** → **Deploy Model**
+3. Select a model from the catalog or add a custom model
+4. Configure the model parameters
+5. Click **Deploy**
 
 ### Add Worker Nodes
 
-To add more GPU nodes to the cluster:
+To scale your cluster by adding more GPU nodes:
 
 1. Get the registration token from the server:
 
-    ```bash
-    docker exec gpustack cat /var/lib/gpustack/token
-    ```
+   ```bash
+   docker exec gpustack gpustack show-token
+   ```
 
 2. Start a worker on another node:
 
-    ```bash
-    docker run -d --name gpustack-worker \
-      --gpus all \
-      --network host \
-      --ipc host \
-      -v gpustack-data:/var/lib/gpustack \
-      gpustack/gpustack:v0.5.3 \
-      --server-url http://your-server-ip:80 \
-      --token YOUR_TOKEN
-    ```
+   ```bash
+   docker run -d --name gpustack-worker \
+     --gpus all \
+     --network host \
+     --ipc host \
+     -v gpustack-worker-data:/var/lib/gpustack \
+     gpustack/gpustack:v0.7.1 \
+     gpustack start --server-url http://your-server-ip:80 --token YOUR_TOKEN
+   ```
 
-## Features
-
-- **Model Management**: Deploy and manage LLM models from Hugging Face, ModelScope, or custom sources
-- **GPU Scheduling**: Automatic GPU allocation and scheduling
-- **Multi-Backend**: Supports llama-box, vLLM, and other backends
-- **API Compatible**: OpenAI-compatible API endpoint
-- **Web UI**: User-friendly web interface for management
-- **Monitoring**: Resource usage and model metrics
-
-## API Usage
+### API Usage
 
 GPUStack provides an OpenAI-compatible API:
 
@@ -120,19 +128,31 @@ curl http://localhost:80/v1/chat/completions \
   }'
 ```
 
+## Features
+
+- **Model Management**: Deploy and manage LLM models from Hugging Face, ModelScope, or custom sources
+- **GPU Scheduling**: Automatic GPU allocation and load balancing
+- **Multi-Backend**: Supports llama-box, vLLM, and other inference backends
+- **OpenAI-Compatible API**: Drop-in replacement for OpenAI API
+- **Web UI**: User-friendly web interface for cluster management
+- **Monitoring**: Real-time resource usage and model performance metrics
+- **Multi-Node**: Scale across multiple GPU servers
+
 ## Notes
 
-- For production use, change the default password
-- GPU support requires NVIDIA Docker runtime or AMD ROCm support
-- Model downloads can be large (several GB), ensure sufficient disk space
-- First model deployment may take time as it downloads the model files
+- **Production Security**: Change the default `GPUSTACK_BOOTSTRAP_PASSWORD` before deploying
+- **GPU Requirements**: NVIDIA GPU with CUDA support is required; ensure NVIDIA Container Toolkit is installed
+- **Disk Space**: Model downloads can be several gigabytes; ensure sufficient storage
+- **First Deployment**: Initial model deployment may take time as it downloads model files
+- **Network**: By default, the service binds to all interfaces (`0.0.0.0`); restrict access in production
 
 ## Security
 
-- Change default admin password after first login
-- Use strong passwords for API keys
-- Consider using TLS for production deployments
-- Restrict network access to trusted sources
+- **Change Default Password**: Update `GPUSTACK_BOOTSTRAP_PASSWORD` after first login
+- **API Keys**: Use strong, unique API keys for accessing the API
+- **TLS/HTTPS**: Consider using a reverse proxy with TLS for production
+- **Network Access**: Restrict access to trusted networks using firewalls
+- **Updates**: Keep GPUStack updated to the latest stable version
 
 ## License
 

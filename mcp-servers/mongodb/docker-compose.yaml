@@ -1,0 +1,70 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  mcp-mongodb:
+    <<: *default
+    image: mcp/mongodb:${MCP_MONGODB_VERSION:-latest}
+    environment:
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017}
+      - MONGODB_DATABASE=${MONGODB_DATABASE:-mcp_db}
+      - MCP_HOST=0.0.0.0
+      - TZ=${TZ:-UTC}
+    ports:
+      - "${MCP_MONGODB_PORT_OVERRIDE:-8000}:8000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  mongodb:
+    <<: *default
+    image: mongo:${MONGODB_VERSION:-7}
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD:-password}
+      - MONGO_INITDB_DATABASE=${MONGODB_DATABASE:-mcp_db}
+      - TZ=${TZ:-UTC}
+    ports:
+      - "${MONGODB_PORT_OVERRIDE:-27017}:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local

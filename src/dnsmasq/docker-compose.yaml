@@ -1,0 +1,38 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  dnsmasq:
+    <<: *default
+    image: dockurr/dnsmasq:${DNSMASQ_VERSION:-2.91}
+    volumes:
+      - ./dnsmasq.conf:/etc/dnsmasq.conf:ro
+    ports:
+      - "${DNSMASQ_DNS_PORT_OVERRIDE:-53}:53/udp"
+      - "${DNSMASQ_DNS_PORT_OVERRIDE:-53}:53/tcp"
+    environment:
+      - TZ=${TZ:-UTC}
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_ADMIN
+      - NET_BIND_SERVICE
+    healthcheck:
+      test: ["CMD", "nslookup", "-timeout=1", "localhost", "127.0.0.1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 128M
+        reservations:
+          cpus: '0.10'
+          memory: 32M

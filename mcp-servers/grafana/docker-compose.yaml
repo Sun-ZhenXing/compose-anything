@@ -1,0 +1,74 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  mcp-grafana:
+    <<: *default
+    image: mcp/grafana:${MCP_GRAFANA_VERSION:-latest}
+    environment:
+      - GRAFANA_URL=${GRAFANA_URL:-http://grafana:3000}
+      - GRAFANA_API_KEY=${GRAFANA_API_KEY}
+      - MCP_HOST=0.0.0.0
+      - TZ=${TZ:-UTC}
+    ports:
+      - "${MCP_GRAFANA_PORT_OVERRIDE:-8000}:8000"
+    depends_on:
+      grafana:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  grafana:
+    <<: *default
+    image: grafana/grafana:${GRAFANA_VERSION:-latest}
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_INSTALL_PLUGINS=${GRAFANA_INSTALL_PLUGINS:-}
+      - GF_SERVER_ROOT_URL=${GRAFANA_ROOT_URL:-http://localhost:3000}
+      - TZ=${TZ:-UTC}
+    ports:
+      - "${GRAFANA_PORT_OVERRIDE:-3000}:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - grafana_config:/etc/grafana
+      - grafana_logs:/var/log/grafana
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+volumes:
+  grafana_data:
+    driver: local
+  grafana_config:
+    driver: local
+  grafana_logs:
+    driver: local

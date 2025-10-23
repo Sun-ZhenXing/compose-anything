@@ -1,0 +1,42 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  playwright:
+    <<: *default
+    image: mcp/playwright:${PLAYWRIGHT_VERSION:-latest}
+    environment:
+      - MCP_HOST=0.0.0.0
+      - TZ=${TZ:-UTC}
+    ports:
+      - "${PLAYWRIGHT_PORT_OVERRIDE:-8000}:8000"
+    # 如果需要访问本地文件,可以挂载卷
+    volumes:
+      - playwright_data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    # Playwright 需要额外的权限来运行浏览器
+    security_opt:
+      - seccomp:unconfined
+    shm_size: '2gb'
+
+volumes:
+  playwright_data:
+    driver: local

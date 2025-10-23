@@ -1,0 +1,49 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  rust-mcp-filesystem:
+    <<: *default
+    image: mcp/rust-mcp-filesystem:${RUST_MCP_FILESYSTEM_VERSION:-latest}
+    environment:
+      - MCP_HOST=0.0.0.0
+      - ALLOWED_PATHS=${ALLOWED_PATHS:-/projects}
+      - TZ=${TZ:-UTC}
+    ports:
+      - "${RUST_MCP_FILESYSTEM_PORT_OVERRIDE:-8000}:8000"
+    volumes:
+      # 挂载需要访问的目录到 /projects 下
+      - ${HOST_WORKSPACE_PATH:-./workspace}:/projects/workspace:ro
+      # 如果需要写入权限,移除 :ro 标志
+      # - ${HOST_DATA_PATH:-./data}:/projects/data
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 64M
+    # 安全限制
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID

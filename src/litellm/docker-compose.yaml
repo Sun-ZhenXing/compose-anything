@@ -1,0 +1,110 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  litellm:
+    <<: *default
+    build:
+      context: .
+      args:
+        target: runtime
+    image: ghcr.io/berriai/litellm:${LITELLM_VERSION:-main-stable}
+    # Uncomment these lines to start proxy with a config.yaml file
+    # volumes:
+    #   - ./config.yaml:/app/config.yaml:ro
+    # command:
+    #   - "--config=/app/config.yaml"
+    ports:
+      - "${LITELLM_PORT_OVERRIDE:-4000}:4000"
+    environment:
+      - DATABASE_URL=postgresql://llmproxy:${POSTGRES_PASSWORD}@db:5432/litellm
+      - STORE_MODEL_IN_DB=True
+      - TZ=${TZ:-UTC}
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health/liveliness"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2G
+        reservations:
+          cpus: '0.50'
+          memory: 512M
+
+  db:
+    <<: *default
+    image: postgres:${POSTGRES_VERSION:-16}
+    environment:
+      - POSTGRES_DB=litellm
+      - POSTGRES_USER=llmproxy
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - TZ=${TZ:-UTC}
+    ports:
+      - "${POSTGRES_PORT_OVERRIDE:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d litellm -U llmproxy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  prometheus:
+    <<: *default
+    image: prom/prometheus:${PROMETHEUS_VERSION:-v3.3.1}
+    profiles:
+      - metrics
+    volumes:
+      - prometheus_data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "${PROMETHEUS_PORT_OVERRIDE:-9090}:9090"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=15d"
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+volumes:
+  prometheus_data:
+  postgres_data:
