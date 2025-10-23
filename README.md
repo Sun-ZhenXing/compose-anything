@@ -57,8 +57,8 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [OpenCoze](./src/opencoze)                               | See Docs                     |
 | [OpenCut](./src/opencut)                                 | latest                       |
 | [OpenList](./src/openlist)                               | latest                       |
-| [Portainer](./src/portainer)                             | 2.27.3-alpine                |
 | [PocketBase](./src/pocketbase)                           | 0.30.0                       |
+| [Portainer](./src/portainer)                             | 2.27.3-alpine                |
 | [PostgreSQL](./src/postgres)                             | 17.6                         |
 | [Prometheus](./src/prometheus)                           | 3.5.0                        |
 | [Qdrant](./src/qdrant)                                   | 1.15.4                       |
@@ -81,7 +81,9 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Docker](./mcp-servers/docker)                          | latest  |
 | [Dockerhub](./mcp-servers/dockerhub)                    | latest  |
 | [E2B](./mcp-servers/e2b)                                | latest  |
+| [ElevenLabs](./mcp-servers/elevenlabs)                  | latest  |
 | [Fetch](./mcp-servers/fetch)                            | latest  |
+| [Firecrawl](./mcp-servers/firecrawl)                    | latest  |
 | [Filesystem](./mcp-servers/filesystem)                  | latest  |
 | [Grafana](./mcp-servers/grafana)                        | latest  |
 | [Markdownify](./mcp-servers/markdownify)                | latest  |
@@ -91,8 +93,8 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Neo4j Cypher](./mcp-servers/neo4j-cypher)              | latest  |
 | [Neo4j Memory](./mcp-servers/neo4j-memory)              | latest  |
 | [Notion](./mcp-servers/notion)                          | latest  |
-| [OpenAPI](./mcp-servers/openapi)                        | latest  |
 | [OpenAPI Schema](./mcp-servers/openapi-schema)          | latest  |
+| [OpenAPI](./mcp-servers/openapi)                        | latest  |
 | [OpenWeather](./mcp-servers/openweather)                | latest  |
 | [Paper Search](./mcp-servers/paper-search)              | latest  |
 | [Playwright](./mcp-servers/playwright)                  | latest  |
@@ -104,6 +106,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Text to GraphQL](./mcp-servers/text-to-graphql)        | latest  |
 | [Time](./mcp-servers/time)                              | latest  |
 | [Wolfram Alpha](./mcp-servers/wolfram-alpha)            | latest  |
+| [YouTube Transcript](./mcp-servers/youtube-transcript)  | latest  |
 
 ## Guidelines
 

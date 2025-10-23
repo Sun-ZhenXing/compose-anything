@@ -57,8 +57,8 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [OpenCoze](./src/opencoze)                               | See Docs                     |
 | [OpenCut](./src/opencut)                                 | latest                       |
 | [OpenList](./src/openlist)                               | latest                       |
-| [Portainer](./src/portainer)                             | 2.27.3-alpine                |
 | [PocketBase](./src/pocketbase)                           | 0.30.0                       |
+| [Portainer](./src/portainer)                             | 2.27.3-alpine                |
 | [PostgreSQL](./src/postgres)                             | 17.6                         |
 | [Prometheus](./src/prometheus)                           | 3.5.0                        |
 | [Qdrant](./src/qdrant)                                   | 1.15.4                       |
@@ -72,38 +72,41 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 
 ## MCP 服务器
 
-| 服务                                                     | 版本   |
-| -------------------------------------------------------- | ------ |
-| [API 网关](./mcp-servers/api-gateway)                    | latest |
-| [ArXiv MCP 服务器](./mcp-servers/arxiv-mcp-server)       | latest |
-| [基础内存](./mcp-servers/basic-memory)                   | latest |
-| [ClickHouse](./mcp-servers/clickhouse)                   | latest |
-| [Docker](./mcp-servers/docker)                           | latest |
-| [Dockerhub](./mcp-servers/dockerhub)                     | latest |
-| [E2B](./mcp-servers/e2b)                                 | latest |
-| [Fetch](./mcp-servers/fetch)                             | latest |
-| [文件系统](./mcp-servers/filesystem)                     | latest |
-| [Grafana](./mcp-servers/grafana)                         | latest |
-| [Markdownify](./mcp-servers/markdownify)                 | latest |
-| [Markitdown](./mcp-servers/markitdown)                   | latest |
-| [内存](./mcp-servers/memory)                             | latest |
-| [MongoDB](./mcp-servers/mongodb)                         | latest |
-| [Neo4j Cypher](./mcp-servers/neo4j-cypher)               | latest |
-| [Neo4j 内存](./mcp-servers/neo4j-memory)                 | latest |
-| [Notion](./mcp-servers/notion)                           | latest |
-| [OpenAPI](./mcp-servers/openapi)                         | latest |
-| [OpenAPI Schema](./mcp-servers/openapi-schema)           | latest |
-| [OpenWeather](./mcp-servers/openweather)                 | latest |
-| [论文搜索](./mcp-servers/paper-search)                   | latest |
-| [Playwright](./mcp-servers/playwright)                   | latest |
-| [Redis MCP](./mcp-servers/redis-mcp)                     | latest |
-| [Rust 文件系统](./mcp-servers/rust-mcp-filesystem)       | latest |
-| [顺序思考](./mcp-servers/sequentialthinking)             | latest |
-| [SQLite](./mcp-servers/sqlite)                           | latest |
-| [Tavily](./mcp-servers/tavily)                           | latest |
-| [文本转 GraphQL](./mcp-servers/text-to-graphql)          | latest |
-| [时间](./mcp-servers/time)                               | latest |
-| [Wolfram Alpha](./mcp-servers/wolfram-alpha)             | latest |
+| 服务                                                    | 版本   |
+| ------------------------------------------------------- | ------ |
+| [API Gateway](./mcp-servers/api-gateway)                | latest |
+| [ArXiv MCP Server](./mcp-servers/arxiv-mcp-server)      | latest |
+| [Basic Memory](./mcp-servers/basic-memory)              | latest |
+| [ClickHouse](./mcp-servers/clickhouse)                  | latest |
+| [Docker](./mcp-servers/docker)                          | latest |
+| [Dockerhub](./mcp-servers/dockerhub)                    | latest |
+| [E2B](./mcp-servers/e2b)                                | latest |
+| [ElevenLabs](./mcp-servers/elevenlabs)                  | latest |
+| [Fetch](./mcp-servers/fetch)                            | latest |
+| [Firecrawl](./mcp-servers/firecrawl)                    | latest |
+| [Filesystem](./mcp-servers/filesystem)                  | latest |
+| [Grafana](./mcp-servers/grafana)                        | latest |
+| [Markdownify](./mcp-servers/markdownify)                | latest |
+| [Markitdown](./mcp-servers/markitdown)                  | latest |
+| [Memory](./mcp-servers/memory)                          | latest |
+| [MongoDB](./mcp-servers/mongodb)                        | latest |
+| [Neo4j Cypher](./mcp-servers/neo4j-cypher)              | latest |
+| [Neo4j Memory](./mcp-servers/neo4j-memory)              | latest |
+| [Notion](./mcp-servers/notion)                          | latest |
+| [OpenAPI Schema](./mcp-servers/openapi-schema)          | latest |
+| [OpenAPI](./mcp-servers/openapi)                        | latest |
+| [OpenWeather](./mcp-servers/openweather)                | latest |
+| [Paper Search](./mcp-servers/paper-search)              | latest |
+| [Playwright](./mcp-servers/playwright)                  | latest |
+| [Redis MCP](./mcp-servers/redis-mcp)                    | latest |
+| [Rust Filesystem](./mcp-servers/rust-mcp-filesystem)    | latest |
+| [Sequential Thinking](./mcp-servers/sequentialthinking) | latest |
+| [SQLite](./mcp-servers/sqlite)                          | latest |
+| [Tavily](./mcp-servers/tavily)                          | latest |
+| [Text to GraphQL](./mcp-servers/text-to-graphql)        | latest |
+| [Time](./mcp-servers/time)                              | latest |
+| [Wolfram Alpha](./mcp-servers/wolfram-alpha)            | latest |
+| [YouTube Transcript](./mcp-servers/youtube-transcript)  | latest |
 
 ## 规范
 

@@ -1,0 +1,31 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "3"
+  deploy:
+    resources:
+      limits:
+        cpus: '1.00'
+        memory: 512M
+      reservations:
+        cpus: '0.25'
+        memory: 128M
+
+services:
+  mcp-youtube-transcript:
+    <<: *default
+    image: mcp/youtube-transcript:${MCP_YOUTUBE_TRANSCRIPT_VERSION:-latest}
+    container_name: mcp-youtube-transcript
+    environment:
+      - TZ=${TZ:-UTC}
+    ports:
+      - "${MCP_YOUTUBE_TRANSCRIPT_PORT_OVERRIDE:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
