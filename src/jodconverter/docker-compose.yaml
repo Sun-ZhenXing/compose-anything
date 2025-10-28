@@ -1,0 +1,38 @@
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  officeconverter:
+    <<: *default
+    image: ghcr.io/eugenmayer/kontextwork-converter:${OFFICECONVERTER_VERSION:-latest}
+    ports:
+      - "${OFFICECONVERTER_PORT_OVERRIDE:-8000}:8000"
+    volumes:
+      - officeconverter_config:/etc/app
+    environment:
+      - TZ=${TZ:-UTC}
+      - CONVERTER_LIBREOFFICE_INSTANCES=${CONVERTER_LIBREOFFICE_INSTANCES:-2}
+      - CONVERTER_QUEUE_SIZE=${CONVERTER_QUEUE_SIZE:-1000}
+      - JAVA_OPTS=${JAVA_OPTS:--Xmx1024m}
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 2G
+        reservations:
+          cpus: '0.50'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  officeconverter_config:

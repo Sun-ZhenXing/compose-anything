@@ -31,9 +31,11 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [HashiCorp Consul](./src/consul)                         | 1.20.3                       |
 | [IOPaint](./src/io-paint)                                | latest                       |
 | [Jenkins](./src/jenkins)                                 | 2.486-lts                    |
+| [JODConverter](./src/jodconverter)                       | latest                       |
 | [Kibana](./src/kibana)                                   | 8.16.1                       |
 | [Kodbox](./src/kodbox)                                   | 1.62                         |
 | [Kong](./src/kong)                                       | 3.8.0                        |
+| [LibreOffice](./src/libreoffice)                         | latest                       |
 | [Langfuse](./src/langfuse)                               | 3.115.0                      |
 | [LiteLLM](./src/litellm)                                 | main-stable                  |
 | [Logstash](./src/logstash)                               | 8.16.1                       |
@@ -59,6 +61,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [OpenList](./src/openlist)                               | latest                       |
 | [PocketBase](./src/pocketbase)                           | 0.30.0                       |
 | [Portainer](./src/portainer)                             | 2.27.3-alpine                |
+| [Portkey AI Gateway](./src/portkey-gateway)              | latest                       |
 | [PostgreSQL](./src/postgres)                             | 17.6                         |
 | [Prometheus](./src/prometheus)                           | 3.5.0                        |
 | [Qdrant](./src/qdrant)                                   | 1.15.4                       |
