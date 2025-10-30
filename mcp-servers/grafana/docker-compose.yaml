@@ -67,8 +67,5 @@ services:
 
 volumes:
   grafana_data:
-    driver: local
   grafana_config:
-    driver: local
   grafana_logs:
-    driver: local

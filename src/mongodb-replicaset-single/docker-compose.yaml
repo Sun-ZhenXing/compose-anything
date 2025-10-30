@@ -4,6 +4,7 @@ x-default: &default
     driver: json-file
     options:
       max-size: 100m
+      max-file: "3"
 
 x-mongo: &mongo
   <<: *default
@@ -105,4 +106,3 @@ services:
 
 volumes:
   mongo_data:
-    driver: local

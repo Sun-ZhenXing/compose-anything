@@ -15,7 +15,6 @@ services:
       - TZ=${TZ:-UTC}
     ports:
       - "${PLAYWRIGHT_PORT_OVERRIDE:-8000}:8000"
-    # 如果需要访问本地文件,可以挂载卷
     volumes:
       - playwright_data:/app/data
     healthcheck:
@@ -32,11 +31,9 @@ services:
         reservations:
           cpus: '0.5'
           memory: 512M
-    # Playwright 需要额外的权限来运行浏览器
     security_opt:
       - seccomp:unconfined
     shm_size: '2gb'
 
 volumes:
   playwright_data:
-    driver: local
