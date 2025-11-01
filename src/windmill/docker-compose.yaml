@@ -151,14 +151,14 @@ services:
       - "${WINDMILL_LSP_PORT:-3001}:3001"
     deploy:
       resources:
+        reservations:
+          cpus: "0.1"
+          memory: "128M"
         limits:
           cpus: "0.5"
           memory: "512M"
 
 volumes:
   postgres_data:
-    driver: local
   windmill_server_data:
-    driver: local
   windmill_worker_data:
-    driver: local

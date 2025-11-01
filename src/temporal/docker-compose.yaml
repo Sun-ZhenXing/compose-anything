@@ -129,6 +129,9 @@ services:
     tty: true
     deploy:
       resources:
+        reservations:
+          cpus: "0.1"
+          memory: "128M"
         limits:
           cpus: "0.5"
           memory: "256M"
@@ -161,6 +164,4 @@ services:
 
 volumes:
   postgres_data:
-    driver: local
   temporal_data:
-    driver: local

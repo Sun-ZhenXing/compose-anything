@@ -1,0 +1,129 @@
+# Langflow - Visual Framework for Building AI Applications
+# https://github.com/langflow-ai/langflow
+#
+# Langflow is a low-code app builder for RAG and multi-agent AI applications.
+# It's Python-based and agnostic to any model, API, or database.
+#
+# Key Features:
+# - Visual flow builder for AI applications
+# - Support for multiple LLMs (OpenAI, Anthropic, Google, etc.)
+# - Built-in components for RAG, agents, and chains
+# - Custom component support
+# - Real-time monitoring and logging
+# - Multi-user support with authentication
+#
+# Default Credentials:
+# - Access UI at http://localhost:7860
+# - No authentication by default (set LANGFLOW_AUTO_LOGIN=false to enable)
+#
+# Security Notes:
+# - Set LANGFLOW_SECRET_KEY for production
+# - Use strong database passwords
+# - Enable authentication in production
+# - Store API keys as global variables, not in flows
+# - Enable SSL/TLS in production
+#
+# License: MIT (https://github.com/langflow-ai/langflow/blob/main/LICENSE)
+
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  langflow:
+    <<: *default
+    image: langflowai/langflow:${LANGFLOW_VERSION:-latest}
+    pull_policy: always
+    container_name: langflow
+    ports:
+      - "${LANGFLOW_PORT_OVERRIDE:-7860}:7860"
+    environment:
+      # Database configuration
+      - LANGFLOW_DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+
+      # Storage configuration
+      - LANGFLOW_CONFIG_DIR=${LANGFLOW_CONFIG_DIR:-/app/langflow}
+
+      # Server configuration
+      - LANGFLOW_HOST=${LANGFLOW_HOST:-0.0.0.0}
+      - LANGFLOW_PORT=7860
+      - LANGFLOW_WORKERS=${LANGFLOW_WORKERS:-1}
+
+      # Authentication - IMPORTANT: Configure for production
+      - LANGFLOW_AUTO_LOGIN=${LANGFLOW_AUTO_LOGIN:-true}
+      - LANGFLOW_SUPERUSER=${LANGFLOW_SUPERUSER:-langflow}
+      - LANGFLOW_SUPERUSER_PASSWORD=${LANGFLOW_SUPERUSER_PASSWORD:-langflow}
+      - LANGFLOW_SECRET_KEY=${LANGFLOW_SECRET_KEY:-}
+
+      # Features
+      - LANGFLOW_AUTO_SAVING=${LANGFLOW_AUTO_SAVING:-true}
+      - LANGFLOW_AUTO_SAVING_INTERVAL=${LANGFLOW_AUTO_SAVING_INTERVAL:-1000}
+      - LANGFLOW_STORE_ENVIRONMENT_VARIABLES=${LANGFLOW_STORE_ENVIRONMENT_VARIABLES:-true}
+      - LANGFLOW_FALLBACK_TO_ENV_VAR=${LANGFLOW_FALLBACK_TO_ENV_VAR:-true}
+
+      # Optional: Custom components path
+      - LANGFLOW_COMPONENTS_PATH=${LANGFLOW_COMPONENTS_PATH:-}
+
+      # Optional: Load flows from directory
+      - LANGFLOW_LOAD_FLOWS_PATH=${LANGFLOW_LOAD_FLOWS_PATH:-}
+
+      # Logging
+      - LANGFLOW_LOG_LEVEL=${LANGFLOW_LOG_LEVEL:-error}
+
+      # Other settings
+      - TZ=${TZ:-UTC}
+      - DO_NOT_TRACK=${DO_NOT_TRACK:-false}
+
+    volumes:
+      - langflow_data:${LANGFLOW_CONFIG_DIR:-/app/langflow}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:7860/health_check', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: "${LANGFLOW_CPU_LIMIT:-2.0}"
+          memory: "${LANGFLOW_MEMORY_LIMIT:-2G}"
+        reservations:
+          cpus: "${LANGFLOW_CPU_RESERVATION:-0.5}"
+          memory: "${LANGFLOW_MEMORY_RESERVATION:-512M}"
+
+  postgres:
+    <<: *default
+    image: postgres:${POSTGRES_VERSION:-16-alpine}
+    container_name: langflow-postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-langflow}
+      - POSTGRES_USER=${POSTGRES_USER:-langflow}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-langflow}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF8
+      - TZ=${TZ:-UTC}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-langflow} -d ${POSTGRES_DB:-langflow}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "${POSTGRES_CPU_LIMIT:-1.0}"
+          memory: "${POSTGRES_MEMORY_LIMIT:-1G}"
+        reservations:
+          cpus: "${POSTGRES_CPU_RESERVATION:-0.25}"
+          memory: "${POSTGRES_MEMORY_RESERVATION:-256M}"
+
+volumes:
+  postgres_data:
+  langflow_data:

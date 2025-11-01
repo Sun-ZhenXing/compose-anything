@@ -134,8 +134,5 @@ services:
 
 volumes:
   postgres_data:
-    driver: local
   elasticsearch_data:
-    driver: local
   conductor_logs:
-    driver: local

@@ -118,8 +118,5 @@ services:
 
 volumes:
   postgres_data:
-    driver: local
   kestra_data:
-    driver: local
   kestra_logs:
-    driver: local
