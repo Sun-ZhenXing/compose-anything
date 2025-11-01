@@ -1,0 +1,166 @@
+# Temporal - Durable Execution Platform
+# https://github.com/temporalio/temporal
+#
+# Temporal is a scalable and reliable runtime for microservice orchestration that enables
+# developers to write simple, resilient code without worrying about failures, retries, or
+# state management.
+#
+# Key Features:
+# - Durable workflow execution with automatic state management
+# - Built-in retry and error handling
+# - Support for long-running workflows (days, months, years)
+# - Multiple language SDKs (Go, Java, TypeScript, Python, PHP, .NET)
+# - Advanced visibility with search capabilities
+# - Multi-cluster replication support
+#
+# Default Credentials:
+# - Access Web UI at http://localhost:8233
+# - Frontend service at localhost:7233 (gRPC)
+# - No authentication by default
+#
+# Security Notes:
+# - Configure authentication and authorization in production
+# - Use strong database passwords
+# - Enable mTLS for production deployments
+# - Restrict network access appropriately
+#
+# License: MIT (https://github.com/temporalio/temporal/blob/master/LICENSE)
+
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  temporal:
+    <<: *default
+    image: temporalio/auto-setup:${TEMPORAL_VERSION:-1.24.2}
+    container_name: temporal
+    ports:
+      - "${TEMPORAL_FRONTEND_PORT_OVERRIDE:-7233}:7233"  # Frontend gRPC
+    environment:
+      # Database configuration
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_SEEDS=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PWD=${POSTGRES_PASSWORD}
+
+      # Visibility database (using same Postgres)
+      - DBNAME=${POSTGRES_DB}
+      - VISIBILITY_DBNAME=${POSTGRES_DB}
+
+      # Server configuration
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
+      - ENABLE_ES=false
+      - SKIP_DB_CREATE=false
+      - SKIP_DEFAULT_NAMESPACE_CREATION=false
+
+      # Other settings
+      - TZ=${TZ:-UTC}
+      - LOG_LEVEL=${TEMPORAL_LOG_LEVEL:-info}
+
+    volumes:
+      - temporal_data:/etc/temporal
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "tctl", "--address", "temporal:7233", "cluster", "health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    deploy:
+      resources:
+        limits:
+          cpus: "${TEMPORAL_CPU_LIMIT:-2.0}"
+          memory: "${TEMPORAL_MEMORY_LIMIT:-2G}"
+        reservations:
+          cpus: "${TEMPORAL_CPU_RESERVATION:-0.5}"
+          memory: "${TEMPORAL_MEMORY_RESERVATION:-512M}"
+
+  temporal-ui:
+    <<: *default
+    image: temporalio/ui:${TEMPORAL_UI_VERSION:-2.28.0}
+    container_name: temporal-ui
+    ports:
+      - "${TEMPORAL_UI_PORT_OVERRIDE:-8233}:8080"
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:8233
+      - TEMPORAL_UI_ENABLED=true
+      - TZ=${TZ:-UTC}
+    depends_on:
+      temporal:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "${TEMPORAL_UI_CPU_LIMIT:-0.5}"
+          memory: "${TEMPORAL_UI_MEMORY_LIMIT:-512M}"
+        reservations:
+          cpus: "${TEMPORAL_UI_CPU_RESERVATION:-0.1}"
+          memory: "${TEMPORAL_UI_MEMORY_RESERVATION:-128M}"
+
+  temporal-admin-tools:
+    <<: *default
+    image: temporalio/admin-tools:${TEMPORAL_VERSION:-1.24.2}
+    container_name: temporal-admin-tools
+    profiles:
+      - dev
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CLI_ADDRESS=temporal:7233
+      - TZ=${TZ:-UTC}
+    depends_on:
+      temporal:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "256M"
+
+  postgres:
+    <<: *default
+    image: postgres:${POSTGRES_VERSION:-16-alpine}
+    container_name: temporal-postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-temporal}
+      - POSTGRES_USER=${POSTGRES_USER:-temporal}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-temporal}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF8
+      - TZ=${TZ:-UTC}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-temporal} -d ${POSTGRES_DB:-temporal}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "${POSTGRES_CPU_LIMIT:-1.0}"
+          memory: "${POSTGRES_MEMORY_LIMIT:-1G}"
+        reservations:
+          cpus: "${POSTGRES_CPU_RESERVATION:-0.25}"
+          memory: "${POSTGRES_MEMORY_RESERVATION:-256M}"
+
+volumes:
+  postgres_data:
+    driver: local
+  temporal_data:
+    driver: local

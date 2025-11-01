@@ -32,6 +32,8 @@ x-mongo: &mongo
     timeout: 3s
     retries: 10
     start_period: 30s
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
   deploy:
     resources:
       limits:
@@ -60,7 +62,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-password}
       MONGO_REPLICA_SET_NAME: ${MONGO_REPLICA_SET_NAME:-rs0}
       MONGO_PORT_1: ${MONGO_PORT_OVERRIDE_1:-27017}
-      MONGO_HOST: ${MONGO_HOST:-mongo1}
+      MONGO_HOST: ${MONGO_HOST:-host.docker.internal}
     volumes:
       - ./secrets/rs0.key:/data/rs0.key:ro
     entrypoint:
@@ -80,7 +82,7 @@ services:
             const config = {
               _id: '$${MONGO_REPLICA_SET_NAME}',
               members: [
-                { _id: 0, host: 'mongo1:27017' }
+                { _id: 0, host: '$${MONGO_HOST}:$${MONGO_PORT_1}' }
               ]
             };
 

@@ -1,0 +1,164 @@
+# Windmill - Developer Infrastructure Platform
+# https://github.com/windmill-labs/windmill
+#
+# Windmill is an open-source developer platform and workflow engine that allows you to
+# quickly build production-grade multi-step automations and internal apps from minimal
+# scripts in Python, TypeScript, Go, Bash, SQL, or any Docker image.
+#
+# Key Features:
+# - Write scripts in Python, TypeScript, Go, Bash, SQL
+# - Auto-generated UIs from scripts
+# - Visual workflow builder with code execution
+# - Built-in scheduling and webhooks
+# - Version control and audit logs
+# - Multi-tenant workspaces
+#
+# Default Credentials:
+# - Access UI at http://localhost:8000
+# - Default email: admin@windmill.dev
+# - Default password: changeme
+#
+# Security Notes:
+# - Change default admin credentials immediately
+# - Use strong database passwords
+# - Enable SSL/TLS in production
+# - Configure proper authentication (OAuth, SAML)
+#
+# License: AGPLv3 (https://github.com/windmill-labs/windmill/blob/main/LICENSE)
+
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  windmill-server:
+    <<: *default
+    image: ghcr.io/windmill-labs/windmill:${WINDMILL_VERSION:-main}
+    container_name: windmill-server
+    ports:
+      - "${WINDMILL_PORT_OVERRIDE:-8000}:8000"
+    environment:
+      # Database configuration
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+
+      # Server configuration
+      - MODE=server
+      - BASE_URL=${WINDMILL_BASE_URL:-http://localhost:8000}
+
+      # Authentication
+      - SUPERADMIN_EMAIL=${WINDMILL_SUPERADMIN_EMAIL:-admin@windmill.dev}
+      - SUPERADMIN_PASSWORD=${WINDMILL_SUPERADMIN_PASSWORD:-changeme}
+
+      # Optional: License key for enterprise features
+      - LICENSE_KEY=${WINDMILL_LICENSE_KEY:-}
+
+      # Other settings
+      - TZ=${TZ:-UTC}
+      - RUST_LOG=${WINDMILL_LOG_LEVEL:-info}
+
+    volumes:
+      - windmill_server_data:/tmp/windmill
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8000/api/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: "${WINDMILL_SERVER_CPU_LIMIT:-1.0}"
+          memory: "${WINDMILL_SERVER_MEMORY_LIMIT:-1G}"
+        reservations:
+          cpus: "${WINDMILL_SERVER_CPU_RESERVATION:-0.25}"
+          memory: "${WINDMILL_SERVER_MEMORY_RESERVATION:-256M}"
+
+  windmill-worker:
+    <<: *default
+    image: ghcr.io/windmill-labs/windmill:${WINDMILL_VERSION:-main}
+    container_name: windmill-worker
+    environment:
+      # Database configuration
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+
+      # Worker configuration
+      - MODE=worker
+      - WORKER_TAGS=${WINDMILL_WORKER_TAGS:-}
+      - NUM_WORKERS=${WINDMILL_NUM_WORKERS:-3}
+
+      # Other settings
+      - TZ=${TZ:-UTC}
+      - RUST_LOG=${WINDMILL_LOG_LEVEL:-info}
+
+    volumes:
+      - windmill_worker_data:/tmp/windmill
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # For Docker execution
+    depends_on:
+      postgres:
+        condition: service_healthy
+      windmill-server:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "${WINDMILL_WORKER_CPU_LIMIT:-2.0}"
+          memory: "${WINDMILL_WORKER_MEMORY_LIMIT:-2G}"
+        reservations:
+          cpus: "${WINDMILL_WORKER_CPU_RESERVATION:-0.5}"
+          memory: "${WINDMILL_WORKER_MEMORY_RESERVATION:-512M}"
+
+  postgres:
+    <<: *default
+    image: postgres:${POSTGRES_VERSION:-16-alpine}
+    container_name: windmill-postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-windmill}
+      - POSTGRES_USER=${POSTGRES_USER:-windmill}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF8
+      - TZ=${TZ:-UTC}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-windmill} -d ${POSTGRES_DB:-windmill}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "${POSTGRES_CPU_LIMIT:-1.0}"
+          memory: "${POSTGRES_MEMORY_LIMIT:-1G}"
+        reservations:
+          cpus: "${POSTGRES_CPU_RESERVATION:-0.25}"
+          memory: "${POSTGRES_MEMORY_RESERVATION:-256M}"
+
+  # Optional: LSP service for code intelligence
+  windmill-lsp:
+    <<: *default
+    image: ghcr.io/windmill-labs/windmill-lsp:${WINDMILL_LSP_VERSION:-latest}
+    container_name: windmill-lsp
+    profiles:
+      - dev
+    ports:
+      - "${WINDMILL_LSP_PORT:-3001}:3001"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "512M"
+
+volumes:
+  postgres_data:
+    driver: local
+  windmill_server_data:
+    driver: local
+  windmill_worker_data:
+    driver: local

@@ -1,0 +1,141 @@
+# Conductor - Netflix Workflow Orchestration Engine
+# https://github.com/conductor-oss/conductor
+#
+# Conductor is a platform for orchestrating microservices and workflows. It was
+# originally developed by Netflix to manage their microservices architecture.
+#
+# Key Features:
+# - Visual workflow designer with drag-and-drop interface
+# - Support for complex workflows with decision logic
+# - Task retry and error handling mechanisms
+# - Scalable architecture for high-throughput scenarios
+# - REST API and multiple language SDKs
+#
+# Default Credentials:
+# - Access UI at http://localhost:5000
+# - No authentication by default (add reverse proxy with auth in production)
+#
+# Security Notes:
+# - Add authentication layer in production (OAuth2, LDAP, etc.)
+# - Use strong database passwords
+# - Enable SSL/TLS in production
+# - Restrict network access to Conductor services
+#
+# License: Apache-2.0 (https://github.com/conductor-oss/conductor/blob/main/LICENSE)
+
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  conductor-server:
+    <<: *default
+    image: conductor:server
+    build:
+      context: https://github.com/conductor-oss/conductor.git#main:docker/server
+      dockerfile: Dockerfile
+    container_name: conductor-server
+    ports:
+      - "${CONDUCTOR_SERVER_PORT_OVERRIDE:-8080}:8080"
+      - "${CONDUCTOR_UI_PORT_OVERRIDE:-5000}:5000"
+    environment:
+      # Database configuration
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      - spring.datasource.username=${POSTGRES_USER}
+      - spring.datasource.password=${POSTGRES_PASSWORD}
+
+      # Elasticsearch configuration
+      - conductor.elasticsearch.url=http://elasticsearch:9200
+      - conductor.indexing.enabled=true
+
+      # Server configuration
+      - conductor.grpc-server.port=${CONDUCTOR_GRPC_PORT:-8090}
+      - conductor.metrics-prometheus.enabled=true
+      - LOG_LEVEL=${CONDUCTOR_LOG_LEVEL:-INFO}
+      - TZ=${TZ:-UTC}
+
+    volumes:
+      - conductor_logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: "${CONDUCTOR_CPU_LIMIT:-2.0}"
+          memory: "${CONDUCTOR_MEMORY_LIMIT:-2G}"
+        reservations:
+          cpus: "${CONDUCTOR_CPU_RESERVATION:-0.5}"
+          memory: "${CONDUCTOR_MEMORY_RESERVATION:-512M}"
+
+  postgres:
+    <<: *default
+    image: postgres:${POSTGRES_VERSION:-16-alpine}
+    container_name: conductor-postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-conductor}
+      - POSTGRES_USER=${POSTGRES_USER:-conductor}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-conductor}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF8
+      - TZ=${TZ:-UTC}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-conductor} -d ${POSTGRES_DB:-conductor}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "${POSTGRES_CPU_LIMIT:-1.0}"
+          memory: "${POSTGRES_MEMORY_LIMIT:-1G}"
+        reservations:
+          cpus: "${POSTGRES_CPU_RESERVATION:-0.25}"
+          memory: "${POSTGRES_MEMORY_RESERVATION:-256M}"
+
+  elasticsearch:
+    <<: *default
+    image: elasticsearch:${ELASTICSEARCH_VERSION:-8.11.0}
+    container_name: conductor-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms${ELASTICSEARCH_HEAP_SIZE:-512m} -Xmx${ELASTICSEARCH_HEAP_SIZE:-512m}
+      - TZ=${TZ:-UTC}
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: "${ELASTICSEARCH_CPU_LIMIT:-2.0}"
+          memory: "${ELASTICSEARCH_MEMORY_LIMIT:-2G}"
+        reservations:
+          cpus: "${ELASTICSEARCH_CPU_RESERVATION:-0.5}"
+          memory: "${ELASTICSEARCH_MEMORY_RESERVATION:-1G}"
+
+volumes:
+  postgres_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
+  conductor_logs:
+    driver: local

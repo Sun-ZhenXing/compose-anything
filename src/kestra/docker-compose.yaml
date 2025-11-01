@@ -1,0 +1,125 @@
+# Kestra - Event-driven Orchestration Platform
+# https://github.com/kestra-io/kestra
+#
+# Kestra is an infinitely scalable orchestration and scheduling platform that allows
+# you to declare, run, schedule, and monitor millions of workflows declaratively in code.
+#
+# Key Features:
+# - Declarative YAML-based workflow definitions
+# - Event-driven orchestration with triggers
+# - Built-in scheduling and cron support
+# - Support for multiple programming languages (Python, Node.js, etc.)
+# - Real-time monitoring and logging
+# - Plugin ecosystem for integrations
+#
+# Default Credentials:
+# - Access UI at http://localhost:8080
+# - No authentication by default (configure in production)
+#
+# Security Notes:
+# - Configure authentication in production (basic auth, OAuth2, OIDC)
+# - Use strong database passwords
+# - Enable SSL/TLS in production
+# - Restrict network access appropriately
+#
+# License: Apache-2.0 (https://github.com/kestra-io/kestra/blob/develop/LICENSE)
+
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  kestra:
+    <<: *default
+    image: kestra/kestra:${KESTRA_VERSION:-latest-full}
+    container_name: kestra
+    command: server standalone
+    ports:
+      - "${KESTRA_PORT_OVERRIDE:-8080}:8080"
+      - "${KESTRA_MANAGEMENT_PORT:-8081}:8081"
+    environment:
+      # Database configuration
+      - KESTRA_CONFIGURATION=datasources.postgres.url=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      - KESTRA_CONFIGURATION_datasources_postgres_username=${POSTGRES_USER}
+      - KESTRA_CONFIGURATION_datasources_postgres_password=${POSTGRES_PASSWORD}
+      - KESTRA_CONFIGURATION_datasources_postgres_driverClassName=org.postgresql.Driver
+
+      # Server configuration
+      - KESTRA_CONFIGURATION_micronaut_server_port=8080
+      - KESTRA_CONFIGURATION_kestra_server_basic--auth_enabled=${KESTRA_BASIC_AUTH_ENABLED:-false}
+      - KESTRA_CONFIGURATION_kestra_server_basic--auth_username=${KESTRA_BASIC_AUTH_USERNAME:-admin}
+      - KESTRA_CONFIGURATION_kestra_server_basic--auth_password=${KESTRA_BASIC_AUTH_PASSWORD:-admin}
+
+      # Storage configuration
+      - KESTRA_CONFIGURATION_kestra_storage_type=local
+      - KESTRA_CONFIGURATION_kestra_storage_local_base--path=/app/storage
+
+      # Repository configuration
+      - KESTRA_CONFIGURATION_kestra_repository_type=postgres
+
+      # Queue configuration
+      - KESTRA_CONFIGURATION_kestra_queue_type=postgres
+
+      # Other settings
+      - TZ=${TZ:-UTC}
+      - JAVA_OPTS=${KESTRA_JAVA_OPTS:--Xmx1g}
+
+    volumes:
+      - kestra_data:/app/storage
+      - kestra_logs:/app/logs
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # For Docker task runner
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: "${KESTRA_CPU_LIMIT:-2.0}"
+          memory: "${KESTRA_MEMORY_LIMIT:-2G}"
+        reservations:
+          cpus: "${KESTRA_CPU_RESERVATION:-0.5}"
+          memory: "${KESTRA_MEMORY_RESERVATION:-512M}"
+
+  postgres:
+    <<: *default
+    image: postgres:${POSTGRES_VERSION:-16-alpine}
+    container_name: kestra-postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-kestra}
+      - POSTGRES_USER=${POSTGRES_USER:-kestra}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-k3str4}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF8
+      - TZ=${TZ:-UTC}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kestra} -d ${POSTGRES_DB:-kestra}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "${POSTGRES_CPU_LIMIT:-1.0}"
+          memory: "${POSTGRES_MEMORY_LIMIT:-1G}"
+        reservations:
+          cpus: "${POSTGRES_CPU_RESERVATION:-0.25}"
+          memory: "${POSTGRES_MEMORY_RESERVATION:-256M}"
+
+volumes:
+  postgres_data:
+    driver: local
+  kestra_data:
+    driver: local
+  kestra_logs:
+    driver: local

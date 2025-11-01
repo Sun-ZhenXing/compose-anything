@@ -1,0 +1,116 @@
+# Budibase - Low-code platform for building internal tools
+# https://github.com/Budibase/budibase
+#
+# Budibase is an all-in-one low-code platform for building modern internal tools and
+# dashboards. It allows you to build apps quickly with a spreadsheet-like database,
+# drag-and-drop UI, and pre-built components.
+#
+# Key Features:
+# - Visual app builder with drag-and-drop interface
+# - Built-in database or connect to external data sources
+# - Multi-tenant support with user management
+# - REST API, GraphQL, and webhooks support
+# - Custom plugins and automation support
+#
+# Default Credentials:
+# - Access UI at http://localhost:10000
+# - Default admin email: admin@budibase.com
+# - Default password: changeme
+#
+# Security Notes:
+# - Change default admin credentials immediately
+# - Use strong INTERNAL_API_KEY and JWT_SECRET in production
+# - Store sensitive data in .env file
+# - Enable SSL/TLS in production environments
+#
+# License: GPL-3.0 (https://github.com/Budibase/budibase/blob/master/LICENSE)
+
+x-default: &default
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  budibase:
+    <<: *default
+    image: budibase/budibase:${BUDIBASE_VERSION:-3.23.0}
+    container_name: budibase
+    ports:
+      - "${BUDIBASE_PORT_OVERRIDE:-10000}:80"
+    environment:
+      # Core settings
+      - APP_PORT=${BUDIBASE_APP_PORT:-4002}
+      - WORKER_PORT=${BUDIBASE_WORKER_PORT:-4003}
+      - MINIO_PORT=${BUDIBASE_MINIO_PORT:-4004}
+      - COUCH_DB_PORT=${BUDIBASE_COUCH_DB_PORT:-4005}
+      - REDIS_PORT=${BUDIBASE_REDIS_PORT:-6379}
+      - BUDIBASE_ENVIRONMENT=${BUDIBASE_ENVIRONMENT:-PRODUCTION}
+
+      # Security - REQUIRED: Override these in .env file
+      - INTERNAL_API_KEY=${BUDIBASE_INTERNAL_API_KEY:-changeme_internal_api_key_minimum_32_chars}
+      - JWT_SECRET=${BUDIBASE_JWT_SECRET:-changeme_jwt_secret_minimum_32_chars}
+      - MINIO_ACCESS_KEY=${BUDIBASE_MINIO_ACCESS_KEY:-budibase}
+      - MINIO_SECRET_KEY=${BUDIBASE_MINIO_SECRET_KEY:-budibase}
+      - COUCHDB_USER=${BUDIBASE_COUCHDB_USER:-admin}
+      - COUCHDB_PASSWORD=${BUDIBASE_COUCHDB_PASSWORD:-admin}
+
+      # Admin user - REQUIRED: Override these in .env file
+      - BB_ADMIN_USER_EMAIL=${BUDIBASE_ADMIN_EMAIL:-admin@budibase.com}
+      - BB_ADMIN_USER_PASSWORD=${BUDIBASE_ADMIN_PASSWORD:-changeme}
+
+      # Optional settings
+      - DEPLOYMENT_ENVIRONMENT=${BUDIBASE_DEPLOYMENT_ENVIRONMENT:-docker}
+      - POSTHOG_TOKEN=${BUDIBASE_POSTHOG_TOKEN:-}
+      - ACCOUNT_PORTAL_URL=${BUDIBASE_ACCOUNT_PORTAL_URL:-https://account.budibase.app}
+      - REDIS_URL=redis://redis:6379
+      - TZ=${TZ:-UTC}
+
+    volumes:
+      - budibase_data:/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: "${BUDIBASE_CPU_LIMIT:-2.0}"
+          memory: "${BUDIBASE_MEMORY_LIMIT:-2G}"
+        reservations:
+          cpus: "${BUDIBASE_CPU_RESERVATION:-0.5}"
+          memory: "${BUDIBASE_MEMORY_RESERVATION:-512M}"
+
+  redis:
+    <<: *default
+    image: redis:${REDIS_VERSION:-7-alpine}
+    container_name: budibase-redis
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "${REDIS_CPU_LIMIT:-0.5}"
+          memory: "${REDIS_MEMORY_LIMIT:-512M}"
+        reservations:
+          cpus: "${REDIS_CPU_RESERVATION:-0.1}"
+          memory: "${REDIS_MEMORY_RESERVATION:-128M}"
+
+volumes:
+  budibase_data:
+    driver: local
+  redis_data:
+    driver: local
