@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   portainer:
-    <<: *default
+    <<: *defaults
     image: portainer/portainer-ce:${PORTAINER_VERSION:-2.27.3-alpine}
     ports:
       - "${PORTAINER_WEB_PORT_OVERRIDE:-9000}:9000"

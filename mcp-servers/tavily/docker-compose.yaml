@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   tavily:
-    <<: *default
+    <<: *defaults
     image: mcp/tavily:${TAVILY_VERSION:-latest}
     environment:
       - TAVILY_API_KEY=${TAVILY_API_KEY}

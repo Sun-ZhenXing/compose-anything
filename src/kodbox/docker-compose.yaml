@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   kodbox:
-    <<: *default
+    <<: *defaults
     image: kodcloud/kodbox:${KODBOX_VERSION:-1.62}
     ports:
       - "${KODBOX_PORT:-80}:80"
@@ -45,7 +45,7 @@ services:
       start_period: 30s
 
   kodbox-db:
-    <<: *default
+    <<: *defaults
     image: mysql:${MYSQL_VERSION:-9.4.0}
     environment:
       - TZ=${TZ:-UTC}
@@ -75,7 +75,7 @@ services:
           memory: 256M
 
   kodbox-redis:
-    <<: *default
+    <<: *defaults
     image: redis:${REDIS_VERSION:-8.2.1-alpine3.22}
     command:
       - redis-server

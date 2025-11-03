@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   mcp-arxiv:
-    <<: *default
+    <<: *defaults
     image: mcp/arxiv-mcp-server:${MCP_ARXIV_VERSION:-latest}
     environment:
       - ARXIV_STORAGE_PATH=${ARXIV_STORAGE_PATH:-/data/papers}

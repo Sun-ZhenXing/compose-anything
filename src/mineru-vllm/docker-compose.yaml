@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -7,7 +7,7 @@ x-default: &default
       max-file: "3"
 
 x-mineru-vllm: &mineru-vllm
-  <<: *default
+  <<: *defaults
   image: ${MINERU_DOCKER_IMAGE:-alexsuntop/mineru:2.6.2}
   build:
     context: .

@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   mcp-wolfram-alpha:
-    <<: *default
+    <<: *defaults
     image: mcp/wolfram-alpha:${MCP_WOLFRAM_ALPHA_VERSION:-latest}
     environment:
       - WOLFRAM_ALPHA_APPID=${WOLFRAM_ALPHA_APPID}

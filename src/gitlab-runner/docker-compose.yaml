@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   gitlab-runner:
-    <<: *default
+    <<: *defaults
     image: gitlab/gitlab-runner:${GITLAB_RUNNER_VERSION:-alpine3.21-v18.4.0}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

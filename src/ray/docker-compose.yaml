@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   ray-head:
-    <<: *default
+    <<: *defaults
     image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
     command: ray start --head --dashboard-host=0.0.0.0 --port=6379 --block
     ports:
@@ -37,7 +37,7 @@ services:
       start_period: 30s
 
   ray-worker-1:
-    <<: *default
+    <<: *defaults
     image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
     command: ray start --address=ray-head:6379 --block
     depends_on:
@@ -57,7 +57,7 @@ services:
           memory: 2G
 
   ray-worker-2:
-    <<: *default
+    <<: *defaults
     image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
     command: ray start --address=ray-head:6379 --block
     depends_on:

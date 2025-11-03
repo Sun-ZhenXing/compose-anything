@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   apache:
-    <<: *default
+    <<: *defaults
     image: httpd:${APACHE_VERSION:-2.4.62-alpine3.20}
     ports:
       - "${APACHE_HTTP_PORT_OVERRIDE:-80}:80"

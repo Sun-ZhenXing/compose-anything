@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -9,7 +9,7 @@ x-default: &default
 services:
   # Zookeeper for Kafka coordination
   zookeeper:
-    <<: *default
+    <<: *defaults
     image: confluentinc/cp-zookeeper:${KAFKA_VERSION:-7.8.0}
     ports:
       - "${ZOOKEEPER_CLIENT_PORT_OVERRIDE:-2181}:2181"
@@ -42,7 +42,7 @@ services:
 
   # Kafka broker
   kafka:
-    <<: *default
+    <<: *defaults
     image: confluentinc/cp-kafka:${KAFKA_VERSION:-7.8.0}
     depends_on:
       zookeeper:
@@ -90,7 +90,7 @@ services:
 
   # Kafka UI (optional)
   kafka-ui:
-    <<: *default
+    <<: *defaults
     image: provectuslabs/kafka-ui:${KAFKA_UI_VERSION:-latest}
     depends_on:
       kafka:

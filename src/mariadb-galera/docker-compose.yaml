@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -7,7 +7,7 @@ x-default: &default
       max-file: "3"
 
 x-mariadb-galera: &mariadb-galera
-  <<: *default
+  <<: *defaults
   image: mariadb:${MARIADB_VERSION:-11.7.2}
   environment: &galera-env
     TZ: ${TZ:-UTC}

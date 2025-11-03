@@ -47,7 +47,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
     - Keep docs LLM-friendly;
     - List primary env vars and default ports in the README, and link to `README.md` / `README.zh.md`.
 
-Reference template: `.compose-template.yaml` in the repo root.
+Reference template: [`compose-template.yaml`](../../.compose-template.yaml) in the repo root.
 
 If you want to find image tags, try fetch url like `https://hub.docker.com/v2/repositories/library/nginx/tags?page_size=1&ordering=last_updated`.
 

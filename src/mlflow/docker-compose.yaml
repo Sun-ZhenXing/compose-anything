@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   postgres:
-    <<: *default
+    <<: *defaults
     image: postgres:${POSTGRES_VERSION:-17.6-alpine}
     environment:
       TZ: ${TZ:-UTC}
@@ -33,7 +33,7 @@ services:
       start_period: 30s
 
   minio:
-    <<: *default
+    <<: *defaults
     image: minio/minio:${MINIO_VERSION:-RELEASE.2025-01-07T16-13-09Z}
     command: server /data --console-address ":9001"
     environment:
@@ -61,7 +61,7 @@ services:
       start_period: 30s
 
   minio-init:
-    <<: *default
+    <<: *defaults
     image: minio/mc:${MINIO_MC_VERSION:-RELEASE.2025-01-07T17-25-52Z}
     depends_on:
       minio:
@@ -76,7 +76,7 @@ services:
     restart: "no"
 
   mlflow:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/mlflow/mlflow:${MLFLOW_VERSION:-v2.20.2}
     depends_on:
       postgres:

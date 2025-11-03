@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   mcp:
-    <<: *default
+    <<: *defaults
     image: mcp/redis:${MCP_REDIS_VERSION:-latest}
     environment:
       - REDIS_HOST=redis
@@ -36,7 +36,7 @@ services:
           memory: 128M
 
   redis:
-    <<: *default
+    <<: *defaults
     image: redis:${REDIS_VERSION:-7-alpine}
     command: redis-server --appendonly yes
     ports:

@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -7,7 +7,7 @@ x-default: &default
       max-file: "3"
 
 x-mongo: &mongo
-  <<: *default
+  <<: *defaults
   image: mongo:${MONGO_VERSION:-8.0.13}
   environment:
     TZ: ${TZ:-UTC}
@@ -59,7 +59,7 @@ services:
       - "${MONGO_PORT_OVERRIDE_3:-27019}:27017"
 
   mongo-init:
-    <<: *default
+    <<: *defaults
     image: mongo:${MONGO_VERSION:-8.0.13}
     restart: on-failure
     depends_on:

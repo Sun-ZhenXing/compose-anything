@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   mcp-docker:
-    <<: *default
+    <<: *defaults
     image: mcp/docker:${MCP_DOCKER_VERSION:-latest}
     environment:
       - DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}

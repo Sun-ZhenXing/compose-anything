@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -16,7 +16,7 @@ x-default: &default
 
 services:
   mcp-elevenlabs:
-    <<: *default
+    <<: *defaults
     image: mcp/elevenlabs:${MCP_ELEVENLABS_VERSION:-latest}
     container_name: mcp-elevenlabs
     environment:

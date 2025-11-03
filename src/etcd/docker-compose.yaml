@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   etcd:
-    <<: *default
+    <<: *defaults
     image: quay.io/coreos/etcd:${ETCD_VERSION:-v3.6.0}
     ports:
       - "${ETCD_CLIENT_PORT_OVERRIDE:-2379}:2379"

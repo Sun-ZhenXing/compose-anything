@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   vllm:
-    <<: *default
+    <<: *defaults
     image: vllm/vllm-openai:${VLLM_VERSION:-v0.8.0}
     ports:
       - "${VLLM_PORT_OVERRIDE:-8000}:8000"

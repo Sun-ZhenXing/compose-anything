@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   libreoffice:
-    <<: *default
+    <<: *defaults
     image: lscr.io/linuxserver/libreoffice:${LIBREOFFICE_VERSION:-latest}
     ports:
       - "${LIBREOFFICE_HTTP_PORT_OVERRIDE:-3000}:3000"

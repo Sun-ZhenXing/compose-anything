@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   gpustack:
-    <<: *default
+    <<: *defaults
     image: gpustack/gpustack:${GPUSTACK_VERSION:-v0.7.1}
     ports:
       - "${GPUSTACK_PORT_OVERRIDE:-80}:80"

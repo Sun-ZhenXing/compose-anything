@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   node-exporter:
-    <<: *default
+    <<: *defaults
     image: prom/node-exporter:${NODE_EXPORTER_VERSION:-v1.8.2}
     ports:
       - "${NODE_EXPORTER_PORT_OVERRIDE:-9100}:9100"

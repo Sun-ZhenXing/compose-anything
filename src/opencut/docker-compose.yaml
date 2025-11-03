@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   db:
-    <<: *default
+    <<: *defaults
     image: postgres:${POSTGRES_VERSION:-17}
     environment:
       TZ: ${TZ:-UTC}
@@ -35,7 +35,7 @@ services:
           memory: 256M
 
   redis:
-    <<: *default
+    <<: *defaults
     image: redis:${REDIS_VERSION:-7-alpine}
     ports:
       - "${REDIS_PORT_OVERRIDE:-6379}:6379"
@@ -55,7 +55,7 @@ services:
           memory: 128M
 
   serverless-redis-http:
-    <<: *default
+    <<: *defaults
     image: hiett/serverless-redis-http:${SERVERLESS_REDIS_HTTP_VERSION:-latest}
     ports:
       - "${SERVERLESS_REDIS_HTTP_PORT_OVERRIDE:-8079}:80"
@@ -82,7 +82,7 @@ services:
           memory: 64M
 
   web:
-    <<: *default
+    <<: *defaults
     image: ${OPENCUT_WEB_IMAGE:-opencut/web:latest}
     ports:
       - "${OPENCUT_WEB_PORT_OVERRIDE:-3100}:3000"

@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   officeconverter:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/eugenmayer/kontextwork-converter:${OFFICECONVERTER_VERSION:-latest}
     ports:
       - "${OFFICECONVERTER_PORT_OVERRIDE:-8000}:8000"

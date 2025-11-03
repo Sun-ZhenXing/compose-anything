@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   duckdb:
-    <<: *default
+    <<: *defaults
     image: davidgasquez/duckdb:${DUCKDB_VERSION:-v1.1.3}
     command: ["duckdb", "/data/duckdb.db"]
     stdin_open: true

@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   logstash:
-    <<: *default
+    <<: *defaults
     image: docker.elastic.co/logstash/logstash:${LOGSTASH_VERSION:-8.16.1}
     ports:
       - "${LOGSTASH_BEATS_PORT_OVERRIDE:-5044}:5044"

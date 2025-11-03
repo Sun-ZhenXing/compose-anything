@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   namesrv:
-    <<: *default
+    <<: *defaults
     image: apache/rocketmq:${ROCKETMQ_VERSION:-5.3.1}
     command: sh mqnamesrv
     environment:
@@ -34,7 +34,7 @@ services:
       start_period: 30s
 
   broker:
-    <<: *default
+    <<: *defaults
     image: apache/rocketmq:${ROCKETMQ_VERSION:-5.3.1}
     command: sh mqbroker -n namesrv:9876 -c /home/rocketmq/broker.conf
     environment:
@@ -67,7 +67,7 @@ services:
       start_period: 30s
 
   dashboard:
-    <<: *default
+    <<: *defaults
     image: apacherocketmq/rocketmq-dashboard:${ROCKETMQ_DASHBOARD_VERSION:-2.0.0}
     environment:
       TZ: ${TZ:-UTC}

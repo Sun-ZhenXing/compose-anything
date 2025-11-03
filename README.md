@@ -68,6 +68,8 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [RabbitMQ](./src/rabbitmq)                               | 4.1.4                        |
 | [Redis Cluster](./src/redis-cluster)                     | 8.2.1                        |
 | [Redis](./src/redis)                                     | 8.2.1                        |
+| [Restate Cluster](./src/restate-cluster)                 | 1.5.3                        |
+| [Restate](./src/restate)                                 | 1.5.3                        |
 | [SearXNG](./src/searxng)                                 | 2025.1.20-1ce14ef99          |
 | [Verdaccio](./src/verdaccio)                             | 6.1.2                        |
 | [vLLM](./src/vllm)                                       | v0.8.0                       |

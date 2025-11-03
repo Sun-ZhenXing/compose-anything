@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   apisix:
-    <<: *default
+    <<: *defaults
     image: apache/apisix:${APISIX_VERSION:-3.13.0-debian}
     ports:
       - "${APISIX_HTTP_PORT_OVERRIDE:-9080}:9080"
@@ -42,7 +42,7 @@ services:
       start_period: 10s
 
   etcd:
-    <<: *default
+    <<: *defaults
     image: quay.io/coreos/etcd:${ETCD_VERSION:-v3.6.0}
     ports:
       - "${ETCD_CLIENT_PORT_OVERRIDE:-2379}:2379"
@@ -97,7 +97,7 @@ services:
 
   # Optional: APISIX Dashboard
   apisix-dashboard:
-    <<: *default
+    <<: *defaults
     image: apache/apisix-dashboard:${APISIX_DASHBOARD_VERSION:-3.0.1-alpine}
     ports:
       - "${APISIX_DASHBOARD_PORT_OVERRIDE:-9000}:9000"

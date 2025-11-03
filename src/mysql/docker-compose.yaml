@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   mysql:
-    <<: *default
+    <<: *defaults
     image: mysql:${MYSQL_VERSION:-9.4.0}
     ports:
       - "${MYSQL_PORT_OVERRIDE:-3306}:3306"

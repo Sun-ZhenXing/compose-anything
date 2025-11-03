@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   ollama:
-    <<: *default
+    <<: *defaults
     image: ollama/ollama:${OLLAMA_VERSION:-0.12.6}
     ports:
       - "${OLLAMA_PORT_OVERRIDE:-11434}:11434"

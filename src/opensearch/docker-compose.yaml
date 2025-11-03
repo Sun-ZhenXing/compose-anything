@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   opensearch:
-    <<: *default
+    <<: *defaults
     image: opensearchproject/opensearch:${OPENSEARCH_VERSION:-2.19.0}
     environment:
       TZ: ${TZ:-UTC}
@@ -47,7 +47,7 @@ services:
       start_period: 60s
 
   opensearch-dashboards:
-    <<: *default
+    <<: *defaults
     image: opensearchproject/opensearch-dashboards:${OPENSEARCH_DASHBOARDS_VERSION:-2.19.0}
     ports:
       - "${OPENSEARCH_DASHBOARDS_PORT_OVERRIDE:-5601}:5601"

@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   gitlab:
-    <<: *default
+    <<: *defaults
     image: gitlab/gitlab-ce:${GITLAB_VERSION:-18.4.0-ce.0}
     ports:
       - "${GITLAB_PORT_OVERRIDE_HTTPS:-5443}:443"

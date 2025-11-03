@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   nacos:
-    <<: *default
+    <<: *defaults
     image: nacos/nacos-server:${NACOS_VERSION:-v3.1.0-slim}
     ports:
       - "${NACOS_HTTP_PORT_OVERRIDE:-8848}:8848"

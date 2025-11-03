@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   metad:
-    <<: *default
+    <<: *defaults
     image: vesoft/nebula-metad:${NEBULA_VERSION:-v3.8.0}
     environment:
       - TZ=${TZ:-UTC}
@@ -43,7 +43,7 @@ services:
       start_period: 30s
 
   storaged:
-    <<: *default
+    <<: *defaults
     image: vesoft/nebula-storaged:${NEBULA_VERSION:-v3.8.0}
     environment:
       - TZ=${TZ:-UTC}
@@ -81,7 +81,7 @@ services:
       start_period: 30s
 
   graphd:
-    <<: *default
+    <<: *defaults
     image: vesoft/nebula-graphd:${NEBULA_VERSION:-v3.8.0}
     environment:
       - TZ=${TZ:-UTC}

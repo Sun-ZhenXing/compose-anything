@@ -1,5 +1,5 @@
 # https://github.com/searxng/searxng-docker/blob/master/docker-compose.yaml
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -9,7 +9,7 @@ x-default: &default
 
 services:
   caddy:
-    <<: *default
+    <<: *defaults
     image: docker.io/library/caddy:${CADDY_VERSION:-2-alpine}
     network_mode: host
     volumes:
@@ -40,7 +40,7 @@ services:
           memory: 64M
 
   redis:
-    <<: *default
+    <<: *defaults
     image: docker.io/valkey/valkey:${VALKEY_VERSION:-8-alpine}
     command: valkey-server --save 30 1 --loglevel warning
     networks:
@@ -69,7 +69,7 @@ services:
           memory: 64M
 
   searxng:
-    <<: *default
+    <<: *defaults
     image: docker.io/searxng/searxng:${SEARXNG_VERSION:-2025.1.20-1ce14ef99}
     networks:
       - searxng

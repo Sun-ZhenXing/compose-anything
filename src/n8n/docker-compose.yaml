@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   n8n:
-    <<: *default
+    <<: *defaults
     image: n8nio/n8n:${N8N_VERSION:-1.114.0}
     ports:
       - "${N8N_PORT:-5678}:5678"
@@ -55,7 +55,7 @@ services:
       start_period: 30s
 
   n8n-db:
-    <<: *default
+    <<: *defaults
     image: postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
     environment:
       - TZ=${TZ:-UTC}

@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   etcd:
-    <<: *default
+    <<: *defaults
     image: quay.io/coreos/etcd:${ETCD_VERSION:-v3.5.18}
     environment:
       - TZ=${TZ:-UTC}
@@ -35,7 +35,7 @@ services:
           memory: 128M
 
   minio:
-    <<: *default
+    <<: *defaults
     image: minio/minio:${MINIO_VERSION:-RELEASE.2024-12-18T13-15-44Z}
     environment:
       TZ: ${TZ:-UTC}
@@ -63,7 +63,7 @@ services:
           memory: 256M
 
   milvus-standalone:
-    <<: *default
+    <<: *defaults
     image: milvusdb/milvus:${MILVUS_VERSION:-v2.6.3}
     command: ["milvus", "run", "standalone"]
     security_opt:
@@ -99,7 +99,7 @@ services:
           memory: 2G
 
   attu:
-    <<: *default
+    <<: *defaults
     image: zilliz/attu:${ATTU_VERSION:-v2.6.1}
     profiles:
       - attu

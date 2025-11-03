@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   mcp-neo4j-cypher:
-    <<: *default
+    <<: *defaults
     image: mcp/neo4j-cypher:${MCP_NEO4J_CYPHER_VERSION:-latest}
     environment:
       - NEO4J_URL=${NEO4J_URL:-bolt://localhost:7687}

@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   hbase:
-    <<: *default
+    <<: *defaults
     image: harisekhon/hbase:${HBASE_VERSION:-2.6}
     hostname: hbase
     environment:

@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   langfuse-server:
-    <<: *default
+    <<: *defaults
     image: langfuse/langfuse:${LANGFUSE_VERSION:-3.115.0}
     ports:
       - "${LANGFUSE_PORT:-3000}:3000"
@@ -39,7 +39,7 @@ services:
       start_period: 30s
 
   langfuse-db:
-    <<: *default
+    <<: *defaults
     image: postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
     environment:
       - TZ=${TZ:-UTC}

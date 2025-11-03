@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   bifrost:
-    <<: *default
+    <<: *defaults
     image: maximhq/bifrost:${BIFROST_VERSION:-v1.2.15}
     volumes:
       - bifrost_data:/app/data

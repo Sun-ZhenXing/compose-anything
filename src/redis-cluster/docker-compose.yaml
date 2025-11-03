@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -37,7 +37,7 @@ services:
       - init
 
   redis-1:
-    <<: *default
+    <<: *defaults
     image: redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}
@@ -62,7 +62,7 @@ services:
       start_period: 5s
 
   redis-2:
-    <<: *default
+    <<: *defaults
     image: redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}
@@ -87,7 +87,7 @@ services:
       start_period: 5s
 
   redis-3:
-    <<: *default
+    <<: *defaults
     image: redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}
@@ -112,7 +112,7 @@ services:
       start_period: 5s
 
   redis-4:
-    <<: *default
+    <<: *defaults
     image: redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}
@@ -137,7 +137,7 @@ services:
       start_period: 5s
 
   redis-5:
-    <<: *default
+    <<: *defaults
     image: redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}
@@ -162,7 +162,7 @@ services:
       start_period: 5s
 
   redis-6:
-    <<: *default
+    <<: *defaults
     image: redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}

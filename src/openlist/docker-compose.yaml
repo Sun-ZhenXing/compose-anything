@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   openlist:
-    <<: *default
+    <<: *defaults
     image: openlistteam/openlist:${OPENLIST_VERSION:-latest}
     ports:
       - "${OPENLIST_PORT_OVERRIDE:-5244}:5244"

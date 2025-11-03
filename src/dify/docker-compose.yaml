@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   dify-api:
-    <<: *default
+    <<: *defaults
     image: langgenius/dify-api:${DIFY_VERSION:-0.18.2}
     depends_on:
       dify-db:
@@ -47,7 +47,7 @@ services:
       start_period: 30s
 
   dify-worker:
-    <<: *default
+    <<: *defaults
     image: langgenius/dify-api:${DIFY_VERSION:-0.18.2}
     depends_on:
       dify-db:
@@ -80,7 +80,7 @@ services:
           memory: 1G
 
   dify-web:
-    <<: *default
+    <<: *defaults
     image: langgenius/dify-web:${DIFY_VERSION:-0.18.2}
     depends_on:
       dify-api:
@@ -101,7 +101,7 @@ services:
           memory: 256M
 
   dify-db:
-    <<: *default
+    <<: *defaults
     image: postgres:15-alpine
     environment:
       - TZ=${TZ:-UTC}
@@ -127,7 +127,7 @@ services:
       start_period: 30s
 
   dify-redis:
-    <<: *default
+    <<: *defaults
     image: redis:7-alpine
     command: redis-server --requirepass ${REDIS_PASSWORD:-}
     environment:
@@ -150,7 +150,7 @@ services:
       start_period: 5s
 
   dify-weaviate:
-    <<: *default
+    <<: *defaults
     image: semitechnologies/weaviate:${WEAVIATE_VERSION:-1.28.12}
     profiles:
       - weaviate

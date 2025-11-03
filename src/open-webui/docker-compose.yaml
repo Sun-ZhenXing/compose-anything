@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   open_webui:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/open-webui/open-webui:${OPEN_WEBUI_VERSION:-main}
     ports:
       - "${OPEN_WEBUI_PORT_OVERRIDE:-8080}:8080"

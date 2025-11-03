@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   valkey:
-    <<: *default
+    <<: *defaults
     image: valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
     ports:
       - "${VALKEY_PORT_OVERRIDE:-6379}:6379"

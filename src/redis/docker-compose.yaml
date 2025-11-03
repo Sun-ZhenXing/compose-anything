@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   redis:
-    <<: *default
+    <<: *defaults
     image: redis:${REDIS_VERSION:-8.2.1-alpine3.22}
     ports:
       - "${REDIS_PORT_OVERRIDE:-6379}:6379"

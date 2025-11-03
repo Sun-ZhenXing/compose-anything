@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   minecraft-bedrock:
-    <<: *default
+    <<: *defaults
     image: itzg/minecraft-bedrock-server:${BEDROCK_VERSION:-latest}
     environment:
       TZ: ${TZ:-UTC}

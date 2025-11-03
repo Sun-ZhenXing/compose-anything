@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   easy-dataset:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/conardli/easy-dataset:${EASY_DATASET_VERSION:-1.5.1}
     ports:
       - "${EASY_DATASET_PORT_OVERRIDE:-1717}:1717"

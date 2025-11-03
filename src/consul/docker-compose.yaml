@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   consul:
-    <<: *default
+    <<: *defaults
     image: consul:${CONSUL_VERSION:-1.20.3}
     ports:
       - "${CONSUL_HTTP_PORT_OVERRIDE:-8500}:8500"

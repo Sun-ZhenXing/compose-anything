@@ -26,7 +26,7 @@
 #
 # License: AGPLv3 (https://github.com/windmill-labs/windmill/blob/main/LICENSE)
 
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -36,7 +36,7 @@ x-default: &default
 
 services:
   windmill-server:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/windmill-labs/windmill:${WINDMILL_VERSION:-main}
     container_name: windmill-server
     ports:
@@ -81,7 +81,7 @@ services:
           memory: "${WINDMILL_SERVER_MEMORY_RESERVATION:-256M}"
 
   windmill-worker:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/windmill-labs/windmill:${WINDMILL_VERSION:-main}
     container_name: windmill-worker
     environment:
@@ -115,7 +115,7 @@ services:
           memory: "${WINDMILL_WORKER_MEMORY_RESERVATION:-512M}"
 
   postgres:
-    <<: *default
+    <<: *defaults
     image: postgres:${POSTGRES_VERSION:-16-alpine}
     container_name: windmill-postgres
     environment:
@@ -142,7 +142,7 @@ services:
 
   # Optional: LSP service for code intelligence
   windmill-lsp:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/windmill-labs/windmill-lsp:${WINDMILL_LSP_VERSION:-latest}
     container_name: windmill-lsp
     profiles:

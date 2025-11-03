@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   pd:
-    <<: *default
+    <<: *defaults
     image: pingcap/pd:${TIDB_VERSION:-v8.5.0}
     command:
       - --name=pd
@@ -39,7 +39,7 @@ services:
       start_period: 30s
 
   tikv:
-    <<: *default
+    <<: *defaults
     image: pingcap/tikv:${TIDB_VERSION:-v8.5.0}
     command:
       - --addr=0.0.0.0:20160
@@ -71,7 +71,7 @@ services:
       start_period: 60s
 
   tidb:
-    <<: *default
+    <<: *defaults
     image: pingcap/tidb:${TIDB_VERSION:-v8.5.0}
     command:
       - --store=tikv

@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   gitea:
-    <<: *default
+    <<: *defaults
     image: gitea/gitea:${GITEA_VERSION:-1.24.6-rootless}
     environment:
       - USER_UID=1000
@@ -43,7 +43,7 @@ services:
       start_period: 30s
 
   db:
-    <<: *default
+    <<: *defaults
     image: postgres:${POSTGRES_VERSION:-17.6}
     environment:
       - TZ=${TZ:-UTC}

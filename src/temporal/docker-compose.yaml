@@ -26,7 +26,7 @@
 #
 # License: MIT (https://github.com/temporalio/temporal/blob/master/LICENSE)
 
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -36,7 +36,7 @@ x-default: &default
 
 services:
   temporal:
-    <<: *default
+    <<: *defaults
     image: temporalio/auto-setup:${TEMPORAL_VERSION:-1.24.2}
     container_name: temporal
     ports:
@@ -84,7 +84,7 @@ services:
           memory: "${TEMPORAL_MEMORY_RESERVATION:-512M}"
 
   temporal-ui:
-    <<: *default
+    <<: *defaults
     image: temporalio/ui:${TEMPORAL_UI_VERSION:-2.28.0}
     container_name: temporal-ui
     ports:
@@ -113,7 +113,7 @@ services:
           memory: "${TEMPORAL_UI_MEMORY_RESERVATION:-128M}"
 
   temporal-admin-tools:
-    <<: *default
+    <<: *defaults
     image: temporalio/admin-tools:${TEMPORAL_VERSION:-1.24.2}
     container_name: temporal-admin-tools
     profiles:
@@ -137,7 +137,7 @@ services:
           memory: "256M"
 
   postgres:
-    <<: *default
+    <<: *defaults
     image: postgres:${POSTGRES_VERSION:-16-alpine}
     container_name: temporal-postgres
     environment:

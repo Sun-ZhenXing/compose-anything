@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   zookeeper:
-    <<: *default
+    <<: *defaults
     image: zookeeper:${ZOOKEEPER_VERSION:-3.9.3}
     ports:
       - "${ZOOKEEPER_CLIENT_PORT_OVERRIDE:-2181}:2181"

@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -7,7 +7,7 @@ x-default: &default
       max-file: "3"
 
 x-valkey-node: &valkey-node
-  <<: *default
+  <<: *defaults
   image: valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
   environment:
     - TZ=${TZ:-UTC}
@@ -90,7 +90,7 @@ services:
       - valkey_data_6:/data
 
   valkey-cluster-init:
-    <<: *default
+    <<: *defaults
     image: valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
     environment:
       - TZ=${TZ:-UTC}

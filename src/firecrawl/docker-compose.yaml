@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -38,7 +38,7 @@ x-common-env: &common-env
 
 services:
   playwright-service:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/firecrawl/playwright-service:${PLAYWRIGHT_VERSION:-latest}
     environment:
       PORT: 3000
@@ -56,7 +56,7 @@ services:
           memory: 512M
 
   api:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/firecrawl/firecrawl:${FIRECRAWL_VERSION:-latest}
     environment:
       <<: *common-env
@@ -99,7 +99,7 @@ services:
       start_period: 30s
 
   redis:
-    <<: *default
+    <<: *defaults
     image: redis:${REDIS_VERSION:-alpine}
     command: redis-server --bind 0.0.0.0
     volumes:
@@ -120,7 +120,7 @@ services:
       start_period: 5s
 
   nuq-postgres:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/firecrawl/nuq-postgres:${NUQ_POSTGRES_VERSION:-latest}
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}

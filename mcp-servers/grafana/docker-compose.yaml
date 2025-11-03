@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   mcp-grafana:
-    <<: *default
+    <<: *defaults
     image: mcp/grafana:${MCP_GRAFANA_VERSION:-latest}
     environment:
       - GRAFANA_URL=${GRAFANA_URL:-http://grafana:3000}
@@ -36,7 +36,7 @@ services:
           memory: 128M
 
   grafana:
-    <<: *default
+    <<: *defaults
     image: grafana/grafana:${GRAFANA_VERSION:-latest}
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}

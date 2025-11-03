@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   milvus-standalone-embed:
-    <<: *default
+    <<: *defaults
     image: milvusdb/milvus:${MILVUS_VERSION:-v2.6.3}
     security_opt:
       - seccomp:unconfined
@@ -44,7 +44,7 @@ services:
           memory: 2G
 
   attu:
-    <<: *default
+    <<: *defaults
     image: zilliz/attu:${ATTU_VERSION:-v2.6.1}
     profiles:
       - attu

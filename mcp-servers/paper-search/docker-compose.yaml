@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   mcp-paper-search:
-    <<: *default
+    <<: *defaults
     image: mcp/paper-search:${MCP_PAPER_SEARCH_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0

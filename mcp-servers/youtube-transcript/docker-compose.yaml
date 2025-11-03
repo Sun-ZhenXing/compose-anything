@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -16,7 +16,7 @@ x-default: &default
 
 services:
   mcp-youtube-transcript:
-    <<: *default
+    <<: *defaults
     image: mcp/youtube-transcript:${MCP_YOUTUBE_TRANSCRIPT_VERSION:-latest}
     container_name: mcp-youtube-transcript
     environment:

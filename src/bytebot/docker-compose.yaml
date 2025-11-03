@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   bytebot-desktop:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/bytebot-ai/bytebot-desktop:${BYTEBOT_VERSION:-edge}
     ports:
       - "${BYTEBOT_DESKTOP_PORT_OVERRIDE:-9990}:9990"
@@ -31,7 +31,7 @@ services:
       start_period: 30s
 
   bytebot-agent:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/bytebot-ai/bytebot-agent:${BYTEBOT_VERSION:-edge}
     depends_on:
       bytebot-desktop:
@@ -63,7 +63,7 @@ services:
       start_period: 30s
 
   bytebot-ui:
-    <<: *default
+    <<: *defaults
     image: ghcr.io/bytebot-ai/bytebot-ui:${BYTEBOT_VERSION:-edge}
     depends_on:
       bytebot-agent:
@@ -84,7 +84,7 @@ services:
           memory: 256M
 
   bytebot-db:
-    <<: *default
+    <<: *defaults
     image: postgres:${POSTGRES_VERSION:-17-alpine}
     environment:
       - TZ=${TZ:-UTC}

@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -9,7 +9,7 @@ x-default: &default
 services:
   # Harbor Core
   harbor-core:
-    <<: *default
+    <<: *defaults
     image: goharbor/harbor-core:${HARBOR_VERSION:-v2.12.0}
     depends_on:
       harbor-db:
@@ -47,7 +47,7 @@ services:
 
   # Harbor JobService
   harbor-jobservice:
-    <<: *default
+    <<: *defaults
     image: goharbor/harbor-jobservice:${HARBOR_VERSION:-v2.12.0}
     depends_on:
       harbor-db:
@@ -70,7 +70,7 @@ services:
 
   # Harbor Registry
   harbor-registry:
-    <<: *default
+    <<: *defaults
     image: goharbor/registry-photon:${HARBOR_VERSION:-v2.12.0}
     volumes:
       - harbor_registry:/storage
@@ -86,14 +86,14 @@ services:
 
   # Harbor Portal (UI)
   harbor-portal:
-    <<: *default
+    <<: *defaults
     image: goharbor/harbor-portal:${HARBOR_VERSION:-v2.12.0}
     environment:
       - TZ=${TZ:-UTC}
 
   # Harbor Proxy (Nginx)
   harbor-proxy:
-    <<: *default
+    <<: *defaults
     image: goharbor/nginx-photon:${HARBOR_VERSION:-v2.12.0}
     ports:
       - "${HARBOR_HTTP_PORT_OVERRIDE:-80}:8080"
@@ -116,7 +116,7 @@ services:
 
   # Harbor Database
   harbor-db:
-    <<: *default
+    <<: *defaults
     image: goharbor/harbor-db:${HARBOR_VERSION:-v2.12.0}
     volumes:
       - harbor_db:/var/lib/postgresql/data
@@ -141,7 +141,7 @@ services:
 
   # Harbor Redis
   harbor-redis:
-    <<: *default
+    <<: *defaults
     image: goharbor/redis-photon:${HARBOR_VERSION:-v2.12.0}
     volumes:
       - harbor_redis:/var/lib/redis

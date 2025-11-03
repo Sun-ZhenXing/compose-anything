@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   mcp-clickhouse:
-    <<: *default
+    <<: *defaults
     image: mcp/clickhouse:${MCP_CLICKHOUSE_VERSION:-latest}
     environment:
       - CLICKHOUSE_URL=${CLICKHOUSE_URL:-http://localhost:8123}

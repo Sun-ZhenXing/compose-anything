@@ -1,4 +1,4 @@
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -8,7 +8,7 @@ x-default: &default
 
 services:
   mcp-openweather:
-    <<: *default
+    <<: *defaults
     image: mcp/openweather:${MCP_OPENWEATHER_VERSION:-latest}
     environment:
       - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}

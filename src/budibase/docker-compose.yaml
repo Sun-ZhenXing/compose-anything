@@ -25,7 +25,7 @@
 #
 # License: GPL-3.0 (https://github.com/Budibase/budibase/blob/master/LICENSE)
 
-x-default: &default
+x-defaults: &defaults
   restart: unless-stopped
   logging:
     driver: json-file
@@ -35,7 +35,7 @@ x-default: &default
 
 services:
   budibase:
-    <<: *default
+    <<: *defaults
     image: budibase/budibase:${BUDIBASE_VERSION:-3.23.0}
     container_name: budibase
     ports:
@@ -89,7 +89,7 @@ services:
           memory: "${BUDIBASE_MEMORY_RESERVATION:-512M}"
 
   redis:
-    <<: *default
+    <<: *defaults
     image: redis:${REDIS_VERSION:-7-alpine}
     container_name: budibase-redis
     command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
