@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-grafana:
     <<: *defaults
-    image: mcp/grafana:${MCP_GRAFANA_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/grafana:${MCP_GRAFANA_VERSION:-latest}
     environment:
       - GRAFANA_URL=${GRAFANA_URL:-http://grafana:3000}
       - GRAFANA_API_KEY=${GRAFANA_API_KEY}
@@ -37,7 +37,7 @@ services:
 
   grafana:
     <<: *defaults
-    image: grafana/grafana:${GRAFANA_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}grafana/grafana:${GRAFANA_VERSION:-latest}
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}

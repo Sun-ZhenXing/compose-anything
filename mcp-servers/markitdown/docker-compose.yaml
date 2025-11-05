@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-markitdown:
     <<: *defaults
-    image: mcp/markitdown:${MCP_MARKITDOWN_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/markitdown:${MCP_MARKITDOWN_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}

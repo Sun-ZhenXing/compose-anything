@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-docker:
     <<: *defaults
-    image: mcp/docker:${MCP_DOCKER_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/docker:${MCP_DOCKER_VERSION:-latest}
     environment:
       - DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}
       - MCP_HOST=0.0.0.0

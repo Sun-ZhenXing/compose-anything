@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   verdaccio:
     <<: *defaults
-    image: verdaccio/verdaccio:${VERDACCIO_VERSION:-6.1.2}
+    image: ${GLOBAL_REGISTRY:-}verdaccio/verdaccio:${VERDACCIO_VERSION:-6.1.2}
     networks:
       - verdaccio
     environment:

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mongo:
     <<: *defaults
-    image: mongo:${MONGO_VERSION:-8.0.13}
+    image: ${GLOBAL_REGISTRY:-}mongo:${MONGO_VERSION:-8.0.13}
     environment:
       TZ: ${TZ:-UTC}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}

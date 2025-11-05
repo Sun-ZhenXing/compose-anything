@@ -14,7 +14,7 @@ x-defaults: &defaults
 services:
   service-name:
     <<: *defaults
-    image: image:${VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}image:${VERSION:-latest}
     ports:
       - "${PORT_OVERRIDE:-8080}:8080"
     volumes:
@@ -31,11 +31,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.00'
-          memory: 512M
+          cpus: ${SERVICE_NAME_CPU_LIMIT:-1.00}
+          memory: ${SERVICE_NAME_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 128M
+          cpus: ${SERVICE_NAME_CPU_RESERVATION:-0.25}
+          memory: ${SERVICE_NAME_MEMORY_RESERVATION:-128M}
 
 volumes:
   service_data:

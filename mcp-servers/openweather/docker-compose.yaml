@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-openweather:
     <<: *defaults
-    image: mcp/openweather:${MCP_OPENWEATHER_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/openweather:${MCP_OPENWEATHER_VERSION:-latest}
     environment:
       - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
       - MCP_HOST=0.0.0.0

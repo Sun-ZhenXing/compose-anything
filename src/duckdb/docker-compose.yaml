@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   duckdb:
     <<: *defaults
-    image: davidgasquez/duckdb:${DUCKDB_VERSION:-v1.1.3}
+    image: ${GLOBAL_REGISTRY:-}davidgasquez/duckdb:${DUCKDB_VERSION:-v1.1.3}
     command: ["duckdb", "/data/duckdb.db"]
     stdin_open: true
     tty: true

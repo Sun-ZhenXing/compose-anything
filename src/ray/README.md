@@ -127,7 +127,7 @@ To add more worker nodes, add new service definitions:
 ```yaml
 ray-worker-3:
   <<: *defaults
-  image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
+  image: ${GLOBAL_REGISTRY:-}rayproject/ray:${RAY_VERSION:-2.42.1-py312}
   container_name: ray-worker-3
   command: ray start --address=ray-head:6379 --block
   depends_on:

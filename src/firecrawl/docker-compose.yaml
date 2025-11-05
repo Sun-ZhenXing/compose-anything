@@ -100,7 +100,7 @@ services:
 
   redis:
     <<: *defaults
-    image: redis:${REDIS_VERSION:-alpine}
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-alpine}
     command: redis-server --bind 0.0.0.0
     volumes:
       - redis_data:/data

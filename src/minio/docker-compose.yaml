@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   minio:
     <<: *defaults
-    image: minio/minio:${MINIO_VERSION:-RELEASE.2025-09-07T16-13-09Z}
+    image: ${GLOBAL_REGISTRY:-}minio/minio:${MINIO_VERSION:-RELEASE.2025-09-07T16-13-09Z}
     ports:
       - "${MINIO_PORT_OVERRIDE_API:-9000}:9000"
       - "${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001"

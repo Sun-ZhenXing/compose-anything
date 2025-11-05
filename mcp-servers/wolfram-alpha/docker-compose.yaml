@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-wolfram-alpha:
     <<: *defaults
-    image: mcp/wolfram-alpha:${MCP_WOLFRAM_ALPHA_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/wolfram-alpha:${MCP_WOLFRAM_ALPHA_VERSION:-latest}
     environment:
       - WOLFRAM_ALPHA_APPID=${WOLFRAM_ALPHA_APPID}
       - MCP_HOST=0.0.0.0

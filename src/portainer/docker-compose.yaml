@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   portainer:
     <<: *defaults
-    image: portainer/portainer-ce:${PORTAINER_VERSION:-2.27.3-alpine}
+    image: ${GLOBAL_REGISTRY:-}portainer/portainer-ce:${PORTAINER_VERSION:-2.27.3-alpine}
     ports:
       - "${PORTAINER_WEB_PORT_OVERRIDE:-9000}:9000"
       - "${PORTAINER_EDGE_PORT_OVERRIDE:-8000}:8000"

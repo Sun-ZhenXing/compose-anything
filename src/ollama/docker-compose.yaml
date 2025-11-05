@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   ollama:
     <<: *defaults
-    image: ollama/ollama:${OLLAMA_VERSION:-0.12.6}
+    image: ${GLOBAL_REGISTRY:-}ollama/ollama:${OLLAMA_VERSION:-0.12.6}
     ports:
       - "${OLLAMA_PORT_OVERRIDE:-11434}:11434"
     volumes:

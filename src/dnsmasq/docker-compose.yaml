@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   dnsmasq:
     <<: *defaults
-    image: dockurr/dnsmasq:${DNSMASQ_VERSION:-2.91}
+    image: ${GLOBAL_REGISTRY:-}dockurr/dnsmasq:${DNSMASQ_VERSION:-2.91}
     volumes:
       - ./dnsmasq.conf:/etc/dnsmasq.conf:ro
     ports:

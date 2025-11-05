@@ -67,7 +67,7 @@ To use AMD GPUs with ROCm support:
 1. Use the ROCm-specific image in `docker-compose.yaml`:
 
    ```yaml
-   image: gpustack/gpustack:${GPUSTACK_VERSION:-v0.7.1}-rocm
+   image: ${GLOBAL_REGISTRY:-}gpustack/gpustack:${GPUSTACK_VERSION:-v0.7.1}-rocm
    ```
 
 2. Change the device driver to `amdgpu`:

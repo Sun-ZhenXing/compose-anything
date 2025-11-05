@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   clash:
     <<: *defaults
-    image: centralx/clash:${CLASH_VERSION:-1.18.0}
+    image: ${GLOBAL_REGISTRY:-}centralx/clash:${CLASH_VERSION:-1.18.0}
     ports:
       - "7880:80"
       - "7890:7890"

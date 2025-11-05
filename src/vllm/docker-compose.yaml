@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   vllm:
     <<: *defaults
-    image: vllm/vllm-openai:${VLLM_VERSION:-v0.8.0}
+    image: ${GLOBAL_REGISTRY:-}vllm/vllm-openai:${VLLM_VERSION:-v0.8.0}
     ports:
       - "${VLLM_PORT_OVERRIDE:-8000}:8000"
     volumes:

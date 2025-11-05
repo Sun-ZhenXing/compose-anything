@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   registry:
     <<: *defaults
-    image: registry:${REGISTRY_VERSION:-3.0.0}
+    image: ${GLOBAL_REGISTRY:-}registry:${REGISTRY_VERSION:-3.0.0}
     volumes:
       - ./certs:/certs:ro
       - ./config.yml:/etc/distribution/config.yml:ro

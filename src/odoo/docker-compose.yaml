@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   odoo:
     <<: *defaults
-    image: odoo:${ODOO_VERSION:-19.0}
+    image: ${GLOBAL_REGISTRY:-}odoo:${ODOO_VERSION:-19.0}
     depends_on:
       odoo-db:
         condition: service_healthy
@@ -42,7 +42,7 @@ services:
 
   odoo-db:
     <<: *defaults
-    image: postgres:${POSTGRES_VERSION:-17-alpine}
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17-alpine}
     environment:
       - TZ=${TZ:-UTC}
       - POSTGRES_USER=${POSTGRES_USER:-odoo}

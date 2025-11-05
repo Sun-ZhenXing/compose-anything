@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   apisix:
     <<: *defaults
-    image: apache/apisix:${APISIX_VERSION:-3.13.0-debian}
+    image: ${GLOBAL_REGISTRY:-}apache/apisix:${APISIX_VERSION:-3.13.0-debian}
     ports:
       - "${APISIX_HTTP_PORT_OVERRIDE:-9080}:9080"
       - "${APISIX_HTTPS_PORT_OVERRIDE:-9443}:9443"
@@ -98,7 +98,7 @@ services:
   # Optional: APISIX Dashboard
   apisix-dashboard:
     <<: *defaults
-    image: apache/apisix-dashboard:${APISIX_DASHBOARD_VERSION:-3.0.1-alpine}
+    image: ${GLOBAL_REGISTRY:-}apache/apisix-dashboard:${APISIX_DASHBOARD_VERSION:-3.0.1-alpine}
     ports:
       - "${APISIX_DASHBOARD_PORT_OVERRIDE:-9000}:9000"
     volumes:

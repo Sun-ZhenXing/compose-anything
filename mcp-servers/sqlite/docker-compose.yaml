@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-sqlite:
     <<: *defaults
-    image: mcp/sqlite:${MCP_SQLITE_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/sqlite:${MCP_SQLITE_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}

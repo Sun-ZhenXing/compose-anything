@@ -34,7 +34,7 @@ x-defaults: &defaults
 services:
   conductor-server:
     <<: *defaults
-    image: conductor:server
+    image: ${GLOBAL_REGISTRY:-}conductor:server
     build:
       context: https://github.com/conductor-oss/conductor.git#main:docker/server
       dockerfile: Dockerfile
@@ -82,7 +82,7 @@ services:
 
   postgres:
     <<: *defaults
-    image: postgres:${POSTGRES_VERSION:-16-alpine}
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-16-alpine}
     container_name: conductor-postgres
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-conductor}
@@ -108,7 +108,7 @@ services:
 
   elasticsearch:
     <<: *defaults
-    image: elasticsearch:${ELASTICSEARCH_VERSION:-8.11.0}
+    image: ${GLOBAL_REGISTRY:-}elasticsearch:${ELASTICSEARCH_VERSION:-8.11.0}
     container_name: conductor-elasticsearch
     environment:
       - discovery.type=single-node

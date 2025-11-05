@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-e2b:
     <<: *defaults
-    image: mcp/e2b:${MCP_E2B_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/e2b:${MCP_E2B_VERSION:-latest}
     environment:
       - E2B_API_KEY=${E2B_API_KEY}
       - MCP_HOST=0.0.0.0

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   opensearch:
     <<: *defaults
-    image: opensearchproject/opensearch:${OPENSEARCH_VERSION:-2.19.0}
+    image: ${GLOBAL_REGISTRY:-}opensearchproject/opensearch:${OPENSEARCH_VERSION:-2.19.0}
     environment:
       TZ: ${TZ:-UTC}
       cluster.name: ${CLUSTER_NAME:-opensearch-cluster}
@@ -48,7 +48,7 @@ services:
 
   opensearch-dashboards:
     <<: *defaults
-    image: opensearchproject/opensearch-dashboards:${OPENSEARCH_DASHBOARDS_VERSION:-2.19.0}
+    image: ${GLOBAL_REGISTRY:-}opensearchproject/opensearch-dashboards:${OPENSEARCH_DASHBOARDS_VERSION:-2.19.0}
     ports:
       - "${OPENSEARCH_DASHBOARDS_PORT_OVERRIDE:-5601}:5601"
     environment:

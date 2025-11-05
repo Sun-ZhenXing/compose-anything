@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-notion:
     <<: *defaults
-    image: mcp/notion:${MCP_NOTION_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/notion:${MCP_NOTION_VERSION:-latest}
     environment:
       - INTERNAL_INTEGRATION_TOKEN=${INTERNAL_INTEGRATION_TOKEN}
       - MCP_HOST=0.0.0.0

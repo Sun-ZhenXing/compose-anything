@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   postgres:
     <<: *defaults
-    image: postgres:${POSTGRES_VERSION:-17.6-alpine}
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.6-alpine}
     environment:
       TZ: ${TZ:-UTC}
       POSTGRES_USER: ${POSTGRES_USER:-mlflow}
@@ -34,7 +34,7 @@ services:
 
   minio:
     <<: *defaults
-    image: minio/minio:${MINIO_VERSION:-RELEASE.2025-01-07T16-13-09Z}
+    image: ${GLOBAL_REGISTRY:-}minio/minio:${MINIO_VERSION:-RELEASE.2025-01-07T16-13-09Z}
     command: server /data --console-address ":9001"
     environment:
       TZ: ${TZ:-UTC}
@@ -62,7 +62,7 @@ services:
 
   minio-init:
     <<: *defaults
-    image: minio/mc:${MINIO_MC_VERSION:-RELEASE.2025-01-07T17-25-52Z}
+    image: ${GLOBAL_REGISTRY:-}minio/mc:${MINIO_MC_VERSION:-RELEASE.2025-01-07T17-25-52Z}
     depends_on:
       minio:
         condition: service_healthy

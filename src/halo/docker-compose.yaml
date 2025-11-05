@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   halo:
     <<: *defaults
-    image: halohub/halo:${HALO_VERSION:-2.21.9}
+    image: ${GLOBAL_REGISTRY:-}halohub/halo:${HALO_VERSION:-2.21.9}
     ports:
       - "${HALO_PORT:-8090}:8090"
     volumes:
@@ -43,7 +43,7 @@ services:
 
   halo-db:
     <<: *defaults
-    image: postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
     environment:
       - TZ=${TZ:-UTC}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}

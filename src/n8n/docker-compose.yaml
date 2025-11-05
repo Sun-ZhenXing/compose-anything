@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   n8n:
     <<: *defaults
-    image: n8nio/n8n:${N8N_VERSION:-1.114.0}
+    image: ${GLOBAL_REGISTRY:-}n8nio/n8n:${N8N_VERSION:-1.114.0}
     ports:
       - "${N8N_PORT:-5678}:5678"
     volumes:
@@ -56,7 +56,7 @@ services:
 
   n8n-db:
     <<: *defaults
-    image: postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
     environment:
       - TZ=${TZ:-UTC}
       - POSTGRES_USER=${DB_POSTGRESDB_USER:-n8n}

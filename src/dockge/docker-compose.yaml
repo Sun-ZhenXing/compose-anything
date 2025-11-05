@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   dockge:
     <<: *defaults
-    image: louislam/dockge:${DOCKGE_VERSION:-1}
+    image: ${GLOBAL_REGISTRY:-}louislam/dockge:${DOCKGE_VERSION:-1}
     ports:
       - "${PORT_OVERRIDE:-5001}:5001"
     volumes:

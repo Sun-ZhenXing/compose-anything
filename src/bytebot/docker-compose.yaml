@@ -85,7 +85,7 @@ services:
 
   bytebot-db:
     <<: *defaults
-    image: postgres:${POSTGRES_VERSION:-17-alpine}
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17-alpine}
     environment:
       - TZ=${TZ:-UTC}
       - POSTGRES_USER=${POSTGRES_USER:-bytebot}

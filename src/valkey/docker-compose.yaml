@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   valkey:
     <<: *defaults
-    image: valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
+    image: ${GLOBAL_REGISTRY:-}valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
     ports:
       - "${VALKEY_PORT_OVERRIDE:-6379}:6379"
     volumes:

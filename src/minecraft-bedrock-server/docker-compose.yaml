@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   minecraft-bedrock:
     <<: *defaults
-    image: itzg/minecraft-bedrock-server:${BEDROCK_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}itzg/minecraft-bedrock-server:${BEDROCK_VERSION:-latest}
     environment:
       TZ: ${TZ:-UTC}
       EULA: "${EULA:-TRUE}"

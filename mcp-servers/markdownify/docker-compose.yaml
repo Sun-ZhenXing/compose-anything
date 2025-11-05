@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-markdownify:
     <<: *defaults
-    image: mcp/markdownify:${MCP_MARKDOWNIFY_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/markdownify:${MCP_MARKDOWNIFY_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}

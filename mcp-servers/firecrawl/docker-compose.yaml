@@ -17,7 +17,7 @@ x-defaults: &defaults
 services:
   mcp-firecrawl:
     <<: *defaults
-    image: mcp/firecrawl:${MCP_FIRECRAWL_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/firecrawl:${MCP_FIRECRAWL_VERSION:-latest}
     container_name: mcp-firecrawl
     environment:
       - TZ=${TZ:-UTC}

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   rust-mcp-filesystem:
     <<: *defaults
-    image: mcp/rust-mcp-filesystem:${RUST_MCP_FILESYSTEM_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/rust-mcp-filesystem:${RUST_MCP_FILESYSTEM_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - ALLOWED_PATHS=${ALLOWED_PATHS:-/projects}

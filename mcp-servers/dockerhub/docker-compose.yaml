@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   dockerhub:
     <<: *defaults
-    image: mcp/dockerhub:${DOCKERHUB_MCP_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/dockerhub:${DOCKERHUB_MCP_VERSION:-latest}
     environment:
       - DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}
       - DOCKERHUB_PASSWORD=${DOCKERHUB_PASSWORD}

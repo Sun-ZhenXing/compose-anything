@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-paper-search:
     <<: *defaults
-    image: mcp/paper-search:${MCP_PAPER_SEARCH_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/paper-search:${MCP_PAPER_SEARCH_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}

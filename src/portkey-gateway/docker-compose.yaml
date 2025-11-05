@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   portkey-gateway:
     <<: *defaults
-    image: portkeyai/gateway:${PORTKEY_GATEWAY_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}portkeyai/gateway:${PORTKEY_GATEWAY_VERSION:-latest}
     ports:
       - "${PORTKEY_GATEWAY_PORT_OVERRIDE:-8787}:8787"
     environment:

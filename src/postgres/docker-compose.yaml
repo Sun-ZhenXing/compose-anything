@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   postgres:
     <<: *defaults
-    image: postgres:${POSTGRES_VERSION:-17.6}
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.6}
     environment:
       TZ: ${TZ:-UTC}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}

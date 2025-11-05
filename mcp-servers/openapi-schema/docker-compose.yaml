@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-openapi-schema:
     <<: *defaults
-    image: mcp/openapi-schema:${MCP_OPENAPI_SCHEMA_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/openapi-schema:${MCP_OPENAPI_SCHEMA_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}

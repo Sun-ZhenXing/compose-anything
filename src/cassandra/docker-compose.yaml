@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   cassandra:
     <<: *defaults
-    image: cassandra:${CASSANDRA_VERSION:-5.0.2}
+    image: ${GLOBAL_REGISTRY:-}cassandra:${CASSANDRA_VERSION:-5.0.2}
     ports:
       - "${CASSANDRA_CQL_PORT_OVERRIDE:-9042}:9042"
       - "${CASSANDRA_THRIFT_PORT_OVERRIDE:-9160}:9160"

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   gitea:
     <<: *defaults
-    image: gitea/gitea:${GITEA_VERSION:-1.24.6-rootless}
+    image: ${GLOBAL_REGISTRY:-}gitea/gitea:${GITEA_VERSION:-1.24.6-rootless}
     environment:
       - USER_UID=1000
       - USER_GID=1000
@@ -44,7 +44,7 @@ services:
 
   db:
     <<: *defaults
-    image: postgres:${POSTGRES_VERSION:-17.6}
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.6}
     environment:
       - TZ=${TZ:-UTC}
       - POSTGRES_USER=${POSTGRES_USER:-gitea}

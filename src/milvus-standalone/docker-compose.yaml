@@ -36,7 +36,7 @@ services:
 
   minio:
     <<: *defaults
-    image: minio/minio:${MINIO_VERSION:-RELEASE.2024-12-18T13-15-44Z}
+    image: ${GLOBAL_REGISTRY:-}minio/minio:${MINIO_VERSION:-RELEASE.2024-12-18T13-15-44Z}
     environment:
       TZ: ${TZ:-UTC}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
@@ -64,7 +64,7 @@ services:
 
   milvus-standalone:
     <<: *defaults
-    image: milvusdb/milvus:${MILVUS_VERSION:-v2.6.3}
+    image: ${GLOBAL_REGISTRY:-}milvusdb/milvus:${MILVUS_VERSION:-v2.6.3}
     command: ["milvus", "run", "standalone"]
     security_opt:
     - seccomp:unconfined
@@ -100,7 +100,7 @@ services:
 
   attu:
     <<: *defaults
-    image: zilliz/attu:${ATTU_VERSION:-v2.6.1}
+    image: ${GLOBAL_REGISTRY:-}zilliz/attu:${ATTU_VERSION:-v2.6.1}
     profiles:
       - attu
     environment:

@@ -35,7 +35,7 @@ x-defaults: &defaults
 services:
   kestra:
     <<: *defaults
-    image: kestra/kestra:${KESTRA_VERSION:-latest-full}
+    image: ${GLOBAL_REGISTRY:-}kestra/kestra:${KESTRA_VERSION:-latest-full}
     container_name: kestra
     command: server standalone
     ports:
@@ -92,7 +92,7 @@ services:
 
   postgres:
     <<: *defaults
-    image: postgres:${POSTGRES_VERSION:-16-alpine}
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-16-alpine}
     container_name: kestra-postgres
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-kestra}

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-arxiv:
     <<: *defaults
-    image: mcp/arxiv-mcp-server:${MCP_ARXIV_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/arxiv-mcp-server:${MCP_ARXIV_VERSION:-latest}
     environment:
       - ARXIV_STORAGE_PATH=${ARXIV_STORAGE_PATH:-/data/papers}
       - MCP_HOST=0.0.0.0

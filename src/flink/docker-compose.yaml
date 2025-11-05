@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   jobmanager:
     <<: *defaults
-    image: flink:${FLINK_VERSION:-1.20.0-scala_2.12-java11}
+    image: ${GLOBAL_REGISTRY:-}flink:${FLINK_VERSION:-1.20.0-scala_2.12-java11}
     hostname: jobmanager
     command: jobmanager
     environment:
@@ -43,7 +43,7 @@ services:
 
   taskmanager:
     <<: *defaults
-    image: flink:${FLINK_VERSION:-1.20.0-scala_2.12-java11}
+    image: ${GLOBAL_REGISTRY:-}flink:${FLINK_VERSION:-1.20.0-scala_2.12-java11}
     command: taskmanager
     environment:
       TZ: ${TZ:-UTC}

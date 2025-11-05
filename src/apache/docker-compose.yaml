@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   apache:
     <<: *defaults
-    image: httpd:${APACHE_VERSION:-2.4.62-alpine3.20}
+    image: ${GLOBAL_REGISTRY:-}httpd:${APACHE_VERSION:-2.4.62-alpine3.20}
     ports:
       - "${APACHE_HTTP_PORT_OVERRIDE:-80}:80"
       - "${APACHE_HTTPS_PORT_OVERRIDE:-443}:443"

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   prometheus:
     <<: *defaults
-    image: prom/prometheus:${PROMETHEUS_VERSION:-v3.5.0}
+    image: ${GLOBAL_REGISTRY:-}prom/prometheus:${PROMETHEUS_VERSION:-v3.5.0}
     ports:
       - "${PROMETHEUS_PORT_OVERRIDE:-9090}:9090"
     volumes:

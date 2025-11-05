@@ -10,7 +10,7 @@ x-defaults: &defaults
 services:
   caddy:
     <<: *defaults
-    image: docker.io/library/caddy:${CADDY_VERSION:-2-alpine}
+    image: ${GLOBAL_REGISTRY:-}caddy:${CADDY_VERSION:-2-alpine}
     network_mode: host
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
@@ -41,7 +41,7 @@ services:
 
   redis:
     <<: *defaults
-    image: docker.io/valkey/valkey:${VALKEY_VERSION:-8-alpine}
+    image: ${GLOBAL_REGISTRY:-}valkey/valkey:${VALKEY_VERSION:-8-alpine}
     command: valkey-server --save 30 1 --loglevel warning
     networks:
       - searxng
@@ -70,7 +70,7 @@ services:
 
   searxng:
     <<: *defaults
-    image: docker.io/searxng/searxng:${SEARXNG_VERSION:-2025.1.20-1ce14ef99}
+    image: ${GLOBAL_REGISTRY:-}searxng/searxng:${SEARXNG_VERSION:-2025.1.20-1ce14ef99}
     networks:
       - searxng
     ports:

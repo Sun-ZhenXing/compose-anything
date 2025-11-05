@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   neo4j:
     <<: *defaults
-    image: neo4j:${NEO4J_VERSION:-5.27.4-community}
+    image: ${GLOBAL_REGISTRY:-}neo4j:${NEO4J_VERSION:-5.27.4-community}
     ports:
       - "${NEO4J_HTTP_PORT_OVERRIDE:-7474}:7474"
       - "${NEO4J_BOLT_PORT_OVERRIDE:-7687}:7687"

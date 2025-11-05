@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   lama-cleaner:
     <<: *defaults
-    image: ${DOCKER_REGISTRY:-docker.io}/local/lama-cleaner:${BUILD_VERSION:-latest}
+    image: ${DOCKER_REGISTRY:-docker.io}/local/lama-cleaner:${BUILD_VERSION:-1.6.0}
     ports:
       - 8080:8080
     build:
@@ -17,7 +17,7 @@ services:
       dockerfile: Dockerfile
     environment:
       TZ: ${TZ:-UTC}
-      # HF_ENDPOINT: https://hf-mirror.com
+      HF_ENDPOINT: ${HF_ENDPOINT:-}
     volumes:
       - ./models:/root/.cache
     command:

@@ -8,7 +8,7 @@ x-defaults: &defaults
 
 services:
   redis-cluster-init:
-    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}
     command: >
@@ -38,7 +38,7 @@ services:
 
   redis-1:
     <<: *defaults
-    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
@@ -63,7 +63,7 @@ services:
 
   redis-2:
     <<: *defaults
-    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
@@ -88,7 +88,7 @@ services:
 
   redis-3:
     <<: *defaults
-    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
@@ -113,7 +113,7 @@ services:
 
   redis-4:
     <<: *defaults
-    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
@@ -138,7 +138,7 @@ services:
 
   redis-5:
     <<: *defaults
-    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
@@ -163,7 +163,7 @@ services:
 
   redis-6:
     <<: *defaults
-    image: redis:${REDIS_VERSION:-8.2.1-alpine}
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-8.2.1-alpine}
     environment:
       - TZ=${TZ:-UTC}
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes

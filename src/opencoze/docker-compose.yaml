@@ -12,7 +12,7 @@ services:
   # https://github.com/coze-dev/coze-studio/tree/main/docker
 
   opencoze-info:
-    image: alpine:latest
+    image: ${GLOBAL_REGISTRY:-}alpine:latest
     environment:
       - TZ=${TZ:-UTC}
     command: >

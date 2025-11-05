@@ -67,7 +67,7 @@ deploy:
 1. 在 `docker-compose.yaml` 中使用 ROCm 特定镜像：
 
    ```yaml
-   image: gpustack/gpustack:${GPUSTACK_VERSION:-v0.7.1}-rocm
+   image: ${GLOBAL_REGISTRY:-}gpustack/gpustack:${GPUSTACK_VERSION:-v0.7.1}-rocm
    ```
 
 2. 将设备驱动更改为 `amdgpu`：

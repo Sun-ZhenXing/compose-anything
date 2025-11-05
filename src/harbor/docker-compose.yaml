@@ -10,7 +10,7 @@ services:
   # Harbor Core
   harbor-core:
     <<: *defaults
-    image: goharbor/harbor-core:${HARBOR_VERSION:-v2.12.0}
+    image: ${GLOBAL_REGISTRY:-}goharbor/harbor-core:${HARBOR_VERSION:-v2.12.0}
     depends_on:
       harbor-db:
         condition: service_healthy
@@ -48,7 +48,7 @@ services:
   # Harbor JobService
   harbor-jobservice:
     <<: *defaults
-    image: goharbor/harbor-jobservice:${HARBOR_VERSION:-v2.12.0}
+    image: ${GLOBAL_REGISTRY:-}goharbor/harbor-jobservice:${HARBOR_VERSION:-v2.12.0}
     depends_on:
       harbor-db:
         condition: service_healthy
@@ -71,7 +71,7 @@ services:
   # Harbor Registry
   harbor-registry:
     <<: *defaults
-    image: goharbor/registry-photon:${HARBOR_VERSION:-v2.12.0}
+    image: ${GLOBAL_REGISTRY:-}goharbor/registry-photon:${HARBOR_VERSION:-v2.12.0}
     volumes:
       - harbor_registry:/storage
     environment:
@@ -87,14 +87,14 @@ services:
   # Harbor Portal (UI)
   harbor-portal:
     <<: *defaults
-    image: goharbor/harbor-portal:${HARBOR_VERSION:-v2.12.0}
+    image: ${GLOBAL_REGISTRY:-}goharbor/harbor-portal:${HARBOR_VERSION:-v2.12.0}
     environment:
       - TZ=${TZ:-UTC}
 
   # Harbor Proxy (Nginx)
   harbor-proxy:
     <<: *defaults
-    image: goharbor/nginx-photon:${HARBOR_VERSION:-v2.12.0}
+    image: ${GLOBAL_REGISTRY:-}goharbor/nginx-photon:${HARBOR_VERSION:-v2.12.0}
     ports:
       - "${HARBOR_HTTP_PORT_OVERRIDE:-80}:8080"
       - "${HARBOR_HTTPS_PORT_OVERRIDE:-443}:8443"
@@ -117,7 +117,7 @@ services:
   # Harbor Database
   harbor-db:
     <<: *defaults
-    image: goharbor/harbor-db:${HARBOR_VERSION:-v2.12.0}
+    image: ${GLOBAL_REGISTRY:-}goharbor/harbor-db:${HARBOR_VERSION:-v2.12.0}
     volumes:
       - harbor_db:/var/lib/postgresql/data
     environment:
@@ -142,7 +142,7 @@ services:
   # Harbor Redis
   harbor-redis:
     <<: *defaults
-    image: goharbor/redis-photon:${HARBOR_VERSION:-v2.12.0}
+    image: ${GLOBAL_REGISTRY:-}goharbor/redis-photon:${HARBOR_VERSION:-v2.12.0}
     volumes:
       - harbor_redis:/var/lib/redis
     environment:

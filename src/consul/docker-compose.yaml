@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   consul:
     <<: *defaults
-    image: consul:${CONSUL_VERSION:-1.20.3}
+    image: ${GLOBAL_REGISTRY:-}consul:${CONSUL_VERSION:-1.20.3}
     ports:
       - "${CONSUL_HTTP_PORT_OVERRIDE:-8500}:8500"
       - "${CONSUL_DNS_PORT_OVERRIDE:-8600}:8600/udp"

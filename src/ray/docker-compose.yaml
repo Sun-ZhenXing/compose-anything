@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   ray-head:
     <<: *defaults
-    image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
+    image: ${GLOBAL_REGISTRY:-}rayproject/ray:${RAY_VERSION:-2.42.1-py312}
     command: ray start --head --dashboard-host=0.0.0.0 --port=6379 --block
     ports:
       - "${RAY_DASHBOARD_PORT_OVERRIDE:-8265}:8265"
@@ -38,7 +38,7 @@ services:
 
   ray-worker-1:
     <<: *defaults
-    image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
+    image: ${GLOBAL_REGISTRY:-}rayproject/ray:${RAY_VERSION:-2.42.1-py312}
     command: ray start --address=ray-head:6379 --block
     depends_on:
       ray-head:
@@ -58,7 +58,7 @@ services:
 
   ray-worker-2:
     <<: *defaults
-    image: rayproject/ray:${RAY_VERSION:-2.42.1-py312}
+    image: ${GLOBAL_REGISTRY:-}rayproject/ray:${RAY_VERSION:-2.42.1-py312}
     command: ray start --address=ray-head:6379 --block
     depends_on:
       ray-head:

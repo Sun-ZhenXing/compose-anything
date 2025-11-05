@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   dify-api:
     <<: *defaults
-    image: langgenius/dify-api:${DIFY_VERSION:-0.18.2}
+    image: ${GLOBAL_REGISTRY:-}langgenius/dify-api:${DIFY_VERSION:-0.18.2}
     depends_on:
       dify-db:
         condition: service_healthy
@@ -48,7 +48,7 @@ services:
 
   dify-worker:
     <<: *defaults
-    image: langgenius/dify-api:${DIFY_VERSION:-0.18.2}
+    image: ${GLOBAL_REGISTRY:-}langgenius/dify-api:${DIFY_VERSION:-0.18.2}
     depends_on:
       dify-db:
         condition: service_healthy
@@ -81,7 +81,7 @@ services:
 
   dify-web:
     <<: *defaults
-    image: langgenius/dify-web:${DIFY_VERSION:-0.18.2}
+    image: ${GLOBAL_REGISTRY:-}langgenius/dify-web:${DIFY_VERSION:-0.18.2}
     depends_on:
       dify-api:
         condition: service_healthy
@@ -102,7 +102,7 @@ services:
 
   dify-db:
     <<: *defaults
-    image: postgres:15-alpine
+    image: ${GLOBAL_REGISTRY:-}postgres:15-alpine
     environment:
       - TZ=${TZ:-UTC}
       - POSTGRES_USER=${POSTGRES_USER:-dify}
@@ -128,7 +128,7 @@ services:
 
   dify-redis:
     <<: *defaults
-    image: redis:7-alpine
+    image: ${GLOBAL_REGISTRY:-}redis:7-alpine
     command: redis-server --requirepass ${REDIS_PASSWORD:-}
     environment:
       - TZ=${TZ:-UTC}
@@ -151,7 +151,7 @@ services:
 
   dify-weaviate:
     <<: *defaults
-    image: semitechnologies/weaviate:${WEAVIATE_VERSION:-1.28.12}
+    image: ${GLOBAL_REGISTRY:-}semitechnologies/weaviate:${WEAVIATE_VERSION:-1.28.12}
     profiles:
       - weaviate
     environment:

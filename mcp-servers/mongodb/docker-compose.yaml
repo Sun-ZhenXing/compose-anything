@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-mongodb:
     <<: *defaults
-    image: mcp/mongodb:${MCP_MONGODB_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/mongodb:${MCP_MONGODB_VERSION:-latest}
     environment:
       - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017}
       - MONGODB_DATABASE=${MONGODB_DATABASE:-mcp_db}
@@ -37,7 +37,7 @@ services:
 
   mongodb:
     <<: *defaults
-    image: mongo:${MONGODB_VERSION:-7}
+    image: ${GLOBAL_REGISTRY:-}mongo:${MONGODB_VERSION:-7}
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME:-admin}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD:-password}

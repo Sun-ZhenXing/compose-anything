@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   tavily:
     <<: *defaults
-    image: mcp/tavily:${TAVILY_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/tavily:${TAVILY_VERSION:-latest}
     environment:
       - TAVILY_API_KEY=${TAVILY_API_KEY}
       - TZ=${TZ:-UTC}

@@ -8,7 +8,7 @@ x-defaults: &defaults
 
 x-mariadb-galera: &mariadb-galera
   <<: *defaults
-  image: mariadb:${MARIADB_VERSION:-11.7.2}
+  image: ${GLOBAL_REGISTRY:-}mariadb:${MARIADB_VERSION:-11.7.2}
   environment: &galera-env
     TZ: ${TZ:-UTC}
     MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-galera}

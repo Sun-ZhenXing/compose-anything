@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   oceanbase:
     <<: *defaults
-    image: oceanbase/oceanbase-ce:${OCEANBASE_VERSION:-4.3.3.1-106000012024110114}
+    image: ${GLOBAL_REGISTRY:-}oceanbase/oceanbase-ce:${OCEANBASE_VERSION:-4.3.3.1-106000012024110114}
     environment:
       TZ: ${TZ:-UTC}
       MODE: slim

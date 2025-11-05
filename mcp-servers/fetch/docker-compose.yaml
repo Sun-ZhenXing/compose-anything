@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-fetch:
     <<: *defaults
-    image: mcp/fetch:${MCP_FETCH_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/fetch:${MCP_FETCH_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}

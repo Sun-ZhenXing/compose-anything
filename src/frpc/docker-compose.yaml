@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   frpc:
     <<: *defaults
-    image: snowdreamtech/frpc:${FRPC_VERSION:-0.64.0}
+    image: ${GLOBAL_REGISTRY:-}snowdreamtech/frpc:${FRPC_VERSION:-0.64.0}
     volumes:
       - ./frpc.toml:/etc/frp/frpc.toml:ro
     environment:

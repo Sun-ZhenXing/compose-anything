@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   gitea_runner:
     <<: *defaults
-    image: gitea/act_runner:0.2.12
+    image: ${GLOBAL_REGISTRY:-}gitea/act_runner:${GITEA_RUNNER_VERSION:-0.2.13}
     environment:
       TZ: ${TZ:-UTC}
       CONFIG_FILE: /config.yaml

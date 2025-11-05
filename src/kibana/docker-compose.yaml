@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   kibana:
     <<: *defaults
-    image: docker.elastic.co/kibana/kibana:${KIBANA_VERSION:-9.2.0}
+    image: ${GLOBAL_REGISTRY:-}docker.elastic.co/kibana/kibana:${KIBANA_VERSION:-9.2.0}
     ports:
       - "${KIBANA_PORT_OVERRIDE:-5601}:5601"
     volumes:

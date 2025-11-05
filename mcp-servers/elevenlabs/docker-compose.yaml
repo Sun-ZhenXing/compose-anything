@@ -17,7 +17,7 @@ x-defaults: &defaults
 services:
   mcp-elevenlabs:
     <<: *defaults
-    image: mcp/elevenlabs:${MCP_ELEVENLABS_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/elevenlabs:${MCP_ELEVENLABS_VERSION:-latest}
     container_name: mcp-elevenlabs
     environment:
       - TZ=${TZ:-UTC}

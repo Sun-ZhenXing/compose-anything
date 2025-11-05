@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   db:
     <<: *defaults
-    image: postgres:${POSTGRES_VERSION:-17}
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17}
     environment:
       TZ: ${TZ:-UTC}
       POSTGRES_USER: ${POSTGRES_USER:-opencut}
@@ -36,7 +36,7 @@ services:
 
   redis:
     <<: *defaults
-    image: redis:${REDIS_VERSION:-7-alpine}
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-7-alpine}
     ports:
       - "${REDIS_PORT_OVERRIDE:-6379}:6379"
     healthcheck:
@@ -56,7 +56,7 @@ services:
 
   serverless-redis-http:
     <<: *defaults
-    image: hiett/serverless-redis-http:${SERVERLESS_REDIS_HTTP_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}hiett/serverless-redis-http:${SERVERLESS_REDIS_HTTP_VERSION:-latest}
     ports:
       - "${SERVERLESS_REDIS_HTTP_PORT_OVERRIDE:-8079}:80"
     environment:

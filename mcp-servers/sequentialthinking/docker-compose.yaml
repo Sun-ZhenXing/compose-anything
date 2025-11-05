@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-sequentialthinking:
     <<: *defaults
-    image: mcp/sequentialthinking:${MCP_SEQUENTIALTHINKING_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/sequentialthinking:${MCP_SEQUENTIALTHINKING_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   nacos:
     <<: *defaults
-    image: nacos/nacos-server:${NACOS_VERSION:-v3.1.0-slim}
+    image: ${GLOBAL_REGISTRY:-}nacos/nacos-server:${NACOS_VERSION:-v3.1.0-slim}
     ports:
       - "${NACOS_HTTP_PORT_OVERRIDE:-8848}:8848"
       - "${NACOS_GRPC_PORT_OVERRIDE:-9848}:9848"

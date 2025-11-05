@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-api-gateway:
     <<: *defaults
-    image: mcp/api-gateway:${MCP_API_GATEWAY_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/api-gateway:${MCP_API_GATEWAY_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-text-to-graphql:
     <<: *defaults
-    image: mcp/text-to-graphql:${MCP_TEXT_TO_GRAPHQL_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/text-to-graphql:${MCP_TEXT_TO_GRAPHQL_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   stirling-pdf:
     <<: *defaults
-    image: stirlingtools/stirling-pdf:${STIRLING_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}stirlingtools/stirling-pdf:${STIRLING_VERSION:-latest}
     ports:
       - "${PORT_OVERRIDE:-8080}:8080"
     volumes:

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   bolt-diy:
     <<: *defaults
-    image: stackblitz/bolt:${BOLT_DIY_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}stackblitz/bolt:${BOLT_DIY_VERSION:-latest}
     ports:
       - "${BOLT_DIY_PORT_OVERRIDE:-5173}:5173"
     environment:

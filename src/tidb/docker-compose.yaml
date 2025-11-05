@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   pd:
     <<: *defaults
-    image: pingcap/pd:${TIDB_VERSION:-v8.5.0}
+    image: ${GLOBAL_REGISTRY:-}pingcap/pd:${TIDB_VERSION:-v8.5.0}
     command:
       - --name=pd
       - --client-urls=http://0.0.0.0:2379
@@ -40,7 +40,7 @@ services:
 
   tikv:
     <<: *defaults
-    image: pingcap/tikv:${TIDB_VERSION:-v8.5.0}
+    image: ${GLOBAL_REGISTRY:-}pingcap/tikv:${TIDB_VERSION:-v8.5.0}
     command:
       - --addr=0.0.0.0:20160
       - --advertise-addr=tikv:20160
@@ -72,7 +72,7 @@ services:
 
   tidb:
     <<: *defaults
-    image: pingcap/tidb:${TIDB_VERSION:-v8.5.0}
+    image: ${GLOBAL_REGISTRY:-}pingcap/tidb:${TIDB_VERSION:-v8.5.0}
     command:
       - --store=tikv
       - --path=pd:2379

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   gpustack:
     <<: *defaults
-    image: gpustack/gpustack:${GPUSTACK_VERSION:-v0.7.1}
+    image: ${GLOBAL_REGISTRY:-}gpustack/gpustack:${GPUSTACK_VERSION:-v0.7.1}
     ports:
       - "${GPUSTACK_PORT_OVERRIDE:-80}:80"
     volumes:

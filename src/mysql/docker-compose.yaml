@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mysql:
     <<: *defaults
-    image: mysql:${MYSQL_VERSION:-9.4.0}
+    image: ${GLOBAL_REGISTRY:-}mysql:${MYSQL_VERSION:-9.4.0}
     ports:
       - "${MYSQL_PORT_OVERRIDE:-3306}:3306"
     volumes:

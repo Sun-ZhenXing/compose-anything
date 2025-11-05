@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   pytorch:
     <<: *defaults
-    image: pytorch/pytorch:${PYTORCH_VERSION:-2.6.0-cuda12.6-cudnn9-runtime}
+    image: ${GLOBAL_REGISTRY:-}pytorch/pytorch:${PYTORCH_VERSION:-2.6.0-cuda12.6-cudnn9-runtime}
     ports:
       - "${JUPYTER_PORT_OVERRIDE:-8888}:8888"
       - "${TENSORBOARD_PORT_OVERRIDE:-6006}:6006"

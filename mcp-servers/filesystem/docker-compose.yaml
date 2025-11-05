@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-filesystem:
     <<: *defaults
-    image: mcp/filesystem:${MCP_FILESYSTEM_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/filesystem:${MCP_FILESYSTEM_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}

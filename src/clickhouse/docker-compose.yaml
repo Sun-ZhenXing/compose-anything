@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   clickhouse:
     <<: *defaults
-    image: clickhouse/clickhouse-server:${CLICKHOUSE_VERSION:-24.11.1.2557}
+    image: ${GLOBAL_REGISTRY:-}clickhouse/clickhouse-server:${CLICKHOUSE_VERSION:-24.11.1.2557}
     hostname: clickhouse
     environment:
       TZ: ${TZ:-UTC}

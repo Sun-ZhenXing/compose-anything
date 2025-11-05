@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   grafana:
     <<: *defaults
-    image: grafana/grafana:${GRAFANA_VERSION:-12.1.1}
+    image: ${GLOBAL_REGISTRY:-}grafana/grafana:${GRAFANA_VERSION:-12.1.1}
     ports:
       - "${GRAFANA_PORT_OVERRIDE:-3000}:3000"
     volumes:

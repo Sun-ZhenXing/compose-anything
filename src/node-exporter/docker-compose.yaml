@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   node-exporter:
     <<: *defaults
-    image: prom/node-exporter:${NODE_EXPORTER_VERSION:-v1.8.2}
+    image: ${GLOBAL_REGISTRY:-}prom/node-exporter:${NODE_EXPORTER_VERSION:-v1.8.2}
     ports:
       - "${NODE_EXPORTER_PORT_OVERRIDE:-9100}:9100"
     command:

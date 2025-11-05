@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-time:
     <<: *defaults
-    image: mcp/time:${MCP_TIME_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/time:${MCP_TIME_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}

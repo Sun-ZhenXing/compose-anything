@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp:
     <<: *defaults
-    image: mcp/redis:${MCP_REDIS_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/redis:${MCP_REDIS_VERSION:-latest}
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -37,7 +37,7 @@ services:
 
   redis:
     <<: *defaults
-    image: redis:${REDIS_VERSION:-7-alpine}
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-7-alpine}
     command: redis-server --appendonly yes
     ports:
       - "${REDIS_PORT_OVERRIDE:-6379}:6379"

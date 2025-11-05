@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-clickhouse:
     <<: *defaults
-    image: mcp/clickhouse:${MCP_CLICKHOUSE_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/clickhouse:${MCP_CLICKHOUSE_VERSION:-latest}
     environment:
       - CLICKHOUSE_URL=${CLICKHOUSE_URL:-http://localhost:8123}
       - CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}

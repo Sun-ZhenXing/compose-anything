@@ -29,7 +29,7 @@ x-environment: &common-env
 
 x-restate: &restate-defaults
   <<: *defaults
-  image: restatedev/restate:${RESTATE_VERSION:-1.5.3}
+  image: ${GLOBAL_REGISTRY:-}restatedev/restate:${RESTATE_VERSION:-1.5.3}
   volumes:
     - restate_data:/restate-data
   deploy:

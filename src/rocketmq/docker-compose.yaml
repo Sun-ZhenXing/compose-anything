@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   namesrv:
     <<: *defaults
-    image: apache/rocketmq:${ROCKETMQ_VERSION:-5.3.1}
+    image: ${GLOBAL_REGISTRY:-}apache/rocketmq:${ROCKETMQ_VERSION:-5.3.1}
     command: sh mqnamesrv
     environment:
       TZ: ${TZ:-UTC}
@@ -35,7 +35,7 @@ services:
 
   broker:
     <<: *defaults
-    image: apache/rocketmq:${ROCKETMQ_VERSION:-5.3.1}
+    image: ${GLOBAL_REGISTRY:-}apache/rocketmq:${ROCKETMQ_VERSION:-5.3.1}
     command: sh mqbroker -n namesrv:9876 -c /home/rocketmq/broker.conf
     environment:
       TZ: ${TZ:-UTC}
@@ -68,7 +68,7 @@ services:
 
   dashboard:
     <<: *defaults
-    image: apacherocketmq/rocketmq-dashboard:${ROCKETMQ_DASHBOARD_VERSION:-2.0.0}
+    image: ${GLOBAL_REGISTRY:-}apacherocketmq/rocketmq-dashboard:${ROCKETMQ_DASHBOARD_VERSION:-2.0.0}
     environment:
       TZ: ${TZ:-UTC}
       JAVA_OPTS: "-Xms256m -Xmx256m -Drocketmq.namesrv.addr=namesrv:9876"

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-memory:
     <<: *defaults
-    image: mcp/memory:${MCP_MEMORY_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/memory:${MCP_MEMORY_VERSION:-latest}
     environment:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}

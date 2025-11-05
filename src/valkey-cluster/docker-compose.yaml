@@ -8,7 +8,7 @@ x-defaults: &defaults
 
 x-valkey-node: &valkey-node
   <<: *defaults
-  image: valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
+  image: ${GLOBAL_REGISTRY:-}valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
   environment:
     - TZ=${TZ:-UTC}
   command:
@@ -91,7 +91,7 @@ services:
 
   valkey-cluster-init:
     <<: *defaults
-    image: valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
+    image: ${GLOBAL_REGISTRY:-}valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
     environment:
       - TZ=${TZ:-UTC}
     depends_on:

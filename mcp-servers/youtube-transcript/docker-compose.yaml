@@ -17,7 +17,7 @@ x-defaults: &defaults
 services:
   mcp-youtube-transcript:
     <<: *defaults
-    image: mcp/youtube-transcript:${MCP_YOUTUBE_TRANSCRIPT_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/youtube-transcript:${MCP_YOUTUBE_TRANSCRIPT_VERSION:-latest}
     container_name: mcp-youtube-transcript
     environment:
       - TZ=${TZ:-UTC}

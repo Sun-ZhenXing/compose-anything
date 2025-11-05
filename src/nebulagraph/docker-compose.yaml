@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   metad:
     <<: *defaults
-    image: vesoft/nebula-metad:${NEBULA_VERSION:-v3.8.0}
+    image: ${GLOBAL_REGISTRY:-}vesoft/nebula-metad:${NEBULA_VERSION:-v3.8.0}
     environment:
       - TZ=${TZ:-UTC}
       - USER=root
@@ -44,7 +44,7 @@ services:
 
   storaged:
     <<: *defaults
-    image: vesoft/nebula-storaged:${NEBULA_VERSION:-v3.8.0}
+    image: ${GLOBAL_REGISTRY:-}vesoft/nebula-storaged:${NEBULA_VERSION:-v3.8.0}
     environment:
       - TZ=${TZ:-UTC}
       - USER=root
@@ -82,7 +82,7 @@ services:
 
   graphd:
     <<: *defaults
-    image: vesoft/nebula-graphd:${NEBULA_VERSION:-v3.8.0}
+    image: ${GLOBAL_REGISTRY:-}vesoft/nebula-graphd:${NEBULA_VERSION:-v3.8.0}
     environment:
       - TZ=${TZ:-UTC}
       - USER=root

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   hbase:
     <<: *defaults
-    image: harisekhon/hbase:${HBASE_VERSION:-2.6}
+    image: ${GLOBAL_REGISTRY:-}harisekhon/hbase:${HBASE_VERSION:-2.6}
     hostname: hbase
     environment:
       TZ: ${TZ:-UTC}

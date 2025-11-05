@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mcp-neo4j-cypher:
     <<: *defaults
-    image: mcp/neo4j-cypher:${MCP_NEO4J_CYPHER_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}mcp/neo4j-cypher:${MCP_NEO4J_CYPHER_VERSION:-latest}
     environment:
       - NEO4J_URL=${NEO4J_URL:-bolt://localhost:7687}
       - NEO4J_USER=${NEO4J_USER:-neo4j}

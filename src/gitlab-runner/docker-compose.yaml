@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   gitlab-runner:
     <<: *defaults
-    image: gitlab/gitlab-runner:${GITLAB_RUNNER_VERSION:-alpine3.21-v18.4.0}
+    image: ${GLOBAL_REGISTRY:-}gitlab/gitlab-runner:${GITLAB_RUNNER_VERSION:-alpine3.21-v18.4.0}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config:/etc/gitlab-runner
