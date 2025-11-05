@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   kibana:
     <<: *defaults
-    image: docker.elastic.co/kibana/kibana:${KIBANA_VERSION:-8.16.1}
+    image: docker.elastic.co/kibana/kibana:${KIBANA_VERSION:-9.2.0}
     ports:
       - "${KIBANA_PORT_OVERRIDE:-5601}:5601"
     volumes:
@@ -19,7 +19,7 @@ services:
       # - ./kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     environment:
       - TZ=${TZ:-UTC}
-      - SERVERNAME=kibana
+      - SERVERNAME=${KIBANA_SERVERNAME:-kibana}
       - ELASTICSEARCH_HOSTS=${ELASTICSEARCH_HOSTS:-http://elasticsearch:9200}
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-}

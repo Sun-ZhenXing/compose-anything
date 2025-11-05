@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   elasticsearch:
     <<: *defaults
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION:-8.16.1}
+    image: docker.elastic.co/elasticsearch/elasticsearch-wolfi:${ELASTICSEARCH_VERSION:-9.2.0}
     ports:
       - "${ELASTICSEARCH_HTTP_PORT_OVERRIDE:-9200}:9200"
       - "${ELASTICSEARCH_TRANSPORT_PORT_OVERRIDE:-9300}:9300"
