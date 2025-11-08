@@ -38,11 +38,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 512M
+          cpus: ${REDIS_CPU_LIMIT:-0.50}
+          memory: ${REDIS_MEMORY_LIMIT:-256M}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${REDIS_CPU_RESERVATION:-0.25}
+          memory: ${REDIS_MEMORY_RESERVATION:-128M}
 
 volumes:
   redis_data:

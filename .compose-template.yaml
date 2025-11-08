@@ -31,8 +31,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${SERVICE_NAME_CPU_LIMIT:-1.00}
-          memory: ${SERVICE_NAME_MEMORY_LIMIT:-512M}
+          cpus: ${SERVICE_NAME_CPU_LIMIT:-0.50}
+          memory: ${SERVICE_NAME_MEMORY_LIMIT:-256M}
         reservations:
           cpus: ${SERVICE_NAME_CPU_RESERVATION:-0.25}
           memory: ${SERVICE_NAME_MEMORY_RESERVATION:-128M}
