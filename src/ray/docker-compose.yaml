@@ -24,11 +24,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4.0'
-          memory: 8G
+          cpus: ${RAY_HEAD_CPU_LIMIT:-4.0}
+          memory: ${RAY_HEAD_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: '2.0'
-          memory: 4G
+          cpus: ${RAY_HEAD_CPU_RESERVATION:-2.0}
+          memory: ${RAY_HEAD_MEMORY_RESERVATION:-4G}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8265/"]
       interval: 30s
@@ -50,11 +50,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 4G
+          cpus: ${RAY_WORKER_1_CPU_LIMIT:-2.0}
+          memory: ${RAY_WORKER_1_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: '1.0'
-          memory: 2G
+          cpus: ${RAY_WORKER_1_CPU_RESERVATION:-1.0}
+          memory: ${RAY_WORKER_1_MEMORY_RESERVATION:-2G}
 
   ray-worker-2:
     <<: *defaults
@@ -70,11 +70,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 4G
+          cpus: ${RAY_WORKER_2_CPU_LIMIT:-2.0}
+          memory: ${RAY_WORKER_2_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: '1.0'
-          memory: 2G
+          cpus: ${RAY_WORKER_2_CPU_RESERVATION:-1.0}
+          memory: ${RAY_WORKER_2_MEMORY_RESERVATION:-2G}
 
 volumes:
   ray_storage:

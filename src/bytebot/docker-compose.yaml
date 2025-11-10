@@ -18,11 +18,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 4G
+          cpus: ${BYTEBOT_DESKTOP_CPU_LIMIT:-2.0}
+          memory: ${BYTEBOT_DESKTOP_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: '1.0'
-          memory: 2G
+          cpus: ${BYTEBOT_DESKTOP_CPU_RESERVATION:-1.0}
+          memory: ${BYTEBOT_DESKTOP_MEMORY_RESERVATION:-2G}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9990/"]
       interval: 30s
@@ -50,11 +50,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${BYTEBOT_AGENT_CPU_LIMIT:-1.0}
+          memory: ${BYTEBOT_AGENT_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${BYTEBOT_AGENT_CPU_RESERVATION:-0.5}
+          memory: ${BYTEBOT_AGENT_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9991/health"]
       interval: 30s
@@ -77,11 +77,17 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${BYTEBOT_UI_CPU_LIMIT:-0.5}
+          memory: ${BYTEBOT_UI_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${BYTEBOT_UI_CPU_RESERVATION:-0.25}
+          memory: ${BYTEBOT_UI_MEMORY_RESERVATION:-256M}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9992/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   bytebot-db:
     <<: *defaults
@@ -97,11 +103,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${BYTEBOT_DB_CPU_LIMIT:-0.5}
+          memory: ${BYTEBOT_DB_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${BYTEBOT_DB_CPU_RESERVATION:-0.25}
+          memory: ${BYTEBOT_DB_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 30s

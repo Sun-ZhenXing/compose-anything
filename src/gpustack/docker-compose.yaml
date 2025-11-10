@@ -26,11 +26,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '8.0'
-          memory: 8G
+          cpus: ${GPUSTACK_CPU_LIMIT:-8.0}
+          memory: ${GPUSTACK_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: '2.0'
-          memory: 4G
+          cpus: ${GPUSTACK_CPU_RESERVATION:-2.0}
+          memory: ${GPUSTACK_MEMORY_RESERVATION:-4G}
           devices:
             - driver: nvidia
               device_ids: [ '0' ]

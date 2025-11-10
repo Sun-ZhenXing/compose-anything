@@ -35,11 +35,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4.0'
-          memory: 4G
+          cpus: ${CLICKHOUSE_CPU_LIMIT:-4.0}
+          memory: ${CLICKHOUSE_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${CLICKHOUSE_CPU_RESERVATION:-1.0}
+          memory: ${CLICKHOUSE_MEMORY_RESERVATION:-1G}
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1"]
       interval: 30s

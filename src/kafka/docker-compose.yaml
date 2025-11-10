@@ -28,11 +28,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.00'
-          memory: 1G
+          cpus: ${ZOOKEEPER_CPU_LIMIT:-1.00}
+          memory: ${ZOOKEEPER_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${ZOOKEEPER_CPU_RESERVATION:-0.25}
+          memory: ${ZOOKEEPER_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD-SHELL", "echo ruok | nc localhost 2181 | grep imok"]
       interval: 30s
@@ -76,11 +76,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.00'
-          memory: 2G
+          cpus: ${KAFKA_CPU_LIMIT:-2.00}
+          memory: ${KAFKA_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.50'
-          memory: 1G
+          cpus: ${KAFKA_CPU_RESERVATION:-0.50}
+          memory: ${KAFKA_MEMORY_RESERVATION:-1G}
     healthcheck:
       test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092"]
       interval: 30s
@@ -108,11 +108,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 512M
+          cpus: ${KAFKA_UI_CPU_LIMIT:-0.50}
+          memory: ${KAFKA_UI_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.10'
-          memory: 128M
+          cpus: ${KAFKA_UI_CPU_RESERVATION:-0.10}
+          memory: ${KAFKA_UI_MEMORY_RESERVATION:-128M}
     profiles:
       - ui
 

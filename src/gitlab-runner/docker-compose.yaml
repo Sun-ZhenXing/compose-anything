@@ -18,8 +18,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 2G
+          cpus: ${GITLAB_RUNNER_CPU_LIMIT:-1.0}
+          memory: ${GITLAB_RUNNER_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.5'
-          memory: 1G
+          cpus: ${GITLAB_RUNNER_CPU_RESERVATION:-0.5}
+          memory: ${GITLAB_RUNNER_MEMORY_RESERVATION:-1G}

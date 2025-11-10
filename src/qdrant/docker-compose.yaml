@@ -22,11 +22,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${QDRANT_CPU_LIMIT:-1.0}
+          memory: ${QDRANT_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.5'
-          memory: 256M
+          cpus: ${QDRANT_CPU_RESERVATION:-0.5}
+          memory: ${QDRANT_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:6333/"]
       interval: 30s

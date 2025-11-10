@@ -38,11 +38,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.50'
-          memory: 2G
+          cpus: ${LOGSTASH_CPU_LIMIT:-1.50}
+          memory: ${LOGSTASH_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.50'
-          memory: 1G
+          cpus: ${LOGSTASH_CPU_RESERVATION:-0.50}
+          memory: ${LOGSTASH_MEMORY_RESERVATION:-1G}
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9600/_node/stats || exit 1"]
       interval: 30s

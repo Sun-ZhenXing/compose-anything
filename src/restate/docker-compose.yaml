@@ -29,11 +29,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.00'
-          memory: 2G
+          cpus: ${RESTATE_CPU_LIMIT:-2.00}
+          memory: ${RESTATE_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.50'
-          memory: 512M
+          cpus: ${RESTATE_CPU_RESERVATION:-0.50}
+          memory: ${RESTATE_MEMORY_RESERVATION:-512M}
 
 volumes:
   restate_data:

@@ -30,11 +30,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${GITEA_CPU_LIMIT:-1.0}
+          memory: ${GITEA_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${GITEA_CPU_RESERVATION:-0.5}
+          memory: ${GITEA_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
       interval: 30s
@@ -55,11 +55,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${GITEA_DB_CPU_LIMIT:-1.0}
+          memory: ${GITEA_DB_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${GITEA_DB_CPU_RESERVATION:-0.5}
+          memory: ${GITEA_DB_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 30s

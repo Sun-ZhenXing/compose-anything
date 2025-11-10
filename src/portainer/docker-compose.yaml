@@ -29,11 +29,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.00'
-          memory: 512M
+          cpus: ${PORTAINER_CPU_LIMIT:-1.00}
+          memory: ${PORTAINER_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 128M
+          cpus: ${PORTAINER_CPU_RESERVATION:-0.25}
+          memory: ${PORTAINER_MEMORY_RESERVATION:-128M}
 
 volumes:
   portainer_data:

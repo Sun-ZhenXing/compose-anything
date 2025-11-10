@@ -31,8 +31,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 128M
+          cpus: ${DNSMASQ_CPU_LIMIT:-0.50}
+          memory: ${DNSMASQ_MEMORY_LIMIT:-128M}
         reservations:
-          cpus: '0.10'
-          memory: 32M
+          cpus: ${DNSMASQ_CPU_RESERVATION:-0.10}
+          memory: ${DNSMASQ_MEMORY_RESERVATION:-32M}

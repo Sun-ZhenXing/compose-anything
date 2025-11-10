@@ -21,11 +21,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.00'
-          memory: 512M
+          cpus: ${KONG_DB_CPU_LIMIT:-1.00}
+          memory: ${KONG_DB_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 128M
+          cpus: ${KONG_DB_CPU_RESERVATION:-0.25}
+          memory: ${KONG_DB_MEMORY_RESERVATION:-128M}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U kong"]
       interval: 30s
@@ -83,11 +83,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.00'
-          memory: 1G
+          cpus: ${KONG_CPU_LIMIT:-1.00}
+          memory: ${KONG_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${KONG_CPU_RESERVATION:-0.25}
+          memory: ${KONG_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD-SHELL", "kong health"]
       interval: 30s
@@ -113,11 +113,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 256M
+          cpus: ${KONGA_CPU_LIMIT:-0.50}
+          memory: ${KONGA_MEMORY_LIMIT:-256M}
         reservations:
-          cpus: '0.10'
-          memory: 64M
+          cpus: ${KONGA_CPU_RESERVATION:-0.10}
+          memory: ${KONGA_MEMORY_RESERVATION:-64M}
     profiles:
       - gui
 

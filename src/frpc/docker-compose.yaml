@@ -20,8 +20,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 128M
+          cpus: ${FRPC_CPU_LIMIT:-0.5}
+          memory: ${FRPC_MEMORY_LIMIT:-128M}
         reservations:
-          cpus: '0.1'
-          memory: 64M
+          cpus: ${FRPC_CPU_RESERVATION:-0.1}
+          memory: ${FRPC_MEMORY_RESERVATION:-64M}

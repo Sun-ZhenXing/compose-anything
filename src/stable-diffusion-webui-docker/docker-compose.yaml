@@ -23,11 +23,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4.0'
-          memory: 16G
+          cpus: ${SD_WEBUI_CPU_LIMIT:-4.0}
+          memory: ${SD_WEBUI_MEMORY_LIMIT:-16G}
         reservations:
-          cpus: '2.0'
-          memory: 8G
+          cpus: ${SD_WEBUI_CPU_RESERVATION:-2.0}
+          memory: ${SD_WEBUI_MEMORY_RESERVATION:-8G}
           devices:
             - driver: nvidia
               count: ${GPU_COUNT:-1}

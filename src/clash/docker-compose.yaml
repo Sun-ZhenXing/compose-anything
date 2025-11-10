@@ -20,11 +20,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
-          memory: 512M
+          cpus: ${CLASH_CPU_LIMIT:-0.5}
+          memory: ${CLASH_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: "0.25"
-          memory: 256M
+          cpus: ${CLASH_CPU_RESERVATION:-0.25}
+          memory: ${CLASH_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/"]
       interval: 30s

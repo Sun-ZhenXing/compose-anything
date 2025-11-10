@@ -26,11 +26,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${TIDB_PD_CPU_LIMIT:-1.0}
+          memory: ${TIDB_PD_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.25'
-          memory: 512M
+          cpus: ${TIDB_PD_CPU_RESERVATION:-0.25}
+          memory: ${TIDB_PD_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O - http://localhost:2379/health || exit 1"]
       interval: 30s
@@ -58,11 +58,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 2G
+          cpus: ${TIDB_TIKV_CPU_LIMIT:-2.0}
+          memory: ${TIDB_TIKV_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.5'
-          memory: 1G
+          cpus: ${TIDB_TIKV_CPU_RESERVATION:-0.5}
+          memory: ${TIDB_TIKV_MEMORY_RESERVATION:-1G}
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O - http://localhost:20180/status || exit 1"]
       interval: 30s
@@ -88,11 +88,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 2G
+          cpus: ${TIDB_CPU_LIMIT:-2.0}
+          memory: ${TIDB_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${TIDB_CPU_RESERVATION:-0.5}
+          memory: ${TIDB_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O - http://localhost:10080/status || exit 1"]
       interval: 30s

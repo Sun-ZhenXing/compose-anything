@@ -50,11 +50,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${ETCD_CPU_LIMIT:-1.0}
+          memory: ${ETCD_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${ETCD_CPU_RESERVATION:-0.25}
+          memory: ${ETCD_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD", "etcdctl", "endpoint", "health"]
       interval: 30s

@@ -23,11 +23,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 4G
+          cpus: ${EASY_DATASET_CPU_LIMIT:-2.0}
+          memory: ${EASY_DATASET_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: '0.5'
-          memory: 1G
+          cpus: ${EASY_DATASET_CPU_RESERVATION:-0.5}
+          memory: ${EASY_DATASET_MEMORY_RESERVATION:-1G}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:1717"]
       interval: 30s

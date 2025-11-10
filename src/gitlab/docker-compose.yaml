@@ -24,11 +24,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 8G
+          cpus: ${GITLAB_CPU_LIMIT:-2.0}
+          memory: ${GITLAB_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: '1.0'
-          memory: 4G
+          cpus: ${GITLAB_CPU_RESERVATION:-1.0}
+          memory: ${GITLAB_MEMORY_RESERVATION:-4G}
     healthcheck:
       test: ["CMD", "/opt/gitlab/bin/gitlab-healthcheck", "--fail"]
       interval: 60s

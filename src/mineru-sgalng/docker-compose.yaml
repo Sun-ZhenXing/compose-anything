@@ -19,11 +19,11 @@ x-mineru-sglang: &mineru-sglang
   deploy:
     resources:
       limits:
-        cpus: '8.0'
-        memory: 4G
+        cpus: ${MINERU_SGLANG_CPU_LIMIT:-8.0}
+        memory: ${MINERU_SGLANG_MEMORY_LIMIT:-4G}
       reservations:
-        cpus: '1.0'
-        memory: 2G
+        cpus: ${MINERU_SGLANG_CPU_RESERVATION:-1.0}
+        memory: ${MINERU_SGLANG_MEMORY_RESERVATION:-2G}
         devices:
           - driver: nvidia
             device_ids: [ '0' ]

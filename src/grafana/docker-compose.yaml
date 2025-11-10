@@ -31,11 +31,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${GRAFANA_CPU_LIMIT:-1.0}
+          memory: ${GRAFANA_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${GRAFANA_CPU_RESERVATION:-0.25}
+          memory: ${GRAFANA_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
       interval: 30s

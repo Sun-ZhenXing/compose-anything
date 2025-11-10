@@ -23,8 +23,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.00'
-          memory: 512M
+          cpus: ${PORTKEY_GATEWAY_CPU_LIMIT:-1.00}
+          memory: ${PORTKEY_GATEWAY_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 128M
+          cpus: ${PORTKEY_GATEWAY_CPU_RESERVATION:-0.25}
+          memory: ${PORTKEY_GATEWAY_MEMORY_RESERVATION:-128M}

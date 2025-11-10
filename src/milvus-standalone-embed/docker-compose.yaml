@@ -37,11 +37,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 4G
+          cpus: ${MILVUS_EMBED_CPU_LIMIT:-2.0}
+          memory: ${MILVUS_EMBED_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: '1.0'
-          memory: 2G
+          cpus: ${MILVUS_EMBED_CPU_RESERVATION:-1.0}
+          memory: ${MILVUS_EMBED_MEMORY_RESERVATION:-2G}
 
   attu:
     <<: *defaults
@@ -56,11 +56,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${ATTU_CPU_LIMIT:-0.25}
+          memory: ${ATTU_MEMORY_LIMIT:-256M}
         reservations:
-          cpus: '0.1'
-          memory: 128M
+          cpus: ${ATTU_CPU_RESERVATION:-0.1}
+          memory: ${ATTU_MEMORY_RESERVATION:-128M}
 
 
 volumes:

@@ -29,11 +29,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${APISIX_CPU_LIMIT:-1.0}
+          memory: ${APISIX_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${APISIX_CPU_RESERVATION:-0.25}
+          memory: ${APISIX_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9080/apisix/status || exit 1"]
       interval: 30s
@@ -83,11 +83,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${ETCD_CPU_LIMIT:-0.5}
+          memory: ${ETCD_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.1'
-          memory: 128M
+          cpus: ${ETCD_CPU_RESERVATION:-0.1}
+          memory: ${ETCD_MEMORY_RESERVATION:-128M}
     healthcheck:
       test: ["CMD", "etcdctl", "endpoint", "health"]
       interval: 30s
@@ -115,11 +115,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${APISIX_DASHBOARD_CPU_LIMIT:-0.5}
+          memory: ${APISIX_DASHBOARD_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.1'
-          memory: 128M
+          cpus: ${APISIX_DASHBOARD_CPU_RESERVATION:-0.1}
+          memory: ${APISIX_DASHBOARD_MEMORY_RESERVATION:-128M}
 
 volumes:
   apisix_logs:

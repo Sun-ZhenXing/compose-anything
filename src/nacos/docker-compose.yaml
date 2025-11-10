@@ -31,11 +31,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${NACOS_CPU_LIMIT:-1.0}
+          memory: ${NACOS_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${NACOS_CPU_RESERVATION:-0.5}
+          memory: ${NACOS_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8848/nacos/"]
       interval: 30s

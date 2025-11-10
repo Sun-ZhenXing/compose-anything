@@ -27,11 +27,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.00'
-          memory: 2G
+          cpus: ${LIBREOFFICE_CPU_LIMIT:-2.00}
+          memory: ${LIBREOFFICE_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.50'
-          memory: 512M
+          cpus: ${LIBREOFFICE_CPU_RESERVATION:-0.50}
+          memory: ${LIBREOFFICE_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD", "curl", "-f", "-k", "https://localhost:3001/"]
       interval: 30s

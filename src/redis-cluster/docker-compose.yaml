@@ -49,11 +49,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${REDIS_CLUSTER_1_CPU_LIMIT:-0.5}
+          memory: ${REDIS_CLUSTER_1_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${REDIS_CLUSTER_1_CPU_RESERVATION:-0.25}
+          memory: ${REDIS_CLUSTER_1_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -74,11 +74,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${REDIS_CLUSTER_2_CPU_LIMIT:-0.5}
+          memory: ${REDIS_CLUSTER_2_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${REDIS_CLUSTER_2_CPU_RESERVATION:-0.25}
+          memory: ${REDIS_CLUSTER_2_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -99,11 +99,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${REDIS_CLUSTER_3_CPU_LIMIT:-0.5}
+          memory: ${REDIS_CLUSTER_3_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${REDIS_CLUSTER_3_CPU_RESERVATION:-0.25}
+          memory: ${REDIS_CLUSTER_3_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -124,11 +124,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${REDIS_CLUSTER_4_CPU_LIMIT:-0.5}
+          memory: ${REDIS_CLUSTER_4_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${REDIS_CLUSTER_4_CPU_RESERVATION:-0.25}
+          memory: ${REDIS_CLUSTER_4_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -149,11 +149,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${REDIS_CLUSTER_5_CPU_LIMIT:-0.5}
+          memory: ${REDIS_CLUSTER_5_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${REDIS_CLUSTER_5_CPU_RESERVATION:-0.25}
+          memory: ${REDIS_CLUSTER_5_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -174,11 +174,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${REDIS_CLUSTER_6_CPU_LIMIT:-0.5}
+          memory: ${REDIS_CLUSTER_6_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${REDIS_CLUSTER_6_CPU_RESERVATION:-0.25}
+          memory: ${REDIS_CLUSTER_6_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s

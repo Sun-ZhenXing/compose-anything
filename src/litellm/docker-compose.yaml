@@ -41,11 +41,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.00'
-          memory: 2G
+          cpus: ${LITELLM_CPU_LIMIT:-2.00}
+          memory: ${LITELLM_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.50'
-          memory: 512M
+          cpus: ${LITELLM_CPU_RESERVATION:-0.50}
+          memory: ${LITELLM_MEMORY_RESERVATION:-512M}
 
   db:
     <<: *defaults
@@ -68,11 +68,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.00'
-          memory: 1G
+          cpus: ${LITELLM_DB_CPU_LIMIT:-1.00}
+          memory: ${LITELLM_DB_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${LITELLM_DB_CPU_RESERVATION:-0.25}
+          memory: ${LITELLM_DB_MEMORY_RESERVATION:-256M}
 
   prometheus:
     <<: *defaults
@@ -99,11 +99,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.00'
-          memory: 1G
+          cpus: ${LITELLM_PROMETHEUS_CPU_LIMIT:-1.00}
+          memory: ${LITELLM_PROMETHEUS_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${LITELLM_PROMETHEUS_CPU_RESERVATION:-0.25}
+          memory: ${LITELLM_PROMETHEUS_MEMORY_RESERVATION:-256M}
 
 volumes:
   prometheus_data:

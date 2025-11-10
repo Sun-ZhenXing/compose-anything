@@ -36,11 +36,11 @@ x-mongo: &mongo
   deploy:
     resources:
       limits:
-        cpus: '0.50'
-        memory: 1G
+        cpus: ${MONGO_REPLICA_CPU_LIMIT:-1.00}
+        memory: ${MONGO_REPLICA_MEMORY_LIMIT:-2048M}
       reservations:
-        cpus: '0.25'
-        memory: 256M
+        cpus: ${MONGO_REPLICA_CPU_RESERVATION:-0.50}
+        memory: ${MONGO_REPLICA_MEMORY_RESERVATION:-1024M}
 
 services:
   mongo1:
@@ -117,8 +117,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${MONGO_REPLICA_INIT_CPU_LIMIT:-1.00}
+          memory: ${MONGO_REPLICA_INIT_MEMORY_LIMIT:-2048M}
         reservations:
-          cpus: '0.10'
-          memory: 128M
+          cpus: ${MONGO_REPLICA_INIT_CPU_RESERVATION:-0.50}
+          memory: ${MONGO_REPLICA_INIT_MEMORY_RESERVATION:-1024M}

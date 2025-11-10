@@ -24,11 +24,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 2G
+          cpus: ${GITEA_RUNNER_CPU_LIMIT:-1.0}
+          memory: ${GITEA_RUNNER_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.5'
-          memory: 1G
+          cpus: ${GITEA_RUNNER_CPU_RESERVATION:-0.5}
+          memory: ${GITEA_RUNNER_MEMORY_RESERVATION:-1G}
 
 volumes:
   gitea_runner_data:

@@ -27,11 +27,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.00'
-          memory: 512M
+          cpus: ${APACHE_CPU_LIMIT:-1.00}
+          memory: ${APACHE_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 128M
+          cpus: ${APACHE_CPU_RESERVATION:-0.25}
+          memory: ${APACHE_MEMORY_RESERVATION:-128M}
     healthcheck:
       test: ["CMD", "httpd", "-t"]
       interval: 30s

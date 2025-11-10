@@ -35,11 +35,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${POCKETBASE_CPU_LIMIT:-0.25}
+          memory: ${POCKETBASE_MEMORY_LIMIT:-256M}
         reservations:
-          cpus: '0.1'
-          memory: 128M
+          cpus: ${POCKETBASE_CPU_RESERVATION:-0.1}
+          memory: ${POCKETBASE_MEMORY_RESERVATION:-128M}
 
 volumes:
   pb_data:

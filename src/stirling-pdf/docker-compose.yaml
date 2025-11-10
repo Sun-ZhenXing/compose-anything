@@ -38,11 +38,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 4G
+          cpus: ${STIRLING_CPU_LIMIT:-2.0}
+          memory: ${STIRLING_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: '1.0'
-          memory: 2G
+          cpus: ${STIRLING_CPU_RESERVATION:-1.0}
+          memory: ${STIRLING_MEMORY_RESERVATION:-2G}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
       interval: 30s

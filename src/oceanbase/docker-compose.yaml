@@ -28,11 +28,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4.0'
-          memory: 10G
+          cpus: ${OCEANBASE_CPU_LIMIT:-4.0}
+          memory: ${OCEANBASE_MEMORY_LIMIT:-10G}
         reservations:
-          cpus: '2.0'
-          memory: 8G
+          cpus: ${OCEANBASE_CPU_RESERVATION:-2.0}
+          memory: ${OCEANBASE_MEMORY_RESERVATION:-8G}
     healthcheck:
       test: ["CMD-SHELL", "mysql -h127.0.0.1 -P2881 -uroot -p$$OB_ROOT_PASSWORD -e 'SELECT 1' || exit 1"]
       interval: 30s

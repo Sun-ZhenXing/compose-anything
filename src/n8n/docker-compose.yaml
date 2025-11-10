@@ -42,11 +42,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 2G
+          cpus: ${N8N_CPU_LIMIT:-2.0}
+          memory: ${N8N_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${N8N_CPU_RESERVATION:-0.5}
+          memory: ${N8N_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5678/healthz"]
       interval: 30s
@@ -59,27 +59,19 @@ services:
     image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
     environment:
       - TZ=${TZ:-UTC}
-      - POSTGRES_USER=${DB_POSTGRESDB_USER:-n8n}
-      - POSTGRES_PASSWORD=${DB_POSTGRESDB_PASSWORD:-n8n123}
-      - POSTGRES_DB=${DB_POSTGRESDB_DATABASE:-n8n}
+      - POSTGRES_USER=${POSTGRES_USER:-n8n}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-}
+      - POSTGRES_DB=${POSTGRES_DB:-n8n}
     volumes:
       - n8n_db_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_POSTGRESDB_USER:-n8n}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-    profiles:
-      - postgres
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${N8N_DB_CPU_LIMIT:-1.0}
+          memory: ${N8N_DB_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${N8N_DB_CPU_RESERVATION:-0.5}
+          memory: ${N8N_DB_MEMORY_RESERVATION:-512M}
 
 volumes:
   n8n_data:

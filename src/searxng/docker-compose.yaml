@@ -33,11 +33,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 256M
+          cpus: ${SEARXNG_CADDY_CPU_LIMIT:-0.50}
+          memory: ${SEARXNG_CADDY_MEMORY_LIMIT:-256M}
         reservations:
-          cpus: '0.10'
-          memory: 64M
+          cpus: ${SEARXNG_CADDY_CPU_RESERVATION:-0.10}
+          memory: ${SEARXNG_CADDY_MEMORY_RESERVATION:-64M}
 
   redis:
     <<: *defaults
@@ -62,11 +62,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
-          memory: 256M
+          cpus: ${SEARXNG_REDIS_CPU_LIMIT:-0.50}
+          memory: ${SEARXNG_REDIS_MEMORY_LIMIT:-256M}
         reservations:
-          cpus: '0.10'
-          memory: 64M
+          cpus: ${SEARXNG_REDIS_CPU_RESERVATION:-0.10}
+          memory: ${SEARXNG_REDIS_MEMORY_RESERVATION:-64M}
 
   searxng:
     <<: *defaults
@@ -100,11 +100,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.00'
-          memory: 1G
+          cpus: ${SEARXNG_CPU_LIMIT:-1.00}
+          memory: ${SEARXNG_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${SEARXNG_CPU_RESERVATION:-0.25}
+          memory: ${SEARXNG_MEMORY_RESERVATION:-256M}
 
 networks:
   searxng:

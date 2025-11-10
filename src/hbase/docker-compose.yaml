@@ -25,11 +25,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4.0'
-          memory: 4G
+          cpus: ${HBASE_CPU_LIMIT:-4.0}
+          memory: ${HBASE_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: '1.0'
-          memory: 2G
+          cpus: ${HBASE_CPU_RESERVATION:-1.0}
+          memory: ${HBASE_MEMORY_RESERVATION:-2G}
     healthcheck:
       test: ["CMD-SHELL", "echo 'status' | hbase shell -n || exit 1"]
       interval: 30s

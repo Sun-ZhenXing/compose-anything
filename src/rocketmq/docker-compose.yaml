@@ -21,11 +21,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${ROCKETMQ_NAMESRV_CPU_LIMIT:-1.0}
+          memory: ${ROCKETMQ_NAMESRV_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.25'
-          memory: 512M
+          cpus: ${ROCKETMQ_NAMESRV_CPU_RESERVATION:-0.25}
+          memory: ${ROCKETMQ_NAMESRV_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD-SHELL", "mqadmin clusterList -n localhost:9876 || exit 1"]
       interval: 30s
@@ -54,11 +54,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 2G
+          cpus: ${ROCKETMQ_BROKER_CPU_LIMIT:-2.0}
+          memory: ${ROCKETMQ_BROKER_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.5'
-          memory: 1G
+          cpus: ${ROCKETMQ_BROKER_CPU_RESERVATION:-0.5}
+          memory: ${ROCKETMQ_BROKER_MEMORY_RESERVATION:-1G}
     healthcheck:
       test: ["CMD-SHELL", "mqadmin clusterList -n namesrv:9876 | grep -q broker || exit 1"]
       interval: 30s
@@ -80,11 +80,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 512M
+          cpus: ${ROCKETMQ_DASHBOARD_CPU_LIMIT:-1.0}
+          memory: ${ROCKETMQ_DASHBOARD_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${ROCKETMQ_DASHBOARD_CPU_RESERVATION:-0.25}
+          memory: ${ROCKETMQ_DASHBOARD_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080 || exit 1"]
       interval: 30s

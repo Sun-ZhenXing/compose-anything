@@ -26,11 +26,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.0'
-          memory: 2G
+          cpus: ${LANGFUSE_CPU_LIMIT:-2.0}
+          memory: ${LANGFUSE_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${LANGFUSE_CPU_RESERVATION:-0.5}
+          memory: ${LANGFUSE_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/public/health"]
       interval: 30s
@@ -57,11 +57,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${LANGFUSE_DB_CPU_LIMIT:-1.0}
+          memory: ${LANGFUSE_DB_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${LANGFUSE_DB_CPU_RESERVATION:-0.25}
+          memory: ${LANGFUSE_DB_MEMORY_RESERVATION:-256M}
 
 volumes:
   langfuse_db_data:

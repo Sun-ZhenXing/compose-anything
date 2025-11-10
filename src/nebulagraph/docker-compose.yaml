@@ -30,11 +30,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${NEBULA_METAD_CPU_LIMIT:-0.5}
+          memory: ${NEBULA_METAD_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: '0.25'
-          memory: 256M
+          cpus: ${NEBULA_METAD_CPU_RESERVATION:-0.25}
+          memory: ${NEBULA_METAD_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: ["CMD", "/usr/local/nebula/bin/nebula-metad", "--version"]
       interval: 30s
@@ -68,11 +68,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${NEBULA_STORAGED_CPU_LIMIT:-1.0}
+          memory: ${NEBULA_STORAGED_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${NEBULA_STORAGED_CPU_RESERVATION:-0.5}
+          memory: ${NEBULA_STORAGED_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD", "/usr/local/nebula/bin/nebula-storaged", "--version"]
       interval: 30s
@@ -106,11 +106,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 1G
+          cpus: ${NEBULA_GRAPHD_CPU_LIMIT:-1.0}
+          memory: ${NEBULA_GRAPHD_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: '0.5'
-          memory: 512M
+          cpus: ${NEBULA_GRAPHD_CPU_RESERVATION:-0.5}
+          memory: ${NEBULA_GRAPHD_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD", "/usr/local/nebula/bin/nebula-graphd", "--version"]
       interval: 30s

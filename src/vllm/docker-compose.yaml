@@ -31,11 +31,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4.0'
-          memory: 8G
+          cpus: ${VLLM_CPU_LIMIT:-4.0}
+          memory: ${VLLM_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: '2.0'
-          memory: 4G
+          cpus: ${VLLM_CPU_RESERVATION:-2.0}
+          memory: ${VLLM_MEMORY_RESERVATION:-4G}
           # Uncomment for GPU support
           # devices:
           #   - driver: nvidia

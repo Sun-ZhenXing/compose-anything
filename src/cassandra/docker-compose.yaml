@@ -33,11 +33,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.00'
-          memory: 2G
+          cpus: ${CASSANDRA_CPU_LIMIT:-2.00}
+          memory: ${CASSANDRA_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.50'
-          memory: 1G
+          cpus: ${CASSANDRA_CPU_RESERVATION:-0.50}
+          memory: ${CASSANDRA_MEMORY_RESERVATION:-1G}
     healthcheck:
       test: ["CMD-SHELL", "cqlsh -e 'DESCRIBE CLUSTER'"]
       interval: 30s

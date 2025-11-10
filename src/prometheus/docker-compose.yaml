@@ -36,11 +36,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 2G
+          cpus: ${PROMETHEUS_CPU_LIMIT:-1.0}
+          memory: ${PROMETHEUS_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: '0.25'
-          memory: 512M
+          cpus: ${PROMETHEUS_CPU_RESERVATION:-0.25}
+          memory: ${PROMETHEUS_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
       interval: 30s
