@@ -7,9 +7,9 @@ x-defaults: &defaults
       max-file: "3"
 
 services:
-  lama-cleaner:
+  io-paint:
     <<: *defaults
-    image: ${DOCKER_REGISTRY:-docker.io}/local/lama-cleaner:${BUILD_VERSION:-1.6.0}
+    image: ${DOCKER_REGISTRY:-docker.io}/alexsuntop/io-paint:${BUILD_VERSION:-1.6.0}
     ports:
       - 8080:8080
     build:

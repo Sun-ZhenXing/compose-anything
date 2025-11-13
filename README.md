@@ -56,8 +56,8 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Milvus Standalone Embed](./src/milvus-standalone-embed)      | 2.6.2                        |
 | [Milvus Standalone](./src/milvus-standalone)                  | 2.6.2                        |
 | [Minecraft Bedrock Server](./src/minecraft-bedrock-server)    | latest                       |
-| [MinerU SGALNG](./src/mineru-sgalng)                          | 2.2.2                        |
-| [MinerU vLLM](./builds/mineru-vllm)                           | 2.5.4                        |
+| [MinerU SGLang](./src/mineru-sglang)                          | 2.2.2                        |
+| [MinerU vLLM](./builds/mineru-vllm)                           | 2.6.4                        |
 | [MinIO](./src/minio)                                          | RELEASE.2025-09-07T16-13-09Z |
 | [MLflow](./src/mlflow)                                        | v2.20.2                      |
 | [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)  | 8.0.13                       |
@@ -74,6 +74,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Odoo](./src/odoo)                                            | 19.0                         |
 | [Ollama](./src/ollama)                                        | 0.12.0                       |
 | [Open WebUI](./src/open-webui)                                | main                         |
+| [Open WebUI Rust](./src/open-webui-rust)                      | latest                       |
 | [OpenCoze](./src/opencoze)                                    | See Docs                     |
 | [OpenCut](./src/opencut)                                      | latest                       |
 | [OpenList](./src/openlist)                                    | latest                       |
