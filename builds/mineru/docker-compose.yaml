@@ -1,0 +1,139 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+x-mineru-vllm: &mineru-vllm
+  <<: *defaults
+  image: ${GLOBAL_REGISTRY:-}alexsuntop/mineru:${MINERU_VERSION:-2.6.5}
+  build:
+    context: .
+    dockerfile: Dockerfile
+  environment:
+    TZ: ${TZ:-UTC}
+    MINERU_MODEL_SOURCE: local
+  ulimits:
+    memlock: -1
+    stack: 67108864
+  ipc: host
+  deploy:
+    resources:
+      limits:
+        cpus: '16.0'
+        memory: 32G
+      reservations:
+        cpus: '8.0'
+        memory: 16G
+        devices:
+          - driver: nvidia
+            device_ids: [ '0' ]
+            capabilities: [ gpu ]
+
+services:
+  mineru-openai-server:
+    <<: *mineru-vllm
+    profiles: ["openai-server"]
+    ports:
+      - ${MINERU_PORT_OVERRIDE_VLLM:-30000}:30000
+    entrypoint: mineru-openai-server
+    command:
+      # ==================== Engine Selection ====================
+      # WARNING: Only ONE engine can be enabled at a time!
+      # Choose 'vllm' OR 'lmdeploy' (uncomment one line below)
+      - --engine vllm
+      # --engine lmdeploy
+
+      # ==================== vLLM Engine Parameters ====================
+      # Uncomment if using --engine vllm
+      - --host 0.0.0.0
+      - --port 30000
+      # Multi-GPU configuration (increase throughput)
+      # --data-parallel-size 2
+      # Single GPU memory optimization (reduce if VRAM insufficient)
+      # --gpu-memory-utilization 0.5  # Try 0.4 or lower if issues persist
+
+      # ==================== LMDeploy Engine Parameters ====================
+      # Uncomment if using --engine lmdeploy
+      # --server-name 0.0.0.0
+      # --server-port 30000
+      # Multi-GPU configuration (increase throughput)
+      # --dp 2
+      # Single GPU memory optimization (reduce if VRAM insufficient)
+      # --cache-max-entry-count 0.5  # Try 0.4 or lower if issues persist
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:30000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+
+  mineru-api:
+    <<: *mineru-vllm
+    profiles: ["api"]
+    ports:
+      - ${MINERU_PORT_OVERRIDE_API:-8000}:8000
+    entrypoint: mineru-api
+    command:
+      # ==================== Server Configuration ====================
+      - --host 0.0.0.0
+      - --port 8000
+
+      # ==================== vLLM Engine Parameters ====================
+      # Multi-GPU configuration
+      # --data-parallel-size 2
+      # Single GPU memory optimization
+      # --gpu-memory-utilization 0.5  # Try 0.4 or lower if VRAM insufficient
+
+      # ==================== LMDeploy Engine Parameters ====================
+      # Multi-GPU configuration
+      # --dp 2
+      # Single GPU memory optimization
+      # --cache-max-entry-count 0.5  # Try 0.4 or lower if VRAM insufficient
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  mineru-gradio:
+    <<: *mineru-vllm
+    profiles: ["gradio"]
+    ports:
+      - ${MINERU_PORT_OVERRIDE_GRADIO:-7860}:7860
+    entrypoint: mineru-gradio
+    command:
+      # ==================== Gradio Server Configuration ====================
+      - --server-name 0.0.0.0
+      - --server-port 7860
+
+      # ==================== Gradio Feature Settings ====================
+      # --enable-api false  # Disable API endpoint
+      # --max-convert-pages 20  # Limit conversion page count
+
+      # ==================== Engine Selection ====================
+      # WARNING: Only ONE engine can be enabled at a time!
+
+      # Option 1: vLLM Engine (recommended for most users)
+      - --enable-vllm-engine true
+      # Multi-GPU configuration
+      # --data-parallel-size 2
+      # Single GPU memory optimization
+      # --gpu-memory-utilization 0.5  # Try 0.4 or lower if VRAM insufficient
+
+      # Option 2: LMDeploy Engine
+      # --enable-lmdeploy-engine true
+      # Multi-GPU configuration
+      # --dp 2
+      # Single GPU memory optimization
+      # --cache-max-entry-count 0.5  # Try 0.4 or lower if VRAM insufficient
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7860/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s

@@ -39,7 +39,7 @@ mineru -p demo.pdf -o ./output -b vlm-http-client -u http://localhost:30000
 
 ## Configuration
 
-- `MINERU_VERSION`: The version for MinerU, default is `2.6.4`.
+- `MINERU_VERSION`: The version for MinerU, default is `2.6.5`.
 - `MINERU_PORT_OVERRIDE_VLLM`: The host port for the VLLM server, default is `30000`.
 - `MINERU_PORT_OVERRIDE_API`: The host port for the API service, default is `8000`.
 - `MINERU_PORT_OVERRIDE_GRADIO`: The host port for the Gradio WebUI, default is `7860`.
