@@ -18,6 +18,7 @@ services:
       - TZ=${TZ:-UTC}
     env_file:
       - .env
+    # healthcheck already built into the image
     deploy:
       resources:
         limits:
@@ -26,12 +27,6 @@ services:
         reservations:
           cpus: ${OPEN_WEBUI_CPU_RESERVATION:-0.1}
           memory: ${OPEN_WEBUI_MEMORY_RESERVATION:-128M}
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
 
 volumes:
   open_webui_data:

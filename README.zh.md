@@ -12,6 +12,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Apache HBase](./src/hbase)                                   | 2.6                          |
 | [Apache HTTP Server](./src/apache)                            | 2.4.62                       |
 | [Apache Kafka](./src/kafka)                                   | 7.8.0                        |
+| [Apache Pulsar](./src/pulsar)                                 | 4.0.7                        |
 | [Apache RocketMQ](./src/rocketmq)                             | 5.3.1                        |
 | [Bifrost Gateway](./src/bifrost-gateway)                      | 1.2.15                       |
 | [Bolt.diy](./src/bolt-diy)                                    | latest                       |
