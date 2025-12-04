@@ -17,23 +17,17 @@ Apache Pulsar is a cloud-native, distributed messaging and streaming platform. I
 - `bookie`: BookKeeper for persistent message storage.
 - `broker`: Pulsar Broker for message routing.
 
-### Management (profile: `manager`)
-
-- `pulsar-manager`: Web UI for Pulsar cluster management.
-
 ## Environment Variables
 
-| Variable Name                     | Description                                    | Default Value                                    |
-| --------------------------------- | ---------------------------------------------- | ------------------------------------------------ |
-| `PULSAR_VERSION`                  | Pulsar image version                           | `4.0.7`                                          |
-| `PULSAR_MANAGER_VERSION`          | Pulsar Manager image version                   | `v0.4.0`                                         |
-| `TZ`                              | Timezone                                       | `UTC`                                            |
-| `PULSAR_BROKER_PORT_OVERRIDE`     | Host port for Pulsar broker (maps to 6650)     | `6650`                                           |
-| `PULSAR_HTTP_PORT_OVERRIDE`       | Host port for HTTP/Admin API (maps to 8080)    | `8080`                                           |
-| `PULSAR_MANAGER_PORT_OVERRIDE`    | Host port for Pulsar Manager UI (maps to 9527) | `9527`                                           |
-| `PULSAR_STANDALONE_USE_ZOOKEEPER` | Use ZooKeeper in standalone mode (0 or 1)      | `0`                                              |
-| `PULSAR_MEM`                      | JVM memory settings for standalone             | `-Xms512m -Xmx512m -XX:MaxDirectMemorySize=256m` |
-| `PULSAR_CLUSTER_NAME`             | Cluster name (cluster mode)                    | `cluster-a`                                      |
+| Variable Name                     | Description                                 | Default Value                                    |
+| --------------------------------- | ------------------------------------------- | ------------------------------------------------ |
+| `PULSAR_VERSION`                  | Pulsar image version                        | `4.0.7`                                          |
+| `TZ`                              | Timezone                                    | `UTC`                                            |
+| `PULSAR_BROKER_PORT_OVERRIDE`     | Host port for Pulsar broker (maps to 6650)  | `6650`                                           |
+| `PULSAR_HTTP_PORT_OVERRIDE`       | Host port for HTTP/Admin API (maps to 8080) | `8080`                                           |
+| `PULSAR_STANDALONE_USE_ZOOKEEPER` | Use ZooKeeper in standalone mode (0 or 1)   | `0`                                              |
+| `PULSAR_MEM`                      | JVM memory settings for standalone          | `-Xms512m -Xmx512m -XX:MaxDirectMemorySize=256m` |
+| `PULSAR_CLUSTER_NAME`             | Cluster name (cluster mode)                 | `cluster-a`                                      |
 
 Please modify the `.env` file as needed for your use case.
 
@@ -43,7 +37,6 @@ Please modify the `.env` file as needed for your use case.
 - `pulsar_conf`: Pulsar configuration directory (standalone mode).
 - `zookeeper_data`: ZooKeeper data directory (cluster mode).
 - `bookie_data`: BookKeeper data directory (cluster mode).
-- `pulsar_manager_data`: Pulsar Manager data directory.
 
 ## Usage
 
@@ -73,33 +66,60 @@ Please modify the `.env` file as needed for your use case.
    docker compose --profile cluster ps
    ```
 
-### With Pulsar Manager
+## Management and Monitoring
 
-1. Start with Pulsar Manager:
+### Pulsar Admin CLI
 
-   ```bash
-   docker compose --profile manager up -d
-   ```
+The `pulsar-admin` CLI is the recommended tool for managing Pulsar. It's included in the Pulsar container.
 
-   Or with cluster mode:
+```bash
+# Check cluster health
+docker exec pulsar bin/pulsar-admin brokers healthcheck
 
-   ```bash
-   docker compose --profile cluster --profile manager up -d
-   ```
+# List clusters
+docker exec pulsar bin/pulsar-admin clusters list
 
-2. Initialize Pulsar Manager admin user (first time only):
+# List tenants
+docker exec pulsar bin/pulsar-admin tenants list
 
-   ```bash
-   CSRF_TOKEN=$(curl -s http://localhost:7750/pulsar-manager/csrf-token)
-   curl -H "X-XSRF-TOKEN: $CSRF_TOKEN" \
-        -H "Cookie: XSRF-TOKEN=$CSRF_TOKEN" \
-        -H "Content-Type: application/json" \
-        -X PUT http://localhost:7750/pulsar-manager/users/superuser \
-        -d '{"name": "admin", "password": "apachepulsar", "description": "admin user", "email": "admin@example.com"}'
-   ```
+# List namespaces
+docker exec pulsar bin/pulsar-admin namespaces list public
 
-3. Access Pulsar Manager at `http://localhost:9527`
-   - Default credentials: `admin` / `apachepulsar`
+# Get broker stats
+docker exec pulsar bin/pulsar-admin broker-stats monitoring-metrics
+```
+
+### REST Admin API
+
+Pulsar provides a comprehensive REST API for management tasks.
+
+```bash
+# Get cluster information
+curl http://localhost:8080/admin/v2/clusters
+
+# Get broker stats
+curl http://localhost:8080/admin/v2/broker-stats/monitoring-metrics
+
+# List tenants
+curl http://localhost:8080/admin/v2/tenants
+
+# List namespaces
+curl http://localhost:8080/admin/v2/namespaces/public
+
+# Get topic stats
+curl http://localhost:8080/admin/v2/persistent/public/default/my-topic/stats
+```
+
+### Monitoring with Prometheus
+
+Pulsar exposes Prometheus metrics at the `/metrics` endpoint:
+
+```bash
+# Access Pulsar metrics
+curl http://localhost:8080/metrics
+```
+
+You can integrate with Prometheus and Grafana for visualization. Pulsar provides official Grafana dashboards.
 
 ## Testing Pulsar
 
@@ -172,12 +192,10 @@ client.close()
 
 ## Ports
 
-| Service        | Port | Description     |
-| -------------- | ---- | --------------- |
-| Pulsar Broker  | 6650 | Binary protocol |
-| Pulsar HTTP    | 8080 | REST Admin API  |
-| Pulsar Manager | 9527 | Web UI          |
-| Pulsar Manager | 7750 | Backend API     |
+| Service       | Port | Description              |
+| ------------- | ---- | ------------------------ |
+| Pulsar Broker | 6650 | Binary protocol          |
+| Pulsar HTTP   | 8080 | REST Admin API & Metrics |
 
 ## Security Notes
 

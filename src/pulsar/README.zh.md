@@ -17,23 +17,17 @@ Apache Pulsar 是一个云原生的分布式消息和流处理平台。它结合
 - `bookie`：用于持久化消息存储的 BookKeeper。
 - `broker`：用于消息路由的 Pulsar Broker。
 
-### 管理工具（profile: `manager`）
-
-- `pulsar-manager`：Pulsar 集群管理 Web UI。
-
 ## 环境变量
 
-| 变量名                            | 说明                                      | 默认值                                           |
-| --------------------------------- | ----------------------------------------- | ------------------------------------------------ |
-| `PULSAR_VERSION`                  | Pulsar 镜像版本                           | `4.0.7`                                          |
-| `PULSAR_MANAGER_VERSION`          | Pulsar Manager 镜像版本                   | `v0.4.0`                                         |
-| `TZ`                              | 时区                                      | `UTC`                                            |
-| `PULSAR_BROKER_PORT_OVERRIDE`     | Pulsar Broker 主机端口（映射到 6650）     | `6650`                                           |
-| `PULSAR_HTTP_PORT_OVERRIDE`       | HTTP/Admin API 主机端口（映射到 8080）    | `8080`                                           |
-| `PULSAR_MANAGER_PORT_OVERRIDE`    | Pulsar Manager UI 主机端口（映射到 9527） | `9527`                                           |
-| `PULSAR_STANDALONE_USE_ZOOKEEPER` | 单机模式使用 ZooKeeper（0 或 1）          | `0`                                              |
-| `PULSAR_MEM`                      | 单机模式 JVM 内存设置                     | `-Xms512m -Xmx512m -XX:MaxDirectMemorySize=256m` |
-| `PULSAR_CLUSTER_NAME`             | 集群名称（集群模式）                      | `cluster-a`                                      |
+| 变量名                            | 说明                                   | 默认值                                           |
+| --------------------------------- | -------------------------------------- | ------------------------------------------------ |
+| `PULSAR_VERSION`                  | Pulsar 镜像版本                        | `4.0.7`                                          |
+| `TZ`                              | 时区                                   | `UTC`                                            |
+| `PULSAR_BROKER_PORT_OVERRIDE`     | Pulsar Broker 主机端口（映射到 6650）  | `6650`                                           |
+| `PULSAR_HTTP_PORT_OVERRIDE`       | HTTP/Admin API 主机端口（映射到 8080） | `8080`                                           |
+| `PULSAR_STANDALONE_USE_ZOOKEEPER` | 单机模式使用 ZooKeeper（0 或 1）       | `0`                                              |
+| `PULSAR_MEM`                      | 单机模式 JVM 内存设置                  | `-Xms512m -Xmx512m -XX:MaxDirectMemorySize=256m` |
+| `PULSAR_CLUSTER_NAME`             | 集群名称（集群模式）                   | `cluster-a`                                      |
 
 请根据实际需求修改 `.env` 文件。
 
@@ -43,7 +37,6 @@ Apache Pulsar 是一个云原生的分布式消息和流处理平台。它结合
 - `pulsar_conf`：Pulsar 配置目录（单机模式）。
 - `zookeeper_data`：ZooKeeper 数据目录（集群模式）。
 - `bookie_data`：BookKeeper 数据目录（集群模式）。
-- `pulsar_manager_data`：Pulsar Manager 数据目录。
 
 ## 使用方法
 
@@ -73,33 +66,60 @@ Apache Pulsar 是一个云原生的分布式消息和流处理平台。它结合
    docker compose --profile cluster ps
    ```
 
-### 使用 Pulsar Manager
+## 管理与监控
 
-1. 启动并包含 Pulsar Manager：
+### Pulsar Admin CLI
 
-   ```bash
-   docker compose --profile manager up -d
-   ```
+`pulsar-admin` CLI 是管理 Pulsar 的推荐工具，已包含在 Pulsar 容器中。
 
-   或者与集群模式一起使用：
+```bash
+# 检查集群健康状态
+docker exec pulsar bin/pulsar-admin brokers healthcheck
 
-   ```bash
-   docker compose --profile cluster --profile manager up -d
-   ```
+# 列出集群
+docker exec pulsar bin/pulsar-admin clusters list
 
-2. 初始化 Pulsar Manager 管理员用户（仅首次）：
+# 列出租户
+docker exec pulsar bin/pulsar-admin tenants list
 
-   ```bash
-   CSRF_TOKEN=$(curl -s http://localhost:7750/pulsar-manager/csrf-token)
-   curl -H "X-XSRF-TOKEN: $CSRF_TOKEN" \
-        -H "Cookie: XSRF-TOKEN=$CSRF_TOKEN" \
-        -H "Content-Type: application/json" \
-        -X PUT http://localhost:7750/pulsar-manager/users/superuser \
-        -d '{"name": "admin", "password": "apachepulsar", "description": "admin user", "email": "admin@example.com"}'
-   ```
+# 列出命名空间
+docker exec pulsar bin/pulsar-admin namespaces list public
 
-3. 访问 Pulsar Manager：`http://localhost:9527`
-   - 默认凭据：`admin` / `apachepulsar`
+# 获取 broker 统计信息
+docker exec pulsar bin/pulsar-admin broker-stats monitoring-metrics
+```
+
+### REST Admin API
+
+Pulsar 提供了全面的 REST API 用于管理任务。
+
+```bash
+# 获取集群信息
+curl http://localhost:8080/admin/v2/clusters
+
+# 获取 broker 统计信息
+curl http://localhost:8080/admin/v2/broker-stats/monitoring-metrics
+
+# 列出租户
+curl http://localhost:8080/admin/v2/tenants
+
+# 列出命名空间
+curl http://localhost:8080/admin/v2/namespaces/public
+
+# 获取主题统计信息
+curl http://localhost:8080/admin/v2/persistent/public/default/my-topic/stats
+```
+
+### 使用 Prometheus 监控
+
+Pulsar 在 `/metrics` 端点暴露 Prometheus 指标：
+
+```bash
+# 访问 Pulsar 指标
+curl http://localhost:8080/metrics
+```
+
+您可以集成 Prometheus 和 Grafana 进行可视化。Pulsar 提供了官方的 Grafana 仪表板。
 
 ## 测试 Pulsar
 
@@ -172,12 +192,10 @@ client.close()
 
 ## 端口
 
-| 服务           | 端口 | 说明           |
-| -------------- | ---- | -------------- |
-| Pulsar Broker  | 6650 | 二进制协议     |
-| Pulsar HTTP    | 8080 | REST Admin API |
-| Pulsar Manager | 9527 | Web UI         |
-| Pulsar Manager | 7750 | 后端 API       |
+| 服务          | 端口 | 说明                  |
+| ------------- | ---- | --------------------- |
+| Pulsar Broker | 6650 | 二进制协议            |
+| Pulsar HTTP   | 8080 | REST Admin API 和指标 |
 
 ## 安全提示
 

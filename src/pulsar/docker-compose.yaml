@@ -168,46 +168,8 @@ services:
       retries: 5
       start_period: 60s
 
-  # ==================== Pulsar Manager (profile: manager) ====================
-
-  pulsar-manager:
-    <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}apachepulsar/pulsar-manager:${PULSAR_MANAGER_VERSION:-v0.4.0}
-    profiles:
-      - manager
-    ports:
-      - "${PULSAR_MANAGER_PORT_OVERRIDE:-9527}:9527"
-      - "${PULSAR_MANAGER_BACKEND_PORT_OVERRIDE:-7750}:7750"
-    volumes:
-      - pulsar_manager_data:/data
-    environment:
-      - TZ=${TZ:-UTC}
-      - SPRING_CONFIGURATION_FILE=/pulsar-manager/pulsar-manager/application.properties
-      - REDIRECT_HOST=http://127.0.0.1
-      - REDIRECT_PORT=${PULSAR_MANAGER_PORT_OVERRIDE:-9527}
-      - DRIVER_CLASS_NAME=org.postgresql.Driver
-      - URL=jdbc:postgresql://127.0.0.1:5432/pulsar_manager
-      - USERNAME=pulsar
-      - PASSWORD=pulsar
-      - LOG_LEVEL=DEBUG
-    deploy:
-      resources:
-        limits:
-          cpus: ${PULSAR_MANAGER_CPU_LIMIT:-1.00}
-          memory: ${PULSAR_MANAGER_MEMORY_LIMIT:-512M}
-        reservations:
-          cpus: ${PULSAR_MANAGER_CPU_RESERVATION:-0.25}
-          memory: ${PULSAR_MANAGER_MEMORY_RESERVATION:-256M}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:7750/pulsar-manager/csrf-token"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-
 volumes:
   pulsar_data:
   pulsar_conf:
   zookeeper_data:
   bookie_data:
-  pulsar_manager_data:
