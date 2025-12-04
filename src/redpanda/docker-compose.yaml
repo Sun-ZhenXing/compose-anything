@@ -1,0 +1,86 @@
+# Redpanda - A Kafka-compatible streaming data platform built for performance
+# This configuration provides a single-node Redpanda setup with console for monitoring
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  redpanda:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}docker.redpanda.com/redpandadata/redpanda:${REDPANDA_VERSION:-v24.3.1}
+    command:
+      - redpanda
+      - start
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:${REDPANDA_KAFKA_PORT_OVERRIDE:-19092}
+      - --advertise-kafka-addr internal://redpanda:9092,external://localhost:${REDPANDA_KAFKA_PORT_OVERRIDE:-19092}
+      - --pandaproxy-addr internal://0.0.0.0:8082,external://0.0.0.0:${REDPANDA_PROXY_PORT_OVERRIDE:-18082}
+      - --advertise-pandaproxy-addr internal://redpanda:8082,external://localhost:${REDPANDA_PROXY_PORT_OVERRIDE:-18082}
+      - --schema-registry-addr internal://0.0.0.0:8081,external://0.0.0.0:${REDPANDA_SCHEMA_PORT_OVERRIDE:-18081}
+      - --rpc-addr redpanda:33145
+      - --advertise-rpc-addr redpanda:33145
+      - --mode dev-container
+      - --smp ${REDPANDA_SMP:-1}
+      - --default-log-level=${REDPANDA_LOG_LEVEL:-info}
+      - --reserve-memory 0M
+      - --memory ${REDPANDA_MEMORY:-1G}
+    ports:
+      - "${REDPANDA_SCHEMA_PORT_OVERRIDE:-18081}:8081"
+      - "${REDPANDA_PROXY_PORT_OVERRIDE:-18082}:8082"
+      - "${REDPANDA_KAFKA_PORT_OVERRIDE:-19092}:19092"
+      - "${REDPANDA_ADMIN_PORT_OVERRIDE:-19644}:9644"
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -E 'Healthy:.+true' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${REDPANDA_CPU_LIMIT:-2.0}
+          memory: ${REDPANDA_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${REDPANDA_CPU_RESERVATION:-1.0}
+          memory: ${REDPANDA_MEMORY_RESERVATION:-1G}
+
+  console:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}docker.redpanda.com/redpandadata/console:${REDPANDA_CONSOLE_VERSION:-v2.8.2}
+    ports:
+      - "${REDPANDA_CONSOLE_PORT_OVERRIDE:-8080}:8080"
+    environment:
+      - KAFKA_BROKERS=redpanda:9092
+      - KAFKA_SCHEMAREGISTRY_ENABLED=true
+      - KAFKA_SCHEMAREGISTRY_URLS=http://redpanda:8081
+      - REDPANDA_ADMINAPI_ENABLED=true
+      - REDPANDA_ADMINAPI_URLS=http://redpanda:9644
+      - TZ=${TZ:-UTC}
+    depends_on:
+      redpanda:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/admin/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${REDPANDA_CONSOLE_CPU_LIMIT:-0.5}
+          memory: ${REDPANDA_CONSOLE_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${REDPANDA_CONSOLE_CPU_RESERVATION:-0.25}
+          memory: ${REDPANDA_CONSOLE_MEMORY_RESERVATION:-256M}
+
+volumes:
+  redpanda_data:

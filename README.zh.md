@@ -89,6 +89,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Qdrant](./src/qdrant)                                        | 1.15.4                       |
 | [RabbitMQ](./src/rabbitmq)                                    | 4.1.4                        |
 | [Ray](./src/ray)                                              | 2.42.1                       |
+| [Redpanda](./src/redpanda)                                    | v24.3.1                      |
 | [Redis Cluster](./src/redis-cluster)                          | 8.2.1                        |
 | [Redis](./src/redis)                                          | 8.2.1                        |
 | [Restate Cluster](./src/restate-cluster)                      | 1.5.3                        |

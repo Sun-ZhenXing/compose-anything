@@ -9,6 +9,9 @@ Apache Pulsar 是一个云原生的分布式消息和流处理平台。它结合
 ### 默认（单机模式）
 
 - `pulsar`：单节点 Pulsar 实例，适用于开发和测试。
+  - 使用 `--no-functions-worker` 标志运行，简化部署并减少资源使用
+  - 默认使用 RocksDB 作为元数据存储（从 Pulsar 2.11+ 开始）
+  - 在同一个 JVM 进程中包含内嵌的 ZooKeeper 和 BookKeeper
 
 ### 集群模式（profile: `cluster`）
 
@@ -48,7 +51,25 @@ Apache Pulsar 是一个云原生的分布式消息和流处理平台。它结合
    docker compose up -d
    ```
 
-2. 访问 Pulsar：
+2. 等待 Pulsar 就绪（查看日志）：
+
+   ```bash
+   docker compose logs -f pulsar
+   ```
+
+   您应该看到类似以下的消息：
+
+   ```log
+   INFO org.apache.pulsar.broker.PulsarService - messaging service is ready
+   ```
+
+3. 验证集群健康状态：
+
+   ```bash
+   docker exec pulsar bin/pulsar-admin brokers healthcheck
+   ```
+
+4. 访问 Pulsar：
    - Broker：`pulsar://localhost:6650`
    - Admin API：`http://localhost:8080`
 
@@ -187,8 +208,39 @@ client.close()
 
 - 单机模式默认使用 RocksDB 作为元数据存储（推荐用于单节点）。
 - 设置 `PULSAR_STANDALONE_USE_ZOOKEEPER=1` 可使用 ZooKeeper 作为元数据存储。
-- 集群模式配置为单节点 BookKeeper（ensemble size = 1）。
-- 生产环境请调整 quorum 设置并添加更多 bookie。
+- 默认禁用 Functions Worker 以减少资源使用和启动时间。
+- 生产环境请使用集群模式，配置专用的 ZooKeeper 和 BookKeeper 实例。
+
+## 故障排除
+
+### 单机模式问题
+
+如果遇到连接错误，如"NoRouteToHostException"或"Bookie handle is not available"：
+
+1. **清除现有数据**（如果升级或切换元数据存储）：
+
+   ```bash
+   docker compose down -v
+   docker compose up -d
+   ```
+
+2. **检查容器日志**：
+
+   ```bash
+   docker compose logs pulsar
+   ```
+
+3. **验证健康检查**：
+
+   ```bash
+   docker compose ps
+   docker exec pulsar bin/pulsar-admin brokers healthcheck
+   ```
+
+4. **确保资源充足**：单机模式至少需要：
+   - 2GB 内存
+   - 2 个 CPU 核心
+   - 5GB 磁盘空间
 
 ## 端口
 

@@ -9,6 +9,9 @@ Apache Pulsar is a cloud-native, distributed messaging and streaming platform. I
 ### Default (Standalone Mode)
 
 - `pulsar`: Single-node Pulsar instance for development and testing.
+  - Runs with `--no-functions-worker` flag for simplicity and reduced resource usage
+  - Uses RocksDB as metadata store by default (since Pulsar 2.11+)
+  - Includes embedded ZooKeeper and BookKeeper in the same JVM process
 
 ### Cluster Mode (profile: `cluster`)
 
@@ -48,7 +51,25 @@ Please modify the `.env` file as needed for your use case.
    docker compose up -d
    ```
 
-2. Access Pulsar:
+2. Wait for Pulsar to be ready (check logs):
+
+   ```bash
+   docker compose logs -f pulsar
+   ```
+
+   You should see a message like:
+
+   ```log
+   INFO org.apache.pulsar.broker.PulsarService - messaging service is ready
+   ```
+
+3. Verify the cluster is healthy:
+
+   ```bash
+   docker exec pulsar bin/pulsar-admin brokers healthcheck
+   ```
+
+4. Access Pulsar:
    - Broker: `pulsar://localhost:6650`
    - Admin API: `http://localhost:8080`
 
@@ -187,8 +208,39 @@ client.close()
 
 - Standalone mode uses RocksDB as metadata store by default (recommended for single-node).
 - Set `PULSAR_STANDALONE_USE_ZOOKEEPER=1` to use ZooKeeper as metadata store.
-- Cluster mode is configured for single-node BookKeeper (ensemble size = 1).
-- For production, adjust quorum settings and add more bookies.
+- Functions worker is disabled by default to reduce resource usage and startup time.
+- For production, use cluster mode with dedicated ZooKeeper and BookKeeper instances.
+
+## Troubleshooting
+
+### Standalone Mode Issues
+
+If you encounter connection errors like "NoRouteToHostException" or "Bookie handle is not available":
+
+1. **Clear existing data** (if upgrading or switching metadata store):
+
+   ```bash
+   docker compose down -v
+   docker compose up -d
+   ```
+
+2. **Check container logs**:
+
+   ```bash
+   docker compose logs pulsar
+   ```
+
+3. **Verify healthcheck**:
+
+   ```bash
+   docker compose ps
+   docker exec pulsar bin/pulsar-admin brokers healthcheck
+   ```
+
+4. **Ensure sufficient resources**: Standalone mode requires at least:
+   - 2GB RAM
+   - 2 CPU cores
+   - 5GB disk space
 
 ## Ports
 

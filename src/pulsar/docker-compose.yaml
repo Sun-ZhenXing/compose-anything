@@ -14,6 +14,7 @@ services:
   pulsar:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}apachepulsar/pulsar:${PULSAR_VERSION:-4.0.7}
+    hostname: pulsar-standalone
     ports:
       - "${PULSAR_BROKER_PORT_OVERRIDE:-6650}:6650"
       - "${PULSAR_HTTP_PORT_OVERRIDE:-8080}:8080"
@@ -24,7 +25,7 @@ services:
       - TZ=${TZ:-UTC}
       - PULSAR_MEM=${PULSAR_MEM:--Xms512m -Xmx512m -XX:MaxDirectMemorySize=256m}
       - PULSAR_STANDALONE_USE_ZOOKEEPER=${PULSAR_STANDALONE_USE_ZOOKEEPER:-0}
-    command: bin/pulsar standalone
+    command: sh -c "bin/apply-config-from-env.py conf/standalone.conf && bin/pulsar standalone --no-functions-worker"
     deploy:
       resources:
         limits:
@@ -34,11 +35,11 @@ services:
           cpus: ${PULSAR_CPU_RESERVATION:-0.50}
           memory: ${PULSAR_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "bin/pulsar-admin", "brokers", "healthcheck"]
+      test: ["CMD-SHELL", "bin/pulsar-admin brokers healthcheck || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 60s
+      start_period: 90s
 
   # ==================== Cluster Mode (profile: cluster) ====================
 
