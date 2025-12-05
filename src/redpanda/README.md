@@ -76,7 +76,7 @@ docker compose exec redpanda rpk topic consume my-topic
 | Variable                         | Default   | Description                                 |
 | -------------------------------- | --------- | ------------------------------------------- |
 | `REDPANDA_VERSION`               | `v24.3.1` | Redpanda version                            |
-| `REDPANDA_CONSOLE_VERSION`       | `v2.8.2`  | Redpanda Console version                    |
+| `REDPANDA_CONSOLE_VERSION`       | `v3.3.2`  | Redpanda Console version                    |
 | `TZ`                             | `UTC`     | Timezone                                    |
 | `REDPANDA_KAFKA_PORT_OVERRIDE`   | `19092`   | Kafka API external port                     |
 | `REDPANDA_SCHEMA_PORT_OVERRIDE`  | `18081`   | Schema Registry port                        |

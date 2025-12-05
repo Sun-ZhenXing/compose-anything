@@ -76,7 +76,7 @@ docker compose exec redpanda rpk topic consume my-topic
 | 变量                             | 默认值    | 说明                                        |
 | -------------------------------- | --------- | ------------------------------------------- |
 | `REDPANDA_VERSION`               | `v24.3.1` | Redpanda 版本                               |
-| `REDPANDA_CONSOLE_VERSION`       | `v2.8.2`  | Redpanda Console 版本                       |
+| `REDPANDA_CONSOLE_VERSION`       | `v3.3.2`  | Redpanda Console 版本                       |
 | `TZ`                             | `UTC`     | 时区                                        |
 | `REDPANDA_KAFKA_PORT_OVERRIDE`   | `19092`   | Kafka API 外部端口                          |
 | `REDPANDA_SCHEMA_PORT_OVERRIDE`  | `18081`   | Schema Registry 端口                        |

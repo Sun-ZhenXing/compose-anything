@@ -12,7 +12,7 @@ x-defaults: &defaults
 services:
   redpanda:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}docker.redpanda.com/redpandadata/redpanda:${REDPANDA_VERSION:-v24.3.1}
+    image: ${GLOBAL_REGISTRY:-}redpandadata/redpanda:${REDPANDA_VERSION:-v24.3.1}
     command:
       - redpanda
       - start
@@ -54,7 +54,7 @@ services:
 
   console:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}docker.redpanda.com/redpandadata/console:${REDPANDA_CONSOLE_VERSION:-v2.8.2}
+    image: ${GLOBAL_REGISTRY:-}redpandadata/console:${REDPANDA_CONSOLE_VERSION:-v3.3.2}
     ports:
       - "${REDPANDA_CONSOLE_PORT_OVERRIDE:-8080}:8080"
     environment:
