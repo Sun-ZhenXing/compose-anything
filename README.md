@@ -68,6 +68,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [n8n](./src/n8n)                                              | 1.114.0                      |
 | [Nacos](./src/nacos)                                          | v3.1.0                       |
 | [NebulaGraph](./src/nebulagraph)                              | v3.8.0                       |
+| [NexaSDK](./src/nexa-sdk)                                     | v0.2.62                      |
 | [Neo4j](./src/neo4j)                                          | 5.27.4                       |
 | [Nginx](./src/nginx)                                          | 1.29.1                       |
 | [Node Exporter](./src/node-exporter)                          | v1.8.2                       |
@@ -75,6 +76,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Odoo](./src/odoo)                                            | 19.0                         |
 | [Ollama](./src/ollama)                                        | 0.12.0                       |
 | [Open WebUI](./src/open-webui)                                | main                         |
+| [Phoenix (Arize)](./src/phoenix)                              | 12.19.0                      |
 | [Open WebUI Rust](./src/open-webui-rust)                      | latest                       |
 | [OpenCoze](./src/opencoze)                                    | See Docs                     |
 | [OpenCut](./src/opencut)                                      | latest                       |
@@ -100,6 +102,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Temporal](./src/temporal)                                    | 1.24.2                       |
 | [TiDB](./src/tidb)                                            | v8.5.0                       |
 | [TiKV](./src/tikv)                                            | v8.5.0                       |
+| [Trigger.dev](./src/trigger-dev)                              | v4.2.0                       |
 | [Valkey Cluster](./src/valkey-cluster)                        | 8.0                          |
 | [Valkey](./src/valkey)                                        | 8.0                          |
 | [Verdaccio](./src/verdaccio)                                  | 6.1.2                        |

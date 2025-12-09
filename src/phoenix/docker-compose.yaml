@@ -1,0 +1,68 @@
+# Arize Phoenix - AI Observability and Evaluation Platform
+# https://docs.arize.com/phoenix
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  phoenix:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}arizephoenix/phoenix:${PHOENIX_VERSION:-version-12.19.0}
+    ports:
+      - "${PHOENIX_PORT_OVERRIDE:-6006}:6006"       # UI and OTLP HTTP collector
+      - "${PHOENIX_GRPC_PORT_OVERRIDE:-4317}:4317"  # OTLP gRPC collector
+    environment:
+      - TZ=${TZ:-UTC}
+      - PHOENIX_SQL_DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@phoenix-db:5432/${POSTGRES_DB:-phoenix}
+      - PHOENIX_ENABLE_PROMETHEUS=${PHOENIX_ENABLE_PROMETHEUS:-false}
+      - PHOENIX_SECRET=${PHOENIX_SECRET:-}
+    depends_on:
+      phoenix-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:6006/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${PHOENIX_CPU_LIMIT:-2.0}
+          memory: ${PHOENIX_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${PHOENIX_CPU_RESERVATION:-0.5}
+          memory: ${PHOENIX_MEMORY_RESERVATION:-512M}
+
+  phoenix-db:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
+    environment:
+      - TZ=${TZ:-UTC}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-phoenix}
+    volumes:
+      - phoenix_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${PHOENIX_DB_CPU_LIMIT:-1.0}
+          memory: ${PHOENIX_DB_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${PHOENIX_DB_CPU_RESERVATION:-0.25}
+          memory: ${PHOENIX_DB_MEMORY_RESERVATION:-256M}
+
+volumes:
+  phoenix_db_data:

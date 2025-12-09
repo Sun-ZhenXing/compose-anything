@@ -1,0 +1,74 @@
+# NexaSDK Docker Compose Configuration
+# OpenAI-compatible API for LLM, Embeddings, Reranking, and more
+# Supports both CPU and GPU (CUDA/NPU) acceleration
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  nexa-sdk:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}nexa4ai/nexasdk:${NEXA_SDK_VERSION:-v0.2.62}
+    ports:
+      - "${NEXA_SDK_PORT_OVERRIDE:-18181}:18181"
+    volumes:
+      - nexa_data:/data
+    environment:
+      - TZ=${TZ:-UTC}
+      - NEXA_TOKEN=${NEXA_TOKEN:-}
+    command: serve
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:18181/docs/ui"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${NEXA_SDK_CPU_LIMIT:-4.0}
+          memory: ${NEXA_SDK_MEMORY_LIMIT:-8G}
+        reservations:
+          cpus: ${NEXA_SDK_CPU_RESERVATION:-1.0}
+          memory: ${NEXA_SDK_MEMORY_RESERVATION:-2G}
+
+  # GPU-accelerated service with CUDA support
+  nexa-sdk-cuda:
+    <<: *defaults
+    profiles:
+      - gpu
+    image: ${GLOBAL_REGISTRY:-}nexa4ai/nexasdk:${NEXA_SDK_VERSION:-v0.2.62}-cuda
+    ports:
+      - "${NEXA_SDK_PORT_OVERRIDE:-18181}:18181"
+    volumes:
+      - nexa_data:/data
+    environment:
+      - TZ=${TZ:-UTC}
+      - NEXA_TOKEN=${NEXA_TOKEN:-}
+    command: serve
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:18181/docs/ui"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${NEXA_SDK_CPU_LIMIT:-8.0}
+          memory: ${NEXA_SDK_MEMORY_LIMIT:-16G}
+        reservations:
+          cpus: ${NEXA_SDK_CPU_RESERVATION:-2.0}
+          memory: ${NEXA_SDK_MEMORY_RESERVATION:-4G}
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+volumes:
+  nexa_data:

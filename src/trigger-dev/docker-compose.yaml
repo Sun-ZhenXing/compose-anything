@@ -1,0 +1,400 @@
+# Trigger.dev - Build and deploy fully-managed AI agents and workflows
+# https://trigger.dev/
+# Repository: https://github.com/triggerdotdev/trigger.dev
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  # =============================================================================
+  # Core Services (Webapp Stack)
+  # =============================================================================
+
+  webapp:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}ghcr.io/triggerdotdev/trigger.dev:${TRIGGER_IMAGE_TAG:-v4.2.0}
+    ports:
+      - "${TRIGGER_PORT:-8030}:3030"
+    environment:
+      - TZ=${TZ:-UTC}
+      # Secrets (required)
+      - SESSION_SECRET=${SESSION_SECRET}
+      - MAGIC_LINK_SECRET=${MAGIC_LINK_SECRET}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - MANAGED_WORKER_SECRET=${MANAGED_WORKER_SECRET:-managed-secret}
+      # Domains & ports
+      - REMIX_APP_PORT=3030
+      - APP_ORIGIN=${APP_ORIGIN:-http://localhost:8030}
+      - LOGIN_ORIGIN=${LOGIN_ORIGIN:-http://localhost:8030}
+      - API_ORIGIN=${API_ORIGIN:-http://localhost:8030}
+      - STREAM_ORIGIN=${STREAM_ORIGIN:-http://localhost:8030}
+      - ELECTRIC_ORIGIN=http://electric:3000
+      # Database
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-trigger}:${POSTGRES_PASSWORD}@trigger-postgres:5432/${POSTGRES_DB:-trigger}?schema=public
+      - DIRECT_URL=postgresql://${POSTGRES_USER:-trigger}:${POSTGRES_PASSWORD}@trigger-postgres:5432/${POSTGRES_DB:-trigger}?schema=public
+      - DATABASE_CONNECTION_LIMIT=${DATABASE_CONNECTION_LIMIT:-10}
+      # Redis
+      - REDIS_HOST=trigger-redis
+      - REDIS_PORT=6379
+      - REDIS_TLS_DISABLED=true
+      # ClickHouse
+      - CLICKHOUSE_URL=http://trigger-clickhouse:8123
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-password}
+      - CLICKHOUSE_DATABASE=${CLICKHOUSE_DATABASE:-default}
+      # Object storage (MinIO)
+      - OBJECT_STORE_BASE_URL=http://trigger-minio:9000
+      - OBJECT_STORE_ACCESS_KEY_ID=${MINIO_ROOT_USER:-admin}
+      - OBJECT_STORE_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD:-very-safe-password}
+      - PACKET_BUCKET_NAME=${PACKET_BUCKET_NAME:-packets}
+      # Registry
+      - DEPLOY_REGISTRY_HOST=${REGISTRY_HOST:-trigger-registry:5000}
+      - DEPLOY_REGISTRY_NAMESPACE=trigger
+      # Authentication
+      - WHITELISTED_EMAILS=${WHITELISTED_EMAILS:-}
+      - AUTH_GITHUB_CLIENT_ID=${AUTH_GITHUB_CLIENT_ID:-}
+      - AUTH_GITHUB_CLIENT_SECRET=${AUTH_GITHUB_CLIENT_SECRET:-}
+      # Email (optional)
+      - EMAIL_TRANSPORT=${EMAIL_TRANSPORT:-}
+      - FROM_EMAIL=${FROM_EMAIL:-}
+      - REPLY_TO_EMAIL=${REPLY_TO_EMAIL:-}
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_SECURE=${SMTP_SECURE:-false}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      # Telemetry
+      - TRIGGER_TELEMETRY_DISABLED=${TRIGGER_TELEMETRY_DISABLED:-}
+      # Bootstrap
+      - TRIGGER_BOOTSTRAP_ENABLED=${TRIGGER_BOOTSTRAP_ENABLED:-true}
+      - TRIGGER_BOOTSTRAP_WORKER_GROUP_NAME=${TRIGGER_BOOTSTRAP_WORKER_GROUP_NAME:-bootstrap}
+      - TRIGGER_BOOTSTRAP_WORKER_TOKEN_PATH=/home/node/shared/worker_token
+    volumes:
+      - trigger_shared:/home/node/shared
+    depends_on:
+      trigger-postgres:
+        condition: service_healthy
+      trigger-redis:
+        condition: service_healthy
+      trigger-clickhouse:
+        condition: service_healthy
+      trigger-minio:
+        condition: service_healthy
+      electric:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3030/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${WEBAPP_CPU_LIMIT:-3.0}
+          memory: ${WEBAPP_MEMORY_LIMIT:-6G}
+        reservations:
+          cpus: ${WEBAPP_CPU_RESERVATION:-1.0}
+          memory: ${WEBAPP_MEMORY_RESERVATION:-2G}
+
+  trigger-postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_replication_slots=10
+      - -c
+      - max_wal_senders=10
+    environment:
+      - TZ=${TZ:-UTC}
+      - POSTGRES_USER=${POSTGRES_USER:-trigger}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB:-trigger}
+    volumes:
+      - trigger_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-trigger} -d ${POSTGRES_DB:-trigger}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${POSTGRES_CPU_LIMIT:-2.0}
+          memory: ${POSTGRES_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${POSTGRES_CPU_RESERVATION:-0.5}
+          memory: ${POSTGRES_MEMORY_RESERVATION:-1G}
+
+  trigger-redis:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-7.4.3-alpine3.21}
+    command: redis-server --appendonly yes
+    volumes:
+      - trigger_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${REDIS_CPU_LIMIT:-1.0}
+          memory: ${REDIS_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${REDIS_CPU_RESERVATION:-0.25}
+          memory: ${REDIS_MEMORY_RESERVATION:-512M}
+
+  trigger-clickhouse:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}clickhouse/clickhouse-server:${CLICKHOUSE_VERSION:-25.3}
+    environment:
+      - TZ=${TZ:-UTC}
+      - CLICKHOUSE_DB=${CLICKHOUSE_DATABASE:-default}
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-password}
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+    volumes:
+      - trigger_clickhouse_data:/var/lib/clickhouse
+      - trigger_clickhouse_logs:/var/log/clickhouse-server
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "-O-", "http://localhost:8123/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${CLICKHOUSE_CPU_LIMIT:-2.0}
+          memory: ${CLICKHOUSE_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${CLICKHOUSE_CPU_RESERVATION:-0.5}
+          memory: ${CLICKHOUSE_MEMORY_RESERVATION:-1G}
+
+  trigger-minio:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}minio/minio:${MINIO_VERSION:-RELEASE.2025-04-22T22-12-26Z}
+    command: server /data --console-address ":9001"
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    environment:
+      - TZ=${TZ:-UTC}
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-admin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-very-safe-password}
+    volumes:
+      - trigger_minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${MINIO_CPU_LIMIT:-1.0}
+          memory: ${MINIO_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${MINIO_CPU_RESERVATION:-0.25}
+          memory: ${MINIO_MEMORY_RESERVATION:-512M}
+
+  # MinIO bucket initialization
+  trigger-minio-init:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}minio/mc:${MC_VERSION:-RELEASE.2025-04-16T18-13-26Z}
+    entrypoint: |
+      /bin/sh -c '
+      sleep 5
+      mc alias set myminio http://trigger-minio:9000 ${MINIO_ROOT_USER:-admin} ${MINIO_ROOT_PASSWORD:-very-safe-password}
+      mc mb myminio/${PACKET_BUCKET_NAME:-packets} --ignore-existing
+      echo "MinIO bucket initialized"
+      exit 0
+      '
+    depends_on:
+      trigger-minio:
+        condition: service_healthy
+    restart: "no"
+
+  electric:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}electricsql/electric:${ELECTRIC_VERSION:-1.0.0}
+    environment:
+      - TZ=${TZ:-UTC}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-trigger}:${POSTGRES_PASSWORD}@trigger-postgres:5432/${POSTGRES_DB:-trigger}
+    depends_on:
+      trigger-postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${ELECTRIC_CPU_LIMIT:-1.0}
+          memory: ${ELECTRIC_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${ELECTRIC_CPU_RESERVATION:-0.25}
+          memory: ${ELECTRIC_MEMORY_RESERVATION:-256M}
+
+  # Initialize registry htpasswd file on first run
+  trigger-registry-init:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}httpd:2-alpine
+    entrypoint: |
+      /bin/sh -c '
+      if [ ! -f /auth/htpasswd ]; then
+        echo "Generating htpasswd file..."
+        htpasswd -nbB "${REGISTRY_USER:-registry-user}" "${REGISTRY_PASSWORD:-very-secure-indeed}" > /auth/htpasswd
+        echo "htpasswd file created successfully"
+      else
+        echo "htpasswd file already exists, skipping..."
+      fi
+      '
+    environment:
+      - REGISTRY_USER=${REGISTRY_USER:-registry-user}
+      - REGISTRY_PASSWORD=${REGISTRY_PASSWORD:-very-secure-indeed}
+    volumes:
+      - trigger_registry_auth:/auth
+    restart: "no"
+
+  trigger-registry:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}registry:${REGISTRY_IMAGE_VERSION:-3}
+    ports:
+      - "${REGISTRY_PORT:-5000}:5000"
+    environment:
+      - TZ=${TZ:-UTC}
+      - REGISTRY_AUTH=htpasswd
+      - REGISTRY_AUTH_HTPASSWD_REALM=Registry
+      - REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
+    volumes:
+      - trigger_registry_data:/var/lib/registry
+      - trigger_registry_auth:/auth:ro
+    depends_on:
+      trigger-registry-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/v2/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${REGISTRY_CPU_LIMIT:-0.5}
+          memory: ${REGISTRY_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${REGISTRY_CPU_RESERVATION:-0.1}
+          memory: ${REGISTRY_MEMORY_RESERVATION:-128M}
+
+  # =============================================================================
+  # Worker Services (Supervisor Stack)
+  # =============================================================================
+
+  supervisor:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}ghcr.io/triggerdotdev/supervisor:${TRIGGER_IMAGE_TAG:-v4.2.0}
+    environment:
+      - TZ=${TZ:-UTC}
+      # Required settings
+      - TRIGGER_API_URL=http://webapp:3030
+      - TRIGGER_WORKER_TOKEN=${TRIGGER_WORKER_TOKEN:-file:///home/node/shared/worker_token}
+      - MANAGED_WORKER_SECRET=${MANAGED_WORKER_SECRET:-managed-secret}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://webapp:3030/otel
+      # Worker instance
+      - TRIGGER_WORKER_INSTANCE_NAME=${TRIGGER_WORKER_INSTANCE_NAME:-supervisor-1}
+      - TRIGGER_WORKER_HEARTBEAT_INTERVAL_SECONDS=${TRIGGER_WORKER_HEARTBEAT_INTERVAL_SECONDS:-30}
+      # Workload API settings
+      - TRIGGER_WORKLOAD_API_ENABLED=true
+      - TRIGGER_WORKLOAD_API_PROTOCOL=http
+      - TRIGGER_WORKLOAD_API_PORT_INTERNAL=8020
+      - TRIGGER_WORKLOAD_API_PORT_EXTERNAL=8020
+      # Docker settings
+      - DOCKER_RUNNER_NETWORKS=trigger-dev_default
+      - DOCKER_ENFORCE_MACHINE_PRESETS=${DOCKER_ENFORCE_MACHINE_PRESETS:-true}
+      - DOCKER_AUTOREMOVE_EXITED_CONTAINERS=${DOCKER_AUTOREMOVE_EXITED_CONTAINERS:-true}
+    volumes:
+      - trigger_shared:/home/node/shared:ro
+    depends_on:
+      webapp:
+        condition: service_healthy
+      docker-socket-proxy:
+        condition: service_started
+    deploy:
+      resources:
+        limits:
+          cpus: ${SUPERVISOR_CPU_LIMIT:-2.0}
+          memory: ${SUPERVISOR_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${SUPERVISOR_CPU_RESERVATION:-0.5}
+          memory: ${SUPERVISOR_MEMORY_RESERVATION:-1G}
+
+  docker-socket-proxy:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}tecnativa/docker-socket-proxy:${DOCKER_SOCKET_PROXY_VERSION:-0.3.0}
+    privileged: true
+    environment:
+      - TZ=${TZ:-UTC}
+      # Allowed API endpoints
+      - CONTAINERS=1
+      - IMAGES=1
+      - NETWORKS=1
+      - VOLUMES=1
+      - AUTH=1
+      - POST=1
+      - BUILD=0
+      - COMMIT=0
+      - CONFIGS=0
+      - DISTRIBUTION=1
+      - EXEC=0
+      - GRPC=0
+      - INFO=1
+      - NODES=0
+      - PING=1
+      - PLUGINS=0
+      - SECRETS=0
+      - SERVICES=0
+      - SESSION=0
+      - SWARM=0
+      - SYSTEM=0
+      - TASKS=0
+      - VERSION=1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    deploy:
+      resources:
+        limits:
+          cpus: ${DOCKER_PROXY_CPU_LIMIT:-0.5}
+          memory: ${DOCKER_PROXY_MEMORY_LIMIT:-256M}
+        reservations:
+          cpus: ${DOCKER_PROXY_CPU_RESERVATION:-0.1}
+          memory: ${DOCKER_PROXY_MEMORY_RESERVATION:-64M}
+
+volumes:
+  trigger_shared:
+  trigger_postgres_data:
+  trigger_redis_data:
+  trigger_clickhouse_data:
+  trigger_clickhouse_logs:
+  trigger_minio_data:
+  trigger_registry_data:
+  trigger_registry_auth:

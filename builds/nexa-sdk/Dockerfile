@@ -1,8 +1,0 @@
-# https://github.com/NexaAI/nexa-sdk/issues/684
-FROM ubuntu:22.04
-
-RUN apt update && apt install -y libgomp1 curl ffmpeg sox
-RUN curl -fsSL https://github.com/NexaAI/nexa-sdk/releases/latest/download/nexa-cli_linux_x86_64.sh | sh
-
-EXPOSE 8080
-CMD [ "nexa", "serve", "--host", "0.0.0.0:8080" ]
