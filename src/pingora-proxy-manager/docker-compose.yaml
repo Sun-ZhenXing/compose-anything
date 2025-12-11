@@ -1,0 +1,54 @@
+# Pingora Proxy Manager - High-performance reverse proxy built on Cloudflare's Pingora
+# https://github.com/DDULDDUCK/pingora-proxy-manager
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  pingora-proxy-manager:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}dduldduck/pingora-proxy-manager:${PINGORA_VERSION:-v1.0.3}
+    ports:
+      - "${PINGORA_HTTP_PORT_OVERRIDE:-80}:8080"
+      - "${PINGORA_DASHBOARD_PORT_OVERRIDE:-81}:81"
+      - "${PINGORA_HTTPS_PORT_OVERRIDE:-443}:443"
+    volumes:
+      - pingora_data:/app/data
+      - pingora_logs:/app/logs
+      - letsencrypt:/etc/letsencrypt
+    environment:
+      - TZ=${TZ:-UTC}
+      - JWT_SECRET=${PINGORA_JWT_SECRET:-changeme_in_production_please}
+      - RUST_LOG=${PINGORA_LOG_LEVEL:-info}
+    healthcheck:
+      test: ["CMD", "sh", "-c", "wget -q --spider http://127.0.0.1:81/api/login || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "${PINGORA_CPU_LIMIT:-2.00}"
+          memory: "${PINGORA_MEMORY_LIMIT:-512M}"
+        reservations:
+          cpus: "${PINGORA_CPU_RESERVATION:-0.50}"
+          memory: "${PINGORA_MEMORY_RESERVATION:-256M}"
+    # Security hardening
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
+    tmpfs:
+      - /tmp:size=64M
+
+volumes:
+  pingora_data:
+  pingora_logs:
+  letsencrypt:

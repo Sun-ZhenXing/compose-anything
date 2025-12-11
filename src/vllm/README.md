@@ -12,7 +12,7 @@ This service deploys vLLM, a high-throughput and memory-efficient inference and 
 
 | Variable Name        | Description                            | Default Value       |
 | -------------------- | -------------------------------------- | ------------------- |
-| VLLM_VERSION         | vLLM image version                     | `v0.8.0`            |
+| VLLM_VERSION         | vLLM image version                     | `v0.12.0`           |
 | VLLM_MODEL           | Model name or path                     | `facebook/opt-125m` |
 | VLLM_MAX_MODEL_LEN   | Maximum context length                 | `2048`              |
 | VLLM_GPU_MEMORY_UTIL | GPU memory utilization (0.0-1.0)       | `0.9`               |

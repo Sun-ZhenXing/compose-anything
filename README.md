@@ -77,6 +77,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Ollama](./src/ollama)                                        | 0.12.0                       |
 | [Open WebUI](./src/open-webui)                                | main                         |
 | [Phoenix (Arize)](./src/phoenix)                              | 12.19.0                      |
+| [Pingora Proxy Manager](./src/pingora-proxy-manager)          | v1.0.3                       |
 | [Open WebUI Rust](./src/open-webui-rust)                      | latest                       |
 | [OpenCoze](./src/opencoze)                                    | See Docs                     |
 | [OpenCut](./src/opencut)                                      | latest                       |
