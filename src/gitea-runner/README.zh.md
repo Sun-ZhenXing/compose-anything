@@ -9,7 +9,7 @@
 1. 生成 `config.yaml` 文件：
 
    ```bash
-   docker run --entrypoint="" --rm -it gitea/act_runner:0.2.12 act_runner generate-config > config.yaml
+   docker run --entrypoint="" --rm -it gitea/act_runner:0.2.13 act_runner generate-config > config.yaml
    ```
 
 2. 配置 `config.yaml`，例如：

@@ -32,7 +32,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Firecrawl](./src/firecrawl)                                  | latest                       |
 | [frpc](./src/frpc)                                            | 0.64.0                       |
 | [frps](./src/frps)                                            | 0.64.0                       |
-| [Gitea Runner](./src/gitea-runner)                            | 0.2.12                       |
+| [Gitea Runner](./src/gitea-runner)                            | 0.2.13                       |
 | [Gitea](./src/gitea)                                          | 1.24.6                       |
 | [GitLab Runner](./src/gitlab-runner)                          | 17.10.1                      |
 | [GitLab](./src/gitlab)                                        | 17.10.4-ce.0                 |

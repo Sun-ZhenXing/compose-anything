@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   gitea:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}gitea/gitea:${GITEA_VERSION:-1.24.6-rootless}
+    image: ${GLOBAL_REGISTRY:-}gitea/gitea:${GITEA_VERSION:-1.25.2-rootless}
     environment:
       - USER_UID=1000
       - USER_GID=1000
@@ -20,10 +20,11 @@ services:
       - GITEA__database__NAME=${POSTGRES_DB:-gitea}
       - GITEA__database__PASSWD=${POSTGRES_PASSWORD:-gitea}
     volumes:
-      - ./gitea:/data
+      - gitea_data:/var/lib/gitea
+      - ./config:/etc/gitea
     ports:
       - "${GITEA_HTTP_PORT:-3000}:3000"
-      - "${GITEA_SSH_PORT:-3022}:22"
+      - "${GITEA_SSH_PORT:-2222}:2222"
     depends_on:
       db:
         condition: service_healthy

@@ -27,7 +27,7 @@ This service deploys NexaSDK Docker for running AI models with OpenAI-compatible
 ### CPU Mode
 
 ```bash
-docker compose up -d
+docker compose --profile cpu up -d
 ```
 
 ### GPU Mode (CUDA)

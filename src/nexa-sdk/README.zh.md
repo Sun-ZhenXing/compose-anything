@@ -27,7 +27,7 @@
 ### CPU 模式
 
 ```bash
-docker compose up -d
+docker compose --profile cpu up -d
 ```
 
 ### GPU 模式（CUDA）

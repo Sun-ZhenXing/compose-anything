@@ -20,7 +20,7 @@ Arize Phoenix 是一个开源的 AI 可观测性平台，专为 LLM 应用设计
 
 | 变量名                     | 描述                              | 默认值            |
 | -------------------------- | --------------------------------- | ----------------- |
-| PHOENIX_VERSION            | Phoenix 镜像版本                  | `version-12.19.0` |
+| PHOENIX_VERSION            | Phoenix 镜像版本                  | `12.25.0-nonroot` |
 | PHOENIX_PORT_OVERRIDE      | Phoenix UI 和 HTTP API 的主机端口 | `6006`            |
 | PHOENIX_GRPC_PORT_OVERRIDE | OTLP gRPC 采集器的主机端口        | `4317`            |
 | PHOENIX_ENABLE_PROMETHEUS  | 启用 Prometheus 指标端点          | `false`           |

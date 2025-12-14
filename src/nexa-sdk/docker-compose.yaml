@@ -13,6 +13,8 @@ x-defaults: &defaults
 services:
   nexa-sdk:
     <<: *defaults
+    profiles:
+      - cpu
     image: ${GLOBAL_REGISTRY:-}nexa4ai/nexasdk:${NEXA_SDK_VERSION:-v0.2.62}
     ports:
       - "${NEXA_SDK_PORT_OVERRIDE:-18181}:18181"

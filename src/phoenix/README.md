@@ -20,7 +20,7 @@ Arize Phoenix is an open-source AI observability platform for LLM applications. 
 
 | Variable Name              | Description                           | Default Value     |
 | -------------------------- | ------------------------------------- | ----------------- |
-| PHOENIX_VERSION            | Phoenix image version                 | `version-12.19.0` |
+| PHOENIX_VERSION            | Phoenix image version                 | `12.25.0-nonroot` |
 | PHOENIX_PORT_OVERRIDE      | Host port for Phoenix UI and HTTP API | `6006`            |
 | PHOENIX_GRPC_PORT_OVERRIDE | Host port for OTLP gRPC collector     | `4317`            |
 | PHOENIX_ENABLE_PROMETHEUS  | Enable Prometheus metrics endpoint    | `false`           |
