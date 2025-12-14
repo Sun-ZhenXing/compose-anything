@@ -95,6 +95,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Redpanda](./src/redpanda)                                    | v24.3.1                      |
 | [Redis Cluster](./src/redis-cluster)                          | 8.2.1                        |
 | [Redis](./src/redis)                                          | 8.2.1                        |
+| [Renovate](./src/renovate)                                    | 42.52.5-full                 |
 | [Restate Cluster](./src/restate-cluster)                      | 1.5.3                        |
 | [Restate](./src/restate)                                      | 1.5.3                        |
 | [SearXNG](./src/searxng)                                      | 2025.1.20-1ce14ef99          |

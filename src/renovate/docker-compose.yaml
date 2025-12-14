@@ -1,0 +1,108 @@
+# Renovate - Automated Dependency Updates
+# https://github.com/renovatebot/renovate
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  renovate:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}renovate/renovate:${RENOVATE_VERSION:-42.52.5-full}
+
+    # Renovate runs as a scheduled job, not a continuous service
+    # Use 'docker compose run --rm renovate' to execute manually
+    # Or configure with cron/scheduler for periodic runs
+    restart: "no"
+
+    volumes:
+      # Configuration files
+      - ./config.js:/usr/src/app/config.js:ro
+      # Cache directory for better performance
+      - renovate_cache:/tmp/renovate/cache
+      # Optional: mount repository cache
+      - renovate_repos:/tmp/renovate/repos
+
+    environment:
+      # Timezone
+      - TZ=${TZ:-UTC}
+
+      # Renovate configuration
+      - RENOVATE_CONFIG_FILE=${RENOVATE_CONFIG_FILE:-/usr/src/app/config.js}
+
+      # Platform (github, gitlab, gitea, bitbucket, etc.)
+      - RENOVATE_PLATFORM=${RENOVATE_PLATFORM:-github}
+      - RENOVATE_ENDPOINT=${RENOVATE_ENDPOINT:-}
+
+      # Authentication token (required)
+      - RENOVATE_TOKEN=${RENOVATE_TOKEN:-}
+      # Or use GitHub App
+      - GITHUB_COM_TOKEN=${GITHUB_COM_TOKEN:-}
+
+      # Repositories to process (comma-separated or use config.js)
+      - RENOVATE_REPOSITORIES=${RENOVATE_REPOSITORIES:-}
+
+      # Git author for commits
+      - RENOVATE_GIT_AUTHOR=${RENOVATE_GIT_AUTHOR:-Renovate Bot <bot@renovateapp.com>}
+
+      # Logging
+      - LOG_LEVEL=${RENOVATE_LOG_LEVEL:-info}
+      - LOG_FORMAT=${RENOVATE_LOG_FORMAT:-json}
+
+      # Onboarding (create PR to add renovate.json)
+      - RENOVATE_ONBOARDING=${RENOVATE_ONBOARDING:-true}
+      - RENOVATE_ONBOARDING_CONFIG=${RENOVATE_ONBOARDING_CONFIG:-{"$$schema":"https://docs.renovatebot.com/renovate-schema.json"}}
+
+      # Require config in repo
+      - RENOVATE_REQUIRE_CONFIG=${RENOVATE_REQUIRE_CONFIG:-optional}
+
+      # Docker authentication (if checking Docker images)
+      - RENOVATE_DOCKER_USER=${RENOVATE_DOCKER_USER:-}
+      - RENOVATE_DOCKER_PASSWORD=${RENOVATE_DOCKER_PASSWORD:-}
+
+      # NPM authentication (if checking NPM packages)
+      - RENOVATE_NPM_TOKEN=${RENOVATE_NPM_TOKEN:-}
+
+      # Dry run mode (no actual updates)
+      - RENOVATE_DRY_RUN=${RENOVATE_DRY_RUN:-false}
+
+      # Cache
+      - RENOVATE_REPOSITORY_CACHE=${RENOVATE_REPOSITORY_CACHE:-enabled}
+      - RENOVATE_CACHE_DIR=${RENOVATE_CACHE_DIR:-/tmp/renovate/cache}
+
+      # Base directory
+      - RENOVATE_BASE_DIR=${RENOVATE_BASE_DIR:-/tmp/renovate/repos}
+
+    # Healthcheck not applicable for one-shot jobs
+    # healthcheck:
+    #   disable: true
+
+    deploy:
+      resources:
+        limits:
+          cpus: ${RENOVATE_CPU_LIMIT:-2.0}
+          memory: ${RENOVATE_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${RENOVATE_CPU_RESERVATION:-0.5}
+          memory: ${RENOVATE_MEMORY_RESERVATION:-512M}
+
+    # Security options
+    read_only: false  # Renovate needs to write to cache and clone repos
+    user: "${PUID:-1000}:${PGID:-1000}"
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+      - DAC_OVERRIDE
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  renovate_cache:
+  renovate_repos:
