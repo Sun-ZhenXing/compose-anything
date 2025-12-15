@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   bifrost:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}maximhq/bifrost:${BIFROST_VERSION:-v1.2.15}
+    image: ${GLOBAL_REGISTRY:-}maximhq/bifrost:${BIFROST_VERSION:-v1.3.48}
     volumes:
       - bifrost_data:/app/data
     ports:

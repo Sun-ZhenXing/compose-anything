@@ -14,7 +14,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Apache Kafka](./src/kafka)                                   | 7.8.0                        |
 | [Apache Pulsar](./src/pulsar)                                 | 4.0.7                        |
 | [Apache RocketMQ](./src/rocketmq)                             | 5.3.1                        |
-| [Bifrost Gateway](./src/bifrost-gateway)                      | 1.2.15                       |
+| [Bifrost Gateway](./src/bifrost-gateway)                      | 1.3.48                       |
 | [Bolt.diy](./src/bolt-diy)                                    | latest                       |
 | [Budibase](./src/budibase)                                    | 3.23.0                       |
 | [Bytebot](./src/bytebot)                                      | edge                         |

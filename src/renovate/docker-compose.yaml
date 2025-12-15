@@ -22,10 +22,6 @@ services:
     volumes:
       # Configuration files
       - ./config.js:/usr/src/app/config.js:ro
-      # Cache directory for better performance
-      - renovate_cache:/tmp/renovate/cache
-      # Optional: mount repository cache
-      - renovate_repos:/tmp/renovate/repos
 
     environment:
       # Timezone
@@ -102,7 +98,3 @@ services:
       - DAC_OVERRIDE
     security_opt:
       - no-new-privileges:true
-
-volumes:
-  renovate_cache:
-  renovate_repos:

@@ -10,7 +10,7 @@ Bifrost 是一个轻量级、高性能的 LLM 网关，支持多种模型和提�
 
 ## 配置
 
-- `BIFROST_VERSION`: Bifrost 镜像的版本，默认为 `v1.2.15`。
+- `BIFROST_VERSION`: Bifrost 镜像的版本，默认为 `v1.3.48`。
 - `BIFROST_PORT`: Bifrost 服务的端口，默认为 `28080`。
 
 ## 卷

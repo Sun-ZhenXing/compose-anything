@@ -14,7 +14,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Apache Kafka](./src/kafka)                                   | 7.8.0                        |
 | [Apache Pulsar](./src/pulsar)                                 | 4.0.7                        |
 | [Apache RocketMQ](./src/rocketmq)                             | 5.3.1                        |
-| [Bifrost Gateway](./src/bifrost-gateway)                      | 1.2.15                       |
+| [Bifrost Gateway](./src/bifrost-gateway)                      | 1.3.48                       |
 | [Bolt.diy](./src/bolt-diy)                                    | latest                       |
 | [Budibase](./src/budibase)                                    | 3.23.0                       |
 | [Bytebot](./src/bytebot)                                      | edge                         |
