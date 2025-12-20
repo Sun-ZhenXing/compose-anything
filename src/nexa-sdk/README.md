@@ -83,7 +83,7 @@ docker exec -it nexa-sdk nexa infer NexaAI/Granite-4.0-h-350M-NPU
 
 | Variable                 | Description               | Default   |
 | ------------------------ | ------------------------- | --------- |
-| `NEXA_SDK_VERSION`       | NexaSDK image version     | `v0.2.62` |
+| `NEXA_SDK_VERSION`       | NexaSDK image version     | `v0.2.65` |
 | `NEXA_SDK_PORT_OVERRIDE` | Host port for REST API    | `18181`   |
 | `NEXA_TOKEN`             | Nexa API token (required) | -         |
 | `TZ`                     | Timezone                  | `UTC`     |

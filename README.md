@@ -70,6 +70,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [NebulaGraph](./src/nebulagraph)                              | v3.8.0                       |
 | [NexaSDK](./src/nexa-sdk)                                     | v0.2.62                      |
 | [Neo4j](./src/neo4j)                                          | 5.27.4                       |
+| [Netdata](./src/netdata)                                      | latest                       |
 | [Nginx](./src/nginx)                                          | 1.29.1                       |
 | [Node Exporter](./src/node-exporter)                          | v1.8.2                       |
 | [OceanBase](./src/oceanbase)                                  | 4.3.3                        |

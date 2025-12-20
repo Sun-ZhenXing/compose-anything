@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   easy-dataset:
     <<: *defaults
-    image: ghcr.io/conardli/easy-dataset:${EASY_DATASET_VERSION:-1.5.1}
+    image: ${GHCR_IO_REGISTRY:-ghcr.io/}conardli/easy-dataset:${EASY_DATASET_VERSION:-1.5.1}
     ports:
       - "${EASY_DATASET_PORT_OVERRIDE:-1717}:1717"
     volumes:

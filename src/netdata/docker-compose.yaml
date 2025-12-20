@@ -1,0 +1,55 @@
+name: netdata
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  netdata:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}netdata/netdata:${NETDATA_VERSION:-v2.8.4}
+    pid: host
+    network_mode: host
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - netdataconfig:/etc/netdata
+      - netdatalib:/var/lib/netdata
+      - netdatacache:/var/cache/netdata
+      - /:/host/root:ro,rslave
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/log:/host/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:19999/api/v1/info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${NETDATA_CPU_LIMIT:-1.0}
+          memory: ${NETDATA_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${NETDATA_CPU_RESERVATION:-0.1}
+          memory: ${NETDATA_MEMORY_RESERVATION:-256M}
+
+volumes:
+  netdataconfig:
+  netdatalib:
+  netdatacache:

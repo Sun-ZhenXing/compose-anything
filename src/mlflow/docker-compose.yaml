@@ -77,7 +77,7 @@ services:
 
   mlflow:
     <<: *defaults
-    image: ghcr.io/mlflow/mlflow:${MLFLOW_VERSION:-v2.20.2}
+    image: ${GHCR_IO_REGISTRY:-ghcr.io/}mlflow/mlflow:${MLFLOW_VERSION:-v2.20.2}
     depends_on:
       postgres:
         condition: service_healthy

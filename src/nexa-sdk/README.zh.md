@@ -83,7 +83,7 @@ docker exec -it nexa-sdk nexa infer NexaAI/Granite-4.0-h-350M-NPU
 
 | 变量                     | 描述                  | 默认值    |
 | ------------------------ | --------------------- | --------- |
-| `NEXA_SDK_VERSION`       | NexaSDK 镜像版本      | `v0.2.62` |
+| `NEXA_SDK_VERSION`       | NexaSDK 镜像版本      | `v0.2.65` |
 | `NEXA_SDK_PORT_OVERRIDE` | REST API 的主机端口   | `18181`   |
 | `NEXA_TOKEN`             | Nexa API 令牌（必需） | -         |
 | `TZ`                     | 时区                  | `UTC`     |

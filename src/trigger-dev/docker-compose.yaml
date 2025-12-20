@@ -17,7 +17,7 @@ services:
 
   webapp:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}ghcr.io/triggerdotdev/trigger.dev:${TRIGGER_IMAGE_TAG:-v4.2.0}
+    image: ${GHCR_IO_REGISTRY:-ghcr.io/}triggerdotdev/trigger.dev:${TRIGGER_IMAGE_TAG:-v4.2.0}
     ports:
       - "${TRIGGER_PORT:-8030}:3030"
     environment:
@@ -312,7 +312,7 @@ services:
 
   supervisor:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}ghcr.io/triggerdotdev/supervisor:${TRIGGER_IMAGE_TAG:-v4.2.0}
+    image: ${GHCR_IO_REGISTRY:-ghcr.io/}triggerdotdev/supervisor:${TRIGGER_IMAGE_TAG:-v4.2.0}
     environment:
       - TZ=${TZ:-UTC}
       # Required settings

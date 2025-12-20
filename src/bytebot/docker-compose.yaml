@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   bytebot-desktop:
     <<: *defaults
-    image: ghcr.io/bytebot-ai/bytebot-desktop:${BYTEBOT_VERSION:-edge}
+    image: ${GHCR_IO_REGISTRY:-ghcr.io/}bytebot-ai/bytebot-desktop:${BYTEBOT_VERSION:-edge}
     ports:
       - "${BYTEBOT_DESKTOP_PORT_OVERRIDE:-9990}:9990"
     environment:
@@ -32,7 +32,7 @@ services:
 
   bytebot-agent:
     <<: *defaults
-    image: ghcr.io/bytebot-ai/bytebot-agent:${BYTEBOT_VERSION:-edge}
+    image: ${GHCR_IO_REGISTRY:-ghcr.io/}bytebot-ai/bytebot-agent:${BYTEBOT_VERSION:-edge}
     depends_on:
       bytebot-desktop:
         condition: service_healthy
@@ -64,7 +64,7 @@ services:
 
   bytebot-ui:
     <<: *defaults
-    image: ghcr.io/bytebot-ai/bytebot-ui:${BYTEBOT_VERSION:-edge}
+    image: ${GHCR_IO_REGISTRY:-ghcr.io/}bytebot-ai/bytebot-ui:${BYTEBOT_VERSION:-edge}
     depends_on:
       bytebot-agent:
         condition: service_healthy
