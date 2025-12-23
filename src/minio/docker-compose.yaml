@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   minio:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}minio/minio:${MINIO_VERSION:-RELEASE.2025-09-07T16-13-09Z}
+    image: cgr.dev/chainguard/minio:${MINIO_VERSION:-0.20251015}
     ports:
       - "${MINIO_PORT_OVERRIDE_API:-9000}:9000"
       - "${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001"
@@ -19,8 +19,7 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
     volumes:
       - minio_data:/data
-      - ./config:/root/.minio/
-    command: server --console-address ':9001' /data
+    command: server /data --console-address ':9001'
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s

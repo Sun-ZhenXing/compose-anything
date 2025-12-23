@@ -6,68 +6,164 @@ This service deploys Langfuse, an open-source LLM engineering platform for obser
 
 ## Services
 
-- `langfuse-server`: The main Langfuse application server.
-- `langfuse-db`: PostgreSQL database for Langfuse.
+- **langfuse-worker**: Background worker service for processing LLM operations
+- **langfuse-web**: Main Langfuse web application server
+- **postgres**: PostgreSQL database
+- **clickhouse**: ClickHouse analytics database for event storage
+- **minio**: S3-compatible object storage for media and exports
+- **redis**: In-memory data store for caching and job queues
 
-## Environment Variables
+## Quick Start
 
-| Variable Name                         | Description                                     | Default Value           |
-| ------------------------------------- | ----------------------------------------------- | ----------------------- |
-| LANGFUSE_VERSION                      | Langfuse image version                          | `3.115.0`               |
-| LANGFUSE_PORT                         | Host port mapping for Langfuse web interface    | `3000`                  |
-| POSTGRES_VERSION                      | PostgreSQL image version                        | `17.2-alpine3.21`       |
-| POSTGRES_USER                         | PostgreSQL username                             | `postgres`              |
-| POSTGRES_PASSWORD                     | PostgreSQL password                             | `postgres`              |
-| POSTGRES_DB                           | PostgreSQL database name                        | `langfuse`              |
-| NEXTAUTH_URL                          | Public URL of your Langfuse instance            | `http://localhost:3000` |
-| NEXTAUTH_SECRET                       | Secret for NextAuth.js (required, generate one) | `""`                    |
-| SALT                                  | Salt for encryption (required, generate one)    | `""`                    |
-| TELEMETRY_ENABLED                     | Enable telemetry                                | `true`                  |
-| LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES | Enable experimental features                    | `false`                 |
+1. Copy `.env.example` to `.env`:
 
-**Important**: You must set `NEXTAUTH_SECRET` and `SALT` for production use. Generate them using:
-
-```bash
-# For NEXTAUTH_SECRET
-openssl rand -base64 32
-
-# For SALT
-openssl rand -base64 32
-```
-
-Please create a `.env` file and modify it as needed for your use case.
-
-## Volumes
-
-- `langfuse_db_data`: A volume for storing PostgreSQL data.
-
-## Getting Started
-
-1. Create a `.env` file with required secrets:
-
-   ```env
-   NEXTAUTH_SECRET=your-generated-secret-here
-   SALT=your-generated-salt-here
-   POSTGRES_PASSWORD=your-secure-password
+   ```bash
+   cp .env.example .env
    ```
 
-2. Start the services:
+2. Update critical secrets in `.env`:
+
+   ```bash
+   # Generate secure secrets
+   NEXTAUTH_SECRET=$(openssl rand -base64 32)
+   ENCRYPTION_KEY=$(openssl rand -hex 32)
+   POSTGRES_PASSWORD=your-secure-password
+   CLICKHOUSE_PASSWORD=your-secure-password
+   MINIO_ROOT_PASSWORD=your-secure-password
+   REDIS_AUTH=your-secure-redis-password
+   ```
+
+3. Start the services:
 
    ```bash
    docker compose up -d
    ```
 
-3. Access Langfuse at `http://localhost:3000`
+4. Access Langfuse at `http://localhost:3000`
 
-4. Create your first account on the setup page
+## Core Environment Variables
+
+| Variable                                | Description                                     | Default                 |
+| --------------------------------------- | ----------------------------------------------- | ----------------------- |
+| `LANGFUSE_VERSION`                      | Langfuse container image version                | `3`                     |
+| `LANGFUSE_PORT`                         | Web interface port                              | `3000`                  |
+| `NEXTAUTH_URL`                          | Public URL of Langfuse instance                 | `http://localhost:3000` |
+| `NEXTAUTH_SECRET`                       | NextAuth.js secret (required for production)    | `mysecret`              |
+| `ENCRYPTION_KEY`                        | Encryption key for sensitive data (64-char hex) | `0...0`                 |
+| `SALT`                                  | Salt for password hashing                       | `mysalt`                |
+| `TELEMETRY_ENABLED`                     | Enable anonymous telemetry                      | `true`                  |
+| `LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES` | Enable beta features                            | `true`                  |
+
+## Database Configuration
+
+| Variable              | Description         | Default      |
+| --------------------- | ------------------- | ------------ |
+| `POSTGRES_VERSION`    | PostgreSQL version  | `17`         |
+| `POSTGRES_USER`       | Database user       | `postgres`   |
+| `POSTGRES_PASSWORD`   | Database password   | `postgres`   |
+| `POSTGRES_DB`         | Database name       | `postgres`   |
+| `CLICKHOUSE_USER`     | ClickHouse user     | `clickhouse` |
+| `CLICKHOUSE_PASSWORD` | ClickHouse password | `clickhouse` |
+
+## Storage & Cache Configuration
+
+| Variable              | Description          | Default         |
+| --------------------- | -------------------- | --------------- |
+| `MINIO_ROOT_USER`     | MinIO admin username | `minio`         |
+| `MINIO_ROOT_PASSWORD` | MinIO admin password | `miniosecret`   |
+| `REDIS_AUTH`          | Redis password       | `myredissecret` |
+
+## S3/Media Configuration
+
+| Variable                            | Description               | Default                 |
+| ----------------------------------- | ------------------------- | ----------------------- |
+| `LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT` | Media upload S3 endpoint  | `http://localhost:9090` |
+| `LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT` | Event upload S3 endpoint  | `http://minio:9000`     |
+| `LANGFUSE_S3_BATCH_EXPORT_ENABLED`  | Enable batch export to S3 | `false`                 |
+
+## Volumes
+
+- `langfuse_postgres_data`: PostgreSQL data persistence
+- `langfuse_clickhouse_data`: ClickHouse event data
+- `langfuse_clickhouse_logs`: ClickHouse logs
+- `langfuse_minio_data`: MinIO object storage data
+
+## Resource Limits
+
+All services have configurable CPU and memory limits:
+
+- **langfuse-worker**: 2 CPU cores, 2GB RAM
+- **langfuse-web**: 2 CPU cores, 2GB RAM  
+- **clickhouse**: 2 CPU cores, 4GB RAM
+- **minio**: 1 CPU core, 1GB RAM
+- **redis**: 1 CPU core, 512MB RAM
+- **postgres**: 2 CPU cores, 2GB RAM
+
+Adjust limits in `.env` by modifying `*_CPU_LIMIT`, `*_MEMORY_LIMIT`, `*_CPU_RESERVATION`, and `*_MEMORY_RESERVATION` variables.
+
+## Network Access
+
+- **langfuse-web** (port 3000): Open to all interfaces for external access
+- **minio** (port 9090): Open to all interfaces for media uploads
+- **All other services**: Bound to `127.0.0.1` (localhost only)
+
+In production, restrict external access using a firewall or reverse proxy.
+
+## Production Setup
+
+For production deployments:
+
+1. **Security**:
+   - Generate strong secrets with `openssl rand -base64 32` and `openssl rand -hex 32`
+   - Use a reverse proxy (nginx, Caddy) with SSL/TLS
+   - Change all default passwords
+   - Enable HTTPS by setting `NEXTAUTH_URL` to your domain
+
+2. **Persistence**:
+   - Use external volumes or cloud storage for data
+   - Configure regular PostgreSQL backups
+   - Monitor ClickHouse disk usage
+
+3. **Performance**:
+   - Increase resource limits based on workload
+   - Consider dedicated ClickHouse cluster for large deployments
+   - Configure Redis persistence if needed
+
+## Ports
+
+- **3000**: Langfuse web interface (external)
+- **3030**: Langfuse worker API (localhost only)
+- **5432**: PostgreSQL (localhost only)
+- **8123**: ClickHouse HTTP (localhost only)
+- **9000**: ClickHouse native (localhost only)
+- **9090**: MinIO S3 API (external)
+- **9091**: MinIO console (localhost only)
+- **6379**: Redis (localhost only)
+
+## Health Checks
+
+All services include health checks with automatic restart on failure.
 
 ## Documentation
 
-For more information, visit the [official Langfuse documentation](https://langfuse.com/docs).
+- [Langfuse Documentation](https://langfuse.com/docs)
+- [Langfuse GitHub](https://github.com/langfuse/langfuse)
 
-## Security Notes
+## Troubleshooting
 
-- Change default passwords in production
-- Use strong, randomly generated values for `NEXTAUTH_SECRET` and `SALT`
-- Consider using a reverse proxy with SSL/TLS in production
-- Regularly backup the PostgreSQL database
+### Services failing to start
+
+- Check logs: `docker compose logs <service-name>`
+- Ensure all required environment variables are set
+- Verify sufficient disk space and system resources
+
+### Database connection errors
+
+- Verify `POSTGRES_PASSWORD` matches between services
+- Check that PostgreSQL service is healthy: `docker compose ps`
+- Ensure ports are not already in use
+
+### MinIO permission issues
+
+- Clear MinIO data and restart: `docker compose down -v`
+- Regenerate MinIO credentials in `.env`
