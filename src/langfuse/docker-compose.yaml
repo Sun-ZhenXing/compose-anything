@@ -29,7 +29,7 @@ services:
       clickhouse:
         condition: service_healthy
     ports:
-      - 127.0.0.1:3030:3030
+      - ${LANGFUSE_WORKER_PORT_OVERRIDE:-3030}:3030
     environment: &langfuse-worker-env
       TZ: ${TZ:-UTC}
       NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
@@ -92,7 +92,7 @@ services:
     image: ${GLOBAL_REGISTRY:-}langfuse/langfuse:${LANGFUSE_VERSION:-3}
     depends_on: *langfuse-depends-on
     ports:
-      - "${LANGFUSE_PORT:-3000}:3000"
+      - "${LANGFUSE_PORT_OVERRIDE:-3000}:3000"
     environment:
       <<: *langfuse-worker-env
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-mysecret}
@@ -133,8 +133,8 @@ services:
       - langfuse_clickhouse_data:/var/lib/clickhouse
       - langfuse_clickhouse_logs:/var/log/clickhouse-server
     ports:
-      - 127.0.0.1:8123:8123
-      - 127.0.0.1:9000:9000
+      - ${CLICKHOUSE_PORT_OVERRIDE:-8123}:8123
+      - ${CLICKHOUSE_TCP_PORT_OVERRIDE:-9000}:9000
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1
       interval: 5s
@@ -160,9 +160,6 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-miniosecret}
       TZ: ${TZ:-UTC}
-    ports:
-      - "9090:9000"
-      - 127.0.0.1:9091:9001
     volumes:
       - langfuse_minio_data:/data
     healthcheck:
@@ -186,8 +183,6 @@ services:
     command: >
       --requirepass ${REDIS_AUTH:-myredissecret}
       --maxmemory-policy noeviction
-    ports:
-      - 127.0.0.1:6379:6379
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 3s
@@ -211,8 +206,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-postgres}
       TZ: UTC
       PGTZ: UTC
-    ports:
-      - 127.0.0.1:5432:5432
     volumes:
       - langfuse_postgres_data:/var/lib/postgresql/data
     healthcheck:

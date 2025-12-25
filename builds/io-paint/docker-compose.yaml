@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   io-paint:
     <<: *defaults
-    image: ${DOCKER_REGISTRY:-docker.io}/alexsuntop/io-paint:${BUILD_VERSION:-1.6.0}
+    image: ${DOCKER_REGISTRY:-}alexsuntop/io-paint:${BUILD_VERSION:-1.6.0}
     ports:
       - 8080:8080
     build:

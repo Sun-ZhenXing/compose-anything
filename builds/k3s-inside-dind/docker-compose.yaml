@@ -1,0 +1,50 @@
+# K3s inside Docker-in-Docker
+# A lightweight Kubernetes cluster running inside a Docker container
+# See README.md for usage instructions
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  k3s:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/k3s-inside-dind:${K3S_DIND_VERSION:-0.1.0}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        K3S_VERSION: ${K3S_VERSION:-v1.28.2+k3s1}
+    privileged: true
+    volumes:
+      - k3s_data:/var/lib/rancher/k3s
+      - docker_data:/var/lib/docker
+    ports:
+      - "${K3S_API_PORT_OVERRIDE:-6443}:6443"  # Kubernetes API server
+      - "${DOCKER_TLS_PORT_OVERRIDE:-2376}:2376"  # Docker daemon TLS port
+    environment:
+      - TZ=${TZ:-UTC}
+      - K3S_TOKEN=${K3S_TOKEN:-}
+      - K3S_DISABLE_SERVICES=${K3S_DISABLE_SERVICES:-traefik}
+    healthcheck:
+      test: ["CMD", "k3s", "kubectl", "get", "--raw", "/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${K3S_DIND_CPU_LIMIT:-2.00}
+          memory: ${K3S_DIND_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${K3S_DIND_CPU_RESERVATION:-0.50}
+          memory: ${K3S_DIND_MEMORY_RESERVATION:-1G}
+
+volumes:
+  k3s_data:
+  docker_data:
