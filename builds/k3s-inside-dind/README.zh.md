@@ -13,6 +13,7 @@
 - ✅ 资源限制防止系统资源耗尽
 - ✅ 健康检查确保集群就绪
 - ✅ 持久化存储 K3s 和 Docker 数据
+- ✅ 预装常用镜像支持离线使用
 
 ## 前置要求
 
@@ -61,7 +62,8 @@
 | 变量                          | 默认值         | 说明                      |
 | ----------------------------- | -------------- | ------------------------- |
 | `K3S_VERSION`                 | `v1.28.2+k3s1` | 要安装的 K3s 版本         |
-| `K3S_DIND_VERSION`            | `0.1.0`        | 构建的镜像版本标签        |
+| `K3S_DIND_VERSION`            | `0.2.0`        | 构建的镜像版本标签        |
+| `PRELOAD_IMAGES`              | `true`         | 构建时预下载镜像          |
 | `TZ`                          | `UTC`          | 容器时区                  |
 | `K3S_API_PORT_OVERRIDE`       | `6443`         | Kubernetes API 服务器端口 |
 | `DOCKER_TLS_PORT_OVERRIDE`    | `2376`         | Docker 守护进程 TLS 端口  |
@@ -185,6 +187,24 @@ K3S_DISABLE_SERVICES=
 ```bash
 docker compose up -d --build
 ```
+
+### 离线/隔离网络环境
+
+默认情况下，在构建过程中会预先下载常用的容器镜像：
+
+- K3s 系统镜像（pause、coredns、local-path-provisioner、metrics-server）
+- 常用基础镜像（nginx、busybox、alpine）
+
+这些镜像存储在 Docker 数据卷中，因此启动容器时无需访问互联网。
+
+如需禁用预加载（如果网络良好可加快构建速度）：
+
+```bash
+# 在 .env 文件中
+PRELOAD_IMAGES=false
+```
+
+如需添加更多预加载镜像，编辑 Dockerfile 并在预加载部分添加 `docker pull` 命令。
 
 ## 清理
 

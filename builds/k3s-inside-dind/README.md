@@ -13,6 +13,7 @@ A lightweight Kubernetes distribution (K3s) running inside a Docker-in-Docker (D
 - ✅ Resource limits to prevent system exhaustion
 - ✅ Health checks for cluster readiness
 - ✅ Persistent storage for K3s and Docker data
+- ✅ Pre-loaded common images for offline use
 
 ## Prerequisites
 
@@ -61,7 +62,8 @@ A lightweight Kubernetes distribution (K3s) running inside a Docker-in-Docker (D
 | Variable                      | Default        | Description                           |
 | ----------------------------- | -------------- | ------------------------------------- |
 | `K3S_VERSION`                 | `v1.28.2+k3s1` | K3s version to install                |
-| `K3S_DIND_VERSION`            | `0.1.0`        | Built image version tag               |
+| `K3S_DIND_VERSION`            | `0.2.0`        | Built image version tag               |
+| `PRELOAD_IMAGES`              | `true`         | Pre-download images during build      |
 | `TZ`                          | `UTC`          | Container timezone                    |
 | `K3S_API_PORT_OVERRIDE`       | `6443`         | Kubernetes API server port            |
 | `DOCKER_TLS_PORT_OVERRIDE`    | `2376`         | Docker daemon TLS port                |
@@ -185,6 +187,24 @@ Update the `K3S_VERSION` in `.env` and rebuild:
 ```bash
 docker compose up -d --build
 ```
+
+### Offline/Air-Gapped Environments
+
+By default, common container images are pre-downloaded during the build process:
+
+- K3s system images (pause, coredns, local-path-provisioner, metrics-server)
+- Common base images (nginx, busybox, alpine)
+
+These images are stored in the Docker data volume, so no internet access is required when starting containers.
+
+To disable pre-loading (faster builds if you have good internet):
+
+```bash
+# In .env file
+PRELOAD_IMAGES=false
+```
+
+To add more images to pre-load, edit the Dockerfile and add `docker pull` commands in the pre-load section.
 
 ## Cleanup
 
