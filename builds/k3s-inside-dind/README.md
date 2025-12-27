@@ -62,13 +62,14 @@ A lightweight Kubernetes distribution (K3s) running inside a Docker-in-Docker (D
 | Variable                      | Default        | Description                           |
 | ----------------------------- | -------------- | ------------------------------------- |
 | `K3S_VERSION`                 | `v1.28.2+k3s1` | K3s version to install                |
-| `K3S_DIND_VERSION`            | `0.2.0`        | Built image version tag               |
+| `K3S_DIND_VERSION`            | `0.2.1`        | Built image version tag               |
 | `PRELOAD_IMAGES`              | `true`         | Pre-download images during build      |
 | `TZ`                          | `UTC`          | Container timezone                    |
 | `K3S_API_PORT_OVERRIDE`       | `6443`         | Kubernetes API server port            |
 | `DOCKER_TLS_PORT_OVERRIDE`    | `2376`         | Docker daemon TLS port                |
 | `K3S_TOKEN`                   | (empty)        | Shared secret for cluster join        |
 | `K3S_DISABLE_SERVICES`        | `traefik`      | Services to disable (comma-separated) |
+| `K3S_NODE_NAME`               | `k3s-server`   | Node name for the K3s server          |
 | `K3S_DIND_CPU_LIMIT`          | `2.00`         | CPU limit (cores)                     |
 | `K3S_DIND_MEMORY_LIMIT`       | `4G`           | Memory limit                          |
 | `K3S_DIND_CPU_RESERVATION`    | `0.50`         | CPU reservation (cores)               |

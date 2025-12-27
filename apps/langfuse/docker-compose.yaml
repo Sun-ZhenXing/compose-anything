@@ -224,10 +224,6 @@ services:
 
 volumes:
   langfuse_postgres_data:
-    driver: local
   langfuse_clickhouse_data:
-    driver: local
   langfuse_clickhouse_logs:
-    driver: local
   langfuse_minio_data:
-    driver: local

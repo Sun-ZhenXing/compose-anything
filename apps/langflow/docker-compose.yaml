@@ -12,7 +12,7 @@
 # - Real-time monitoring and logging
 # - Multi-user support with authentication
 #
-# Default Credentials:
+# Default Access:
 # - Access UI at http://localhost:7860
 # - No authentication by default (set LANGFLOW_AUTO_LOGIN=false to enable)
 #
@@ -30,15 +30,13 @@ x-defaults: &defaults
   logging:
     driver: json-file
     options:
-      max-size: 100m
-      max-file: "3"
+      max-size: ${LOG_MAX_SIZE:-100m}
+      max-file: "${LOG_MAX_FILE:-3}"
 
 services:
   langflow:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}langflowai/langflow:${LANGFLOW_VERSION:-latest}
-    pull_policy: always
-    container_name: langflow
+    image: ${GLOBAL_REGISTRY:-}langflowai/langflow:${LANGFLOW_VERSION:-1.1.1}
     ports:
       - "${LANGFLOW_PORT_OVERRIDE:-7860}:7860"
     environment:
@@ -101,7 +99,6 @@ services:
   postgres:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-16-alpine}
-    container_name: langflow-postgres
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-langflow}
       - POSTGRES_USER=${POSTGRES_USER:-langflow}
@@ -115,6 +112,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
     deploy:
       resources:
         limits:

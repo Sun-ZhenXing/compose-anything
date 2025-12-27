@@ -13,7 +13,7 @@ x-defaults: &defaults
 services:
   k3s:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}alexsuntop/k3s-inside-dind:${K3S_DIND_VERSION:-0.2.0}
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/k3s-inside-dind:${K3S_DIND_VERSION:-0.2.1}
     build:
       context: .
       dockerfile: Dockerfile
@@ -31,6 +31,7 @@ services:
       - TZ=${TZ:-UTC}
       - K3S_TOKEN=${K3S_TOKEN:-}
       - K3S_DISABLE_SERVICES=${K3S_DISABLE_SERVICES:-traefik}
+      - K3S_NODE_NAME=${K3S_NODE_NAME:-k3s-server}
     healthcheck:
       test: ["CMD", "k3s", "kubectl", "get", "--raw", "/healthz"]
       interval: 30s

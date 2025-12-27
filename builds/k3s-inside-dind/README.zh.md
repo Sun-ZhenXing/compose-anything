@@ -62,13 +62,14 @@
 | 变量                          | 默认值         | 说明                      |
 | ----------------------------- | -------------- | ------------------------- |
 | `K3S_VERSION`                 | `v1.28.2+k3s1` | 要安装的 K3s 版本         |
-| `K3S_DIND_VERSION`            | `0.2.0`        | 构建的镜像版本标签        |
+| `K3S_DIND_VERSION`            | `0.2.1`        | 构建的镜像版本标签        |
 | `PRELOAD_IMAGES`              | `true`         | 构建时预下载镜像          |
 | `TZ`                          | `UTC`          | 容器时区                  |
 | `K3S_API_PORT_OVERRIDE`       | `6443`         | Kubernetes API 服务器端口 |
 | `DOCKER_TLS_PORT_OVERRIDE`    | `2376`         | Docker 守护进程 TLS 端口  |
 | `K3S_TOKEN`                   | （空）         | 集群加入的共享密钥        |
 | `K3S_DISABLE_SERVICES`        | `traefik`      | 要禁用的服务（逗号分隔）  |
+| `K3S_NODE_NAME`               | `k3s-server`   | K3s 服务器的节点名称      |
 | `K3S_DIND_CPU_LIMIT`          | `2.00`         | CPU 限制（核心数）        |
 | `K3S_DIND_MEMORY_LIMIT`       | `4G`           | 内存限制                  |
 | `K3S_DIND_CPU_RESERVATION`    | `0.50`         | CPU 预留（核心数）        |

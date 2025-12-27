@@ -1,0 +1,136 @@
+# Sim - AI Agent Workflow Builder
+# Open-source platform to build and deploy AI agent workflows
+# Documentation: https://docs.sim.ai
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: ${LOG_MAX_SIZE:-100m}
+      max-file: "${LOG_MAX_FILE:-3}"
+
+services:
+  simstudio:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}ghcr.io/simstudioai/simstudio:${SIM_VERSION:-latest}
+    ports:
+      - "${SIM_PORT_OVERRIDE:-3000}:3000"
+    environment:
+      - TZ=${TZ:-UTC}
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-simstudio}
+      - BETTER_AUTH_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-your_auth_secret_here}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-your_encryption_key_here}
+      - COPILOT_API_KEY=${COPILOT_API_KEY:-}
+      - SIM_AGENT_API_URL=${SIM_AGENT_API_URL:-}
+      - OLLAMA_URL=${OLLAMA_URL:-http://localhost:11434}
+      - SOCKET_SERVER_URL=${SOCKET_SERVER_URL:-http://localhost:3002}
+      - NEXT_PUBLIC_SOCKET_URL=${NEXT_PUBLIC_SOCKET_URL:-http://localhost:3002}
+    depends_on:
+      db:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+      realtime:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://127.0.0.1:3000"]
+      interval: 90s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${SIM_CPU_LIMIT:-4.0}
+          memory: ${SIM_MEMORY_LIMIT:-8G}
+        reservations:
+          cpus: ${SIM_CPU_RESERVATION:-2.0}
+          memory: ${SIM_MEMORY_RESERVATION:-4G}
+
+  realtime:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}ghcr.io/simstudioai/realtime:${SIM_REALTIME_VERSION:-latest}
+    ports:
+      - "${SIM_REALTIME_PORT_OVERRIDE:-3002}:3002"
+    environment:
+      - TZ=${TZ:-UTC}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-simstudio}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://localhost:3000}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-your_auth_secret_here}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://127.0.0.1:3002/health"]
+      interval: 90s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${SIM_REALTIME_CPU_LIMIT:-2.0}
+          memory: ${SIM_REALTIME_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${SIM_REALTIME_CPU_RESERVATION:-1.0}
+          memory: ${SIM_REALTIME_MEMORY_RESERVATION:-2G}
+
+  migrations:
+    image: ${GLOBAL_REGISTRY:-}ghcr.io/simstudioai/migrations:${SIM_MIGRATIONS_VERSION:-latest}
+    working_dir: /app/packages/db
+    environment:
+      - TZ=${TZ:-UTC}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-simstudio}
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["bun", "run", "db:migrate"]
+    restart: "no"
+    logging:
+      driver: json-file
+      options:
+        max-size: ${LOG_MAX_SIZE:-100m}
+        max-file: "${LOG_MAX_FILE:-3}"
+    deploy:
+      resources:
+        limits:
+          cpus: ${SIM_MIGRATIONS_CPU_LIMIT:-1.0}
+          memory: ${SIM_MIGRATIONS_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${SIM_MIGRATIONS_CPU_RESERVATION:-0.5}
+          memory: ${SIM_MIGRATIONS_MEMORY_RESERVATION:-256M}
+
+  db:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}pgvector/pgvector:${PGVECTOR_VERSION:-pg17}
+    ports:
+      - "${POSTGRES_PORT_OVERRIDE:-5432}:5432"
+    environment:
+      - TZ=${TZ:-UTC}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-simstudio}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${POSTGRES_CPU_LIMIT:-2.0}
+          memory: ${POSTGRES_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${POSTGRES_CPU_RESERVATION:-1.0}
+          memory: ${POSTGRES_MEMORY_RESERVATION:-1G}
+
+volumes:
+  postgres_data:

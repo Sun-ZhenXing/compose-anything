@@ -48,8 +48,8 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Kibana](./src/kibana)                                        | 8.16.1                       |
 | [Kodbox](./src/kodbox)                                        | 1.62                         |
 | [Kong](./src/kong)                                            | 3.8.0                        |
-| [Langflow](./src/langflow)                                    | latest                       |
-| [Langfuse](./src/langfuse)                                    | 3.115.0                      |
+| [Langflow](./apps/langflow)                                   | latest                       |
+| [Langfuse](./apps/langfuse)                                   | 3.115.0                      |
 | [LibreOffice](./src/libreoffice)                              | latest                       |
 | [LiteLLM](./src/litellm)                                      | main-stable                  |
 | [Logstash](./src/logstash)                                    | 8.16.1                       |
@@ -100,6 +100,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Restate Cluster](./src/restate-cluster)                      | 1.5.3                        |
 | [Restate](./src/restate)                                      | 1.5.3                        |
 | [SearXNG](./src/searxng)                                      | 2025.1.20-1ce14ef99          |
+| [Sim](./apps/sim)                                             | latest                       |
 | [Stable Diffusion WebUI](./src/stable-diffusion-webui-docker) | latest                       |
 | [Stirling-PDF](./src/stirling-pdf)                            | latest                       |
 | [Temporal](./src/temporal)                                    | 1.24.2                       |

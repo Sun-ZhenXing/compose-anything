@@ -19,7 +19,12 @@ echo "Docker is ready."
 echo "Starting K3s..."
 
 # Build K3s server arguments
-K3S_ARGS="--snapshotter=native --write-kubeconfig-mode=644 --https-listen-port=6443"
+if [ -n "$K3S_ARGS" ]; then
+    echo "Using custom K3S_ARGS: $K3S_ARGS"
+else
+    echo "No custom K3S_ARGS provided, using defaults."
+    K3S_ARGS="--snapshotter=native --write-kubeconfig-mode=644 --https-listen-port=6443"
+fi
 
 # Add disable services if specified
 if [ -n "$K3S_DISABLE_SERVICES" ]; then
