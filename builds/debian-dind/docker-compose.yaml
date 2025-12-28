@@ -1,0 +1,90 @@
+# Docker-in-Docker (DinD) service based on Debian
+# This allows running Docker inside a Docker container
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  dind:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/debian-dind:${DEBIAN_DIND_VERSION:-0.1.0}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - DEBIAN_VERSION=${DEBIAN_VERSION:-13.2}
+        - INSTALL_NVIDIA_TOOLKIT=${INSTALL_NVIDIA_TOOLKIT:-false}
+    privileged: true
+    ports:
+      - "${DIND_PORT_OVERRIDE:-2375}:2375"
+    volumes:
+      - dind-data:/var/lib/docker
+    environment:
+      - TZ=${TZ:-UTC}
+      - DOCKER_TLS_CERTDIR=${DOCKER_TLS_CERTDIR:-}
+    healthcheck:
+      test: ["CMD", "docker", "info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${DIND_CPU_LIMIT:-2.0}
+          memory: ${DIND_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${DIND_CPU_RESERVATION:-1.0}
+          memory: ${DIND_MEMORY_RESERVATION:-2G}
+    profiles:
+      - ${COMPOSE_PROFILES:-}
+
+  # GPU-enabled DinD (optional)
+  dind-gpu:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/debian-dind:${DEBIAN_DIND_GPU_VERSION:-0.1.0-gpu}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - DEBIAN_VERSION=${DEBIAN_VERSION:-13.2}
+        - INSTALL_NVIDIA_TOOLKIT=true
+    privileged: true
+    ports:
+      - "${DIND_PORT_OVERRIDE:-2375}:2375"
+    volumes:
+      - dind-gpu-data:/var/lib/docker
+    environment:
+      - TZ=${TZ:-UTC}
+      - DOCKER_TLS_CERTDIR=${DOCKER_TLS_CERTDIR:-}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    healthcheck:
+      test: ["CMD", "docker", "info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${DIND_CPU_LIMIT:-2.0}
+          memory: ${DIND_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${DIND_CPU_RESERVATION:-1.0}
+          memory: ${DIND_MEMORY_RESERVATION:-2G}
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    profiles:
+      - gpu
+
+volumes:
+  dind-data:
+  dind-gpu-data:
