@@ -107,6 +107,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [TiDB](./src/tidb)                                            | v8.5.0                       |
 | [TiKV](./src/tikv)                                            | v8.5.0                       |
 | [Trigger.dev](./src/trigger-dev)                              | v4.2.0                       |
+| [TrailBase](./src/trailbase)                                  | 0.22.4                       |
 | [Valkey Cluster](./src/valkey-cluster)                        | 8.0                          |
 | [Valkey](./src/valkey)                                        | 8.0                          |
 | [Verdaccio](./src/verdaccio)                                  | 6.1.2                        |

@@ -1,0 +1,44 @@
+# TrailBase - Firebase alternative with type-safe REST & realtime APIs
+# Project: https://github.com/trailbaseio/trailbase
+# Default access: http://localhost:4000/_/admin
+# Notes:
+# - The container already ships the admin UI WASM component.
+# - Initial admin credentials are printed to the logs on first boot.
+# - Use `trail user add <email> <password>` to create additional verified users.
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: ${TRAILBASE_LOG_MAX_SIZE:-100m}
+      max-file: "${TRAILBASE_LOG_MAX_FILE:-3}"
+
+services:
+  trailbase:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}trailbase/trailbase:${TRAILBASE_VERSION:-0.22.4}
+    ports:
+      - "${TRAILBASE_PORT_OVERRIDE:-4000}:4000"
+    environment:
+      - TZ=${TZ:-UTC}
+      - RUST_BACKTRACE=${TRAILBASE_RUST_BACKTRACE:-1}
+    volumes:
+      - trailbase_data:/app/traildepot
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--show-error", "http://localhost:4000/api/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${TRAILBASE_CPU_LIMIT:-1.0}
+          memory: ${TRAILBASE_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${TRAILBASE_CPU_RESERVATION:-0.25}
+          memory: ${TRAILBASE_MEMORY_RESERVATION:-256M}
+
+volumes:
+  trailbase_data:
