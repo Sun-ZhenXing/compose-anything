@@ -9,6 +9,7 @@ This service sets up a MongoDB replica set with three members.
 1. Generate a key file for the replica set:
 
    ```bash
+   mkdir -p ./secrets
    openssl rand -base64 756 > ./secrets/rs0.key
    ```
 
@@ -41,7 +42,7 @@ This service sets up a MongoDB replica set with three members.
 ## Configuration
 
 - `TZ`: The timezone for the container, default is `UTC`.
-- `MONGO_VERSION`: The version of the MongoDB image, default is `8.0.13`.
+- `MONGO_VERSION`: The version of the MongoDB image, default is `8.2.3`.
 - `MONGO_INITDB_ROOT_USERNAME`: The root username for the database, default is `root`.
 - `MONGO_INITDB_ROOT_PASSWORD`: The root password for the database, default is `password`.
 - `MONGO_INITDB_DATABASE`: The initial database to create, default is `admin`.

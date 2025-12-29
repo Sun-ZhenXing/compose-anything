@@ -14,7 +14,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Apache Kafka](./src/kafka)                                   | 7.8.0                        |
 | [Apache Pulsar](./src/pulsar)                                 | 4.0.7                        |
 | [Apache RocketMQ](./src/rocketmq)                             | 5.3.1                        |
-| [Bifrost Gateway](./src/bifrost-gateway)                      | 1.3.48                       |
+| [Bifrost Gateway](./src/bifrost-gateway)                      | v1.3.54                      |
 | [Bolt.diy](./src/bolt-diy)                                    | latest                       |
 | [Budibase](./src/budibase)                                    | 3.23.0                       |
 | [Bytebot](./src/bytebot)                                      | edge                         |
@@ -62,9 +62,9 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [MinerU vLLM](./builds/mineru-vllm)                           | 2.6.4                        |
 | [MinIO](./src/minio)                                          | RELEASE.2025-09-07T16-13-09Z |
 | [MLflow](./src/mlflow)                                        | v2.20.2                      |
-| [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)  | 8.0.13                       |
-| [MongoDB ReplicaSet](./src/mongodb-replicaset)                | 8.0.13                       |
-| [MongoDB Standalone](./src/mongodb-standalone)                | 8.0.13                       |
+| [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)  | 8.2.3                        |
+| [MongoDB ReplicaSet](./src/mongodb-replicaset)                | 8.2.3                        |
+| [MongoDB Standalone](./src/mongodb-standalone)                | 8.2.3                        |
 | [MySQL](./src/mysql)                                          | 9.4.0                        |
 | [n8n](./src/n8n)                                              | 1.114.0                      |
 | [Nacos](./src/nacos)                                          | v3.1.0                       |

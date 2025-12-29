@@ -33,7 +33,7 @@ MongoDB is a document database designed for ease of application development and 
 
 | Variable                     | Description      | Default    |
 | ---------------------------- | ---------------- | ---------- |
-| `MONGO_VERSION`              | MongoDB version  | `8.0.13`   |
+| `MONGO_VERSION`              | MongoDB version  | `8.2.3`    |
 | `MONGO_INITDB_ROOT_USERNAME` | Root username    | `root`     |
 | `MONGO_INITDB_ROOT_PASSWORD` | Root password    | `password` |
 | `MONGO_INITDB_DATABASE`      | Initial database | `admin`    |

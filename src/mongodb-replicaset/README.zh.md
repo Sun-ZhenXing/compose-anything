@@ -9,6 +9,7 @@
 1. 为副本集生成一个密钥文件：
 
    ```bash
+   mkdir -p ./secrets
    openssl rand -base64 756 > ./secrets/rs0.key
    ```
 
@@ -41,7 +42,7 @@
 ## 配置
 
 - `TZ`: 容器的时区，默认为 `UTC`。
-- `MONGO_VERSION`: MongoDB 镜像的版本，默认为 `8.0.13`。
+- `MONGO_VERSION`: MongoDB 镜像的版本，默认为 `8.2.3`。
 - `MONGO_INITDB_ROOT_USERNAME`: 数据库的 root 用户名，默认为 `root`。
 - `MONGO_INITDB_ROOT_PASSWORD`: 数据库的 root 密码，默认为 `password`。
 - `MONGO_INITDB_DATABASE`: 要创建的初始数据库，默认为 `admin`。

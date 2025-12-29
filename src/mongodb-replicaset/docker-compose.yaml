@@ -8,7 +8,7 @@ x-defaults: &defaults
 
 x-mongo: &mongo
   <<: *defaults
-  image: ${GLOBAL_REGISTRY:-}mongo:${MONGO_VERSION:-8.0.13}
+  image: ${GLOBAL_REGISTRY:-}mongo:${MONGO_VERSION:-8.2.3}
   environment:
     TZ: ${TZ:-UTC}
     MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
@@ -60,7 +60,7 @@ services:
 
   mongo-init:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}mongo:${MONGO_VERSION:-8.0.13}
+    image: ${GLOBAL_REGISTRY:-}mongo:${MONGO_VERSION:-8.2.3}
     restart: on-failure
     depends_on:
       mongo1:

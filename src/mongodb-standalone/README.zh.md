@@ -33,7 +33,7 @@ MongoDB 是一个为应用程序开发和扩展的简易性而设计的文档数
 
 | 变量                         | 描述         | 默认值     |
 | ---------------------------- | ------------ | ---------- |
-| `MONGO_VERSION`              | MongoDB 版本 | `8.0.13`   |
+| `MONGO_VERSION`              | MongoDB 版本 | `8.2.3`    |
 | `MONGO_INITDB_ROOT_USERNAME` | 根用户名     | `root`     |
 | `MONGO_INITDB_ROOT_PASSWORD` | 根密码       | `password` |
 | `MONGO_INITDB_DATABASE`      | 初始数据库   | `admin`    |

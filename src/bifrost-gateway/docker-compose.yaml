@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   bifrost:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}maximhq/bifrost:${BIFROST_VERSION:-v1.3.48}
+    image: ${GLOBAL_REGISTRY:-}maximhq/bifrost:${BIFROST_VERSION:-v1.3.54}
     volumes:
       - bifrost_data:/app/data
     ports:
@@ -31,5 +31,64 @@ services:
       retries: 3
       start_period: 10s
 
+  prometheus:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}prom/prometheus:${PROMETHEUS_VERSION:-v3.8.1}
+    profiles: ["telemetry"]
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "${PROMETHEUS_PORT:-29090}:9090"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${PROMETHEUS_CPU_LIMIT:-0.50}
+          memory: ${PROMETHEUS_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${PROMETHEUS_CPU_RESERVATION:-0.10}
+          memory: ${PROMETHEUS_MEMORY_RESERVATION:-128M}
+
+  grafana:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}grafana/grafana:${GRAFANA_VERSION:-12.3.1}
+    profiles: ["telemetry"]
+    volumes:
+      - ./config/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "${GRAFANA_PORT:-23000}:3000"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${GRAFANA_CPU_LIMIT:-0.50}
+          memory: ${GRAFANA_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${GRAFANA_CPU_RESERVATION:-0.10}
+          memory: ${GRAFANA_MEMORY_RESERVATION:-128M}
+
 volumes:
   bifrost_data:
+  prometheus_data:
+  grafana_data:
