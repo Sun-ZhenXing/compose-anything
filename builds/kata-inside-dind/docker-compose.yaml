@@ -18,7 +18,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        DEBIAN_VERSION: ${DEBIAN_VERSION:-13.2}
+        DEBIAN_VERSION: ${DEBIAN_VERSION:-13.2-slim}
         KATA_VERSION: ${KATA_VERSION:-3.24.0}
         FIRECRACKER_VERSION: ${FIRECRACKER_VERSION:-1.14.0}
     privileged: true

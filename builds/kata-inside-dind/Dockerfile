@@ -1,4 +1,4 @@
-ARG DEBIAN_VERSION=13.2
+ARG DEBIAN_VERSION=13.2-slim
 FROM debian:${DEBIAN_VERSION}
 
 # Install dependencies
@@ -57,7 +57,8 @@ RUN if [ "${ARCH}" = "amd64" ]; then ARCH="x86_64"; fi \
     && curl -fsSL https://github.com/firecracker-microvm/firecracker/releases/download/v${FIRECRACKER_VERSION}/firecracker-v${FIRECRACKER_VERSION}-${ARCH}.tgz -o firecracker.tgz \
     && tar -xzf firecracker.tgz \
     && mv release-v${FIRECRACKER_VERSION}-${ARCH}/firecracker-v${FIRECRACKER_VERSION}-${ARCH} /usr/local/bin/firecracker \
-    && chmod +x /usr/local/bin/firecracker \
+    && mv release-v${FIRECRACKER_VERSION}-${ARCH}/jailer-v${FIRECRACKER_VERSION}-${ARCH} /usr/local/bin/jailer \
+    && chmod +x /usr/local/bin/firecracker /usr/local/bin/jailer \
     && rm -rf release-v${FIRECRACKER_VERSION}-${ARCH} firecracker.tgz
 
 # Set up dind

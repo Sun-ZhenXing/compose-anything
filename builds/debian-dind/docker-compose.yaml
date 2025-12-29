@@ -17,13 +17,13 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - DEBIAN_VERSION=${DEBIAN_VERSION:-13.2}
+        - DEBIAN_VERSION=${DEBIAN_VERSION:-13.2-slim}
         - INSTALL_NVIDIA_TOOLKIT=${INSTALL_NVIDIA_TOOLKIT:-false}
     privileged: true
     ports:
       - "${DIND_PORT_OVERRIDE:-2375}:2375"
     volumes:
-      - dind-data:/var/lib/docker
+      - dind_data:/var/lib/docker
     environment:
       - TZ=${TZ:-UTC}
       - DOCKER_TLS_CERTDIR=${DOCKER_TLS_CERTDIR:-}
@@ -52,13 +52,13 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - DEBIAN_VERSION=${DEBIAN_VERSION:-13.2}
+        - DEBIAN_VERSION=${DEBIAN_VERSION:-13.2-slim}
         - INSTALL_NVIDIA_TOOLKIT=true
     privileged: true
     ports:
       - "${DIND_PORT_OVERRIDE:-2375}:2375"
     volumes:
-      - dind-gpu-data:/var/lib/docker
+      - dind_gpu_data:/var/lib/docker
     environment:
       - TZ=${TZ:-UTC}
       - DOCKER_TLS_CERTDIR=${DOCKER_TLS_CERTDIR:-}
@@ -86,5 +86,5 @@ services:
       - gpu
 
 volumes:
-  dind-data:
-  dind-gpu-data:
+  dind_data:
+  dind_gpu_data:

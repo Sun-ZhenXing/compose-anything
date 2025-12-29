@@ -51,6 +51,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Langflow](./apps/langflow)                                   | latest                       |
 | [Langfuse](./apps/langfuse)                                   | 3.115.0                      |
 | [LibreOffice](./src/libreoffice)                              | latest                       |
+| [libSQL Server](./src/libsql)                                 | latest                       |
 | [LiteLLM](./src/litellm)                                      | main-stable                  |
 | [Logstash](./src/logstash)                                    | 8.16.1                       |
 | [MariaDB Galera Cluster](./src/mariadb-galera)                | 11.7.2                       |

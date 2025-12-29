@@ -4,7 +4,7 @@
 
 ## 特性
 
-- 基于最新稳定版 Debian（13.2）
+- 基于最新稳定版 Debian（13.2-slim）
 - 开箱即用的 Docker 守护进程
 - 可选的 NVIDIA Container Toolkit，支持 GPU
 - 配置了资源限制
@@ -36,14 +36,14 @@
 
 主要环境变量（查看 `.env.example` 了解所有选项）：
 
-| 变量                     | 说明                      | 默认值  |
-| ------------------------ | ------------------------- | ------- |
-| `DEBIAN_VERSION`         | Debian 基础镜像版本       | `13.2`  |
-| `DIND_PORT_OVERRIDE`     | Docker 守护进程的主机端口 | `2375`  |
-| `INSTALL_NVIDIA_TOOLKIT` | 构建时安装 NVIDIA 工具包  | `false` |
-| `TZ`                     | 时区                      | `UTC`   |
-| `DIND_CPU_LIMIT`         | CPU 限制                  | `2.0`   |
-| `DIND_MEMORY_LIMIT`      | 内存限制                  | `4G`    |
+| 变量                     | 说明                      | 默认值      |
+| ------------------------ | ------------------------- | ----------- |
+| `DEBIAN_VERSION`         | Debian 基础镜像版本       | `13.2-slim` |
+| `DIND_PORT_OVERRIDE`     | Docker 守护进程的主机端口 | `2375`      |
+| `INSTALL_NVIDIA_TOOLKIT` | 构建时安装 NVIDIA 工具包  | `false`     |
+| `TZ`                     | 时区                      | `UTC`       |
+| `DIND_CPU_LIMIT`         | CPU 限制                  | `2.0`       |
+| `DIND_MEMORY_LIMIT`      | 内存限制                  | `4G`        |
 
 ## GPU 支持
 
@@ -112,13 +112,13 @@ variables:
 
 手动构建镜像时：
 
-- `DEBIAN_VERSION`：Debian 基础版本（默认：`13.2`）
+- `DEBIAN_VERSION`：Debian 基础版本（默认：`13.2-slim`）
 - `INSTALL_NVIDIA_TOOLKIT`：安装 NVIDIA 工具包（默认：`false`）
 
 示例：
 
 ```bash
-docker build --build-arg DEBIAN_VERSION=13.2 --build-arg INSTALL_NVIDIA_TOOLKIT=true -t debian-dind-gpu .
+docker build --build-arg DEBIAN_VERSION=13.2-slim --build-arg INSTALL_NVIDIA_TOOLKIT=true -t debian-dind-gpu .
 ```
 
 ## 许可证

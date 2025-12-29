@@ -4,7 +4,7 @@ A Docker-in-Docker (DinD) service based on Debian, allowing you to run Docker in
 
 ## Features
 
-- Based on latest stable Debian (13.2)
+- Based on latest stable Debian (13.2-slim)
 - Out-of-the-box Docker daemon
 - Optional NVIDIA Container Toolkit for GPU support
 - Resource limits configured
@@ -36,14 +36,14 @@ A Docker-in-Docker (DinD) service based on Debian, allowing you to run Docker in
 
 Key environment variables (see `.env.example` for all options):
 
-| Variable                 | Description                         | Default |
-| ------------------------ | ----------------------------------- | ------- |
-| `DEBIAN_VERSION`         | Debian base image version           | `13.2`  |
-| `DIND_PORT_OVERRIDE`     | Host port for Docker daemon         | `2375`  |
-| `INSTALL_NVIDIA_TOOLKIT` | Install NVIDIA toolkit during build | `false` |
-| `TZ`                     | Timezone                            | `UTC`   |
-| `DIND_CPU_LIMIT`         | CPU limit                           | `2.0`   |
-| `DIND_MEMORY_LIMIT`      | Memory limit                        | `4G`    |
+| Variable                 | Description                         | Default     |
+| ------------------------ | ----------------------------------- | ----------- |
+| `DEBIAN_VERSION`         | Debian base image version           | `13.2-slim` |
+| `DIND_PORT_OVERRIDE`     | Host port for Docker daemon         | `2375`      |
+| `INSTALL_NVIDIA_TOOLKIT` | Install NVIDIA toolkit during build | `false`     |
+| `TZ`                     | Timezone                            | `UTC`       |
+| `DIND_CPU_LIMIT`         | CPU limit                           | `2.0`       |
+| `DIND_MEMORY_LIMIT`      | Memory limit                        | `4G`        |
 
 ## GPU Support
 
@@ -112,13 +112,13 @@ variables:
 
 When building the image manually:
 
-- `DEBIAN_VERSION`: Debian base version (default: `13.2`)
+- `DEBIAN_VERSION`: Debian base version (default: `13.2-slim`)
 - `INSTALL_NVIDIA_TOOLKIT`: Install NVIDIA toolkit (default: `false`)
 
 Example:
 
 ```bash
-docker build --build-arg DEBIAN_VERSION=13.2 --build-arg INSTALL_NVIDIA_TOOLKIT=true -t debian-dind-gpu .
+docker build --build-arg DEBIAN_VERSION=13.2-slim --build-arg INSTALL_NVIDIA_TOOLKIT=true -t debian-dind-gpu .
 ```
 
 ## License

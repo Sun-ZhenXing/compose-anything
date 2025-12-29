@@ -84,18 +84,18 @@ cat /sys/module/kvm_intel/parameters/nested
 
 ### Environment Variables
 
-| Variable                       | Default  | Description                                   |
-| ------------------------------ | -------- | --------------------------------------------- |
-| `DEBIAN_VERSION`               | `13.2`   | Base Debian version                           |
-| `KATA_VERSION`                 | `3.24.0` | Kata Containers version                       |
-| `FIRECRACKER_VERSION`          | `1.10.1` | Version of Firecracker VMM to install         |
-| `KATA_DIND_VERSION`            | `0.2.0`  | Built image version tag                       |
-| `TZ`                           | `UTC`    | Timezone for the container                    |
-| `KATA_LOGGING_LEVEL`           | `info`   | Kata logging level (debug, info, warn, error) |
-| `KATA_DIND_CPU_LIMIT`          | `2.00`   | CPU limit in cores                            |
-| `KATA_DIND_MEMORY_LIMIT`       | `4G`     | Memory limit                                  |
-| `KATA_DIND_CPU_RESERVATION`    | `0.50`   | CPU reservation in cores                      |
-| `KATA_DIND_MEMORY_RESERVATION` | `1G`     | Memory reservation                            |
+| Variable                       | Default     | Description                                   |
+| ------------------------------ | ----------- | --------------------------------------------- |
+| `DEBIAN_VERSION`               | `13.2-slim` | Base Debian version                           |
+| `KATA_VERSION`                 | `3.24.0`    | Kata Containers version                       |
+| `FIRECRACKER_VERSION`          | `1.10.1`    | Version of Firecracker VMM to install         |
+| `KATA_DIND_VERSION`            | `0.2.0`     | Built image version tag                       |
+| `TZ`                           | `UTC`       | Timezone for the container                    |
+| `KATA_LOGGING_LEVEL`           | `info`      | Kata logging level (debug, info, warn, error) |
+| `KATA_DIND_CPU_LIMIT`          | `2.00`      | CPU limit in cores                            |
+| `KATA_DIND_MEMORY_LIMIT`       | `4G`        | Memory limit                                  |
+| `KATA_DIND_CPU_RESERVATION`    | `0.50`      | CPU reservation in cores                      |
+| `KATA_DIND_MEMORY_RESERVATION` | `1G`        | Memory reservation                            |
 
 ## Usage Examples
 

@@ -51,6 +51,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Langflow](./apps/langflow)                                   | latest                       |
 | [Langfuse](./apps/langfuse)                                   | 3.115.0                      |
 | [LibreOffice](./src/libreoffice)                              | latest                       |
+| [libSQL Server](./src/libsql)                                 | latest                       |
 | [LiteLLM](./src/litellm)                                      | main-stable                  |
 | [Logstash](./src/logstash)                                    | 8.16.1                       |
 | [MariaDB Galera 集群](./src/mariadb-galera)                   | 11.7.2                       |

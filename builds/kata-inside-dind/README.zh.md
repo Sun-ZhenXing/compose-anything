@@ -84,18 +84,18 @@ cat /sys/module/kvm_intel/parameters/nested
 
 ### 环境变量
 
-| 变量                           | 默认值   | 说明                                      |
-| ------------------------------ | -------- | ----------------------------------------- |
-| `DEBIAN_VERSION`               | `13.2`   | 基础 Debian 版本                          |
-| `KATA_VERSION`                 | `3.24.0` | Kata Containers 版本                      |
-| `FIRECRACKER_VERSION`          | `1.10.1` | 要安装的 Firecracker VMM 版本             |
-| `KATA_DIND_VERSION`            | `0.2.0`  | 构建的镜像版本标签                        |
-| `TZ`                           | `UTC`    | 容器的时区                                |
-| `KATA_LOGGING_LEVEL`           | `info`   | Kata 日志级别（debug、info、warn、error） |
-| `KATA_DIND_CPU_LIMIT`          | `2.00`   | CPU 限制（核心数）                        |
-| `KATA_DIND_MEMORY_LIMIT`       | `4G`     | 内存限制                                  |
-| `KATA_DIND_CPU_RESERVATION`    | `0.50`   | CPU 预留（核心数）                        |
-| `KATA_DIND_MEMORY_RESERVATION` | `1G`     | 内存预留                                  |
+| 变量                           | 默认值      | 说明                                      |
+| ------------------------------ | ----------- | ----------------------------------------- |
+| `DEBIAN_VERSION`               | `13.2-slim` | 基础 Debian 版本                          |
+| `KATA_VERSION`                 | `3.24.0`    | Kata Containers 版本                      |
+| `FIRECRACKER_VERSION`          | `1.10.1`    | 要安装的 Firecracker VMM 版本             |
+| `KATA_DIND_VERSION`            | `0.2.0`     | 构建的镜像版本标签                        |
+| `TZ`                           | `UTC`       | 容器的时区                                |
+| `KATA_LOGGING_LEVEL`           | `info`      | Kata 日志级别（debug、info、warn、error） |
+| `KATA_DIND_CPU_LIMIT`          | `2.00`      | CPU 限制（核心数）                        |
+| `KATA_DIND_MEMORY_LIMIT`       | `4G`        | 内存限制                                  |
+| `KATA_DIND_CPU_RESERVATION`    | `0.50`      | CPU 预留（核心数）                        |
+| `KATA_DIND_MEMORY_RESERVATION` | `1G`        | 内存预留                                  |
 
 ## 使用示例
 

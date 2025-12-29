@@ -78,6 +78,15 @@ if [ -f /etc/kata-containers/configuration-fc.toml ] && [ -x /usr/local/bin/fire
             sed -i 's|path = ".*firecracker"|path = "/usr/local/bin/firecracker"|g' /etc/kata-containers/configuration-fc.toml || true
         fi
     fi
+
+    # Update jailer path if available
+    if [ -x /usr/local/bin/jailer ]; then
+        if ! grep -q "jailer_path = \"/usr/local/bin/jailer\"" /etc/kata-containers/configuration-fc.toml 2>/dev/null; then
+             if [ -w /etc/kata-containers/configuration-fc.toml ]; then
+                sed -i 's|jailer_path = ".*jailer"|jailer_path = "/usr/local/bin/jailer"|g' /etc/kata-containers/configuration-fc.toml || true
+             fi
+        fi
+    fi
 fi
 
 # Enable debug logging if requested
