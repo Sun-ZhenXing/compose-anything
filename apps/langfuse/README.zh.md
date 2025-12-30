@@ -45,7 +45,7 @@
 
 | 变量                                    | 描述                                  | 默认值                  |
 | --------------------------------------- | ------------------------------------- | ----------------------- |
-| `LANGFUSE_VERSION`                      | Langfuse 容器镜像版本                 | `3`                     |
+| `LANGFUSE_VERSION`                      | Langfuse 容器镜像版本                 | `3.143.0`               |
 | `LANGFUSE_PORT`                         | Web 界面端口                          | `3000`                  |
 | `NEXTAUTH_URL`                          | Langfuse 实例的公开 URL               | `http://localhost:3000` |
 | `NEXTAUTH_SECRET`                       | NextAuth.js 密钥（生产环境必需）      | `mysecret`              |

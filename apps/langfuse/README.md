@@ -45,7 +45,7 @@ This service deploys Langfuse, an open-source LLM engineering platform for obser
 
 | Variable                                | Description                                     | Default                 |
 | --------------------------------------- | ----------------------------------------------- | ----------------------- |
-| `LANGFUSE_VERSION`                      | Langfuse container image version                | `3`                     |
+| `LANGFUSE_VERSION`                      | Langfuse container image version                | `3.143.0`               |
 | `LANGFUSE_PORT`                         | Web interface port                              | `3000`                  |
 | `NEXTAUTH_URL`                          | Public URL of Langfuse instance                 | `http://localhost:3000` |
 | `NEXTAUTH_SECRET`                       | NextAuth.js secret (required for production)    | `mysecret`              |

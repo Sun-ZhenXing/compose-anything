@@ -18,7 +18,7 @@ x-defaults: &defaults
 services:
   langfuse-worker:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}langfuse/langfuse-worker:${LANGFUSE_VERSION:-3}
+    image: ${GLOBAL_REGISTRY:-}langfuse/langfuse-worker:${LANGFUSE_VERSION:-3.143.0}
     depends_on: &langfuse-depends-on
       postgres:
         condition: service_healthy
@@ -32,6 +32,7 @@ services:
       - ${LANGFUSE_WORKER_PORT_OVERRIDE:-3030}:3030
     environment: &langfuse-worker-env
       TZ: ${TZ:-UTC}
+      HOSTNAME: ${HOSTNAME:-0.0.0.0}
       NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/postgres}
       SALT: ${SALT:-mysalt}
@@ -86,15 +87,22 @@ services:
         reservations:
           cpus: ${LANGFUSE_WORKER_CPU_RESERVATION:-0.5}
           memory: ${LANGFUSE_WORKER_MEMORY_RESERVATION:-512M}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3030/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   langfuse-web:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}langfuse/langfuse:${LANGFUSE_VERSION:-3}
+    image: ${GLOBAL_REGISTRY:-}langfuse/langfuse:${LANGFUSE_VERSION:-3.143.0}
     depends_on: *langfuse-depends-on
     ports:
       - "${LANGFUSE_PORT_OVERRIDE:-3000}:3000"
     environment:
       <<: *langfuse-worker-env
+      HOSTNAME: ${HOSTNAME:-0.0.0.0}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-mysecret}
       LANGFUSE_INIT_ORG_ID: ${LANGFUSE_INIT_ORG_ID:-}
       LANGFUSE_INIT_ORG_NAME: ${LANGFUSE_INIT_ORG_NAME:-}
@@ -114,7 +122,7 @@ services:
           cpus: ${LANGFUSE_WEB_CPU_RESERVATION:-0.5}
           memory: ${LANGFUSE_WEB_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/public/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/api/public/health"]
       interval: 30s
       timeout: 10s
       retries: 3

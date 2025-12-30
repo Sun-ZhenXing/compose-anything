@@ -112,7 +112,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [Valkey Cluster](./src/valkey-cluster)                        | 8.0                          |
 | [Valkey](./src/valkey)                                        | 8.0                          |
 | [Verdaccio](./src/verdaccio)                                  | 6.1.2                        |
-| [vLLM](./src/vllm)                                            | v0.8.0                       |
+| [vLLM](./src/vllm)                                            | v0.13.0                      |
 | [Windmill](./src/windmill)                                    | main                         |
 | [ZooKeeper](./src/zookeeper)                                  | 3.9.3                        |
 
