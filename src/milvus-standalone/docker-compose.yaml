@@ -64,7 +64,7 @@ services:
 
   milvus-standalone:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}milvusdb/milvus:${MILVUS_VERSION:-v2.6.3}
+    image: ${GLOBAL_REGISTRY:-}milvusdb/milvus:${MILVUS_VERSION:-v2.6.7}
     command: ["milvus", "run", "standalone"]
     security_opt:
     - seccomp:unconfined
@@ -100,7 +100,7 @@ services:
 
   attu:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}zilliz/attu:${ATTU_VERSION:-v2.6.1}
+    image: ${GLOBAL_REGISTRY:-}zilliz/attu:${ATTU_VERSION:-v2.6.4}
     profiles:
       - attu
     environment:
@@ -129,3 +129,4 @@ services:
 volumes:
   etcd_data:
   minio_data:
+  milvus_data:

@@ -55,8 +55,8 @@ Compose Anything helps users quickly deploy various services by providing a set 
 | [LiteLLM](./src/litellm)                                      | main-stable                  |
 | [Logstash](./src/logstash)                                    | 8.16.1                       |
 | [MariaDB Galera Cluster](./src/mariadb-galera)                | 11.7.2                       |
-| [Milvus Standalone Embed](./src/milvus-standalone-embed)      | 2.6.2                        |
-| [Milvus Standalone](./src/milvus-standalone)                  | 2.6.2                        |
+| [Milvus Standalone Embed](./src/milvus-standalone-embed)      | v2.6.7                       |
+| [Milvus Standalone](./src/milvus-standalone)                  | v2.6.7                       |
 | [Minecraft Bedrock Server](./src/minecraft-bedrock-server)    | latest                       |
 | [MinerU SGLang](./src/mineru-sglang)                          | 2.2.2                        |
 | [MinerU vLLM](./builds/mineru-vllm)                           | 2.6.4                        |

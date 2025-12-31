@@ -23,8 +23,8 @@ docker compose --profile attu up -d
 
 ## Configuration
 
-- `MILVUS_VERSION`: The version of the Milvus image, default is `v2.6.2`.
-- `ATTU_VERSION`: The version of the Attu image, default is `v2.6.0`.
+- `MILVUS_VERSION`: The version of the Milvus image, default is `v2.6.7`.
+- `ATTU_VERSION`: The version of the Attu image, default is `v2.6.4`.
 - `MILVUS_PORT_OVERRIDE_HTTP`: The host port for the Milvus HTTP service, default is `19530`.
 - `MILVUS_PORT_OVERRIDE_WEBUI`: The host port for the Milvus Web UI, default is `9091`.
 - `MILVUS_PORT_OVERRIDE_ETCD`: The host port for the etcd service, default is `2379`.

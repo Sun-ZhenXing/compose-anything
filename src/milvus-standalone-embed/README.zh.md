@@ -23,8 +23,8 @@ docker compose --profile attu up -d
 
 ## 配置
 
-- `MILVUS_VERSION`: Milvus 镜像的版本，默认为 `v2.6.2`。
-- `ATTU_VERSION`: Attu 镜像的版本，默认为 `v2.6.0`。
+- `MILVUS_VERSION`: Milvus 镜像的版本，默认为 `v2.6.7`。
+- `ATTU_VERSION`: Attu 镜像的版本，默认为 `v2.6.4`。
 - `MILVUS_PORT_OVERRIDE_HTTP`: Milvus HTTP 服务的主机端口，默认为 `19530`。
 - `MILVUS_PORT_OVERRIDE_WEBUI`: Milvus Web UI 的主机端口，默认为 `9091`。
 - `MILVUS_PORT_OVERRIDE_ETCD`: etcd 服务的主机端口，默认为 `2379`。

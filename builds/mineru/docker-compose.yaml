@@ -22,20 +22,22 @@ x-mineru-vllm: &mineru-vllm
   deploy:
     resources:
       limits:
-        cpus: '16.0'
+        cpus: "16.0"
         memory: 32G
       reservations:
-        cpus: '8.0'
+        cpus: "8.0"
         memory: 16G
         devices:
           - driver: nvidia
-            device_ids: [ '0' ]
-            capabilities: [ gpu ]
+            device_ids: ["0"]
+            capabilities: [gpu]
 
 services:
   mineru-openai-server:
     <<: *mineru-vllm
-    profiles: ["openai-server"]
+    profiles:
+      - "openai-server"
+      - ${COMPOSE_PROFILES:-}
     ports:
       - ${MINERU_PORT_OVERRIDE_VLLM:-30000}:30000
     entrypoint: mineru-openai-server
@@ -70,7 +72,6 @@ services:
       retries: 3
       start_period: 60s
 
-
   mineru-api:
     <<: *mineru-vllm
     profiles: ["api"]
@@ -94,7 +95,15 @@ services:
       # Single GPU memory optimization
       # --cache-max-entry-count 0.5  # Try 0.4 or lower if VRAM insufficient
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8000/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -132,7 +141,15 @@ services:
       # Single GPU memory optimization
       # --cache-max-entry-count 0.5  # Try 0.4 or lower if VRAM insufficient
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7860/"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:7860/",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3

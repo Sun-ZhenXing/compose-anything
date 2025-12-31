@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   milvus-standalone-embed:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}milvusdb/milvus:${MILVUS_VERSION:-v2.6.3}
+    image: ${GLOBAL_REGISTRY:-}milvusdb/milvus:${MILVUS_VERSION:-v2.6.7}
     security_opt:
       - seccomp:unconfined
     environment:
@@ -45,7 +45,7 @@ services:
 
   attu:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}zilliz/attu:${ATTU_VERSION:-v2.6.1}
+    image: ${GLOBAL_REGISTRY:-}zilliz/attu:${ATTU_VERSION:-v2.6.4}
     profiles:
       - attu
     environment:
@@ -53,6 +53,9 @@ services:
       MILVUS_URL: ${MILVUS_URL:-milvus-standalone-embed:19530}
     ports:
       - "${ATTU_OVERRIDE_PORT:-8000}:3000"
+    depends_on:
+      milvus-standalone-embed:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -61,6 +64,12 @@ services:
         reservations:
           cpus: ${ATTU_CPU_RESERVATION:-0.1}
           memory: ${ATTU_MEMORY_RESERVATION:-128M}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
 
 volumes:

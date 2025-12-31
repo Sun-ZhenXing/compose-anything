@@ -19,15 +19,15 @@ If you need authentication, please visit the [official documentation](https://mi
 
 - `ETCD_VERSION`: The version of the etcd image, default is `v3.5.18`.
 - `MINIO_VERSION`: The version of the Minio image, default is `RELEASE.2024-12-18T13-15-44Z`.
-- `MILVUS_VERSION`: The version of the Milvus image, default is `v2.6.2`.
-- `ATTU_VERSION`: The version of the Attu image, default is `v2.6.0`.
-- `MINIO_ACCESS_KEY`: The access key for Minio, default is `minioadmin`.
-- `MINIO_SECRET_KEY`: The secret key for Minio, default is `minioadmin`.
+- `MILVUS_VERSION`: The version of the Milvus image, default is `v2.6.7`.
+- `ATTU_VERSION`: The version of the Attu image, default is `v2.6.4`.
+- `MINIO_ROOT_USER`: The root user for Minio, default is `minioadmin`.
+- `MINIO_ROOT_PASSWORD`: The root password for Minio, default is `minioadmin`.
 - `MINIO_PORT_OVERRIDE_API`: The host port for the Minio API, default is `9000`.
 - `MINIO_PORT_OVERRIDE_WEBUI`: The host port for the Minio Web UI, default is `9001`.
 - `MILVUS_PORT_OVERRIDE_HTTP`: The host port for the Milvus HTTP service, default is `19530`.
 - `MILVUS_PORT_OVERRIDE_WEBUI`: The host port for the Milvus Web UI, default is `9091`.
-- `ATTU_PORT`: The host port for the Attu service, default is `8000`.
+- `ATTU_PORT_OVERRIDE`: The host port for the Attu service, default is `8000`.
 
 ## Volumes
 

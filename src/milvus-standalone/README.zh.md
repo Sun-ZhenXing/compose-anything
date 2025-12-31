@@ -19,15 +19,15 @@ Milvus 是一个开源的向量数据库，专为处理大规模向量数据而�
 
 - `ETCD_VERSION`: etcd 镜像的版本，默认为 `v3.5.18`。
 - `MINIO_VERSION`: Minio 镜像的版本，默认为 `RELEASE.2024-12-18T13-15-44Z`。
-- `MILVUS_VERSION`: Milvus 镜像的版本，默认为 `v2.6.2`。
-- `ATTU_VERSION`: Attu 镜像的版本，默认为 `v2.6.0`。
-- `MINIO_ACCESS_KEY`: Minio 的访问密钥，默认为 `minioadmin`。
-- `MINIO_SECRET_KEY`: Minio 的秘密密钥，默认为 `minioadmin`。
+- `MILVUS_VERSION`: Milvus 镜像的版本，默认为 `v2.6.7`。
+- `ATTU_VERSION`: Attu 镜像的版本，默认为 `v2.6.4`。
+- `MINIO_ROOT_USER`: Minio 的根用户，默认为 `minioadmin`。
+- `MINIO_ROOT_PASSWORD`: Minio 的根密码，默认为 `minioadmin`。
 - `MINIO_PORT_OVERRIDE_API`: Minio API 的主机端口，默认为 `9000`。
 - `MINIO_PORT_OVERRIDE_WEBUI`: Minio Web UI 的主机端口，默认为 `9001`。
 - `MILVUS_PORT_OVERRIDE_HTTP`: Milvus HTTP 服务的主机端口，默认为 `19530`。
 - `MILVUS_PORT_OVERRIDE_WEBUI`: Milvus Web UI 的主机端口，默认为 `9091`。
-- `ATTU_PORT`: Attu 服务的主机端口，默认为 `8000`。
+- `ATTU_PORT_OVERRIDE`: Attu 服务的主机端口，默认为 `8000`。
 
 ## 卷
 
