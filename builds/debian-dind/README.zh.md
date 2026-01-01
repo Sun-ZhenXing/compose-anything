@@ -36,14 +36,20 @@
 
 主要环境变量（查看 `.env.example` 了解所有选项）：
 
-| 变量                     | 说明                      | 默认值      |
-| ------------------------ | ------------------------- | ----------- |
-| `DEBIAN_VERSION`         | Debian 基础镜像版本       | `13.2-slim` |
-| `DIND_PORT_OVERRIDE`     | Docker 守护进程的主机端口 | `2375`      |
-| `INSTALL_NVIDIA_TOOLKIT` | 构建时安装 NVIDIA 工具包  | `false`     |
-| `TZ`                     | 时区                      | `UTC`       |
-| `DIND_CPU_LIMIT`         | CPU 限制                  | `2.0`       |
-| `DIND_MEMORY_LIMIT`      | 内存限制                  | `4G`        |
+| 变量                      | 说明                      | 默认值           |
+| ------------------------- | ------------------------- | ---------------- |
+| `GLOBAL_REGISTRY`         | 全局镜像仓库前缀（可选）  | -                |
+| `DEBIAN_DIND_VERSION`     | 主 DinD 镜像版本          | `0.1.1`          |
+| `DEBIAN_DIND_GPU_VERSION` | GPU 版本 DinD 镜像版本    | `0.1.1-gpu`      |
+| `DEBIAN_VERSION`          | Debian 基础镜像版本       | `13.2-slim`      |
+| `DIND_PORT_OVERRIDE`      | Docker 守护进程的主机端口 | `2375`           |
+| `INSTALL_NVIDIA_TOOLKIT`  | 构建时安装 NVIDIA 工具包  | `false`          |
+| `TZ`                      | 时区                      | `UTC`            |
+| `DIND_CPU_LIMIT`          | CPU 限制                  | `2.0`            |
+| `DIND_MEMORY_LIMIT`       | 内存限制                  | `4G`             |
+| `DIND_CPU_RESERVATION`    | CPU 预留                  | `1.0`            |
+| `DIND_MEMORY_RESERVATION` | 内存预留                  | `2G`             |
+| `DOCKER_TLS_CERTDIR`      | TLS 证书目录              | 空（TLS 已禁用） |
 
 ## GPU 支持
 

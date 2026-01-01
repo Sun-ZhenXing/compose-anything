@@ -28,11 +28,11 @@ services:
       - pingap
       - --autoreload
     healthcheck:
-      test: ["CMD-SHELL", "echo > /dev/tcp/localhost/80"]
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/80'"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
+      start_period: 5s
     deploy:
       resources:
         limits:

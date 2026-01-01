@@ -13,10 +13,13 @@ x-defaults: &defaults
 services:
   k3s:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}alexsuntop/k3s-inside-dind:${K3S_DIND_VERSION:-0.2.1}
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/k3s-inside-dind:${K3S_DIND_VERSION:-0.2.2}
     build:
       context: .
       dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+        - linux/arm64
       args:
         K3S_VERSION: ${K3S_VERSION:-v1.28.2+k3s1}
         PRELOAD_IMAGES: ${PRELOAD_IMAGES:-true}

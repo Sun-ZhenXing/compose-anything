@@ -9,7 +9,7 @@ A lightweight Kubernetes distribution (K3s) running inside a Docker-in-Docker (D
 - ✅ Complete K3s cluster in a single container
 - ✅ Docker-in-Docker support for containerized workloads
 - ✅ Kubernetes API server exposed on port 6443
-- ✅ Multi-architecture support (x86-64, ARM64)
+- ✅ Multi-platform support (linux/amd64, linux/arm64)
 - ✅ Resource limits to prevent system exhaustion
 - ✅ Health checks for cluster readiness
 - ✅ Persistent storage for K3s and Docker data
@@ -62,7 +62,7 @@ A lightweight Kubernetes distribution (K3s) running inside a Docker-in-Docker (D
 | Variable                      | Default        | Description                           |
 | ----------------------------- | -------------- | ------------------------------------- |
 | `K3S_VERSION`                 | `v1.28.2+k3s1` | K3s version to install                |
-| `K3S_DIND_VERSION`            | `0.2.1`        | Built image version tag               |
+| `K3S_DIND_VERSION`            | `0.2.2`        | Built image version tag               |
 | `PRELOAD_IMAGES`              | `true`         | Pre-download images during build      |
 | `TZ`                          | `UTC`          | Container timezone                    |
 | `K3S_API_PORT_OVERRIDE`       | `6443`         | Kubernetes API server port            |
@@ -164,6 +164,24 @@ Ensure the kubeconfig server address points to `localhost` or the correct IP:
 
 ```bash
 kubectl cluster-info
+```
+
+## Building Multi-Platform Images
+
+This image supports `linux/amd64` and `linux/arm64` platforms automatically.
+
+```bash
+# Build for current platform
+docker compose build
+
+# Build and push multi-platform image (requires Docker Buildx)
+docker buildx build --platform linux/amd64,linux/arm64 \
+  -t alexsuntop/k3s-inside-dind:0.2.2 --push .
+
+# Customize K3s version
+docker buildx build --platform linux/amd64,linux/arm64 \
+  --build-arg K3S_VERSION=v1.29.0+k3s1 \
+  -t myregistry/k3s-dind:1.0.0 --push .
 ```
 
 ## Advanced Configuration

@@ -36,14 +36,20 @@ A Docker-in-Docker (DinD) service based on Debian, allowing you to run Docker in
 
 Key environment variables (see `.env.example` for all options):
 
-| Variable                 | Description                         | Default     |
-| ------------------------ | ----------------------------------- | ----------- |
-| `DEBIAN_VERSION`         | Debian base image version           | `13.2-slim` |
-| `DIND_PORT_OVERRIDE`     | Host port for Docker daemon         | `2375`      |
-| `INSTALL_NVIDIA_TOOLKIT` | Install NVIDIA toolkit during build | `false`     |
-| `TZ`                     | Timezone                            | `UTC`       |
-| `DIND_CPU_LIMIT`         | CPU limit                           | `2.0`       |
-| `DIND_MEMORY_LIMIT`      | Memory limit                        | `4G`        |
+| Variable                  | Description                         | Default              |
+| ------------------------- | ----------------------------------- | -------------------- |
+| `GLOBAL_REGISTRY`         | Global registry prefix (optional)   | -                    |
+| `DEBIAN_DIND_VERSION`     | Main DinD image version             | `0.1.1`              |
+| `DEBIAN_DIND_GPU_VERSION` | GPU-enabled DinD image version      | `0.1.1-gpu`          |
+| `DEBIAN_VERSION`          | Debian base image version           | `13.2-slim`          |
+| `DIND_PORT_OVERRIDE`      | Host port for Docker daemon         | `2375`               |
+| `INSTALL_NVIDIA_TOOLKIT`  | Install NVIDIA toolkit during build | `false`              |
+| `TZ`                      | Timezone                            | `UTC`                |
+| `DIND_CPU_LIMIT`          | CPU limit                           | `2.0`                |
+| `DIND_MEMORY_LIMIT`       | Memory limit                        | `4G`                 |
+| `DIND_CPU_RESERVATION`    | CPU reservation                     | `1.0`                |
+| `DIND_MEMORY_RESERVATION` | Memory reservation                  | `2G`                 |
+| `DOCKER_TLS_CERTDIR`      | TLS certificate directory           | Empty (TLS disabled) |
 
 ## GPU Support
 

@@ -9,7 +9,7 @@
 - ✅ 在单个容器中运行完整的 K3s 集群
 - ✅ 支持 Docker-in-Docker，可运行容器化工作负载
 - ✅ 在 6443 端口暴露 Kubernetes API 服务器
-- ✅ 支持多架构（x86-64、ARM64）
+- ✅ 支持多平台（linux/amd64、linux/arm64）
 - ✅ 资源限制防止系统资源耗尽
 - ✅ 健康检查确保集群就绪
 - ✅ 持久化存储 K3s 和 Docker 数据
@@ -62,7 +62,7 @@
 | 变量                          | 默认值         | 说明                      |
 | ----------------------------- | -------------- | ------------------------- |
 | `K3S_VERSION`                 | `v1.28.2+k3s1` | 要安装的 K3s 版本         |
-| `K3S_DIND_VERSION`            | `0.2.1`        | 构建的镜像版本标签        |
+| `K3S_DIND_VERSION`            | `0.2.2`        | 构建的镜像版本标签        |
 | `PRELOAD_IMAGES`              | `true`         | 构建时预下载镜像          |
 | `TZ`                          | `UTC`          | 容器时区                  |
 | `K3S_API_PORT_OVERRIDE`       | `6443`         | Kubernetes API 服务器端口 |
@@ -164,6 +164,24 @@ docker compose logs -f k3s
 
 ```bash
 kubectl cluster-info
+```
+
+## 构建多平台镜像
+
+此镜像自动支持 `linux/amd64` 和 `linux/arm64` 平台。
+
+```bash
+# 构建当前平台
+docker compose build
+
+# 构建并推送多平台镜像（需要 Docker Buildx）
+docker buildx build --platform linux/amd64,linux/arm64 \
+  -t alexsuntop/k3s-inside-dind:0.2.2 --push .
+
+# 自定义 K3s 版本
+docker buildx build --platform linux/amd64,linux/arm64 \
+  --build-arg K3S_VERSION=v1.29.0+k3s1 \
+  -t myregistry/k3s-dind:1.0.0 --push .
 ```
 
 ## 高级配置
