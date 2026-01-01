@@ -41,7 +41,11 @@ services:
           cpus: ${CLICKHOUSE_CPU_RESERVATION:-1.0}
           memory: ${CLICKHOUSE_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3

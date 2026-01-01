@@ -1,7 +1,11 @@
 ---
 applyTo: '**'
 ---
-Compose Anything helps users quickly deploy various services by providing a set of high-quality Docker Compose configuration files. These configurations constrain resource usage, can be easily migrated to systems like K8S, and are easy to understand and modify.
+Compose Anything represents a collection of high-quality, production-ready, and portable Docker Compose configuration files. The primary objective is to allow users to deploy services "out-of-the-box" with minimal configuration while maintaining industry best practices.
+
+The architecture focuses on modularity, security, and orchestrator compatibility (e.g., easy migration to Kubernetes). The technical challenge lies in balancing simplicity (zero-config startup) with robustness (resource limits, health checks, multi-arch support, and security baselines).
+
+## Constraints
 
 1. Out-of-the-box
     - Configurations should work out-of-the-box with no extra steps (at most, provide a `.env` file).
@@ -42,7 +46,7 @@ Compose Anything helps users quickly deploy various services by providing a set 
     - Least privilege: `cap_drop: ["ALL"]`, add back only what’s needed via `cap_add`;
     - Avoid `container_name` (hurts scaling and reusable network aliases);
     - If exposing Docker socket or other high-risk mounts, clearly document risks and alternatives.
-11. Documentation & discoverability
+11. Documentation & Discoverability
     - Provide clear docs and examples (include admin/initialization notes, and security/license notes when relevant);
     - Keep docs LLM-friendly;
     - List primary env vars and default ports in the README, and link to `README.md` / `README.zh.md`.
@@ -51,8 +55,15 @@ Reference template: [`compose-template.yaml`](../../.compose-template.yaml) in t
 
 If you want to find image tags, try fetch url like `https://hub.docker.com/v2/repositories/library/nginx/tags?page_size=1&ordering=last_updated`.
 
-Every service must have `.env.example`.
-
 After update all of the services, please update `/README.md` & `/README.zh.md` to reflect the changes.
+
+## Final Checklist
+
+1. Is .env.example present and fully commented in English?
+2. Are CPU/Memory limits applied?
+3. Is container_name removed?
+4. Are healthcheck and service_healthy conditions correctly implemented?
+5. Are the Chinese docs correctly punctuated with spaces between languages?
+6. Have the root repository README files been updated to include the new service?
 
 **注意**：所有中文的文档都使用中文的标点符号，如 “，”、“（）” 等，中文和英文之间要留有空格。对于 Docker Compose 文件和 `.env.example` 文件中的注释部分，请使用英语而不是中文。请为每个服务提供英文说明 README.md 和中文说明 `README.zh.md`。

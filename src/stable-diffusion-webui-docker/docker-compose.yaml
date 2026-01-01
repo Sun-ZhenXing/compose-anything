@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   stable-diffusion-webui:
     <<: *defaults
-    image: ${GHCR_IO_REGISTRY:-ghcr.io/}absolutelyludicrous/sdnext:${SD_WEBUI_VERSION:-latest}
+    image: ${GHCR_IO_REGISTRY:-ghcr.io}/absolutelyludicrous/sdnext:${SD_WEBUI_VERSION:-latest}
     ports:
       - "${SD_WEBUI_PORT_OVERRIDE:-7860}:7860"
     environment:

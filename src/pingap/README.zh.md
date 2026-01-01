@@ -49,13 +49,13 @@
 
 | 变量名                       | 说明                            | 默认值              |
 | ---------------------------- | ------------------------------- | ------------------- |
-| `PINGAP_VERSION`             | 镜像版本（推荐：`0.12.1-full`） | `0.12.1-full`       |
+| `PINGAP_VERSION`             | 镜像版本（推荐：`0.12.7-full`） | `0.12.7-full`       |
 | `PINGAP_HTTP_PORT_OVERRIDE`  | 主机 HTTP 端口                  | `80`                |
 | `PINGAP_HTTPS_PORT_OVERRIDE` | 主机 HTTPS 端口                 | `443`               |
 | `PINGAP_DATA_DIR`            | 持久化数据目录                  | `./pingap`          |
 | `PINGAP_ADMIN_ADDR`          | 管理界面地址                    | `0.0.0.0:80/pingap` |
 | `PINGAP_ADMIN_USER`          | 管理员用户名                    | `admin`             |
-| `PINGAP_ADMIN_PASSWORD`      | 管理员密码（必填）              | -                   |
+| `PINGAP_ADMIN_PASSWORD`      | 管理员密码                      | `password`          |
 | `PINGAP_CPU_LIMIT`           | CPU 限制                        | `1.0`               |
 | `PINGAP_MEMORY_LIMIT`        | 内存限制                        | `512M`              |
 
@@ -63,8 +63,8 @@
 
 - `vicanso/pingap:latest` - 最新开发版（不推荐用于生产环境）
 - `vicanso/pingap:full` - 包含所有功能的最新开发版
-- `vicanso/pingap:0.12.1` - 不含额外依赖的稳定版
-- `vicanso/pingap:0.12.1-full` - **推荐**：包含 OpenTelemetry、Sentry 和图片压缩的稳定版
+- `vicanso/pingap:0.12.7` - 不含额外依赖的稳定版
+- `vicanso/pingap:0.12.7-full` - **推荐**：包含 OpenTelemetry、Sentry 和图片压缩的稳定版
 
 ### 持久化存储
 
@@ -103,7 +103,7 @@ docker compose down
 
 ### 生产环境建议
 
-- 使用带版本号的标签（如 `0.12.1-full`），而非 `latest` 或 `full`
+- 使用带版本号的标签（如 `0.12.7-full`），而非 `latest` 或 `full`
 - 根据流量情况配置适当的资源限制
 - 设置适当的监控和日志记录
 - 启用 HTTPS 并使用有效证书

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   minio:
     <<: *defaults
-    image: cgr.dev/chainguard/minio:${MINIO_VERSION:-0.20251015}
+    image: ${CGR_DEV_REGISTRY:cgr.dev-}/chainguard/minio:${MINIO_VERSION:-0.20251015}
     ports:
       - "${MINIO_PORT_OVERRIDE_API:-9000}:9000"
       - "${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001"
@@ -29,10 +29,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${MINIO_CPU_LIMIT:-1.0}
+          cpus: ${MINIO_CPU_LIMIT:-0.5}
           memory: ${MINIO_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${MINIO_CPU_RESERVATION:-0.5}
+          cpus: ${MINIO_CPU_RESERVATION:-0.25}
           memory: ${MINIO_MEMORY_RESERVATION:-512M}
 
 

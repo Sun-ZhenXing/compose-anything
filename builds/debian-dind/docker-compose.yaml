@@ -13,6 +13,8 @@ services:
   dind:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}alexsuntop/debian-dind:${DEBIAN_DIND_VERSION:-0.1.0}
+    profiles:
+      - ${COMPOSE_PROFILES:-}
     build:
       context: .
       dockerfile: Dockerfile
@@ -41,13 +43,13 @@ services:
         reservations:
           cpus: ${DIND_CPU_RESERVATION:-1.0}
           memory: ${DIND_MEMORY_RESERVATION:-2G}
-    profiles:
-      - ${COMPOSE_PROFILES:-}
 
   # GPU-enabled DinD (optional)
   dind-gpu:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}alexsuntop/debian-dind:${DEBIAN_DIND_GPU_VERSION:-0.1.0-gpu}
+    profiles:
+      - gpu
     build:
       context: .
       dockerfile: Dockerfile
@@ -82,8 +84,6 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-    profiles:
-      - gpu
 
 volumes:
   dind_data:

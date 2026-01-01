@@ -12,19 +12,18 @@ x-defaults: &defaults
 services:
   pingap:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}vicanso/pingap:${PINGAP_VERSION:-0.12.1-full}
-    container_name: ${PINGAP_CONTAINER_NAME:-}
+    image: ${GLOBAL_REGISTRY:-}vicanso/pingap:${PINGAP_VERSION:-0.12.7-full}
     ports:
       - "${PINGAP_HTTP_PORT_OVERRIDE:-80}:80"
       - "${PINGAP_HTTPS_PORT_OVERRIDE:-443}:443"
     volumes:
-      - ${PINGAP_DATA_DIR:-./pingap}:/opt/pingap
+      - pingap_data:/opt/pingap
     environment:
       - TZ=${TZ:-UTC}
       - PINGAP_CONF=/opt/pingap/conf
       - PINGAP_ADMIN_ADDR=${PINGAP_ADMIN_ADDR:-0.0.0.0:80/pingap}
       - PINGAP_ADMIN_USER=${PINGAP_ADMIN_USER:-admin}
-      - PINGAP_ADMIN_PASSWORD=${PINGAP_ADMIN_PASSWORD:?PINGAP_ADMIN_PASSWORD must be set}
+      - PINGAP_ADMIN_PASSWORD=${PINGAP_ADMIN_PASSWORD:-password}
     command:
       - pingap
       - --autoreload
@@ -42,3 +41,6 @@ services:
         reservations:
           cpus: ${PINGAP_CPU_RESERVATION:-0.5}
           memory: ${PINGAP_MEMORY_RESERVATION:-256M}
+
+volumes:
+  pingap_data:

@@ -4,117 +4,117 @@ Compose Anything helps users quickly deploy various services by providing a set 
 
 ## Supported Services
 
-| Service                                                       | Version                      |
-| ------------------------------------------------------------- | ---------------------------- |
-| [Apache APISIX](./src/apisix)                                 | 3.13.0                       |
-| [Apache Cassandra](./src/cassandra)                           | 5.0.2                        |
-| [Apache Flink](./src/flink)                                   | 1.20.0                       |
-| [Apache HBase](./src/hbase)                                   | 2.6                          |
-| [Apache HTTP Server](./src/apache)                            | 2.4.62                       |
-| [Apache Kafka](./src/kafka)                                   | 7.8.0                        |
-| [Apache Pulsar](./src/pulsar)                                 | 4.0.7                        |
-| [Apache RocketMQ](./src/rocketmq)                             | 5.3.1                        |
-| [Bifrost Gateway](./src/bifrost-gateway)                      | v1.3.54                      |
-| [Bolt.diy](./src/bolt-diy)                                    | latest                       |
-| [Budibase](./src/budibase)                                    | 3.23.0                       |
-| [Bytebot](./src/bytebot)                                      | edge                         |
-| [Clash](./src/clash)                                          | 1.18.0                       |
-| [ClickHouse](./src/clickhouse)                                | 24.11.1                      |
-| [Conductor](./src/conductor)                                  | latest                       |
-| [Dify](./src/dify)                                            | 0.18.2                       |
-| [DNSMasq](./src/dnsmasq)                                      | 2.91                         |
-| [Dockge](./src/dockge)                                        | 1                            |
-| [Docker Registry](./src/docker-registry)                      | 3.0.0                        |
-| [DuckDB](./src/duckdb)                                        | v1.1.3                       |
-| [Easy Dataset](./src/easy-dataset)                            | 1.5.1                        |
-| [Elasticsearch](./src/elasticsearch)                          | 8.16.1                       |
-| [etcd](./src/etcd)                                            | 3.6.0                        |
-| [Firecrawl](./src/firecrawl)                                  | latest                       |
-| [frpc](./src/frpc)                                            | 0.64.0                       |
-| [frps](./src/frps)                                            | 0.64.0                       |
-| [Gitea Runner](./src/gitea-runner)                            | 0.2.13                       |
-| [Gitea](./src/gitea)                                          | 1.24.6                       |
-| [GitLab Runner](./src/gitlab-runner)                          | 17.10.1                      |
-| [GitLab](./src/gitlab)                                        | 17.10.4-ce.0                 |
-| [GPUStack](./src/gpustack)                                    | v0.5.3                       |
-| [Grafana](./src/grafana)                                      | 12.1.1                       |
-| [Halo](./src/halo)                                            | 2.21.9                       |
-| [Harbor](./src/harbor)                                        | v2.12.0                      |
-| [HashiCorp Consul](./src/consul)                              | 1.20.3                       |
-| [IOPaint](./builds/io-paint)                                  | latest                       |
-| [Jenkins](./src/jenkins)                                      | 2.486-lts                    |
-| [JODConverter](./src/jodconverter)                            | latest                       |
-| [Kestra](./src/kestra)                                        | latest-full                  |
-| [Kibana](./src/kibana)                                        | 8.16.1                       |
-| [Kodbox](./src/kodbox)                                        | 1.62                         |
-| [Kong](./src/kong)                                            | 3.8.0                        |
-| [Langflow](./apps/langflow)                                   | latest                       |
-| [Langfuse](./apps/langfuse)                                   | 3.115.0                      |
-| [LibreOffice](./src/libreoffice)                              | latest                       |
-| [libSQL Server](./src/libsql)                                 | latest                       |
-| [LiteLLM](./src/litellm)                                      | main-stable                  |
-| [Logstash](./src/logstash)                                    | 8.16.1                       |
-| [MariaDB Galera Cluster](./src/mariadb-galera)                | 11.7.2                       |
-| [Milvus Standalone Embed](./src/milvus-standalone-embed)      | v2.6.7                       |
-| [Milvus Standalone](./src/milvus-standalone)                  | v2.6.7                       |
-| [Minecraft Bedrock Server](./src/minecraft-bedrock-server)    | latest                       |
-| [MinerU SGLang](./src/mineru-sglang)                          | 2.2.2                        |
-| [MinerU vLLM](./builds/mineru-vllm)                           | 2.6.4                        |
-| [MinIO](./src/minio)                                          | RELEASE.2025-09-07T16-13-09Z |
-| [MLflow](./src/mlflow)                                        | v2.20.2                      |
-| [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)  | 8.2.3                        |
-| [MongoDB ReplicaSet](./src/mongodb-replicaset)                | 8.2.3                        |
-| [MongoDB Standalone](./src/mongodb-standalone)                | 8.2.3                        |
-| [MySQL](./src/mysql)                                          | 9.4.0                        |
-| [n8n](./src/n8n)                                              | 1.114.0                      |
-| [Nacos](./src/nacos)                                          | v3.1.0                       |
-| [NebulaGraph](./src/nebulagraph)                              | v3.8.0                       |
-| [NexaSDK](./src/nexa-sdk)                                     | v0.2.62                      |
-| [Neo4j](./src/neo4j)                                          | 5.27.4                       |
-| [Netdata](./src/netdata)                                      | latest                       |
-| [Nginx](./src/nginx)                                          | 1.29.1                       |
-| [Node Exporter](./src/node-exporter)                          | v1.8.2                       |
-| [OceanBase](./src/oceanbase)                                  | 4.3.3                        |
-| [Odoo](./src/odoo)                                            | 19.0                         |
-| [Ollama](./src/ollama)                                        | 0.12.0                       |
-| [Open WebUI](./src/open-webui)                                | main                         |
-| [Phoenix (Arize)](./src/phoenix)                              | 12.19.0                      |
-| [Pingora Proxy Manager](./src/pingora-proxy-manager)          | v1.0.3                       |
-| [Open WebUI Rust](./src/open-webui-rust)                      | latest                       |
-| [OpenCoze](./src/opencoze)                                    | See Docs                     |
-| [OpenCut](./src/opencut)                                      | latest                       |
-| [OpenList](./src/openlist)                                    | latest                       |
-| [OpenSearch](./src/opensearch)                                | 2.19.0                       |
-| [PocketBase](./src/pocketbase)                                | 0.30.0                       |
-| [Portainer](./src/portainer)                                  | 2.27.3-alpine                |
-| [Portkey AI Gateway](./src/portkey-gateway)                   | latest                       |
-| [PostgreSQL](./src/postgres)                                  | 17.6                         |
-| [Prometheus](./src/prometheus)                                | 3.5.0                        |
-| [PyTorch](./src/pytorch)                                      | 2.6.0                        |
-| [Qdrant](./src/qdrant)                                        | 1.15.4                       |
-| [RabbitMQ](./src/rabbitmq)                                    | 4.1.4                        |
-| [Ray](./src/ray)                                              | 2.42.1                       |
-| [Redpanda](./src/redpanda)                                    | v24.3.1                      |
-| [Redis Cluster](./src/redis-cluster)                          | 8.2.1                        |
-| [Redis](./src/redis)                                          | 8.2.1                        |
-| [Renovate](./src/renovate)                                    | 42.52.5-full                 |
-| [Restate Cluster](./src/restate-cluster)                      | 1.5.3                        |
-| [Restate](./src/restate)                                      | 1.5.3                        |
-| [SearXNG](./src/searxng)                                      | 2025.1.20-1ce14ef99          |
-| [Sim](./apps/sim)                                             | latest                       |
-| [Stable Diffusion WebUI](./src/stable-diffusion-webui-docker) | latest                       |
-| [Stirling-PDF](./src/stirling-pdf)                            | latest                       |
-| [Temporal](./src/temporal)                                    | 1.24.2                       |
-| [TiDB](./src/tidb)                                            | v8.5.0                       |
-| [TiKV](./src/tikv)                                            | v8.5.0                       |
-| [Trigger.dev](./src/trigger-dev)                              | v4.2.0                       |
-| [TrailBase](./src/trailbase)                                  | 0.22.4                       |
-| [Valkey Cluster](./src/valkey-cluster)                        | 8.0                          |
-| [Valkey](./src/valkey)                                        | 8.0                          |
-| [Verdaccio](./src/verdaccio)                                  | 6.1.2                        |
-| [vLLM](./src/vllm)                                            | v0.13.0                      |
-| [Windmill](./src/windmill)                                    | main                         |
-| [ZooKeeper](./src/zookeeper)                                  | 3.9.3                        |
+| Service                                                       | Version             |
+| ------------------------------------------------------------- | ------------------- |
+| [Apache APISIX](./src/apisix)                                 | 3.13.0              |
+| [Apache Cassandra](./src/cassandra)                           | 5.0.2               |
+| [Apache Flink](./src/flink)                                   | 1.20.0              |
+| [Apache HBase](./src/hbase)                                   | 2.6                 |
+| [Apache HTTP Server](./src/apache)                            | 2.4.62              |
+| [Apache Kafka](./src/kafka)                                   | 7.8.0               |
+| [Apache Pulsar](./src/pulsar)                                 | 4.0.7               |
+| [Apache RocketMQ](./src/rocketmq)                             | 5.3.1               |
+| [Bifrost Gateway](./src/bifrost-gateway)                      | v1.3.54             |
+| [Bolt.diy](./src/bolt-diy)                                    | latest              |
+| [Budibase](./src/budibase)                                    | 3.23.0              |
+| [Bytebot](./src/bytebot)                                      | edge                |
+| [Clash](./src/clash)                                          | 1.18.0              |
+| [ClickHouse](./src/clickhouse)                                | 24.11.1             |
+| [Conductor](./src/conductor)                                  | latest              |
+| [Dify](./apps/dify)                                           | 0.18.2              |
+| [DNSMasq](./src/dnsmasq)                                      | 2.91                |
+| [Dockge](./src/dockge)                                        | 1                   |
+| [Docker Registry](./src/docker-registry)                      | 3.0.0               |
+| [DuckDB](./src/duckdb)                                        | v1.1.3              |
+| [Easy Dataset](./src/easy-dataset)                            | 1.5.1               |
+| [Elasticsearch](./src/elasticsearch)                          | 8.16.1              |
+| [etcd](./src/etcd)                                            | 3.6.0               |
+| [Firecrawl](./src/firecrawl)                                  | latest              |
+| [frpc](./src/frpc)                                            | 0.64.0              |
+| [frps](./src/frps)                                            | 0.64.0              |
+| [Gitea Runner](./src/gitea-runner)                            | 0.2.13              |
+| [Gitea](./src/gitea)                                          | 1.24.6              |
+| [GitLab Runner](./src/gitlab-runner)                          | 17.10.1             |
+| [GitLab](./src/gitlab)                                        | 17.10.4-ce.0        |
+| [GPUStack](./src/gpustack)                                    | v0.5.3              |
+| [Grafana](./src/grafana)                                      | 12.1.1              |
+| [Halo](./src/halo)                                            | 2.21.9              |
+| [Harbor](./src/harbor)                                        | v2.12.0             |
+| [HashiCorp Consul](./src/consul)                              | 1.20.3              |
+| [IOPaint](./builds/io-paint)                                  | latest              |
+| [Jenkins](./src/jenkins)                                      | 2.486-lts           |
+| [JODConverter](./src/jodconverter)                            | latest              |
+| [Kestra](./src/kestra)                                        | latest-full         |
+| [Kibana](./src/kibana)                                        | 8.16.1              |
+| [Kodbox](./src/kodbox)                                        | 1.62                |
+| [Kong](./src/kong)                                            | 3.8.0               |
+| [Langflow](./apps/langflow)                                   | latest              |
+| [Langfuse](./apps/langfuse)                                   | 3.115.0             |
+| [LibreOffice](./src/libreoffice)                              | latest              |
+| [libSQL Server](./src/libsql)                                 | latest              |
+| [LiteLLM](./src/litellm)                                      | main-stable         |
+| [Logstash](./src/logstash)                                    | 8.16.1              |
+| [MariaDB Galera Cluster](./src/mariadb-galera)                | 11.7.2              |
+| [Milvus Standalone Embed](./src/milvus-standalone-embed)      | v2.6.7              |
+| [Milvus Standalone](./src/milvus-standalone)                  | v2.6.7              |
+| [Minecraft Bedrock Server](./src/minecraft-bedrock-server)    | latest              |
+| [MinerU SGLang](./src/mineru-sglang)                          | 2.2.2               |
+| [MinerU vLLM](./builds/mineru-vllm)                           | 2.6.4               |
+| [MinIO](./src/minio)                                          | 0.20251015          |
+| [MLflow](./src/mlflow)                                        | v2.20.2             |
+| [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)  | 8.2.3               |
+| [MongoDB ReplicaSet](./src/mongodb-replicaset)                | 8.2.3               |
+| [MongoDB Standalone](./src/mongodb-standalone)                | 8.2.3               |
+| [MySQL](./src/mysql)                                          | 9.4.0               |
+| [n8n](./src/n8n)                                              | 1.114.0             |
+| [Nacos](./src/nacos)                                          | v3.1.0              |
+| [NebulaGraph](./src/nebulagraph)                              | v3.8.0              |
+| [NexaSDK](./src/nexa-sdk)                                     | v0.2.62             |
+| [Neo4j](./src/neo4j)                                          | 5.27.4              |
+| [Netdata](./src/netdata)                                      | latest              |
+| [Nginx](./src/nginx)                                          | 1.29.1              |
+| [Node Exporter](./src/node-exporter)                          | v1.8.2              |
+| [OceanBase](./src/oceanbase)                                  | 4.3.3               |
+| [Odoo](./src/odoo)                                            | 19.0                |
+| [Ollama](./src/ollama)                                        | 0.12.0              |
+| [Open WebUI](./src/open-webui)                                | main                |
+| [Phoenix (Arize)](./src/phoenix)                              | 12.19.0             |
+| [Pingora Proxy Manager](./src/pingora-proxy-manager)          | v1.0.3              |
+| [Open WebUI Rust](./src/open-webui-rust)                      | latest              |
+| [OpenCoze](./src/opencoze)                                    | See Docs            |
+| [OpenCut](./src/opencut)                                      | latest              |
+| [OpenList](./src/openlist)                                    | latest              |
+| [OpenSearch](./src/opensearch)                                | 2.19.0              |
+| [PocketBase](./src/pocketbase)                                | 0.30.0              |
+| [Portainer](./src/portainer)                                  | 2.27.3-alpine       |
+| [Portkey AI Gateway](./src/portkey-gateway)                   | latest              |
+| [PostgreSQL](./src/postgres)                                  | 17.6                |
+| [Prometheus](./src/prometheus)                                | 3.5.0               |
+| [PyTorch](./src/pytorch)                                      | 2.6.0               |
+| [Qdrant](./src/qdrant)                                        | 1.15.4              |
+| [RabbitMQ](./src/rabbitmq)                                    | 4.1.4               |
+| [Ray](./src/ray)                                              | 2.42.1              |
+| [Redpanda](./src/redpanda)                                    | v24.3.1             |
+| [Redis Cluster](./src/redis-cluster)                          | 8.2.1               |
+| [Redis](./src/redis)                                          | 8.2.1               |
+| [Renovate](./src/renovate)                                    | 42.52.5-full        |
+| [Restate Cluster](./src/restate-cluster)                      | 1.5.3               |
+| [Restate](./src/restate)                                      | 1.5.3               |
+| [SearXNG](./src/searxng)                                      | 2025.1.20-1ce14ef99 |
+| [Sim](./apps/sim)                                             | latest              |
+| [Stable Diffusion WebUI](./src/stable-diffusion-webui-docker) | latest              |
+| [Stirling-PDF](./src/stirling-pdf)                            | latest              |
+| [Temporal](./src/temporal)                                    | 1.24.2              |
+| [TiDB](./src/tidb)                                            | v8.5.0              |
+| [TiKV](./src/tikv)                                            | v8.5.0              |
+| [Trigger.dev](./src/trigger-dev)                              | v4.2.0              |
+| [TrailBase](./src/trailbase)                                  | 0.22.4              |
+| [Valkey Cluster](./src/valkey-cluster)                        | 8.0                 |
+| [Valkey](./src/valkey)                                        | 8.0                 |
+| [Verdaccio](./src/verdaccio)                                  | 6.1.2               |
+| [vLLM](./src/vllm)                                            | v0.13.0             |
+| [Windmill](./src/windmill)                                    | main                |
+| [ZooKeeper](./src/zookeeper)                                  | 3.9.3               |
 
 ## MCP Servers
 

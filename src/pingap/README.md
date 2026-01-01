@@ -49,13 +49,13 @@ A high-performance reverse proxy built on Cloudflare Pingora, designed as a more
 
 | Variable                     | Description                                | Default             |
 | ---------------------------- | ------------------------------------------ | ------------------- |
-| `PINGAP_VERSION`             | Image version (recommended: `0.12.1-full`) | `0.12.1-full`       |
+| `PINGAP_VERSION`             | Image version (recommended: `0.12.7-full`) | `0.12.7-full`       |
 | `PINGAP_HTTP_PORT_OVERRIDE`  | HTTP port on host                          | `80`                |
 | `PINGAP_HTTPS_PORT_OVERRIDE` | HTTPS port on host                         | `443`               |
 | `PINGAP_DATA_DIR`            | Data directory for persistent storage      | `./pingap`          |
 | `PINGAP_ADMIN_ADDR`          | Admin interface address                    | `0.0.0.0:80/pingap` |
 | `PINGAP_ADMIN_USER`          | Admin username                             | `admin`             |
-| `PINGAP_ADMIN_PASSWORD`      | Admin password (REQUIRED)                  | -                   |
+| `PINGAP_ADMIN_PASSWORD`      | Admin password                             | `password`          |
 | `PINGAP_CPU_LIMIT`           | CPU limit                                  | `1.0`               |
 | `PINGAP_MEMORY_LIMIT`        | Memory limit                               | `512M`              |
 
@@ -63,8 +63,8 @@ A high-performance reverse proxy built on Cloudflare Pingora, designed as a more
 
 - `vicanso/pingap:latest` - Latest development version (not recommended for production)
 - `vicanso/pingap:full` - Latest development version with all features
-- `vicanso/pingap:0.12.1` - Stable version without extra dependencies
-- `vicanso/pingap:0.12.1-full` - **Recommended**: Stable version with OpenTelemetry, Sentry, and image compression
+- `vicanso/pingap:0.12.7` - Stable version without extra dependencies
+- `vicanso/pingap:0.12.7-full` - **Recommended**: Stable version with OpenTelemetry, Sentry, and image compression
 
 ### Persistent Storage
 
@@ -103,7 +103,7 @@ docker compose down
 
 ### Production Recommendations
 
-- Use versioned tags (e.g., `0.12.1-full`) instead of `latest` or `full`
+- Use versioned tags (e.g., `0.12.7-full`) instead of `latest` or `full`
 - Configure appropriate resource limits based on your traffic
 - Set up proper monitoring and logging
 - Enable HTTPS with valid certificates

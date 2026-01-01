@@ -88,7 +88,15 @@ services:
           cpus: ${LANGFUSE_WORKER_CPU_RESERVATION:-0.5}
           memory: ${LANGFUSE_WORKER_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3030/api/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://127.0.0.1:3030/api/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -122,7 +130,15 @@ services:
           cpus: ${LANGFUSE_WEB_CPU_RESERVATION:-0.5}
           memory: ${LANGFUSE_WEB_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/api/public/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://127.0.0.1:3000/api/public/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -131,6 +147,8 @@ services:
   clickhouse:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}clickhouse/clickhouse-server:${CLICKHOUSE_VERSION:-latest}
+    profiles:
+      - ${COMPOSE_PROFILES:-}
     user: "101:101"
     environment:
       CLICKHOUSE_DB: default
@@ -160,7 +178,9 @@ services:
 
   minio:
     <<: *defaults
-    image: ${CGR_DEV_REGISTRY:-cgr.dev/}chainguard/minio:${MINIO_VERSION:-latest}
+    image: ${CGR_DEV_REGISTRY:-cgr.dev}/chainguard/minio:${MINIO_VERSION:-latest}
+    profiles:
+      - ${COMPOSE_PROFILES:-}
     entrypoint: sh
     # create the 'langfuse' bucket before starting the service
     command: -c 'mkdir -p /data/langfuse && minio server --address ":9000" --console-address ":9001" /data'
@@ -188,6 +208,8 @@ services:
   redis:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-7}
+    profiles:
+      - ${COMPOSE_PROFILES:-}
     command: >
       --requirepass ${REDIS_AUTH:-myredissecret}
       --maxmemory-policy noeviction
@@ -208,6 +230,8 @@ services:
   postgres:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17}
+    profiles:
+      - ${COMPOSE_PROFILES:-}
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}

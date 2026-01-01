@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   open_webui:
     <<: *defaults
-    image: ${GHCR_IO_REGISTRY:-ghcr.io/}open-webui/open-webui:${OPEN_WEBUI_VERSION:-main}
+    image: ${GHCR_IO_REGISTRY:-ghcr.io}/open-webui/open-webui:${OPEN_WEBUI_VERSION:-main}
     ports:
       - "${OPEN_WEBUI_PORT_OVERRIDE:-8080}:8080"
     volumes:

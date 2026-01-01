@@ -14,13 +14,18 @@ x-defaults: &defaults
 services:
   service-name:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}image:${VERSION:-latest}
+    #! Use ${GLOBAL_REGISTRY} for a global registry prefix if defined
+    #! If not pulls from Docker Hub by default, use ${GHCR_REGISTRY} for GitHub Container Registry, etc.
+    #! e.g. ${GLOBAL_REGISTRY:-}httpd:${APACHE_VERSION:-2.4.62-alpine3.20}
+    #! Use ${SERVICE_NAME_VERSION} to specify the image version, e.g., 3.2.1
+    image: ${GLOBAL_REGISTRY:-}service-image:${SERVICE_NAME_VERSION:-3.2.1}
+    #! Do not add container_name to allow scaling and avoid name conflicts
     ports:
-      - "${PORT_OVERRIDE:-8080}:8080"
+      - "${SERVICE_NAME_PORT_OVERRIDE:-8080}:8080"
     volumes:
-      - service_data:/data
+      - service_name_data:/data
     environment:
-      - TZ=${TZ:-UTC}
+      - TZ=${TZ:-UTC} #! Set timezone, default to UTC
       - ENV_VAR=${ENV_VAR:-default_value}
     healthcheck:
       test: ["CMD", "command", "to", "check", "health"]
@@ -38,4 +43,4 @@ services:
           memory: ${SERVICE_NAME_MEMORY_RESERVATION:-128M}
 
 volumes:
-  service_data:
+  service_name_data:

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   pocketbase:
     <<: *defaults
-    image: ${GHCR_IO_REGISTRY:-ghcr.io/}muchobien/pocketbase:${PB_VERSION:-0.30.0}
+    image: ${GHCR_IO_REGISTRY:-ghcr.io}/muchobien/pocketbase:${PB_VERSION:-0.30.0}
     environment:
       TZ: ${TZ:-UTC}
       # Optional ENCRYPTION (Ensure this is a 32-character long encryption key)
