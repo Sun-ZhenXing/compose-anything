@@ -24,10 +24,14 @@ Redpanda 是一个与 Kafka 兼容的流数据平台，专为性能和开发者�
 2. 启动服务：
 
    ```bash
+   # 仅启动 Redpanda（不包含控制台）
    docker compose up -d
+   
+   # 或者启动包含 Redpanda Console UI
+   docker compose --profile console up -d
    ```
 
-3. 访问 Redpanda Console：<http://localhost:8080>
+3. 如果使用 console profile 启动，可访问 Redpanda Console：<http://localhost:8080>
 
 4. 验证集群健康状态：
 
@@ -35,13 +39,21 @@ Redpanda 是一个与 Kafka 兼容的流数据平台，专为性能和开发者�
    docker compose exec redpanda rpk cluster health
    ```
 
+## Profiles
+
+此配置支持以下 Docker Compose profiles：
+
+- **console**：启用 Redpanda Console Web UI，用于监控和管理
+  - 启用 console：`docker compose --profile console up -d`
+  - 不启用 console：`docker compose up -d`
+
 ## 服务端点
 
 - **Kafka API**（外部）：`localhost:19092`
 - **Schema Registry**：`localhost:18081`
 - **HTTP Proxy**：`localhost:18082`
 - **Admin API**：`localhost:19644`
-- **Redpanda Console**：`http://localhost:8080`
+- **Redpanda Console**（启用 console profile 时）：`http://localhost:8080`
 
 ## 基本使用
 

@@ -82,7 +82,11 @@ services:
           cpus: ${KAFKA_CPU_RESERVATION:-0.50}
           memory: ${KAFKA_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092"]
+      test:
+        [
+          "CMD-SHELL",
+          "kafka-broker-api-versions --bootstrap-server localhost:9092",
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -92,6 +96,8 @@ services:
   kafka-ui:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}provectuslabs/kafka-ui:${KAFKA_UI_VERSION:-latest}
+    profiles:
+      - ui
     depends_on:
       kafka:
         condition: service_healthy
@@ -113,8 +119,6 @@ services:
         reservations:
           cpus: ${KAFKA_UI_CPU_RESERVATION:-0.10}
           memory: ${KAFKA_UI_MEMORY_RESERVATION:-128M}
-    profiles:
-      - ui
 
 volumes:
   zookeeper_data:

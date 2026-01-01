@@ -24,10 +24,14 @@ Redpanda is a Kafka-compatible streaming data platform built for performance and
 2. Start the services:
 
    ```bash
+   # Start only Redpanda (without console)
    docker compose up -d
+   
+   # Or start with Redpanda Console UI
+   docker compose --profile console up -d
    ```
 
-3. Access Redpanda Console at <http://localhost:8080>
+3. If started with console profile, access Redpanda Console at <http://localhost:8080>
 
 4. Verify the cluster is healthy:
 
@@ -35,13 +39,21 @@ Redpanda is a Kafka-compatible streaming data platform built for performance and
    docker compose exec redpanda rpk cluster health
    ```
 
+## Profiles
+
+This configuration supports the following Docker Compose profiles:
+
+- **console**: Enables the Redpanda Console web UI for monitoring and management
+  - To start with console: `docker compose --profile console up -d`
+  - To start without console: `docker compose up -d`
+
 ## Service Endpoints
 
 - **Kafka API** (external): `localhost:19092`
 - **Schema Registry**: `localhost:18081`
 - **HTTP Proxy**: `localhost:18082`
 - **Admin API**: `localhost:19644`
-- **Redpanda Console**: `http://localhost:8080`
+- **Redpanda Console** (when console profile is enabled): `http://localhost:8080`
 
 ## Basic Usage
 
