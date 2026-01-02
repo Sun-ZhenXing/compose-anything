@@ -9,14 +9,23 @@ x-defaults: &defaults
 services:
   frpc:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}snowdreamtech/frpc:${FRPC_VERSION:-0.64.0}
+    image: ${GLOBAL_REGISTRY:-}snowdreamtech/frpc:${FRPC_VERSION:-0.65.0}
+    ports:
+      - "${FRP_ADMIN_PORT:-7400}:${FRP_ADMIN_PORT:-7400}"
     volumes:
-      - ./frpc.toml:/etc/frp/frpc.toml:ro
+      - ./frpc.toml:/etc/frp/frpc.toml
     environment:
       TZ: ${TZ:-UTC}
-      FRP_SERVER_ADDR: ${FRP_SERVER_ADDR}
-      FRP_SERVER_PORT: ${FRP_SERVER_PORT}
-      FRP_SERVER_TOKEN: ${FRP_SERVER_TOKEN}
+      FRP_SERVER_ADDR: ${FRP_SERVER_ADDR:-127.0.0.1}
+      FRP_SERVER_PORT: ${FRP_SERVER_PORT:-7000}
+      FRP_SERVER_TOKEN: ${FRP_SERVER_TOKEN:-server_token}
+      FRP_APP_HOST: ${FRP_APP_HOST:-127.0.0.1}
+      FRP_ADMIN_ADDR: ${FRP_ADMIN_ADDR:-0.0.0.0}
+      FRP_ADMIN_PORT: ${FRP_ADMIN_PORT:-7400}
+      FRP_ADMIN_USER: ${FRP_ADMIN_USER:-admin}
+      FRP_ADMIN_PASSWORD: ${FRP_ADMIN_PASSWORD:-password}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     deploy:
       resources:
         limits:

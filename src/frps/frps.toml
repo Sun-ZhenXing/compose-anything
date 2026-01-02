@@ -1,8 +1,15 @@
-[common]
-bind_port = {{ .Envs.FRP_SERVER_PORT }}
-token = {{ .Envs.FRP_SERVER_TOKEN }}
+bindPort = {{ .Envs.FRP_SERVER_PORT }}
+kcpBindPort = {{ .Envs.FRP_SERVER_PORT }}
 
-dashboard_addr = 0.0.0.0
-dashboard_port = {{ .Envs.FRP_ADMIN_PORT }}
-dashboard_user = {{ .Envs.FRP_ADMIN_USER }}
-dashboard_pwd = {{ .Envs.FRP_ADMIN_PASS }}
+[auth]
+method = "{{ .Envs.FRP_AUTH_METHOD }}"
+token = "{{ .Envs.FRP_SERVER_TOKEN }}"
+
+[transport]
+maxPoolCount = 20
+
+[webServer]
+addr = "{{ .Envs.FRP_ADMIN_ADDR }}"
+port = {{ .Envs.FRP_ADMIN_PORT }}
+user = "{{ .Envs.FRP_ADMIN_USER }}"
+password = "{{ .Envs.FRP_ADMIN_PASSWORD }}"

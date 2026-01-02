@@ -1,10 +1,21 @@
-[common]
-server_addr = {{ .Envs.FRP_SERVER_ADDR }}
-server_port = {{ .Envs.FRP_SERVER_PORT }}
-token       = {{ .Envs.FRP_SERVER_TOKEN }}
+serverAddr = "{{ .Envs.FRP_SERVER_ADDR }}"
+serverPort = {{ .Envs.FRP_SERVER_PORT }}
 
-[app]
+[auth]
+token = "{{ .Envs.FRP_SERVER_TOKEN }}"
+
+[transport]
+protocol = "kcp"
+
+[webServer]
+addr = "{{ .Envs.FRP_ADMIN_ADDR }}"
+port = {{ .Envs.FRP_ADMIN_PORT }}
+user = "{{ .Envs.FRP_ADMIN_USER }}"
+password = "{{ .Envs.FRP_ADMIN_PASSWORD }}"
+
+[[proxies]]
+name = "ssh"
 type = "tcp"
-remote_port = 22
-local_ip    = {{ .Envs.APP_HOST }}
-local_port  = 22
+localPort  = 22
+remotePort = 22
+localIp    = "{{ .Envs.FRP_APP_HOST }}"

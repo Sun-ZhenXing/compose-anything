@@ -2,6 +2,18 @@
 
 Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，帮助用户快速部署各种服务。这些配置约束了资源使用，可快速迁移到 K8S 等系统，并且易于理解和修改。
 
+## 构建服务
+
+这些服务需要从源代码构建自定义 Docker 镜像。
+
+| 服务                                        | 版本   |
+| ------------------------------------------- | ------ |
+| [Debian DinD](./builds/debian-dind)         | 0.1.1  |
+| [goose](./builds/goose)                     | 1.18.0 |
+| [IOPaint](./builds/io-paint)                | 1.6.0  |
+| [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2  |
+| [MinerU vLLM](./builds/mineru)              | 2.7.0  |
+
 ## 已经支持的服务
 
 | 服务                                                           | 版本                |
@@ -30,8 +42,8 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Elasticsearch](./src/elasticsearch)                           | 8.16.1              |
 | [etcd](./src/etcd)                                             | 3.6.0               |
 | [Firecrawl](./src/firecrawl)                                   | latest              |
-| [frpc](./src/frpc)                                             | 0.64.0              |
-| [frps](./src/frps)                                             | 0.64.0              |
+| [frpc](./src/frpc)                                             | 0.65.0              |
+| [frps](./src/frps)                                             | 0.65.0              |
 | [Gitea Runner](./src/gitea-runner)                             | 0.2.13              |
 | [Gitea](./src/gitea)                                           | 1.24.6              |
 | [GitLab Runner](./src/gitlab-runner)                           | 17.10.1             |
@@ -41,7 +53,6 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Halo](./src/halo)                                             | 2.21.9              |
 | [Harbor](./src/harbor)                                         | v2.12.0             |
 | [HashiCorp Consul](./src/consul)                               | 1.20.3              |
-| [IOPaint](./builds/io-paint)                                   | latest              |
 | [Jenkins](./src/jenkins)                                       | 2.486-lts           |
 | [JODConverter](./src/jodconverter)                             | latest              |
 | [Kestra](./src/kestra)                                         | latest-full         |
@@ -58,7 +69,6 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Milvus Standalone Embed](./src/milvus-standalone-embed)       | v2.6.7              |
 | [Milvus Standalone](./src/milvus-standalone)                   | v2.6.7              |
 | [Minecraft Bedrock Server](./src/minecraft-bedrock-server)     | latest              |
-| [MinerU vLLM](./builds/mineru)                                 | 2.7.0               |
 | [MinIO](./src/minio)                                           | 0.20251015          |
 | [MLflow](./src/mlflow)                                         | v2.20.2             |
 | [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)   | 8.2.3               |
