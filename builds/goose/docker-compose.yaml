@@ -20,6 +20,7 @@ services:
         - linux/amd64
         - linux/arm64
       args:
+        - DEBIAN_VERSION=${DEBIAN_VERSION:-13.2-slim}
         - GOOSE_VERSION=${GOOSE_VERSION:-1.18.0}
     image: ${GLOBAL_REGISTRY:-}alexsuntop/goose:${GOOSE_VERSION:-1.18.0}
     environment:

@@ -34,3 +34,15 @@ services:
         reservations:
           cpus: ${FRPC_CPU_RESERVATION:-0.1}
           memory: ${FRPC_MEMORY_RESERVATION:-64M}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "sh",
+          "-c",
+          "curl -f http://$${FRP_ADMIN_USER}:$${FRP_ADMIN_PASSWORD}@localhost:$${FRP_ADMIN_PORT}/api/status || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

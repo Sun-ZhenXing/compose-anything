@@ -1,0 +1,69 @@
+# Docker Compose Configuration for MicroSandbox
+# KVM-based secure sandbox environment
+# https://github.com/zerocore-ai/microsandbox
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: 3
+
+services:
+  microsandbox:
+    <<: *defaults
+    build:
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+        - linux/arm64
+      args:
+        - DEBIAN_VERSION=${DEBIAN_VERSION:-13.2-slim}
+        - MICROSANDBOX_VERSION=${MICROSANDBOX_VERSION:-0.2.6}
+        - MICROSANDBOX_AUTO_PULL_IMAGES=${MICROSANDBOX_AUTO_PULL_IMAGES:-true}
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/microsandbox:${MICROSANDBOX_VERSION:-0.2.6}
+    ports:
+      - ${MICROSANDBOX_PORT_OVERRIDE:-5555}:${MICROSANDBOX_PORT:-5555}
+    privileged: true
+    cap_add:
+      - SYS_ADMIN
+      - NET_ADMIN
+      - SYS_PTRACE
+      - SYS_RESOURCE
+    security_opt:
+      - apparmor=unconfined
+      - seccomp=unconfined
+    environment:
+      - TZ=${TZ:-UTC}
+      - MICROSANDBOX_HOME=/root/.microsandbox
+    volumes:
+      - microsandbox_config:/root/.microsandbox/namespaces
+      - microsandbox_workspace:/workspace
+    devices:
+      - /dev/kvm:/dev/kvm
+      - /dev/net/tun:/dev/net/tun
+    command:
+      [
+        "server",
+        "start",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "${MICROSANDBOX_PORT:-5555}",
+        "--dev",
+      ]
+    working_dir: /workspace
+    deploy:
+      resources:
+        limits:
+          cpus: ${MICROSANDBOX_CPU_LIMIT:-4.00}
+          memory: ${MICROSANDBOX_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${MICROSANDBOX_CPU_RESERVATION:-1.00}
+          memory: ${MICROSANDBOX_MEMORY_RESERVATION:-1G}
+
+volumes:
+  microsandbox_config:
+  microsandbox_workspace:
