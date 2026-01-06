@@ -6,6 +6,7 @@ A Docker-in-Docker (DinD) service based on Debian, allowing you to run Docker in
 
 - Based on latest stable Debian (13.2-slim)
 - Out-of-the-box Docker daemon
+- Uses `crun` as the default runtime for better performance and lower memory footprint
 - Optional NVIDIA Container Toolkit for GPU support
 - Resource limits configured
 - Healthcheck included
@@ -39,8 +40,8 @@ Key environment variables (see `.env.example` for all options):
 | Variable                  | Description                         | Default              |
 | ------------------------- | ----------------------------------- | -------------------- |
 | `GLOBAL_REGISTRY`         | Global registry prefix (optional)   | -                    |
-| `DEBIAN_DIND_VERSION`     | Main DinD image version             | `0.1.1`              |
-| `DEBIAN_DIND_GPU_VERSION` | GPU-enabled DinD image version      | `0.1.1-gpu`          |
+| `DEBIAN_DIND_VERSION`     | Main DinD image version             | `0.1.2`              |
+| `DEBIAN_DIND_GPU_VERSION` | GPU-enabled DinD image version      | `0.1.2-gpu`          |
 | `DEBIAN_VERSION`          | Debian base image version           | `13.2-slim`          |
 | `DIND_PORT_OVERRIDE`      | Host port for Docker daemon         | `2375`               |
 | `INSTALL_NVIDIA_TOOLKIT`  | Install NVIDIA toolkit during build | `false`              |

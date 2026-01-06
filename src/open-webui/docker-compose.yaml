@@ -23,10 +23,10 @@ services:
       resources:
         limits:
           cpus: ${OPEN_WEBUI_CPU_LIMIT:-1}
-          memory: ${OPEN_WEBUI_MEMORY_LIMIT:-512M}
+          memory: ${OPEN_WEBUI_MEMORY_LIMIT:-1024M}
         reservations:
-          cpus: ${OPEN_WEBUI_CPU_RESERVATION:-0.1}
-          memory: ${OPEN_WEBUI_MEMORY_RESERVATION:-128M}
+          cpus: ${OPEN_WEBUI_CPU_RESERVATION:-0.5}
+          memory: ${OPEN_WEBUI_MEMORY_RESERVATION:-512M}
 
 volumes:
   open_webui_data:

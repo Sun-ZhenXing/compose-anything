@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xfsprogs \
     xz-utils \
     pigz \
+    crun \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Docker
@@ -36,13 +37,17 @@ RUN install -m 0755 -d /etc/apt/keyrings \
     docker-compose-plugin \
     && rm -rf /var/lib/apt/lists/*
 
+# Configure Docker to use crun as the default runtime
+RUN mkdir -p /etc/docker && \
+    echo '{\n  "default-runtime": "crun",\n  "runtimes": {\n    "crun": {\n      "path": "/usr/bin/crun"\n    }\n  }\n}' > /etc/docker/daemon.json
+
 # Install NVIDIA Container Toolkit (Optional)
 ARG INSTALL_NVIDIA_TOOLKIT=false
 RUN if [ "$INSTALL_NVIDIA_TOOLKIT" = "true" ]; then \
     curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
     && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-      sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-      tee /etc/apt/sources.list.d/nvidia-container-toolkit.list \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    tee /etc/apt/sources.list.d/nvidia-container-toolkit.list \
     && apt-get update \
     && apt-get install -y nvidia-container-toolkit \
     && nvidia-ctk runtime configure --runtime=docker \

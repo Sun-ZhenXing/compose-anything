@@ -12,8 +12,14 @@
 
 ## 配置
 
-- `OPEN_WEBUI_VERSION`: Open WebUI 镜像的版本，默认为 `main`。
-- `OPEN_WEBUI_PORT_OVERRIDE`: Open WebUI 的主机端口，默认为 `8080`。
+- `GHCR_IO_REGISTRY` ：Open WebUI 镜像的仓库前缀，默认为 `ghcr.io`。
+- `OPEN_WEBUI_VERSION` ：Open WebUI 镜像的版本，默认为 `main`。
+- `TZ` ：容器的时区，默认为 `UTC`。
+- `OPEN_WEBUI_PORT_OVERRIDE` ：Open WebUI 的主机端口，默认为 `8080`。
+- `OPEN_WEBUI_CPU_LIMIT` ：Open WebUI 服务的 CPU 限制，默认为 `1`。
+- `OPEN_WEBUI_MEMORY_LIMIT` ：Open WebUI 服务的内存限制，默认为 `1024M`。
+- `OPEN_WEBUI_CPU_RESERVATION` ：Open WebUI 服务的 CPU 预留，默认为 `0.5`。
+- `OPEN_WEBUI_MEMORY_RESERVATION` ：Open WebUI 服务的内存预留，默认为 `512M`。
 
 ## 卷
 

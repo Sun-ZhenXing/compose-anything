@@ -25,7 +25,7 @@ if [ -z "$DOCKER_HOST" ]; then
         if [ -d /sys/fs/cgroup/cgroup.controllers ]; then
           # It is cgroup2 but maybe not mounted as such?
           # Actually if it exists, it's likely v2.
-          :
+          mount -t cgroup2 -o nsdelegate cgroup2 /sys/fs/cgroup || true
         else
           # cgroup v1
           for subsystem in $(awk '/^[^#]/ { print $1 }' /proc/cgroups); do
@@ -35,6 +35,19 @@ if [ -z "$DOCKER_HOST" ]; then
             fi
           done
         fi
+      fi
+
+      # Cgroup v2 delegation: move current process to a child cgroup and enable controllers
+      if [ -f /sys/fs/cgroup/cgroup.controllers ]; then
+        # Move current shell and future processes to a child cgroup
+        # this is required for cgroup v2 "no processes in internal nodes" rule
+        mkdir -p /sys/fs/cgroup/init
+        echo 0 > /sys/fs/cgroup/init/cgroup.procs 2>/dev/null || true
+
+        # Enable all available controllers for child cgroups
+        for controller in $(cat /sys/fs/cgroup/cgroup.controllers); do
+          echo "+$controller" > /sys/fs/cgroup/cgroup.subtree_control 2>/dev/null || true
+        done
       fi
       ;;
   esac

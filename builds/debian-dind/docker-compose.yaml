@@ -12,7 +12,7 @@ x-defaults: &defaults
 services:
   dind:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}alexsuntop/debian-dind:${DEBIAN_DIND_VERSION:-0.1.1}
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/debian-dind:${DEBIAN_DIND_VERSION:-0.1.2}
     profiles:
       - ${COMPOSE_PROFILES:-}
     build:
@@ -50,7 +50,7 @@ services:
   # GPU-enabled DinD (optional)
   dind-gpu:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}alexsuntop/debian-dind:${DEBIAN_DIND_GPU_VERSION:-0.1.1-gpu}
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/debian-dind:${DEBIAN_DIND_GPU_VERSION:-0.1.2-gpu}
     profiles:
       - gpu
     build:

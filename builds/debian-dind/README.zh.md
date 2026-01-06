@@ -6,6 +6,7 @@
 
 - 基于最新稳定版 Debian（13.2-slim）
 - 开箱即用的 Docker 守护进程
+- 使用 `crun` 作为默认运行时，提供更好的性能和更低的内存占用
 - 可选的 NVIDIA Container Toolkit，支持 GPU
 - 配置了资源限制
 - 包含健康检查
@@ -39,8 +40,8 @@
 | 变量                      | 说明                      | 默认值           |
 | ------------------------- | ------------------------- | ---------------- |
 | `GLOBAL_REGISTRY`         | 全局镜像仓库前缀（可选）  | -                |
-| `DEBIAN_DIND_VERSION`     | 主 DinD 镜像版本          | `0.1.1`          |
-| `DEBIAN_DIND_GPU_VERSION` | GPU 版本 DinD 镜像版本    | `0.1.1-gpu`      |
+| `DEBIAN_DIND_VERSION`     | 主 DinD 镜像版本          | `0.1.2`          |
+| `DEBIAN_DIND_GPU_VERSION` | GPU 版本 DinD 镜像版本    | `0.1.2-gpu`      |
 | `DEBIAN_VERSION`          | Debian 基础镜像版本       | `13.2-slim`      |
 | `DIND_PORT_OVERRIDE`      | Docker 守护进程的主机端口 | `2375`           |
 | `INSTALL_NVIDIA_TOOLKIT`  | 构建时安装 NVIDIA 工具包  | `false`          |

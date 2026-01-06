@@ -8,7 +8,7 @@ These services require building custom Docker images from source.
 
 | Service                                     | Version |
 | ------------------------------------------- | ------- |
-| [Debian DinD](./builds/debian-dind)         | 0.1.1   |
+| [Debian DinD](./builds/debian-dind)         | 0.1.2   |
 | [goose](./builds/goose)                     | 1.18.0  |
 | [IOPaint](./builds/io-paint)                | 1.6.0   |
 | [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2   |
@@ -26,7 +26,7 @@ These services require building custom Docker images from source.
 | [Apache Kafka](./src/kafka)                                    | 7.8.0               |
 | [Apache Pulsar](./src/pulsar)                                  | 4.0.7               |
 | [Apache RocketMQ](./src/rocketmq)                              | 5.3.1               |
-| [Bifrost Gateway](./src/bifrost-gateway)                       | v1.3.54             |
+| [Bifrost Gateway](./src/bifrost-gateway)                       | v1.3.59             |
 | [Bolt.diy](./apps/bolt-diy)                                    | latest              |
 | [Budibase](./src/budibase)                                     | 3.23.0              |
 | [Bytebot](./src/bytebot)                                       | edge                |
@@ -87,7 +87,7 @@ These services require building custom Docker images from source.
 | [Odoo](./src/odoo)                                             | 19.0                |
 | [Ollama](./src/ollama)                                         | 0.12.0              |
 | [Open WebUI](./src/open-webui)                                 | main                |
-| [Phoenix (Arize)](./src/phoenix)                               | 12.19.0             |
+| [Phoenix (Arize)](./src/phoenix)                               | 12.27.0-nonroot     |
 | [Pingora Proxy Manager](./src/pingora-proxy-manager)           | v1.0.3              |
 | [Open WebUI Rust](./src/open-webui-rust)                       | latest              |
 | [OpenCoze](./apps/opencoze)                                    | See Docs            |

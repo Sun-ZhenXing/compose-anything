@@ -27,11 +27,6 @@ services:
     ports:
       - ${MICROSANDBOX_PORT_OVERRIDE:-5555}:${MICROSANDBOX_PORT:-5555}
     privileged: true
-    cap_add:
-      - SYS_ADMIN
-      - NET_ADMIN
-      - SYS_PTRACE
-      - SYS_RESOURCE
     security_opt:
       - apparmor=unconfined
       - seccomp=unconfined
