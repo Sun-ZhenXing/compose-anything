@@ -12,7 +12,8 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [goose](./builds/goose)                     | 1.18.0 |
 | [IOPaint](./builds/io-paint)                | 1.6.0  |
 | [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2  |
-| [MinerU vLLM](./builds/mineru)              | 2.7.0  |
+| [KrunVM DinD](./builds/krunvm)              | 0.1.0  |
+| [MinerU vLLM](./builds/mineru)              | 2.7.1  |
 
 ## 已经支持的服务
 
@@ -95,6 +96,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [OpenList](./src/openlist)                                     | latest              |
 | [OpenSearch](./src/opensearch)                                 | 2.19.0              |
 | [PocketBase](./src/pocketbase)                                 | 0.30.0              |
+| [Podman](./src/podman)                                         | v5.7.1              |
 | [Portainer](./src/portainer)                                   | 2.27.3-alpine       |
 | [Portkey AI Gateway](./src/portkey-gateway)                    | latest              |
 | [PostgreSQL](./src/postgres)                                   | 17.6                |

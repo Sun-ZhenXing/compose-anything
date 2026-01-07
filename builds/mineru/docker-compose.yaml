@@ -8,10 +8,13 @@ x-defaults: &defaults
 
 x-mineru-vllm: &mineru-vllm
   <<: *defaults
-  image: ${GLOBAL_REGISTRY:-}alexsuntop/mineru:${MINERU_VERSION:-2.7.0}
+  image: ${GLOBAL_REGISTRY:-}alexsuntop/mineru:${MINERU_VERSION:-2.7.1}
   build:
     context: .
     dockerfile: Dockerfile
+    platforms:
+      - linux/amd64
+      - linux/arm64
   environment:
     TZ: ${TZ:-UTC}
     MINERU_MODEL_SOURCE: local

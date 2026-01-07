@@ -1,0 +1,44 @@
+# Podman (Podman-in-Container)
+# High-quality container management tool for developing, managing, and running OCI Containers
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  podman:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}quay.io/podman/stable:${PODMAN_VERSION:-v5.7.1}
+    #! Podman-in-Container usually requires privileged mode to manage containers
+    privileged: true
+    #! Optional: Enable Podman API service
+    command: podman system service --time=0 tcp:0.0.0.0:8888
+    ports:
+      - "${PODMAN_PORT_OVERRIDE:-8888}:8888"
+    volumes:
+      - podman_data:/var/lib/containers
+      #! Optional: volume for podman configs/registries
+      # - ./registries.conf:/etc/containers/registries.conf:ro
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test: ["CMD", "podman", "info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${PODMAN_CPU_LIMIT:-2.0}
+          memory: ${PODMAN_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${PODMAN_CPU_RESERVATION:-1.0}
+          memory: ${PODMAN_MEMORY_RESERVATION:-2G}
+
+volumes:
+  podman_data:
