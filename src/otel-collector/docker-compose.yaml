@@ -1,0 +1,58 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  otel-collector:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}otel/opentelemetry-collector-contrib:${OTEL_COLLECTOR_VERSION:-0.115.1}
+    command:
+      - "--config=/etc/otelcol-contrib/config.yaml"
+    volumes:
+      - ./config.yaml:/etc/otelcol-contrib/config.yaml:ro
+    ports:
+      # OTLP gRPC receiver
+      - "${OTEL_COLLECTOR_OTLP_GRPC_PORT_OVERRIDE:-4317}:4317"
+      # OTLP HTTP receiver
+      - "${OTEL_COLLECTOR_OTLP_HTTP_PORT_OVERRIDE:-4318}:4318"
+      # Jaeger gRPC receiver
+      - "${OTEL_COLLECTOR_JAEGER_GRPC_PORT_OVERRIDE:-14250}:14250"
+      # Jaeger Thrift HTTP receiver
+      - "${OTEL_COLLECTOR_JAEGER_THRIFT_HTTP_PORT_OVERRIDE:-14268}:14268"
+      # Zipkin receiver
+      - "${OTEL_COLLECTOR_ZIPKIN_PORT_OVERRIDE:-9411}:9411"
+      # Prometheus metrics
+      - "${OTEL_COLLECTOR_PROMETHEUS_PORT_OVERRIDE:-8888}:8888"
+      # Health check extension
+      - "${OTEL_COLLECTOR_HEALTH_CHECK_PORT_OVERRIDE:-13133}:13133"
+    environment:
+      - TZ=${TZ:-UTC}
+      # Optional: Configure memory limit for the collector
+      - GOMEMLIMIT=${OTEL_COLLECTOR_GOMEMLIMIT:-}
+    user: "10001:10001" # Non-root user
+    deploy:
+      resources:
+        limits:
+          cpus: ${OTEL_COLLECTOR_CPU_LIMIT:-1.0}
+          memory: ${OTEL_COLLECTOR_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${OTEL_COLLECTOR_CPU_RESERVATION:-0.25}
+          memory: ${OTEL_COLLECTOR_MEMORY_RESERVATION:-512M}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:13133/",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

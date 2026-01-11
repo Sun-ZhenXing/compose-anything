@@ -12,7 +12,6 @@ These services require building custom Docker images from source.
 | [goose](./builds/goose)                     | 1.18.0  |
 | [IOPaint](./builds/io-paint)                | 1.6.0   |
 | [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2   |
-| [KrunVM DinD](./builds/krunvm)              | 0.1.0   |
 | [MinerU vLLM](./builds/mineru)              | 2.7.1   |
 
 ## Supported Services
@@ -27,7 +26,7 @@ These services require building custom Docker images from source.
 | [Apache Kafka](./src/kafka)                                    | 7.8.0               |
 | [Apache Pulsar](./src/pulsar)                                  | 4.0.7               |
 | [Apache RocketMQ](./src/rocketmq)                              | 5.3.1               |
-| [Bifrost Gateway](./src/bifrost-gateway)                       | v1.3.59             |
+| [Bifrost Gateway](./src/bifrost-gateway)                       | v1.3.63             |
 | [Bolt.diy](./apps/bolt-diy)                                    | latest              |
 | [Budibase](./src/budibase)                                     | 3.23.0              |
 | [Bytebot](./src/bytebot)                                       | edge                |
@@ -51,6 +50,8 @@ These services require building custom Docker images from source.
 | [GitLab](./src/gitlab)                                         | 17.10.4-ce.0        |
 | [GPUStack](./src/gpustack)                                     | v0.5.3              |
 | [Grafana](./src/grafana)                                       | 12.1.1              |
+| [Grafana Loki](./src/loki)                                     | 3.3.2               |
+| [Grafana Tempo](./src/tempo)                                   | 2.7.2               |
 | [Halo](./src/halo)                                             | 2.21.9              |
 | [Harbor](./src/harbor)                                         | v2.12.0             |
 | [HashiCorp Consul](./src/consul)                               | 1.20.3              |
@@ -88,13 +89,14 @@ These services require building custom Docker images from source.
 | [Odoo](./src/odoo)                                             | 19.0                |
 | [Ollama](./src/ollama)                                         | 0.12.0              |
 | [Open WebUI](./src/open-webui)                                 | main                |
-| [Phoenix (Arize)](./src/phoenix)                               | 12.27.0-nonroot     |
+| [Phoenix (Arize)](./src/phoenix)                               | 12.28.1-nonroot     |
 | [Pingora Proxy Manager](./src/pingora-proxy-manager)           | v1.0.3              |
 | [Open WebUI Rust](./src/open-webui-rust)                       | latest              |
 | [OpenCoze](./apps/opencoze)                                    | See Docs            |
 | [OpenCut](./src/opencut)                                       | latest              |
 | [OpenList](./src/openlist)                                     | latest              |
 | [OpenSearch](./src/opensearch)                                 | 2.19.0              |
+| [OpenTelemetry Collector](./src/otel-collector)                | 0.115.1             |
 | [PocketBase](./src/pocketbase)                                 | 0.30.0              |
 | [Podman](./src/podman)                                         | v5.7.1              |
 | [Portainer](./src/portainer)                                   | 2.27.3-alpine       |
@@ -112,6 +114,7 @@ These services require building custom Docker images from source.
 | [Restate Cluster](./src/restate-cluster)                       | 1.5.3               |
 | [Restate](./src/restate)                                       | 1.5.3               |
 | [SearXNG](./src/searxng)                                       | 2025.1.20-1ce14ef99 |
+| [SigNoz](./src/signoz)                                         | 0.55.0              |
 | [Sim](./apps/sim)                                              | latest              |
 | [Stable Diffusion WebUI](./apps/stable-diffusion-webui-docker) | latest              |
 | [Stirling-PDF](./apps/stirling-pdf)                            | latest              |

@@ -6,8 +6,18 @@ Arize Phoenix is an open-source AI observability platform for LLM applications. 
 
 ## Services
 
-- `phoenix`: The main Phoenix application server with UI and OpenTelemetry collectors.
-- `phoenix-db`: PostgreSQL database for persistent storage.
+- `phoenix`: The main Phoenix application server (SQLite version).
+- `phoenix-pg`: The Phoenix application server configured for PostgreSQL (requires `postgres` profile).
+- `phoenix-db`: PostgreSQL database for persistent storage (requires `postgres` profile).
+
+## Profiles
+
+This project supports two modes of operation via Docker Compose profiles:
+
+1. **sqlite** (Default): Uses SQLite for storage. Simple and good for local development.
+   Set `COMPOSE_PROFILES=sqlite` in `.env`.
+2. **postgres** (or **pg**): Uses PostgreSQL for storage. Recommended for production.
+   Set `COMPOSE_PROFILES=postgres` in `.env`.
 
 ## Ports
 
@@ -15,24 +25,28 @@ Arize Phoenix is an open-source AI observability platform for LLM applications. 
 | ---- | -------- | ----------------------------------------- |
 | 6006 | HTTP     | UI and OTLP HTTP collector (`/v1/traces`) |
 | 4317 | gRPC     | OTLP gRPC collector                       |
+| 9090 | HTTP     | Prometheus metrics (optional)             |
 
 ## Environment Variables
 
-| Variable Name              | Description                           | Default Value     |
-| -------------------------- | ------------------------------------- | ----------------- |
-| PHOENIX_VERSION            | Phoenix image version                 | `12.27.0-nonroot` |
-| PHOENIX_PORT_OVERRIDE      | Host port for Phoenix UI and HTTP API | `6006`            |
-| PHOENIX_GRPC_PORT_OVERRIDE | Host port for OTLP gRPC collector     | `4317`            |
-| PHOENIX_ENABLE_PROMETHEUS  | Enable Prometheus metrics endpoint    | `false`           |
-| PHOENIX_SECRET             | Secret for authentication (optional)  | `""`              |
-| POSTGRES_VERSION           | PostgreSQL image version              | `17.2-alpine3.21` |
-| POSTGRES_USER              | PostgreSQL username                   | `postgres`        |
-| POSTGRES_PASSWORD          | PostgreSQL password                   | `postgres`        |
-| POSTGRES_DB                | PostgreSQL database name              | `phoenix`         |
+| Variable Name                    | Description                              | Default Value     |
+| -------------------------------- | ---------------------------------------- | ----------------- |
+| COMPOSE_PROFILES                 | Active profiles (`sqlite` or `postgres`) | `sqlite`          |
+| PHOENIX_VERSION                  | Phoenix image version                    | `12.28.1-nonroot` |
+| PHOENIX_PORT_OVERRIDE            | Host port for Phoenix UI and HTTP API    | `6006`            |
+| PHOENIX_GRPC_PORT_OVERRIDE       | Host port for OTLP gRPC collector        | `4317`            |
+| PHOENIX_PROMETHEUS_PORT_OVERRIDE | Host port for Prometheus metrics         | `9090`            |
+| PHOENIX_ENABLE_PROMETHEUS        | Enable Prometheus metrics endpoint       | `false`           |
+| PHOENIX_SECRET                   | Secret for authentication (optional)     | `""`              |
+| POSTGRES_VERSION                 | PostgreSQL image version                 | `17.2-alpine3.21` |
+| POSTGRES_USER                    | PostgreSQL username                      | `postgres`        |
+| POSTGRES_PASSWORD                | PostgreSQL password                      | `postgres`        |
+| POSTGRES_DB                      | PostgreSQL database name                 | `phoenix`         |
 
 ## Volumes
 
-- `phoenix_db_data`: PostgreSQL data volume for persistent storage.
+- `phoenix_data`: Data volume for SQLite mode (mounted to `/data`).
+- `phoenix_db_data`: Data volume for PostgreSQL mode.
 
 ## Getting Started
 
@@ -42,11 +56,20 @@ Arize Phoenix is an open-source AI observability platform for LLM applications. 
    cp .env.example .env
    ```
 
-2. (Optional) For production, set a secure password and secret:
+2. Select your deployment mode by editing `.env` (default is `sqlite`).
 
-   ```bash
-   # Generate a secret for authentication
-   openssl rand -base64 32
+   **For SQLite (Default):**
+   Ensure `.env` contains:
+
+   ```dotenv
+   COMPOSE_PROFILES=sqlite
+   ```
+
+   **For PostgreSQL:**
+   Change `.env` to:
+
+   ```dotenv
+   COMPOSE_PROFILES=postgres
    ```
 
 3. Start the services:

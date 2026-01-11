@@ -1,0 +1,202 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+x-clickhouse-defaults: &clickhouse-defaults
+  restart: on-failure
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+  healthcheck:
+    test: ["CMD", "wget", "--spider", "-q", "localhost:8123/ping"]
+    interval: 30s
+    timeout: 5s
+    retries: 3
+  deploy:
+    resources:
+      limits:
+        cpus: ${SIGNOZ_CLICKHOUSE_CPU_LIMIT:-2.0}
+        memory: ${SIGNOZ_CLICKHOUSE_MEMORY_LIMIT:-4G}
+      reservations:
+        cpus: ${SIGNOZ_CLICKHOUSE_CPU_RESERVATION:-0.5}
+        memory: ${SIGNOZ_CLICKHOUSE_MEMORY_RESERVATION:-1G}
+
+services:
+  # ClickHouse for storing traces, metrics and logs
+  clickhouse:
+    <<: *clickhouse-defaults
+    image: ${GLOBAL_REGISTRY:-}clickhouse/clickhouse-server:${SIGNOZ_CLICKHOUSE_VERSION:-24.11.1-alpine}
+    user: "101:101" # ClickHouse user
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
+      - ./clickhouse-users.xml:/etc/clickhouse-server/users.d/logging.xml:ro
+    environment:
+      - TZ=${TZ:-UTC}
+      - CLICKHOUSE_DB=${SIGNOZ_CLICKHOUSE_DB:-signoz}
+
+  # OTel Collector for receiving telemetry data
+  otel-collector:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}signoz/signoz-otel-collector:${SIGNOZ_OTEL_COLLECTOR_VERSION:-0.102.8}
+    command:
+      - "--config=/etc/otel-collector-config.yaml"
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    environment:
+      - TZ=${TZ:-UTC}
+      - OTEL_RESOURCE_ATTRIBUTES=${SIGNOZ_OTEL_RESOURCE_ATTRIBUTES:-host.name=signoz-host}
+    ports:
+      - "${SIGNOZ_OTEL_GRPC_PORT_OVERRIDE:-4317}:4317" # OTLP gRPC receiver
+      - "${SIGNOZ_OTEL_HTTP_PORT_OVERRIDE:-4318}:4318" # OTLP HTTP receiver
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: ${SIGNOZ_OTEL_COLLECTOR_CPU_LIMIT:-1.0}
+          memory: ${SIGNOZ_OTEL_COLLECTOR_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${SIGNOZ_OTEL_COLLECTOR_CPU_RESERVATION:-0.25}
+          memory: ${SIGNOZ_OTEL_COLLECTOR_MEMORY_RESERVATION:-512M}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:13133/",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Query Service for querying data
+  query-service:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}signoz/query-service:${SIGNOZ_QUERY_SERVICE_VERSION:-0.55.0}
+    command:
+      - "-config=/root/config/prometheus.yml"
+    volumes:
+      - ./query-service/prometheus.yml:/root/config/prometheus.yml:ro
+      - signoz_data:/var/lib/signoz
+    environment:
+      - TZ=${TZ:-UTC}
+      - ClickHouseUrl=${SIGNOZ_CLICKHOUSE_URL:-tcp://clickhouse:9000/?database=signoz}
+      - STORAGE=${SIGNOZ_STORAGE:-clickhouse}
+      - GODEBUG=${SIGNOZ_GODEBUG:-netdns=go}
+      - TELEMETRY_ENABLED=${SIGNOZ_TELEMETRY_ENABLED:-true}
+      - DEPLOYMENT_TYPE=${SIGNOZ_DEPLOYMENT_TYPE:-docker-standalone-amd}
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: ${SIGNOZ_QUERY_SERVICE_CPU_LIMIT:-1.0}
+          memory: ${SIGNOZ_QUERY_SERVICE_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${SIGNOZ_QUERY_SERVICE_CPU_RESERVATION:-0.25}
+          memory: ${SIGNOZ_QUERY_SERVICE_MEMORY_RESERVATION:-256M}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8080/api/v1/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Frontend for the UI
+  frontend:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}signoz/frontend:${SIGNOZ_FRONTEND_VERSION:-0.55.0}
+    ports:
+      - "${SIGNOZ_PORT_OVERRIDE:-3301}:3301"
+    volumes:
+      - ./frontend/nginx-config.conf:/etc/nginx/conf.d/default.conf:ro
+    environment:
+      - TZ=${TZ:-UTC}
+    depends_on:
+      query-service:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: ${SIGNOZ_FRONTEND_CPU_LIMIT:-0.5}
+          memory: ${SIGNOZ_FRONTEND_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${SIGNOZ_FRONTEND_CPU_RESERVATION:-0.1}
+          memory: ${SIGNOZ_FRONTEND_MEMORY_RESERVATION:-128M}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3301/api/v1/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Alert Manager for managing alerts
+  alertmanager:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}signoz/alertmanager:${SIGNOZ_ALERTMANAGER_VERSION:-0.23.5}
+    command:
+      - --queryService.url=http://query-service:8080
+      - --storage.path=/data
+    volumes:
+      - alertmanager_data:/data
+    environment:
+      - TZ=${TZ:-UTC}
+    depends_on:
+      query-service:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: ${SIGNOZ_ALERTMANAGER_CPU_LIMIT:-0.5}
+          memory: ${SIGNOZ_ALERTMANAGER_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${SIGNOZ_ALERTMANAGER_CPU_RESERVATION:-0.1}
+          memory: ${SIGNOZ_ALERTMANAGER_MEMORY_RESERVATION:-128M}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:9093/-/healthy",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  clickhouse_data:
+  signoz_data:
+  alertmanager_data:

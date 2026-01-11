@@ -9,38 +9,69 @@ x-defaults: &defaults
       max-size: 100m
       max-file: "3"
 
+x-phoenix-common: &phoenix-common
+  <<: *defaults
+  image: ${GLOBAL_REGISTRY:-}arizephoenix/phoenix:${PHOENIX_VERSION:-12.28.1-nonroot}
+  ports:
+    - "${PHOENIX_PORT_OVERRIDE:-6006}:6006" # UI and OTLP HTTP collector
+    - "${PHOENIX_GRPC_PORT_OVERRIDE:-4317}:4317" # OTLP gRPC collector
+    - "${PHOENIX_PROMETHEUS_PORT_OVERRIDE:-9090}:9090" # Prometheus metrics
+  environment:
+    - TZ=${TZ:-UTC}
+    - PHOENIX_ENABLE_PROMETHEUS=${PHOENIX_ENABLE_PROMETHEUS:-false}
+    - PHOENIX_SECRET=${PHOENIX_SECRET:-}
+  healthcheck:
+    test:
+      [
+        "CMD",
+        "python3",
+        "-c",
+        "import httpx;r=httpx.get('http://localhost:6006/healthz').raise_for_status()",
+      ]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+    start_period: 30s
+  deploy:
+    resources:
+      limits:
+        cpus: ${PHOENIX_CPU_LIMIT:-2.0}
+        memory: ${PHOENIX_MEMORY_LIMIT:-2G}
+      reservations:
+        cpus: ${PHOENIX_CPU_RESERVATION:-0.5}
+        memory: ${PHOENIX_MEMORY_RESERVATION:-512M}
+
 services:
+  # Default SQLite configuration
   phoenix:
-    <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}arizephoenix/phoenix:${PHOENIX_VERSION:-12.27.0-nonroot}
-    ports:
-      - "${PHOENIX_PORT_OVERRIDE:-6006}:6006"       # UI and OTLP HTTP collector
-      - "${PHOENIX_GRPC_PORT_OVERRIDE:-4317}:4317"  # OTLP gRPC collector
+    <<: *phoenix-common
+    profiles:
+      - sqlite
+      - ${COMPOSE_PROFILES:-}
     environment:
       - TZ=${TZ:-UTC}
-      - PHOENIX_SQL_DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@phoenix-db:5432/${POSTGRES_DB:-phoenix}
       - PHOENIX_ENABLE_PROMETHEUS=${PHOENIX_ENABLE_PROMETHEUS:-false}
       - PHOENIX_SECRET=${PHOENIX_SECRET:-}
+      - PHOENIX_WORKING_DIR=/data
+    volumes:
+      - phoenix_data:/data
+
+  # PostgreSQL configuration
+  phoenix-pg:
+    <<: *phoenix-common
+    profiles: ["postgres", "pg"]
+    environment:
+      - TZ=${TZ:-UTC}
+      - PHOENIX_ENABLE_PROMETHEUS=${PHOENIX_ENABLE_PROMETHEUS:-false}
+      - PHOENIX_SECRET=${PHOENIX_SECRET:-}
+      - PHOENIX_SQL_DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@phoenix-db:5432/${POSTGRES_DB:-phoenix}
     depends_on:
       phoenix-db:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "python3", "-c", "import httpx;r=httpx.get('http://localhost:6006/healthz').raise_for_status()"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-    deploy:
-      resources:
-        limits:
-          cpus: ${PHOENIX_CPU_LIMIT:-2.0}
-          memory: ${PHOENIX_MEMORY_LIMIT:-2G}
-        reservations:
-          cpus: ${PHOENIX_CPU_RESERVATION:-0.5}
-          memory: ${PHOENIX_MEMORY_RESERVATION:-512M}
 
   phoenix-db:
     <<: *defaults
+    profiles: ["postgres", "pg"]
     image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
     environment:
       - TZ=${TZ:-UTC}
@@ -65,4 +96,5 @@ services:
           memory: ${PHOENIX_DB_MEMORY_RESERVATION:-256M}
 
 volumes:
+  phoenix_data:
   phoenix_db_data:

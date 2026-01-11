@@ -12,7 +12,7 @@ Bifrost is a lightweight, high-performance LLM gateway that supports multiple mo
 
 ## Configuration
 
-- `BIFROST_VERSION`: The version of the Bifrost image, default is `v1.3.59`.
+- `BIFROST_VERSION`: The version of the Bifrost image, default is `v1.3.63`.
 - `BIFROST_PORT`: The port for the Bifrost service, default is `28080`.
 
 ### Telemetry

@@ -1,0 +1,38 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  loki:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}grafana/loki:${LOKI_VERSION:-3.3.2}
+    ports:
+      - "${LOKI_PORT_OVERRIDE:-3100}:3100"
+    volumes:
+      - loki_data:/loki
+      - ./loki-config.yaml:/etc/loki/local-config.yaml:ro
+    environment:
+      - TZ=${TZ:-UTC}
+    command: -config.file=/etc/loki/local-config.yaml
+    user: "10001:10001"  # Loki user
+    deploy:
+      resources:
+        limits:
+          cpus: ${LOKI_CPU_LIMIT:-1.0}
+          memory: ${LOKI_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${LOKI_CPU_RESERVATION:-0.25}
+          memory: ${LOKI_MEMORY_RESERVATION:-256M}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3100/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  loki_data:

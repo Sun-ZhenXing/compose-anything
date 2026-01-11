@@ -6,8 +6,18 @@ Arize Phoenix 是一个开源的 AI 可观测性平台，专为 LLM 应用设计
 
 ## 服务
 
-- `phoenix`：Phoenix 主应用服务器，包含 UI 和 OpenTelemetry 采集器。
-- `phoenix-db`：用于持久化存储的 PostgreSQL 数据库。
+- `phoenix`：Phoenix 主应用服务器（SQLite 版本）。
+- `phoenix-pg`：配置为使用 PostgreSQL 的 Phoenix 应用服务器（需要 `postgres` 配置文件）。
+- `phoenix-db`：用于持久化存储的 PostgreSQL 数据库（需要 `postgres` 配置文件）。
+
+## 配置文件 (Profiles)
+
+本项目支持通过 Docker Compose 配置文件使用两种运行模式：
+
+1. **sqlite**（默认）：使用 SQLite 存储。简单易用，适合本地开发。
+   在 `.env` 中设置 `COMPOSE_PROFILES=sqlite`。
+2. **postgres**（或 **pg**）：使用 PostgreSQL 存储。推荐用于生产环境。
+   在 `.env` 中设置 `COMPOSE_PROFILES=postgres`。
 
 ## 端口
 
@@ -15,24 +25,28 @@ Arize Phoenix 是一个开源的 AI 可观测性平台，专为 LLM 应用设计
 | ---- | ---- | -------------------------------------- |
 | 6006 | HTTP | UI 和 OTLP HTTP 采集器（`/v1/traces`） |
 | 4317 | gRPC | OTLP gRPC 采集器                       |
+| 9090 | HTTP | Prometheus 指标（可选）                |
 
 ## 环境变量
 
-| 变量名                     | 描述                              | 默认值            |
-| -------------------------- | --------------------------------- | ----------------- |
-| PHOENIX_VERSION            | Phoenix 镜像版本                  | `12.27.0-nonroot` |
-| PHOENIX_PORT_OVERRIDE      | Phoenix UI 和 HTTP API 的主机端口 | `6006`            |
-| PHOENIX_GRPC_PORT_OVERRIDE | OTLP gRPC 采集器的主机端口        | `4317`            |
-| PHOENIX_ENABLE_PROMETHEUS  | 启用 Prometheus 指标端点          | `false`           |
-| PHOENIX_SECRET             | 认证密钥（可选）                  | `""`              |
-| POSTGRES_VERSION           | PostgreSQL 镜像版本               | `17.2-alpine3.21` |
-| POSTGRES_USER              | PostgreSQL 用户名                 | `postgres`        |
-| POSTGRES_PASSWORD          | PostgreSQL 密码                   | `postgres`        |
-| POSTGRES_DB                | PostgreSQL 数据库名               | `phoenix`         |
+| 变量名                           | 描述                                     | 默认值            |
+| -------------------------------- | ---------------------------------------- | ----------------- |
+| COMPOSE_PROFILES                 | 激活的配置文件（`sqlite` 或 `postgres`） | `sqlite`          |
+| PHOENIX_VERSION                  | Phoenix 镜像版本                         | `12.28.1-nonroot` |
+| PHOENIX_PORT_OVERRIDE            | Phoenix UI 和 HTTP API 的主机端口        | `6006`            |
+| PHOENIX_GRPC_PORT_OVERRIDE       | OTLP gRPC 采集器的主机端口               | `4317`            |
+| PHOENIX_PROMETHEUS_PORT_OVERRIDE | Prometheus 指标的主机端口                | `9090`            |
+| PHOENIX_ENABLE_PROMETHEUS        | 启用 Prometheus 指标端点                 | `false`           |
+| PHOENIX_SECRET                   | 认证密钥（可选）                         | `""`              |
+| POSTGRES_VERSION                 | PostgreSQL 镜像版本                      | `17.2-alpine3.21` |
+| POSTGRES_USER                    | PostgreSQL 用户名                        | `postgres`        |
+| POSTGRES_PASSWORD                | PostgreSQL 密码                          | `postgres`        |
+| POSTGRES_DB                      | PostgreSQL 数据库名                      | `phoenix`         |
 
 ## 数据卷
 
-- `phoenix_db_data`：PostgreSQL 数据卷，用于持久化存储。
+- `phoenix_data`：SQLite 模式的数据卷（挂载到 `/data`）。
+- `phoenix_db_data`：PostgreSQL 模式的数据卷。
 
 ## 快速开始
 
@@ -42,11 +56,20 @@ Arize Phoenix 是一个开源的 AI 可观测性平台，专为 LLM 应用设计
    cp .env.example .env
    ```
 
-2. （可选）生产环境下，请设置安全的密码和密钥：
+2. 通过编辑 `.env` 选择部署模式（默认为 `sqlite`）。
 
-   ```bash
-   # 生成认证密钥
-   openssl rand -base64 32
+   **使用 SQLite（默认）：**
+   确保 `.env` 包含：
+
+   ```dotenv
+   COMPOSE_PROFILES=sqlite
+   ```
+
+   **使用 PostgreSQL：**
+   将 `.env` 修改为：
+
+   ```dotenv
+   COMPOSE_PROFILES=postgres
    ```
 
 3. 启动服务：
