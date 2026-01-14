@@ -1,0 +1,43 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  memos:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}neosmemo/memos:${MEMOS_VERSION:-0.25.3}
+    ports:
+      - "${MEMOS_PORT_OVERRIDE:-5230}:5230"
+    volumes:
+      - memos_data:/var/opt/memos
+    environment:
+      TZ: ${TZ:-UTC}
+      MEMOS_MODE: ${MEMOS_MODE:-prod}
+      MEMOS_ADDR: ${MEMOS_ADDR:-0.0.0.0}
+      MEMOS_PORT: ${MEMOS_PORT:-5230}
+      MEMOS_DATA: ${MEMOS_DATA:-/var/opt/memos}
+      MEMOS_DRIVER: ${MEMOS_DRIVER:-sqlite}
+      # Uncomment and configure for PostgreSQL or MySQL
+      # MEMOS_DSN: ${MEMOS_DSN:-}
+      # MEMOS_INSTANCE_URL: ${MEMOS_INSTANCE_URL:-}
+    deploy:
+      resources:
+        limits:
+          cpus: ${MEMOS_CPU_LIMIT:-1.0}
+          memory: ${MEMOS_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${MEMOS_CPU_RESERVATION:-0.25}
+          memory: ${MEMOS_MEMORY_RESERVATION:-128M}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5230/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  memos_data:
