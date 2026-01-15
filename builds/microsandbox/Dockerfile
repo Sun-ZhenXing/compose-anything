@@ -15,7 +15,7 @@ RUN apt update && \
 # Install microsandbox using the official install script
 # This ensures we always get the latest version if MICROSANDBOX_VERSION is not set
 # and handles architecture detection automatically
-RUN VERSION="${MICROSANDBOX_VERSION:-}" \
+RUN VERSION="${MICROSANDBOX_VERSION:-}" && \
     curl -fsSL https://raw.githubusercontent.com/zerocore-ai/microsandbox/refs/heads/main/scripts/install_microsandbox.sh | sh
 
 # Setup directories for root user
