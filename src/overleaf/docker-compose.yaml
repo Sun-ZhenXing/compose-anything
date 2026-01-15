@@ -1,0 +1,106 @@
+# Overleaf Docker Compose
+# Overleaf is a web-based collaborative LaTeX editor
+# Provides standalone deployment with MongoDB for development/testing
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  # MongoDB for Overleaf data storage
+  mongo:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}mongo:${MONGO_VERSION:-6.0}
+    hostname: overleaf-mongo
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${MONGO_CPU_LIMIT:-1.00}
+          memory: ${MONGO_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${MONGO_CPU_RESERVATION:-0.25}
+          memory: ${MONGO_MEMORY_RESERVATION:-512M}
+
+  # Redis for session and cache storage
+  redis:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-7-alpine}
+    hostname: overleaf-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${REDIS_CPU_LIMIT:-0.50}
+          memory: ${REDIS_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${REDIS_CPU_RESERVATION:-0.25}
+          memory: ${REDIS_MEMORY_RESERVATION:-256M}
+
+  # Overleaf main application
+  overleaf:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}sharelatex/sharelatex:${OVERLEAF_VERSION:-5.2.1}
+    hostname: overleaf
+    ports:
+      - "${OVERLEAF_PORT_OVERRIDE:-8080}:80"
+    volumes:
+      - overleaf_data:/var/lib/overleaf
+    environment:
+      - TZ=${TZ:-UTC}
+      - MONGO_URL=mongodb://mongo:27017/overleaf
+      - REDIS_URL=redis://redis:6379
+      - ENABLE_SUBSCRIPTIONS=${ENABLE_SUBSCRIPTIONS:-false}
+      - SHARELATEX_APP_NAME=${SHARELATEX_APP_NAME:-Overleaf}
+      - SHARELATEX_SECURE_COOKIE=${SHARELATEX_SECURE_COOKIE:-false}
+      - SHARELATEX_ADMIN_EMAILS=${SHARELATEX_ADMIN_EMAILS:-admin@example.com}
+      - SHARELATEX_BEHIND_PROXY=${SHARELATEX_BEHIND_PROXY:-true}
+      - SHARELATEX_NAV_TITLE=${SHARELATEX_NAV_TITLE:-Community Edition}
+      - LATEX_AVAILABLE_LATEXMK=${LATEX_AVAILABLE_LATEXMK:-true}
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${OVERLEAF_CPU_LIMIT:-2.00}
+          memory: ${OVERLEAF_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${OVERLEAF_CPU_RESERVATION:-0.50}
+          memory: ${OVERLEAF_MEMORY_RESERVATION:-1G}
+
+volumes:
+  mongo_data:
+  redis_data:
+  overleaf_data:

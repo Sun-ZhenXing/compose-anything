@@ -38,6 +38,7 @@ These services require building custom Docker images from source.
 | [DNSMasq](./src/dnsmasq)                                       | 2.91                |
 | [Dockge](./src/dockge)                                         | 1                   |
 | [Docker Registry](./src/docker-registry)                       | 3.0.0               |
+| [Doris](./src/doris)                                           | 3.0.0               |
 | [DuckDB](./src/duckdb)                                         | v1.1.3              |
 | [Easy Dataset](./apps/easy-dataset)                            | 1.5.1               |
 | [Elasticsearch](./src/elasticsearch)                           | 8.16.1              |
@@ -101,6 +102,7 @@ These services require building custom Docker images from source.
 | [OpenObserve](./apps/openobserve)                              | v0.50.0             |
 | [OpenSearch](./src/opensearch)                                 | 2.19.0              |
 | [OpenTelemetry Collector](./src/otel-collector)                | 0.115.1             |
+| [Overleaf](./src/overleaf)                                     | 5.2.1               |
 | [PocketBase](./src/pocketbase)                                 | 0.30.0              |
 | [Podman](./src/podman)                                         | v5.7.1              |
 | [Portainer](./src/portainer)                                   | 2.27.3-alpine       |

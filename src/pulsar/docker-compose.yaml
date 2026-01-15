@@ -15,7 +15,7 @@ services:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}apachepulsar/pulsar:${PULSAR_VERSION:-4.0.7}
     profiles:
-      - ${COMPOSE_PROFILES:-}
+      - ""
     hostname: pulsar-standalone
     ports:
       - "${PULSAR_BROKER_PORT_OVERRIDE:-6650}:6650"
