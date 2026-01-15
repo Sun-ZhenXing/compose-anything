@@ -29,6 +29,7 @@ These services require building custom Docker images from source.
 | [Bifrost Gateway](./src/bifrost-gateway)                       | v1.3.63             |
 | [Bolt.diy](./apps/bolt-diy)                                    | latest              |
 | [Budibase](./src/budibase)                                     | 3.23.0              |
+| [BuildingAI](./apps/buildingai)                                | latest              |
 | [Bytebot](./src/bytebot)                                       | edge                |
 | [Clash](./src/clash)                                           | 1.18.0              |
 | [ClickHouse](./src/clickhouse)                                 | 24.11.1             |
@@ -96,6 +97,8 @@ These services require building custom Docker images from source.
 | [OpenCoze](./apps/opencoze)                                    | See Docs            |
 | [OpenCut](./src/opencut)                                       | latest              |
 | [OpenList](./src/openlist)                                     | latest              |
+| [OpenLIT](./apps/openlit)                                      | latest              |
+| [OpenObserve](./apps/openobserve)                              | v0.50.0             |
 | [OpenSearch](./src/opensearch)                                 | 2.19.0              |
 | [OpenTelemetry Collector](./src/otel-collector)                | 0.115.1             |
 | [PocketBase](./src/pocketbase)                                 | 0.30.0              |

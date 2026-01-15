@@ -1,0 +1,117 @@
+# BuildingAI - AI Application Development Platform
+# An intelligent application development platform built on NestJS + Vue 3
+# https://github.com/BidingCC/BuildingAI
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  redis:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-8.2.2}-alpine
+    environment:
+      - TZ=${TZ:-UTC}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+    ports:
+      - "${REDIS_PORT_OVERRIDE:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    command: >
+      sh -c '
+        if [ -n "$REDIS_PASSWORD" ]; then
+          exec redis-server --requirepass "$REDIS_PASSWORD"
+        else
+          exec redis-server
+        fi
+      '
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping 2>/dev/null || redis-cli ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${REDIS_CPU_LIMIT:-0.25}
+          memory: ${REDIS_MEMORY_LIMIT:-256M}
+        reservations:
+          cpus: ${REDIS_CPU_RESERVATION:-0.10}
+          memory: ${REDIS_MEMORY_RESERVATION:-128M}
+
+  postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.6-alpine}
+    environment:
+      - TZ=${TZ:-UTC}
+      - POSTGRES_USER=${DB_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=${DB_DATABASE:-buildingai}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "${POSTGRES_PORT_OVERRIDE:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: ${POSTGRES_CPU_LIMIT:-1.0}
+          memory: ${POSTGRES_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${POSTGRES_CPU_RESERVATION:-0.25}
+          memory: ${POSTGRES_MEMORY_RESERVATION:-256M}
+
+  buildingai:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}bidingcc/buildingai:${BUILDINGAI_VERSION:-latest}
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      - TZ=${TZ:-UTC}
+      - SERVER_PORT=${SERVER_PORT:-4090}
+      - NPM_REGISTRY_URL=${NPM_REGISTRY_URL:-}
+      - DB_USERNAME=${DB_USERNAME:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - DB_DATABASE=${DB_DATABASE:-buildingai}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+    ports:
+      - "${BUILDINGAI_PORT_OVERRIDE:-4090}:${SERVER_PORT:-4090}"
+    volumes:
+      - buildingai_data:/app/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:${SERVER_PORT:-4090}/consoleapi/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 180s
+    deploy:
+      resources:
+        limits:
+          cpus: ${BUILDINGAI_CPU_LIMIT:-2.0}
+          memory: ${BUILDINGAI_MEMORY_LIMIT:-3584M}
+        reservations:
+          cpus: ${BUILDINGAI_CPU_RESERVATION:-0.5}
+          memory: ${BUILDINGAI_MEMORY_RESERVATION:-512M}
+
+volumes:
+  redis_data:
+  postgres_data:
+  buildingai_data:
