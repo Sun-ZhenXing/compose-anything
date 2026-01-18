@@ -1,0 +1,83 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  docker_android:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}halimqarroum/docker-android:${DOCKER_ANDROID_VERSION:-api-33}
+    ports:
+      - "${DOCKER_ANDROID_ADB_PORT_OVERRIDE:-5555}:5555"
+      - "${DOCKER_ANDROID_CONSOLE_PORT_OVERRIDE:-5554}:5554"
+    volumes:
+      - docker_android_data:/data
+      - ${DOCKER_ANDROID_KEYS_DIR:-./keys}:/keys:ro
+    environment:
+      - TZ=${TZ:-UTC}
+      - DISABLE_ANIMATION=${DOCKER_ANDROID_DISABLE_ANIMATION:-false}
+      - DISABLE_HIDDEN_POLICY=${DOCKER_ANDROID_DISABLE_HIDDEN_POLICY:-false}
+      - SKIP_AUTH=${DOCKER_ANDROID_SKIP_AUTH:-true}
+      - MEMORY=${DOCKER_ANDROID_MEMORY:-8192}
+      - CORES=${DOCKER_ANDROID_CORES:-4}
+    devices:
+      - "${DOCKER_ANDROID_KVM_DEVICE:-/dev/kvm}:/dev/kvm"
+    healthcheck:
+      test: ["CMD-SHELL", "adb devices 2>/dev/null | grep -q emulator"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${DOCKER_ANDROID_CPU_LIMIT:-2}
+          memory: ${DOCKER_ANDROID_MEMORY_LIMIT:-8G}
+        reservations:
+          cpus: ${DOCKER_ANDROID_CPU_RESERVATION:-1}
+          memory: ${DOCKER_ANDROID_MEMORY_RESERVATION:-4G}
+
+  docker_android_gpu:
+    <<: *defaults
+    profiles:
+      - gpu
+    image: ${GLOBAL_REGISTRY:-}halimqarroum/docker-android:${DOCKER_ANDROID_GPU_VERSION:-api-33-cuda}
+    ports:
+      - "${DOCKER_ANDROID_ADB_PORT_OVERRIDE:-5555}:5555"
+      - "${DOCKER_ANDROID_CONSOLE_PORT_OVERRIDE:-5554}:5554"
+    volumes:
+      - docker_android_data:/data
+      - ${DOCKER_ANDROID_KEYS_DIR:-./keys}:/keys:ro
+    environment:
+      - TZ=${TZ:-UTC}
+      - DISABLE_ANIMATION=${DOCKER_ANDROID_DISABLE_ANIMATION:-false}
+      - DISABLE_HIDDEN_POLICY=${DOCKER_ANDROID_DISABLE_HIDDEN_POLICY:-false}
+      - SKIP_AUTH=${DOCKER_ANDROID_SKIP_AUTH:-true}
+      - MEMORY=${DOCKER_ANDROID_MEMORY:-8192}
+      - CORES=${DOCKER_ANDROID_CORES:-4}
+    devices:
+      - "${DOCKER_ANDROID_KVM_DEVICE:-/dev/kvm}:/dev/kvm"
+    healthcheck:
+      test: ["CMD-SHELL", "adb devices 2>/dev/null | grep -q emulator"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${DOCKER_ANDROID_CPU_LIMIT:-2}
+          memory: ${DOCKER_ANDROID_MEMORY_LIMIT:-8G}
+        reservations:
+          cpus: ${DOCKER_ANDROID_CPU_RESERVATION:-1}
+          memory: ${DOCKER_ANDROID_MEMORY_RESERVATION:-4G}
+          devices:
+            - driver: nvidia
+              count: ${DOCKER_ANDROID_GPU_COUNT:-1}
+              capabilities: [gpu]
+
+volumes:
+  docker_android_data:

@@ -40,13 +40,13 @@
 
 ### 基础配置
 
-| 环境变量                    | 说明                 | 默认值              |
-| --------------------------- | -------------------- | ------------------- |
-| `OPENOBSERVE_VERSION`       | OpenObserve 镜像版本 | `v0.50.0`           |
-| `OPENOBSERVE_PORT_OVERRIDE` | Web UI 端口          | `5080`              |
-| `ZO_ROOT_USER_EMAIL`        | 根用户邮箱           | `admin@example.com` |
-| `ZO_ROOT_USER_PASSWORD`     | 根用户密码           | `Complexpass#123`   |
-| `ZO_DATA_DIR`               | 容器内数据目录       | `/data`             |
+| 环境变量                    | 说明                 | 默认值             |
+| --------------------------- | -------------------- | ------------------ |
+| `OPENOBSERVE_VERSION`       | OpenObserve 镜像版本 | `v0.50.0`          |
+| `OPENOBSERVE_PORT_OVERRIDE` | Web UI 端口          | `5080`             |
+| `ZO_ROOT_USER_EMAIL`        | 根用户邮箱           | `root@example.com` |
+| `ZO_ROOT_USER_PASSWORD`     | 根用户密码           | `Complexpass#123`  |
+| `ZO_DATA_DIR`               | 容器内数据目录       | `/data`            |
 
 ### S3 对象存储（可选）
 
@@ -83,7 +83,7 @@ OpenObserve 支持多种采集方式：
 ### 通过 HTTP 采集日志
 
 ```bash
-curl -u admin@example.com:Complexpass#123 \
+curl -u root@example.com:Complexpass#123 \
   -H "Content-Type: application/json" \
   http://localhost:5080/api/default/logs/_json \
   -d '[{"message": "Hello OpenObserve", "level": "info"}]'

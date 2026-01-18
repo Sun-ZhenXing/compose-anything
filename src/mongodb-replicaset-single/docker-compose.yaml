@@ -14,9 +14,6 @@ x-mongo: &mongo
     MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
     MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-password}
     MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-admin}
-  volumes:
-    - ./secrets/rs0.key:/data/rs0.key:ro
-    - mongo_data:/data/db
   entrypoint:
     - bash
     - -c
@@ -49,6 +46,9 @@ services:
     <<: *mongo
     ports:
       - "${MONGO_PORT_OVERRIDE_1:-27017}:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./secrets/rs0.key:/data/rs0.key:ro
 
   mongo-init:
     <<: *defaults
@@ -66,6 +66,8 @@ services:
       MONGO_HOST: ${MONGO_HOST:-host.docker.internal}
     volumes:
       - ./secrets/rs0.key:/data/rs0.key:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     entrypoint:
       - bash
       - -c

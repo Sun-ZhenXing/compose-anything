@@ -40,13 +40,13 @@
 
 ### Basic Configuration
 
-| Environment Variable        | Description                     | Default             |
-| --------------------------- | ------------------------------- | ------------------- |
-| `OPENOBSERVE_VERSION`       | OpenObserve image version       | `v0.50.0`           |
-| `OPENOBSERVE_PORT_OVERRIDE` | Web UI port                     | `5080`              |
-| `ZO_ROOT_USER_EMAIL`        | Root user email                 | `admin@example.com` |
-| `ZO_ROOT_USER_PASSWORD`     | Root user password              | `Complexpass#123`   |
-| `ZO_DATA_DIR`               | Data directory inside container | `/data`             |
+| Environment Variable        | Description                     | Default            |
+| --------------------------- | ------------------------------- | ------------------ |
+| `OPENOBSERVE_VERSION`       | OpenObserve image version       | `v0.50.0`          |
+| `OPENOBSERVE_PORT_OVERRIDE` | Web UI port                     | `5080`             |
+| `ZO_ROOT_USER_EMAIL`        | Root user email                 | `root@example.com` |
+| `ZO_ROOT_USER_PASSWORD`     | Root user password              | `Complexpass#123`  |
+| `ZO_DATA_DIR`               | Data directory inside container | `/data`            |
 
 ### S3 Object Storage (Optional)
 
@@ -83,7 +83,7 @@ Send OTLP data to `http://localhost:5080/api/default/` with authentication.
 ### Logs via HTTP
 
 ```bash
-curl -u admin@example.com:Complexpass#123 \
+curl -u root@example.com:Complexpass#123 \
   -H "Content-Type: application/json" \
   http://localhost:5080/api/default/logs/_json \
   -d '[{"message": "Hello OpenObserve", "level": "info"}]'

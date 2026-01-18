@@ -14,8 +14,6 @@ x-mongo: &mongo
     MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
     MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-password}
     MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-admin}
-  volumes:
-    - ./secrets/rs0.key:/data/rs0.key:ro
   entrypoint:
     - bash
     - -c
@@ -47,16 +45,25 @@ services:
     <<: *mongo
     ports:
       - "${MONGO_PORT_OVERRIDE_1:-27017}:27017"
+    volumes:
+      - mongo1_data:/data/db
+      - ./secrets/rs0.key:/data/rs0.key:ro
 
   mongo2:
     <<: *mongo
     ports:
       - "${MONGO_PORT_OVERRIDE_2:-27018}:27017"
+    volumes:
+      - mongo2_data:/data/db
+      - ./secrets/rs0.key:/data/rs0.key:ro
 
   mongo3:
     <<: *mongo
     ports:
       - "${MONGO_PORT_OVERRIDE_3:-27019}:27017"
+    volumes:
+      - mongo3_data:/data/db
+      - ./secrets/rs0.key:/data/rs0.key:ro
 
   mongo-init:
     <<: *defaults
@@ -78,6 +85,8 @@ services:
       MONGO_PORT_2: ${MONGO_PORT_OVERRIDE_2:-27018}
       MONGO_PORT_3: ${MONGO_PORT_OVERRIDE_3:-27019}
       MONGO_HOST: ${MONGO_HOST:-host.docker.internal}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./secrets/rs0.key:/data/rs0.key:ro
     entrypoint:
@@ -122,3 +131,8 @@ services:
         reservations:
           cpus: ${MONGO_REPLICA_INIT_CPU_RESERVATION:-0.50}
           memory: ${MONGO_REPLICA_INIT_MEMORY_RESERVATION:-1024M}
+
+volumes:
+  mongo1_data:
+  mongo2_data:
+  mongo3_data:
