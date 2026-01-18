@@ -101,32 +101,42 @@ docker compose run --rm microsandbox --help
 
 ### 环境变量
 
-| 变量                              | 描述                   | 默认值  |
-| --------------------------------- | ---------------------- | ------- |
-| `MICROSANDBOX_VERSION`            | MicroSandbox 版本      | `0.2.6` |
-| `MICROSANDBOX_AUTO_PULL_IMAGES`   | 构建时自动拉取基础镜像 | `true`  |
-| `MICROSANDBOX_PORT_OVERRIDE`      | MicroSandbox 端口映射  | `5555`  |
-| `TZ`                              | 容器时区               | `UTC`   |
-| `MICROSANDBOX_CPU_LIMIT`          | CPU 核心数上限         | `4.00`  |
-| `MICROSANDBOX_CPU_RESERVATION`    | CPU 核心数预留         | `1.00`  |
-| `MICROSANDBOX_MEMORY_LIMIT`       | 最大内存分配           | `4G`    |
-| `MICROSANDBOX_MEMORY_RESERVATION` | 内存预留               | `1G`    |
+| 变量                              | 描述                     | 默认值      |
+| --------------------------------- | ------------------------ | ----------- |
+| `MICROSANDBOX_VERSION`            | MicroSandbox 版本        | `latest`    |
+| `DEBIAN_VERSION`                  | Debian 基础镜像版本      | `13.2-slim` |
+| `MICROSANDBOX_AUTO_PULL_IMAGES`   | 构建时自动拉取基础镜像   | `true`      |
+| `MICROSANDBOX_DEV_MODE`           | 启用开发模式（无需 API 密钥） | `true`      |
+| `MICROSANDBOX_PORT`               | 容器内部端口             | `5555`      |
+| `MICROSANDBOX_PORT_OVERRIDE`      | 外部主机端口映射         | `5555`      |
+| `TZ`                              | 容器时区                 | `UTC`       |
+| `MICROSANDBOX_CPU_LIMIT`          | CPU 核心数上限           | `4`         |
+| `MICROSANDBOX_CPU_RESERVATION`    | CPU 核心数预留           | `1`         |
+| `MICROSANDBOX_MEMORY_LIMIT`       | 最大内存分配             | `4G`        |
+| `MICROSANDBOX_MEMORY_RESERVATION` | 内存预留                 | `1G`        |
 
 ### 卷挂载
 
-- `microsandbox_config`：MicroSandbox 配置和状态
+- `microsandbox_namespaces`：MicroSandbox 命名空间配置和虚拟机状态
 - `microsandbox_workspace`：沙箱操作的工作目录
 
 ## 安全注意事项
 
 ### 特权模式
 
-MicroSandbox 需要 `privileged: true` 以访问 KVM 设备。这对于硬件虚拟化是必需的，但会授予容器提升的权限。请考虑以下事项：
+MicroSandbox 需要 `privileged: true` 以访问 KVM 设备。这对于硬件虚拟化是必需的，但会授予容器提升的权限。请考虑以下事项:
 
 - 仅在受信任的系统上运行 MicroSandbox
 - 审查您计划在沙箱中执行的代码
 - 保持 MicroSandbox 镜像更新以获取安全补丁
 - 如果运行不受信任的代码，请使用网络隔离
+- 在生产环境中，通过设置 `MICROSANDBOX_DEV_MODE=false` 禁用开发模式
+
+**为什么需要特权模式？**
+
+MicroSandbox 使用 KVM（基于内核的虚拟机）来提供硬件级隔离。与共享主机内核的 Docker 容器不同，MicroSandbox 创建具有自己内核的真实虚拟机。这提供了更强的安全边界，即使 Docker 容器本身以特权模式运行。
+
+特权容器只是协调器——实际的不受信任代码在具有硬件强制边界的隔离虚拟机内运行。此架构专门设计用于安全地运行不受信任的代码。
 
 ### KVM 设备访问
 

@@ -101,20 +101,23 @@ docker compose run --rm microsandbox --help
 
 ### Environment Variables
 
-| Variable                          | Description                    | Default |
-| --------------------------------- | ------------------------------ | ------- |
-| `MICROSANDBOX_VERSION`            | MicroSandbox version           | `0.2.6` |
-| `MICROSANDBOX_AUTO_PULL_IMAGES`   | Auto pull base images on build | `true`  |
-| `MICROSANDBOX_PORT_OVERRIDE`      | Port mapping for MicroSandbox  | `5555`  |
-| `TZ`                              | Container timezone             | `UTC`   |
-| `MICROSANDBOX_CPU_LIMIT`          | Maximum CPU cores              | `4.00`  |
-| `MICROSANDBOX_CPU_RESERVATION`    | Reserved CPU cores             | `1.00`  |
-| `MICROSANDBOX_MEMORY_LIMIT`       | Maximum memory allocation      | `4G`    |
-| `MICROSANDBOX_MEMORY_RESERVATION` | Reserved memory                | `1G`    |
+| Variable                          | Description                            | Default   |
+| --------------------------------- | -------------------------------------- | --------- |
+| `MICROSANDBOX_VERSION`            | MicroSandbox version                   | `latest`  |
+| `DEBIAN_VERSION`                  | Debian base image version              | `13.2-slim` |
+| `MICROSANDBOX_AUTO_PULL_IMAGES`   | Auto pull base images on build         | `true`    |
+| `MICROSANDBOX_DEV_MODE`           | Enable dev mode (no API key required)  | `true`    |
+| `MICROSANDBOX_PORT`               | Internal container port                | `5555`    |
+| `MICROSANDBOX_PORT_OVERRIDE`      | External host port mapping             | `5555`    |
+| `TZ`                              | Container timezone                     | `UTC`     |
+| `MICROSANDBOX_CPU_LIMIT`          | Maximum CPU cores                      | `4`       |
+| `MICROSANDBOX_CPU_RESERVATION`    | Reserved CPU cores                     | `1`       |
+| `MICROSANDBOX_MEMORY_LIMIT`       | Maximum memory allocation              | `4G`      |
+| `MICROSANDBOX_MEMORY_RESERVATION` | Reserved memory                        | `1G`      |
 
 ### Volume Mounts
 
-- `microsandbox_config`: MicroSandbox configuration and state
+- `microsandbox_namespaces`: MicroSandbox namespace configurations and VM state
 - `microsandbox_workspace`: Working directory for sandbox operations
 
 ## Security Considerations
@@ -127,6 +130,13 @@ MicroSandbox requires `privileged: true` to access KVM devices. This is necessar
 - Review the code you plan to execute in the sandbox
 - Keep the MicroSandbox image updated with security patches
 - Use network isolation if running untrusted code
+- In production environments, disable dev mode by setting `MICROSANDBOX_DEV_MODE=false`
+
+**Why Privileged Mode?**
+
+MicroSandbox uses KVM (Kernel-based Virtual Machine) to provide hardware-level isolation. Unlike Docker containers, which share the host kernel, MicroSandbox creates true virtual machines with their own kernels. This provides much stronger security boundaries, even though the Docker container itself runs in privileged mode.
+
+The privileged container is only the orchestrator - the actual untrusted code runs inside isolated VMs with hardware-enforced boundaries. This architecture is specifically designed for running untrusted code safely.
 
 ### KVM Device Access
 

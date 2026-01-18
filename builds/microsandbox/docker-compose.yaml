@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: 3
+      max-file: "3"
 
 services:
   microsandbox:
@@ -21,11 +21,14 @@ services:
         - linux/arm64
       args:
         - DEBIAN_VERSION=${DEBIAN_VERSION:-13.2-slim}
-        - MICROSANDBOX_VERSION=${MICROSANDBOX_VERSION:-0.2.6}
+        - MICROSANDBOX_VERSION=${MICROSANDBOX_VERSION:-}
         - MICROSANDBOX_AUTO_PULL_IMAGES=${MICROSANDBOX_AUTO_PULL_IMAGES:-true}
-    image: ${GLOBAL_REGISTRY:-}alexsuntop/microsandbox:${MICROSANDBOX_VERSION:-0.2.6}
+    image: ${GLOBAL_REGISTRY:-ghcr.io/zerocore-ai/}microsandbox:${MICROSANDBOX_VERSION:-latest}
     ports:
-      - ${MICROSANDBOX_PORT_OVERRIDE:-5555}:${MICROSANDBOX_PORT:-5555}
+      - "${MICROSANDBOX_PORT_OVERRIDE:-5555}:${MICROSANDBOX_PORT:-5555}"
+    # Privileged mode and relaxed security profiles are required for KVM access
+    # This provides hardware-level isolation inside the container
+    # See README.md for security considerations
     privileged: true
     security_opt:
       - apparmor=unconfined
@@ -34,31 +37,41 @@ services:
       - TZ=${TZ:-UTC}
       - MICROSANDBOX_HOME=/root/.microsandbox
     volumes:
-      - microsandbox_config:/root/.microsandbox/namespaces
+      # Store namespace configurations and VM state
+      - microsandbox_namespaces:/root/.microsandbox/namespaces
+      # Working directory for sandbox operations
       - microsandbox_workspace:/workspace
     devices:
+      # KVM device for hardware-accelerated virtualization
       - /dev/kvm:/dev/kvm
+      # TUN device for network tunneling (TAP/TUN interfaces)
       - /dev/net/tun:/dev/net/tun
     command:
-      [
-        "server",
-        "start",
-        "--host",
-        "0.0.0.0",
-        "--port",
-        "${MICROSANDBOX_PORT:-5555}",
-        "--dev",
-      ]
+      - /bin/sh
+      - -c
+      - >
+        if [ "$${MICROSANDBOX_DEV_MODE:-true}" = "true" ]; then
+          DEV_FLAG="--dev";
+        else
+          DEV_FLAG="";
+        fi;
+        exec server start --host 0.0.0.0 --port $${MICROSANDBOX_PORT:-5555} $${DEV_FLAG};
     working_dir: /workspace
+    healthcheck:
+      test: ["CMD-SHELL", "msb --version || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     deploy:
       resources:
         limits:
-          cpus: ${MICROSANDBOX_CPU_LIMIT:-4.00}
+          cpus: ${MICROSANDBOX_CPU_LIMIT:-4}
           memory: ${MICROSANDBOX_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${MICROSANDBOX_CPU_RESERVATION:-1.00}
+          cpus: ${MICROSANDBOX_CPU_RESERVATION:-1}
           memory: ${MICROSANDBOX_MEMORY_RESERVATION:-1G}
 
 volumes:
-  microsandbox_config:
+  microsandbox_namespaces:
   microsandbox_workspace:
