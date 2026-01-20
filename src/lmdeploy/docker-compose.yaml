@@ -1,0 +1,50 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  lmdeploy:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}openmmlab/lmdeploy:${LMDEPLOY_VERSION:-v0.11.1-cu12.8}
+    ports:
+      - "${LMDEPLOY_PORT_OVERRIDE:-23333}:23333"
+    volumes:
+      - lmdeploy_data:/root/.cache
+    environment:
+      - TZ=${TZ:-UTC}
+      - HF_TOKEN=${HF_TOKEN:-}
+    command:
+      - lmdeploy
+      - serve
+      - api_server
+      - ${LMDEPLOY_MODEL:-internlm/internlm2-chat-1_8b}
+      - --server-name
+      - "0.0.0.0"
+      - --server-port
+      - "23333"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:23333/v1/models"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LMDEPLOY_CPU_LIMIT:-4.0}
+          memory: ${LMDEPLOY_MEMORY_LIMIT:-8G}
+        reservations:
+          cpus: ${LMDEPLOY_CPU_RESERVATION:-2.0}
+          memory: ${LMDEPLOY_MEMORY_RESERVATION:-4G}
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    shm_size: ${LMDEPLOY_SHM_SIZE:-4g}
+
+volumes:
+  lmdeploy_data:

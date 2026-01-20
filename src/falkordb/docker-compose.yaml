@@ -1,0 +1,36 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  falkordb:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}falkordb/falkordb:${FALKORDB_VERSION:-v4.14.11}
+    ports:
+      - "${FALKORDB_PORT_OVERRIDE:-6379}:6379"
+      - "${FALKORDB_BROWSER_PORT_OVERRIDE:-3000}:3000"
+    volumes:
+      - falkordb_data:/data
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${FALKORDB_CPU_LIMIT:-1.00}
+          memory: ${FALKORDB_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${FALKORDB_CPU_RESERVATION:-0.25}
+          memory: ${FALKORDB_MEMORY_RESERVATION:-512M}
+
+volumes:
+  falkordb_data:

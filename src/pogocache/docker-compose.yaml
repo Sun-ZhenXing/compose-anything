@@ -1,0 +1,42 @@
+# Docker Compose for Pogocache
+# Pogocache is fast caching software built from scratch with a focus on low latency and cpu efficiency.
+# See: https://github.com/tidwall/pogocache
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 10m
+      max-file: "3"
+
+services:
+  pogocache:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}pogocache/pogocache:${POGOCACHE_VERSION:-1.3.1}
+    ports:
+      - "${POGOCACHE_PORT_OVERRIDE:-9401}:9401"
+    environment:
+      - TZ=${TZ:-UTC}
+    volumes:
+      - pogocache_data:/data
+    command: >
+      ${POGOCACHE_EXTRA_ARGS:-}
+      --persist /data/pogocache.db
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 9401 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: ${POGOCACHE_CPU_LIMIT:-0.50}
+          memory: ${POGOCACHE_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${POGOCACHE_CPU_RESERVATION:-0.10}
+          memory: ${POGOCACHE_MEMORY_RESERVATION:-128M}
+
+volumes:
+  pogocache_data:

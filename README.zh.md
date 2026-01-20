@@ -44,6 +44,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Easy Dataset](./apps/easy-dataset)                            | 1.5.1                 |
 | [Elasticsearch](./src/elasticsearch)                           | 8.16.1                |
 | [etcd](./src/etcd)                                             | 3.6.0                 |
+| [FalkorDB](./src/falkordb)                                     | v4.14.11              |
 | [Firecrawl](./src/firecrawl)                                   | latest                |
 | [Flowise](./src/flowise)                                       | 3.0.12                |
 | [frpc](./src/frpc)                                             | 0.65.0                |
@@ -70,6 +71,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [LibreOffice](./src/libreoffice)                               | latest                |
 | [libSQL Server](./src/libsql)                                  | latest                |
 | [LiteLLM](./src/litellm)                                       | main-stable           |
+| [LMDeploy](./src/lmdeploy)                                     | v0.11.1               |
 | [Logstash](./src/logstash)                                     | 8.16.1                |
 | [MariaDB Galera Cluster](./src/mariadb-galera)                 | 11.7.2                |
 | [Memos](./src/memos)                                           | 0.25.3                |
@@ -107,6 +109,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Overleaf](./src/overleaf)                                     | 5.2.1                 |
 | [PocketBase](./src/pocketbase)                                 | 0.30.0                |
 | [Podman](./src/podman)                                         | v5.7.1                |
+| [Pogocache](./src/pogocache)                                   | 1.3.1                 |
 | [Portainer](./src/portainer)                                   | 2.27.3-alpine         |
 | [Portkey AI Gateway](./src/portkey-gateway)                    | latest                |
 | [PostgreSQL](./src/postgres)                                   | 17.6                  |
