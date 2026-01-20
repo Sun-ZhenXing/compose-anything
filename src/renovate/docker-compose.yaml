@@ -12,7 +12,7 @@ x-defaults: &defaults
 services:
   renovate:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}renovate/renovate:${RENOVATE_VERSION:-42.52.5-full}
+    image: ${GLOBAL_REGISTRY:-}renovate/renovate:${RENOVATE_VERSION:-42.85.4-full}
 
     # Renovate runs as a scheduled job, not a continuous service
     # Use 'docker compose run --rm renovate' to execute manually

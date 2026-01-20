@@ -53,7 +53,7 @@ Renovate 是一个自动化依赖更新工具，当有新版本可用时，它�
 
 | 变量                    | 描述              | 默认值         |
 | ----------------------- | ----------------- | -------------- |
-| `RENOVATE_VERSION`      | Renovate 镜像版本 | `42.52.5-full` |
+| `RENOVATE_VERSION`      | Renovate 镜像版本 | `42.85.4-full` |
 | `RENOVATE_PLATFORM`     | 平台类型          | `github`       |
 | `RENOVATE_TOKEN`        | 身份验证令牌      | **（必需）**   |
 | `RENOVATE_REPOSITORIES` | 要处理的仓库      | `''`           |

@@ -53,7 +53,7 @@ Key environment variables in `.env`:
 
 | Variable                | Description             | Default        |
 | ----------------------- | ----------------------- | -------------- |
-| `RENOVATE_VERSION`      | Renovate image version  | `42.52.5-full` |
+| `RENOVATE_VERSION`      | Renovate image version  | `42.85.4-full` |
 | `RENOVATE_PLATFORM`     | Platform type           | `github`       |
 | `RENOVATE_TOKEN`        | Authentication token    | **(required)** |
 | `RENOVATE_REPOSITORIES` | Repositories to process | `''`           |

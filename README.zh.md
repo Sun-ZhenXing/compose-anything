@@ -45,6 +45,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Elasticsearch](./src/elasticsearch)                           | 8.16.1                |
 | [etcd](./src/etcd)                                             | 3.6.0                 |
 | [Firecrawl](./src/firecrawl)                                   | latest                |
+| [Flowise](./src/flowise)                                       | 3.0.12                |
 | [frpc](./src/frpc)                                             | 0.65.0                |
 | [frps](./src/frps)                                             | 0.65.0                |
 | [Gitea Runner](./src/gitea-runner)                             | 0.2.13                |
@@ -117,7 +118,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Redpanda](./src/redpanda)                                     | v24.3.1               |
 | [Redis Cluster](./src/redis-cluster)                           | 8.2.1                 |
 | [Redis](./src/redis)                                           | 8.2.1                 |
-| [Renovate](./src/renovate)                                     | 42.52.5-full          |
+| [Renovate](./src/renovate)                                     | 42.85.4-full          |
 | [Restate Cluster](./src/restate-cluster)                       | 1.5.3                 |
 | [Restate](./src/restate)                                       | 1.5.3                 |
 | [SearXNG](./src/searxng)                                       | 2025.1.20-1ce14ef99   |

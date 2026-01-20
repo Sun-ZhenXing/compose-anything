@@ -101,19 +101,19 @@ docker compose run --rm microsandbox --help
 
 ### 环境变量
 
-| 变量                              | 描述                     | 默认值      |
-| --------------------------------- | ------------------------ | ----------- |
-| `MICROSANDBOX_VERSION`            | MicroSandbox 版本        | `latest`    |
-| `DEBIAN_VERSION`                  | Debian 基础镜像版本      | `13.2-slim` |
-| `MICROSANDBOX_AUTO_PULL_IMAGES`   | 构建时自动拉取基础镜像   | `true`      |
+| 变量                              | 描述                          | 默认值      |
+| --------------------------------- | ----------------------------- | ----------- |
+| `MICROSANDBOX_VERSION`            | MicroSandbox 版本             | `latest`    |
+| `DEBIAN_VERSION`                  | Debian 基础镜像版本           | `13.2-slim` |
+| `MICROSANDBOX_AUTO_PULL_IMAGES`   | 构建时自动拉取基础镜像        | `true`      |
 | `MICROSANDBOX_DEV_MODE`           | 启用开发模式（无需 API 密钥） | `true`      |
-| `MICROSANDBOX_PORT`               | 容器内部端口             | `5555`      |
-| `MICROSANDBOX_PORT_OVERRIDE`      | 外部主机端口映射         | `5555`      |
-| `TZ`                              | 容器时区                 | `UTC`       |
-| `MICROSANDBOX_CPU_LIMIT`          | CPU 核心数上限           | `4`         |
-| `MICROSANDBOX_CPU_RESERVATION`    | CPU 核心数预留           | `1`         |
-| `MICROSANDBOX_MEMORY_LIMIT`       | 最大内存分配             | `4G`        |
-| `MICROSANDBOX_MEMORY_RESERVATION` | 内存预留                 | `1G`        |
+| `MICROSANDBOX_PORT`               | 容器内部端口                  | `5555`      |
+| `MICROSANDBOX_PORT_OVERRIDE`      | 外部主机端口映射              | `5555`      |
+| `TZ`                              | 容器时区                      | `UTC`       |
+| `MICROSANDBOX_CPU_LIMIT`          | CPU 核心数上限                | `4`         |
+| `MICROSANDBOX_CPU_RESERVATION`    | CPU 核心数预留                | `1`         |
+| `MICROSANDBOX_MEMORY_LIMIT`       | 最大内存分配                  | `4G`        |
+| `MICROSANDBOX_MEMORY_RESERVATION` | 内存预留                      | `1G`        |
 
 ### 卷挂载
 

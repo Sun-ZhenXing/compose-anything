@@ -101,19 +101,19 @@ docker compose run --rm microsandbox --help
 
 ### Environment Variables
 
-| Variable                          | Description                            | Default   |
-| --------------------------------- | -------------------------------------- | --------- |
-| `MICROSANDBOX_VERSION`            | MicroSandbox version                   | `latest`  |
-| `DEBIAN_VERSION`                  | Debian base image version              | `13.2-slim` |
-| `MICROSANDBOX_AUTO_PULL_IMAGES`   | Auto pull base images on build         | `true`    |
-| `MICROSANDBOX_DEV_MODE`           | Enable dev mode (no API key required)  | `true`    |
-| `MICROSANDBOX_PORT`               | Internal container port                | `5555`    |
-| `MICROSANDBOX_PORT_OVERRIDE`      | External host port mapping             | `5555`    |
-| `TZ`                              | Container timezone                     | `UTC`     |
-| `MICROSANDBOX_CPU_LIMIT`          | Maximum CPU cores                      | `4`       |
-| `MICROSANDBOX_CPU_RESERVATION`    | Reserved CPU cores                     | `1`       |
-| `MICROSANDBOX_MEMORY_LIMIT`       | Maximum memory allocation              | `4G`      |
-| `MICROSANDBOX_MEMORY_RESERVATION` | Reserved memory                        | `1G`      |
+| Variable                          | Description                           | Default     |
+| --------------------------------- | ------------------------------------- | ----------- |
+| `MICROSANDBOX_VERSION`            | MicroSandbox version                  | `latest`    |
+| `DEBIAN_VERSION`                  | Debian base image version             | `13.2-slim` |
+| `MICROSANDBOX_AUTO_PULL_IMAGES`   | Auto pull base images on build        | `true`      |
+| `MICROSANDBOX_DEV_MODE`           | Enable dev mode (no API key required) | `true`      |
+| `MICROSANDBOX_PORT`               | Internal container port               | `5555`      |
+| `MICROSANDBOX_PORT_OVERRIDE`      | External host port mapping            | `5555`      |
+| `TZ`                              | Container timezone                    | `UTC`       |
+| `MICROSANDBOX_CPU_LIMIT`          | Maximum CPU cores                     | `4`         |
+| `MICROSANDBOX_CPU_RESERVATION`    | Reserved CPU cores                    | `1`         |
+| `MICROSANDBOX_MEMORY_LIMIT`       | Maximum memory allocation             | `4G`        |
+| `MICROSANDBOX_MEMORY_RESERVATION` | Reserved memory                       | `1G`        |
 
 ### Volume Mounts
 

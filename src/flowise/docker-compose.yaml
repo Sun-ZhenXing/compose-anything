@@ -1,0 +1,44 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  flowise:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}flowiseai/flowise:${FLOWISE_VERSION:-3.0.12}
+    ports:
+      - "${FLOWISE_PORT_OVERRIDE:-3000}:3000"
+    volumes:
+      - flowise_data:/root/.flowise
+    environment:
+      - TZ=${TZ:-UTC}
+      - PORT=3000
+      - FLOWISE_USERNAME=${FLOWISE_USERNAME:-}
+      - FLOWISE_PASSWORD=${FLOWISE_PASSWORD:-}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3000/api/v1/ping',res=>process.exit(res.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: ${FLOWISE_CPU_LIMIT:-1}
+          memory: ${FLOWISE_MEMORY_LIMIT:-1024M}
+        reservations:
+          cpus: ${FLOWISE_CPU_RESERVATION:-0.5}
+          memory: ${FLOWISE_MEMORY_RESERVATION:-512M}
+
+volumes:
+  flowise_data:
