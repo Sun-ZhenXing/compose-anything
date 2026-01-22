@@ -6,9 +6,11 @@
 
 1. (Optional) Configure the model and port in `.env`.
 2. Start the service:
+
    ```bash
    docker compose up -d
    ```
+
 3. Access the OpenAI compatible API at `http://localhost:23333/v1`.
 
 ## Configuration

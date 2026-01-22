@@ -13,6 +13,12 @@
       "strings": "off"
     }
   },
+  "[yaml]": {
+    "editor.formatOnSave": true
+  },
+  "[dockercompose]": {
+    "editor.formatOnSave": true
+  },
   "files.eol": "\n",
   "cSpell.enabled": false
 }

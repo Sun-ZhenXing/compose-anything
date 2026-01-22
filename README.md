@@ -99,6 +99,7 @@ These services require building custom Docker images from source.
 | [Phoenix (Arize)](./src/phoenix)                               | 12.28.1-nonroot      |
 | [Pingora Proxy Manager](./src/pingora-proxy-manager)           | v1.0.3               |
 | [Open WebUI Rust](./src/open-webui-rust)                       | latest               |
+| [OpenCode](./src/opencode)                                     | 1.1.27               |
 | [OpenCoze](./apps/opencoze)                                    | See Docs             |
 | [OpenCut](./src/opencut)                                       | latest               |
 | [OpenList](./src/openlist)                                     | latest               |

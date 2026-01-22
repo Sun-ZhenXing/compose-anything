@@ -1,0 +1,54 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  opencode:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}ghcr.io/anomalyco/opencode:${OPENCODE_VERSION:-1.1.27}
+    command: web --hostname 0.0.0.0 --port 4096
+    ports:
+      - "${OPENCODE_PORT_OVERRIDE:-4096}:4096"
+    volumes:
+      - opencode_data:/root/.opencode
+      - ${OPENCODE_PROJECT_DIR:-./project}:/app
+    environment:
+      - TZ=${TZ:-UTC}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - TOGETHER_API_KEY=${TOGETHER_API_KEY:-}
+      - MISTRAL_API_KEY=${MISTRAL_API_KEY:-}
+      - OPENCODE_CONFIG_CONTENT=${OPENCODE_CONFIG_CONTENT:-}
+    working_dir: /app
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:4096/",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${OPENCODE_CPU_LIMIT:-1.0}
+          memory: ${OPENCODE_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${OPENCODE_CPU_RESERVATION:-0.25}
+          memory: ${OPENCODE_MEMORY_RESERVATION:-512M}
+
+volumes:
+  opencode_data:

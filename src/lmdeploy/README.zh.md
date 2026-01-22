@@ -6,9 +6,11 @@
 
 1. （可选）在 `.env` 中配置模型和端口。
 2. 启动服务：
+
    ```bash
    docker compose up -d
    ```
+
 3. 通过 `http://localhost:23333/v1` 访问与 OpenAI 兼容的 API。
 
 ## 配置项
