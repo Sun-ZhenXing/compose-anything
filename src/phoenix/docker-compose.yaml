@@ -11,7 +11,7 @@ x-defaults: &defaults
 
 x-phoenix-common: &phoenix-common
   <<: *defaults
-  image: ${GLOBAL_REGISTRY:-}arizephoenix/phoenix:${PHOENIX_VERSION:-12.28.1-nonroot}
+  image: ${GLOBAL_REGISTRY:-}arizephoenix/phoenix:${PHOENIX_VERSION:-12.31.2-nonroot}
   ports:
     - "${PHOENIX_PORT_OVERRIDE:-6006}:6006" # UI and OTLP HTTP collector
     - "${PHOENIX_GRPC_PORT_OVERRIDE:-4317}:4317" # OTLP gRPC collector

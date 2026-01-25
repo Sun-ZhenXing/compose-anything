@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   gitea:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}gitea/gitea:${GITEA_VERSION:-1.25.2-rootless}
+    image: ${GLOBAL_REGISTRY:-}gitea/gitea:${GITEA_VERSION:-1.25.4-rootless}
     environment:
       - USER_UID=1000
       - USER_GID=1000

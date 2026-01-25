@@ -8,7 +8,7 @@ x-defaults: &defaults
 
 x-mineru-vllm: &mineru-vllm
   <<: *defaults
-  image: ${GLOBAL_REGISTRY:-}alexsuntop/mineru:${MINERU_VERSION:-2.7.1}
+  image: ${GLOBAL_REGISTRY:-}alexsuntop/mineru:${MINERU_VERSION:-2.7.2}
   build:
     context: .
     dockerfile: Dockerfile

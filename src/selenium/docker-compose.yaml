@@ -1,0 +1,50 @@
+# Selenium Standalone with Chrome
+# This configuration runs Selenium Grid in Standalone mode with Chrome browser
+# Suitable for single-browser automation needs
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  selenium-chrome:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}selenium/standalone-chrome:${SELENIUM_VERSION:-144.0-20260120}
+    shm_size: ${SELENIUM_SHM_SIZE:-2g}
+    ports:
+      - "${SELENIUM_GRID_PORT_OVERRIDE:-4444}:4444"
+      - "${SELENIUM_VNC_PORT_OVERRIDE:-7900}:7900"
+    volumes:
+      - selenium_downloads:/home/seluser/Downloads
+    environment:
+      - TZ=${TZ:-UTC}
+      - SE_SCREEN_WIDTH=${SE_SCREEN_WIDTH:-1920}
+      - SE_SCREEN_HEIGHT=${SE_SCREEN_HEIGHT:-1080}
+      - SE_SCREEN_DEPTH=${SE_SCREEN_DEPTH:-24}
+      - SE_SCREEN_DPI=${SE_SCREEN_DPI:-96}
+      - SE_VNC_PASSWORD=${SE_VNC_PASSWORD:-secret}
+      - SE_NODE_MAX_SESSIONS=${SE_NODE_MAX_SESSIONS:-1}
+      - SE_NODE_SESSION_TIMEOUT=${SE_NODE_SESSION_TIMEOUT:-300}
+      - SE_START_XVFB=${SE_START_XVFB:-true}
+    healthcheck:
+      test:
+        ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${SELENIUM_CPU_LIMIT:-2.0}
+          memory: ${SELENIUM_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${SELENIUM_CPU_RESERVATION:-1.0}
+          memory: ${SELENIUM_MEMORY_RESERVATION:-1G}
+
+volumes:
+  selenium_downloads:

@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "yzhang.markdown-all-in-one",
-    "DavidAnson.vscode-markdownlint"
+    "DavidAnson.vscode-markdownlint",
+    "redhat.vscode-yaml"
   ]
 }

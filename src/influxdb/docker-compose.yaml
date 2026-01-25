@@ -1,0 +1,45 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  influxdb:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}influxdb:${INFLUXDB_VERSION:-2.8.0}
+    environment:
+      TZ: ${TZ:-UTC}
+      # InfluxDB v2 initialization
+      DOCKER_INFLUXDB_INIT_MODE: ${INFLUXDB_INIT_MODE:-setup}
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_ADMIN_USERNAME:-admin}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_ADMIN_PASSWORD:-changeme123456}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUXDB_ORG:-myorg}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_BUCKET:-mybucket}
+      DOCKER_INFLUXDB_INIT_RETENTION: ${INFLUXDB_RETENTION:-0}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-mytoken123456}
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+      - influxdb_config:/etc/influxdb2
+    ports:
+      - "${INFLUXDB_PORT_OVERRIDE:-8086}:8086"
+    deploy:
+      resources:
+        limits:
+          cpus: ${INFLUXDB_CPU_LIMIT:-2.0}
+          memory: ${INFLUXDB_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${INFLUXDB_CPU_RESERVATION:-0.5}
+          memory: ${INFLUXDB_MEMORY_RESERVATION:-512M}
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  influxdb_data:
+  influxdb_config:

@@ -32,7 +32,7 @@ This project supports two modes of operation via Docker Compose profiles:
 | Variable Name                    | Description                              | Default Value     |
 | -------------------------------- | ---------------------------------------- | ----------------- |
 | COMPOSE_PROFILES                 | Active profiles (`sqlite` or `postgres`) | `sqlite`          |
-| PHOENIX_VERSION                  | Phoenix image version                    | `12.28.1-nonroot` |
+| PHOENIX_VERSION                  | Phoenix image version                    | `12.31.2-nonroot` |
 | PHOENIX_PORT_OVERRIDE            | Host port for Phoenix UI and HTTP API    | `6006`            |
 | PHOENIX_GRPC_PORT_OVERRIDE       | Host port for OTLP gRPC collector        | `4317`            |
 | PHOENIX_PROMETHEUS_PORT_OVERRIDE | Host port for Prometheus metrics         | `9090`            |

@@ -12,7 +12,7 @@ These services require building custom Docker images from source.
 | [goose](./builds/goose)                     | 1.18.0  |
 | [IOPaint](./builds/io-paint)                | 1.6.0   |
 | [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2   |
-| [MinerU vLLM](./builds/mineru)              | 2.7.1   |
+| [MinerU vLLM](./builds/mineru)              | 2.7.2   |
 
 ## Supported Services
 
@@ -50,7 +50,7 @@ These services require building custom Docker images from source.
 | [frpc](./src/frpc)                                             | 0.65.0               |
 | [frps](./src/frps)                                             | 0.65.0               |
 | [Gitea Runner](./src/gitea-runner)                             | 0.2.13               |
-| [Gitea](./src/gitea)                                           | 1.24.6               |
+| [Gitea](./src/gitea)                                           | 1.25.4-rootless      |
 | [GitLab Runner](./src/gitlab-runner)                           | 17.10.1              |
 | [GitLab](./src/gitlab)                                         | 17.10.4-ce.0         |
 | [GPUStack](./src/gpustack)                                     | v0.5.3               |
@@ -60,6 +60,7 @@ These services require building custom Docker images from source.
 | [Halo](./src/halo)                                             | 2.21.9               |
 | [Harbor](./src/harbor)                                         | v2.12.0              |
 | [HashiCorp Consul](./src/consul)                               | 1.20.3               |
+| [InfluxDB](./src/influxdb)                                     | 2.8.0                |
 | [Jenkins](./src/jenkins)                                       | 2.486-lts            |
 | [JODConverter](./src/jodconverter)                             | latest               |
 | [Kestra](./src/kestra)                                         | latest-full          |
@@ -96,7 +97,7 @@ These services require building custom Docker images from source.
 | [Odoo](./src/odoo)                                             | 19.0                 |
 | [Ollama](./src/ollama)                                         | 0.12.0               |
 | [Open WebUI](./src/open-webui)                                 | main                 |
-| [Phoenix (Arize)](./src/phoenix)                               | 12.28.1-nonroot      |
+| [Phoenix (Arize)](./src/phoenix)                               | 12.31.2-nonroot      |
 | [Pingora Proxy Manager](./src/pingora-proxy-manager)           | v1.0.3               |
 | [Open WebUI Rust](./src/open-webui-rust)                       | latest               |
 | [OpenCode](./src/opencode)                                     | 1.1.27               |
@@ -126,6 +127,7 @@ These services require building custom Docker images from source.
 | [Restate Cluster](./src/restate-cluster)                       | 1.5.3                |
 | [Restate](./src/restate)                                       | 1.5.3                |
 | [SearXNG](./src/searxng)                                       | 2025.1.20-1ce14ef99  |
+| [Selenium](./src/selenium)                                     | 144.0-20260120       |
 | [SigNoz](./src/signoz)                                         | 0.55.0               |
 | [Sim](./apps/sim)                                              | latest               |
 | [Stable Diffusion WebUI](./apps/stable-diffusion-webui-docker) | latest               |
