@@ -39,7 +39,7 @@ mineru -p demo.pdf -o ./output -b vlm-http-client -u http://localhost:30000
 
 ## 配置
 
-- `MINERU_VERSION`: MinerU 的 Docker 镜像版本，默认为 `2.7.2`。
+- `MINERU_VERSION`: MinerU 的 Docker 镜像版本，默认为 `2.7.3`。
 - `MINERU_PORT_OVERRIDE_VLLM`: VLLM 服务器的主机端口，默认为 `30000`。
 - `MINERU_PORT_OVERRIDE_API`: API 服务的主机端口，默认为 `8000`。
 - `MINERU_PORT_OVERRIDE_GRADIO`: Gradio WebUI 的主机端口，默认为 `7860`。
