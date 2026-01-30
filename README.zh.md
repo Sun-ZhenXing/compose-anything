@@ -81,6 +81,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Minecraft Bedrock Server](./src/minecraft-bedrock-server)     | latest                |
 | [MinIO](./src/minio)                                           | 0.20251015            |
 | [MLflow](./src/mlflow)                                         | v2.20.2               |
+| [MoltBot](./apps/moltbot)                                      | main                  |
 | [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)   | 8.2.3                 |
 | [MongoDB ReplicaSet](./src/mongodb-replicaset)                 | 8.2.3                 |
 | [MongoDB Standalone](./src/mongodb-standalone)                 | 8.2.3                 |

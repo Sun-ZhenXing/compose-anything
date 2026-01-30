@@ -1,0 +1,88 @@
+# MoltBot - Personal AI Assistant Docker Compose Configuration
+# Official Repository: https://github.com/moltbot/moltbot
+# Documentation: https://docs.molt.bot
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  moltbot-gateway:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-ghcr.io}/moltbot/moltbot:${MOLTBOT_VERSION:-main}
+    environment:
+      - TZ=${TZ:-UTC}
+      - HOME=/home/node
+      - NODE_ENV=production
+      - TERM=xterm-256color
+      # Gateway configuration
+      - CLAWDBOT_GATEWAY_TOKEN=${MOLTBOT_GATEWAY_TOKEN}
+      - CLAWDBOT_GATEWAY_BIND=${MOLTBOT_GATEWAY_BIND:-lan}
+      - CLAWDBOT_GATEWAY_PORT=${MOLTBOT_GATEWAY_PORT:-18789}
+      # Optional: Model API keys (if not using OAuth)
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - CLAUDE_AI_SESSION_KEY=${CLAUDE_AI_SESSION_KEY:-}
+      - CLAUDE_WEB_SESSION_KEY=${CLAUDE_WEB_SESSION_KEY:-}
+      - CLAUDE_WEB_COOKIE=${CLAUDE_WEB_COOKIE:-}
+    volumes:
+      - moltbot_config:/home/node/.clawdbot
+      - moltbot_workspace:/home/node/clawd
+    ports:
+      - "${MOLTBOT_GATEWAY_PORT_OVERRIDE:-18789}:18789"
+      - "${MOLTBOT_BRIDGE_PORT_OVERRIDE:-18790}:18790"
+    command:
+      - node
+      - dist/index.js
+      - gateway
+      - --bind
+      - "${MOLTBOT_GATEWAY_BIND:-lan}"
+      - --port
+      - "18789"
+    healthcheck:
+      test: ["CMD", "node", "dist/index.js", "health", "--port", "18789"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${MOLTBOT_CPU_LIMIT:-2.0}
+          memory: ${MOLTBOT_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${MOLTBOT_CPU_RESERVATION:-1.0}
+          memory: ${MOLTBOT_MEMORY_RESERVATION:-1G}
+
+  moltbot-cli:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-ghcr.io}/moltbot/moltbot:${MOLTBOT_VERSION:-main}
+    environment:
+      - TZ=${TZ:-UTC}
+      - HOME=/home/node
+      - TERM=xterm-256color
+      - BROWSER=echo
+      - CLAUDE_AI_SESSION_KEY=${CLAUDE_AI_SESSION_KEY:-}
+      - CLAUDE_WEB_SESSION_KEY=${CLAUDE_WEB_SESSION_KEY:-}
+      - CLAUDE_WEB_COOKIE=${CLAUDE_WEB_COOKIE:-}
+    volumes:
+      - moltbot_config:/home/node/.clawdbot
+      - moltbot_workspace:/home/node/clawd
+    stdin_open: true
+    tty: true
+    entrypoint: ["node", "dist/index.js"]
+    profiles:
+      - cli
+    deploy:
+      resources:
+        limits:
+          cpus: ${MOLTBOT_CLI_CPU_LIMIT:-1.0}
+          memory: ${MOLTBOT_CLI_MEMORY_LIMIT:-512M}
+
+volumes:
+  moltbot_config:
+  moltbot_workspace:

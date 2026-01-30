@@ -81,6 +81,7 @@ These services require building custom Docker images from source.
 | [Minecraft Bedrock Server](./src/minecraft-bedrock-server)     | latest               |
 | [MinIO](./src/minio)                                           | 0.20251015           |
 | [MLflow](./src/mlflow)                                         | v2.20.2              |
+| [MoltBot](./apps/moltbot)                                      | main                 |
 | [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)   | 8.2.3                |
 | [MongoDB ReplicaSet](./src/mongodb-replicaset)                 | 8.2.3                |
 | [MongoDB Standalone](./src/mongodb-standalone)                 | 8.2.3                |

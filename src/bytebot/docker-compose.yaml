@@ -24,7 +24,15 @@ services:
           cpus: ${BYTEBOT_DESKTOP_CPU_RESERVATION:-1.0}
           memory: ${BYTEBOT_DESKTOP_MEMORY_RESERVATION:-2G}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9990/"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:9990/",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -56,7 +64,15 @@ services:
           cpus: ${BYTEBOT_AGENT_CPU_RESERVATION:-0.5}
           memory: ${BYTEBOT_AGENT_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9991/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:9991/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -83,7 +99,15 @@ services:
           cpus: ${BYTEBOT_UI_CPU_RESERVATION:-0.25}
           memory: ${BYTEBOT_UI_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9992/"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:9992/",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
