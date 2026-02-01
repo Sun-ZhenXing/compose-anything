@@ -1,0 +1,210 @@
+# Docker Compose configuration for llama.cpp
+# https://github.com/ggml-org/llama.cpp
+# LLM inference in C/C++ with support for various hardware accelerators
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  # llama.cpp server - OpenAI-compatible API server
+  # Variant: server (CPU), server-cuda (NVIDIA GPU), server-rocm (AMD GPU)
+  llama-cpp-server:
+    <<: *defaults
+    image: ${GHCR_REGISTRY:-ghcr.io/}ggml-org/llama.cpp:${LLAMA_CPP_SERVER_VARIANT:-server}
+    ports:
+      - "${LLAMA_CPP_SERVER_PORT_OVERRIDE:-8080}:8080"
+    volumes:
+      - llama_cpp_models:/models
+    command:
+      - "-m"
+      - "${LLAMA_CPP_MODEL_PATH:-/models/model.gguf}"
+      - "--port"
+      - "8080"
+      - "--host"
+      - "0.0.0.0"
+      - "-n"
+      - "${LLAMA_CPP_CONTEXT_SIZE:-512}"
+      - "--n-gpu-layers"
+      - "${LLAMA_CPP_GPU_LAYERS:-0}"
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8080/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LLAMA_CPP_SERVER_CPU_LIMIT:-4.0}
+          memory: ${LLAMA_CPP_SERVER_MEMORY_LIMIT:-8G}
+        reservations:
+          cpus: ${LLAMA_CPP_SERVER_CPU_RESERVATION:-2.0}
+          memory: ${LLAMA_CPP_SERVER_MEMORY_RESERVATION:-4G}
+    profiles:
+      - server
+
+  # llama.cpp server with NVIDIA GPU support
+  llama-cpp-server-cuda:
+    <<: *defaults
+    image: ${GHCR_REGISTRY:-ghcr.io/}ggml-org/llama.cpp:server-cuda
+    ports:
+      - "${LLAMA_CPP_SERVER_PORT_OVERRIDE:-8080}:8080"
+    volumes:
+      - llama_cpp_models:/models
+    command:
+      - "-m"
+      - "${LLAMA_CPP_MODEL_PATH:-/models/model.gguf}"
+      - "--port"
+      - "8080"
+      - "--host"
+      - "0.0.0.0"
+      - "-n"
+      - "${LLAMA_CPP_CONTEXT_SIZE:-512}"
+      - "--n-gpu-layers"
+      - "${LLAMA_CPP_GPU_LAYERS:-99}"
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8080/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LLAMA_CPP_SERVER_CPU_LIMIT:-4.0}
+          memory: ${LLAMA_CPP_SERVER_MEMORY_LIMIT:-8G}
+        reservations:
+          cpus: ${LLAMA_CPP_SERVER_CPU_RESERVATION:-2.0}
+          memory: ${LLAMA_CPP_SERVER_MEMORY_RESERVATION:-4G}
+          devices:
+            - driver: nvidia
+              count: ${LLAMA_CPP_GPU_COUNT:-1}
+              capabilities: [gpu]
+    profiles:
+      - gpu
+      - cuda
+
+  # llama.cpp server with AMD ROCm GPU support
+  llama-cpp-server-rocm:
+    <<: *defaults
+    image: ${GHCR_REGISTRY:-ghcr.io/}ggml-org/llama.cpp:server-rocm
+    ports:
+      - "${LLAMA_CPP_SERVER_PORT_OVERRIDE:-8080}:8080"
+    volumes:
+      - llama_cpp_models:/models
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    command:
+      - "-m"
+      - "${LLAMA_CPP_MODEL_PATH:-/models/model.gguf}"
+      - "--port"
+      - "8080"
+      - "--host"
+      - "0.0.0.0"
+      - "-n"
+      - "${LLAMA_CPP_CONTEXT_SIZE:-512}"
+      - "--n-gpu-layers"
+      - "${LLAMA_CPP_GPU_LAYERS:-99}"
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8080/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LLAMA_CPP_SERVER_CPU_LIMIT:-4.0}
+          memory: ${LLAMA_CPP_SERVER_MEMORY_LIMIT:-8G}
+        reservations:
+          cpus: ${LLAMA_CPP_SERVER_CPU_RESERVATION:-2.0}
+          memory: ${LLAMA_CPP_SERVER_MEMORY_RESERVATION:-4G}
+    profiles:
+      - gpu
+      - rocm
+
+  # llama.cpp CLI (light) - Interactive command-line interface
+  llama-cpp-cli:
+    <<: *defaults
+    image: ${GHCR_REGISTRY:-ghcr.io/}ggml-org/llama.cpp:${LLAMA_CPP_CLI_VARIANT:-light}
+    volumes:
+      - llama_cpp_models:/models
+    entrypoint: /app/llama-cli
+    command:
+      - "-m"
+      - "${LLAMA_CPP_MODEL_PATH:-/models/model.gguf}"
+      - "-p"
+      - "${LLAMA_CPP_PROMPT:-Hello, how are you?}"
+      - "-n"
+      - "${LLAMA_CPP_CONTEXT_SIZE:-512}"
+    environment:
+      - TZ=${TZ:-UTC}
+    deploy:
+      resources:
+        limits:
+          cpus: ${LLAMA_CPP_CLI_CPU_LIMIT:-2.0}
+          memory: ${LLAMA_CPP_CLI_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${LLAMA_CPP_CLI_CPU_RESERVATION:-1.0}
+          memory: ${LLAMA_CPP_CLI_MEMORY_RESERVATION:-2G}
+    profiles:
+      - cli
+
+  # llama.cpp full - Complete toolkit including model conversion tools
+  llama-cpp-full:
+    <<: *defaults
+    image: ${GHCR_REGISTRY:-ghcr.io/}ggml-org/llama.cpp:${LLAMA_CPP_FULL_VARIANT:-full}
+    volumes:
+      - llama_cpp_models:/models
+    command: ["sleep", "infinity"]
+    environment:
+      - TZ=${TZ:-UTC}
+    deploy:
+      resources:
+        limits:
+          cpus: ${LLAMA_CPP_FULL_CPU_LIMIT:-2.0}
+          memory: ${LLAMA_CPP_FULL_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${LLAMA_CPP_FULL_CPU_RESERVATION:-1.0}
+          memory: ${LLAMA_CPP_FULL_MEMORY_RESERVATION:-2G}
+    profiles:
+      - full
+
+volumes:
+  llama_cpp_models:

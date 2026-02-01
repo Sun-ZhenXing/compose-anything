@@ -34,6 +34,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Clash](./src/clash)                                           | 1.18.0                |
 | [ClickHouse](./src/clickhouse)                                 | 24.11.1               |
 | [Conductor](./src/conductor)                                   | latest                |
+| [DeepTutor](./apps/deeptutor)                                  | latest                |
 | [Dify](./apps/dify)                                            | 0.18.2                |
 | [DNSMasq](./src/dnsmasq)                                       | 2.91                  |
 | [Dockge](./src/dockge)                                         | 1                     |
@@ -72,6 +73,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [LibreOffice](./src/libreoffice)                               | latest                |
 | [libSQL Server](./src/libsql)                                  | latest                |
 | [LiteLLM](./src/litellm)                                       | main-stable           |
+| [llama.cpp](./src/llama.cpp)                                   | server                |
 | [LMDeploy](./src/lmdeploy)                                     | v0.11.1               |
 | [Logstash](./src/logstash)                                     | 8.16.1                |
 | [MariaDB Galera Cluster](./src/mariadb-galera)                 | 11.7.2                |

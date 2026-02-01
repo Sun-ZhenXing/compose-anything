@@ -1,0 +1,68 @@
+# DeepTutor: AI-Powered Personalized Learning Assistant
+# https://github.com/HKUDS/DeepTutor
+# Transform any document into an interactive learning experience with multi-agent intelligence
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  deeptutor:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-ghcr.io}/hkuds/deeptutor:${DEEPTUTOR_VERSION:-latest}
+    ports:
+      - "${DEEPTUTOR_BACKEND_PORT_OVERRIDE:-8001}:${BACKEND_PORT:-8001}"
+      - "${DEEPTUTOR_FRONTEND_PORT_OVERRIDE:-3782}:${FRONTEND_PORT:-3782}"
+    volumes:
+      - deeptutor_data:/app/data
+      - ./config:/app/config:ro
+    environment:
+      - TZ=${TZ:-UTC}
+      # Backend port
+      - BACKEND_PORT=${BACKEND_PORT:-8001}
+      # Frontend port
+      - FRONTEND_PORT=${FRONTEND_PORT:-3782}
+      # API base URLs
+      - NEXT_PUBLIC_API_BASE=${NEXT_PUBLIC_API_BASE:-http://localhost:8001}
+      - NEXT_PUBLIC_API_BASE_EXTERNAL=${NEXT_PUBLIC_API_BASE_EXTERNAL:-http://localhost:8001}
+      # LLM API Keys
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - PERPLEXITY_API_KEY=${PERPLEXITY_API_KEY:-}
+      - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-}
+      # Default LLM model
+      - DEFAULT_MODEL=${DEFAULT_MODEL:-gpt-4o}
+      # User ID and Group ID for permission management
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${BACKEND_PORT:-8001}/health",
+          "||",
+          "exit",
+          "1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${DEEPTUTOR_CPU_LIMIT:-4.00}
+          memory: ${DEEPTUTOR_MEMORY_LIMIT:-8G}
+        reservations:
+          cpus: ${DEEPTUTOR_CPU_RESERVATION:-1.00}
+          memory: ${DEEPTUTOR_MEMORY_RESERVATION:-2G}
+
+volumes:
+  deeptutor_data:
