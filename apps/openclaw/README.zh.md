@@ -1,6 +1,6 @@
-# MoltBot
+# OpenClaw
 
-MoltBot 是一个运行在你自己设备上的个人 AI 助手。它集成了多个消息平台（WhatsApp、Telegram、Slack、Discord、Google Chat、Signal、iMessage、Microsoft Teams、WebChat），并在所有频道上提供 AI 驱动的帮助。
+OpenClaw 是一个运行在你自己设备上的个人 AI 助手。它集成了多个消息平台（WhatsApp、Telegram、Slack、Discord、Google Chat、Signal、iMessage、Microsoft Teams、WebChat），并在所有频道上提供 AI 驱动的帮助。
 
 ## 功能特性
 
@@ -32,7 +32,7 @@ MoltBot 是一个运行在你自己设备上的个人 AI 助手。它集成了�
    ```
 
 3. 编辑 `.env` 文件，至少设置：
-   - `MOLTBOT_GATEWAY_TOKEN` - 你生成的令牌
+   - `OPENCLAW_GATEWAY_TOKEN` - 你生成的令牌
    - `ANTHROPIC_API_KEY` 或 `OPENAI_API_KEY` - 如果使用 API 密钥认证
 
 4. 启动网关：
@@ -51,8 +51,8 @@ MoltBot 是一个运行在你自己设备上的个人 AI 助手。它集成了�
 
 网关可以通过两种方式访问：
 
-- **回环地址**（`MOLTBOT_GATEWAY_BIND=loopback`）：仅从主机访问（127.0.0.1）
-- **局域网**（`MOLTBOT_GATEWAY_BIND=lan`）：从本地网络访问（0.0.0.0）
+- **回环地址**（`OPENCLAW_GATEWAY_BIND=loopback`）：仅从主机访问（127.0.0.1）
+- **局域网**（`OPENCLAW_GATEWAY_BIND=lan`）：从本地网络访问（0.0.0.0）
 
 对于生产部署，建议：
 
@@ -62,7 +62,7 @@ MoltBot 是一个运行在你自己设备上的个人 AI 助手。它集成了�
 
 ### 模型配置
 
-MoltBot 支持多个 AI 模型提供商：
+OpenClaw 支持多个 AI 模型提供商：
 
 - **Anthropic Claude**（推荐）：Claude Pro/Max，支持 OAuth 或 API 密钥
 - **OpenAI**：ChatGPT/Codex，支持 OAuth 或 API 密钥
@@ -86,7 +86,7 @@ MoltBot 支持多个 AI 模型提供商：
 
 4. **Slack**：在配置中设置 `SLACK_BOT_TOKEN` 和 `SLACK_APP_TOKEN`
 
-详细设置说明请参阅[官方文档](https://docs.molt.bot/channels)。
+详细设置说明请参阅[官方文档](https://docs.openclaw.bot/channels)。
 
 ## 使用命令行界面
 
@@ -94,23 +94,23 @@ CLI 服务可通过 `cli` 配置文件使用：
 
 ```bash
 # 运行入门向导
-docker compose run --rm --service-ports moltbot-cli onboard
+docker compose run --rm --service-ports openclaw-cli onboard
 
 # 列出提供商
-docker compose run --rm moltbot-cli providers list
+docker compose run --rm openclaw-cli providers list
 
 # 发送消息
-docker compose run --rm moltbot-cli message send --to +1234567890 --message "你好"
+docker compose run --rm openclaw-cli message send --to +1234567890 --message "你好"
 
 # 检查健康状态
-docker compose run --rm moltbot-cli health --port 18789
+docker compose run --rm openclaw-cli health --port 18789
 ```
 
 ## 安全注意事项
 
 1. **网关令牌**：保护好你的网关令牌。这是控制界面和 WebSocket 连接的认证方式。
 
-2. **私信访问**：默认情况下，MoltBot 对来自未知发送者的私信使用配对模式。他们会收到一个配对码，你必须批准。
+2. **私信访问**：默认情况下，OpenClaw 对来自未知发送者的私信使用配对模式。他们会收到一个配对码，你必须批准。
 
 3. **网络暴露**：如果在 localhost 之外暴露网关，请使用适当的认证和加密：
    - 设置 Tailscale 进行安全的远程访问
@@ -128,29 +128,29 @@ docker compose run --rm moltbot-cli health --port 18789
 在 `.env` 文件中调整 CPU 和内存限制：
 
 ```env
-MOLTBOT_CPU_LIMIT=2.0
-MOLTBOT_MEMORY_LIMIT=2G
-MOLTBOT_CPU_RESERVATION=1.0
-MOLTBOT_MEMORY_RESERVATION=1G
+OPENCLAW_CPU_LIMIT=2.0
+OPENCLAW_MEMORY_LIMIT=2G
+OPENCLAW_CPU_RESERVATION=1.0
+OPENCLAW_MEMORY_RESERVATION=1G
 ```
 
 ### 持久化数据
 
 数据存储在两个 Docker 卷中：
 
-- `moltbot_config`：配置文件和凭据（~/.clawdbot）
-- `moltbot_workspace`：代理工作区和技能（~/clawd）
+- `openclaw_config`：配置文件和凭据（~/.openclaw）
+- `openclaw_workspace`：代理工作区和技能（~/openclaw-workspace）
 
 备份数据：
 
 ```bash
-docker run --rm -v moltbot_config:/data -v $(pwd):/backup alpine tar czf /backup/moltbot-config-backup.tar.gz /data
-docker run --rm -v moltbot_workspace:/data -v $(pwd):/backup alpine tar czf /backup/moltbot-workspace-backup.tar.gz /data
+docker run --rm -v openclaw_config:/data -v $(pwd):/backup alpine tar czf /backup/openclaw-config-backup.tar.gz /data
+docker run --rm -v openclaw_workspace:/data -v $(pwd):/backup alpine tar czf /backup/openclaw-workspace-backup.tar.gz /data
 ```
 
 ### 自定义配置文件
 
-在 `~/.clawdbot/moltbot.json`（容器内）创建自定义配置文件：
+在 `~/.openclaw/openclaw.json`（容器内）创建自定义配置文件：
 
 ```json
 {
@@ -169,7 +169,7 @@ docker run --rm -v moltbot_workspace:/data -v $(pwd):/backup alpine tar czf /bac
 
 ### 网关无法启动
 
-1. 检查日志：`docker compose logs moltbot-gateway`
+1. 检查日志：`docker compose logs openclaw-gateway`
 2. 验证网关令牌是否在 `.env` 中设置
 3. 确保端口 18789 未被占用
 
@@ -190,25 +190,25 @@ docker run --rm -v moltbot_workspace:/data -v $(pwd):/backup alpine tar czf /bac
 诊断命令可帮助诊断常见问题：
 
 ```bash
-docker compose run --rm moltbot-cli doctor
+docker compose run --rm openclaw-cli doctor
 ```
 
 ## 文档
 
-- [官方网站](https://molt.bot)
-- [完整文档](https://docs.molt.bot)
-- [入门指南](https://docs.molt.bot/start/getting-started)
-- [配置参考](https://docs.molt.bot/gateway/configuration)
-- [安全指南](https://docs.molt.bot/gateway/security)
-- [Docker 安装](https://docs.molt.bot/install/docker)
-- [GitHub 仓库](https://github.com/moltbot/moltbot)
+- [官方网站](https://openclaw.bot)
+- [完整文档](https://docs.openclaw.bot)
+- [入门指南](https://docs.openclaw.bot/start/getting-started)
+- [配置参考](https://docs.openclaw.bot/gateway/configuration)
+- [安全指南](https://docs.openclaw.bot/gateway/security)
+- [Docker 安装](https://docs.openclaw.bot/install/docker)
+- [GitHub 仓库](https://github.com/openclaw/openclaw)
 
 ## 许可证
 
-MoltBot 使用 MIT 许可证发布。详情请参阅 [LICENSE](https://github.com/moltbot/moltbot/blob/main/LICENSE) 文件。
+OpenClaw 使用 MIT 许可证发布。详情请参阅 [LICENSE](https://github.com/openclaw/openclaw/blob/main/LICENSE) 文件。
 
 ## 社区
 
 - [Discord](https://discord.gg/clawd)
-- [GitHub 讨论](https://github.com/moltbot/moltbot/discussions)
-- [问题跟踪](https://github.com/moltbot/moltbot/issues)
+- [GitHub 讨论](https://github.com/openclaw/openclaw/discussions)
+- [问题跟踪](https://github.com/openclaw/openclaw/issues)

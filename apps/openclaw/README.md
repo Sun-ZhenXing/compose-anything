@@ -1,6 +1,6 @@
-# MoltBot
+# OpenClaw
 
-MoltBot is a personal AI assistant that runs on your own devices. It integrates with multiple messaging platforms (WhatsApp, Telegram, Slack, Discord, Google Chat, Signal, iMessage, Microsoft Teams, WebChat) and provides AI-powered assistance across all your channels.
+OpenClaw is a personal AI assistant that runs on your own devices. It integrates with multiple messaging platforms (WhatsApp, Telegram, Slack, Discord, Google Chat, Signal, iMessage, Microsoft Teams, WebChat) and provides AI-powered assistance across all your channels.
 
 ## Features
 
@@ -32,7 +32,7 @@ MoltBot is a personal AI assistant that runs on your own devices. It integrates 
    ```
 
 3. Edit `.env` and set at least:
-   - `MOLTBOT_GATEWAY_TOKEN` - Your generated token
+   - `OPENCLAW_GATEWAY_TOKEN` - Your generated token
    - `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` - If using API key auth
 
 4. Start the gateway:
@@ -51,8 +51,8 @@ MoltBot is a personal AI assistant that runs on your own devices. It integrates 
 
 The gateway can be accessed in two ways:
 
-- **Loopback** (`MOLTBOT_GATEWAY_BIND=loopback`): Only accessible from the host machine (127.0.0.1)
-- **LAN** (`MOLTBOT_GATEWAY_BIND=lan`): Accessible from your local network (0.0.0.0)
+- **Loopback** (`OPENCLAW_GATEWAY_BIND=loopback`): Only accessible from the host machine (127.0.0.1)
+- **LAN** (`OPENCLAW_GATEWAY_BIND=lan`): Accessible from your local network (0.0.0.0)
 
 For production deployments, consider:
 
@@ -62,7 +62,7 @@ For production deployments, consider:
 
 ### Model Configuration
 
-MoltBot supports multiple AI model providers:
+OpenClaw supports multiple AI model providers:
 
 - **Anthropic Claude** (Recommended): Claude Pro/Max with OAuth or API key
 - **OpenAI**: ChatGPT/Codex with OAuth or API key
@@ -86,7 +86,7 @@ To connect messaging platforms:
 
 4. **Slack**: Set `SLACK_BOT_TOKEN` and `SLACK_APP_TOKEN` in config
 
-See the [official documentation](https://docs.molt.bot/channels) for detailed setup instructions.
+See the [official documentation](https://docs.openclaw.bot/channels) for detailed setup instructions.
 
 ## Using the CLI
 
@@ -94,23 +94,23 @@ The CLI service is available via the `cli` profile:
 
 ```bash
 # Run onboarding wizard
-docker compose run --rm --service-ports moltbot-cli onboard
+docker compose run --rm --service-ports openclaw-cli onboard
 
 # List providers
-docker compose run --rm moltbot-cli providers list
+docker compose run --rm openclaw-cli providers list
 
 # Send a message
-docker compose run --rm moltbot-cli message send --to +1234567890 --message "Hello"
+docker compose run --rm openclaw-cli message send --to +1234567890 --message "Hello"
 
 # Check health
-docker compose run --rm moltbot-cli health --port 18789
+docker compose run --rm openclaw-cli health --port 18789
 ```
 
 ## Security Considerations
 
 1. **Gateway Token**: Keep your gateway token secure. This is the authentication method for the Control UI and WebSocket connections.
 
-2. **DM Access**: By default, MoltBot uses pairing mode for direct messages from unknown senders. They receive a pairing code that you must approve.
+2. **DM Access**: By default, OpenClaw uses pairing mode for direct messages from unknown senders. They receive a pairing code that you must approve.
 
 3. **Network Exposure**: If exposing the gateway beyond localhost, use proper authentication and encryption:
    - Set up Tailscale for secure remote access
@@ -128,29 +128,29 @@ docker compose run --rm moltbot-cli health --port 18789
 Adjust CPU and memory limits in `.env`:
 
 ```env
-MOLTBOT_CPU_LIMIT=2.0
-MOLTBOT_MEMORY_LIMIT=2G
-MOLTBOT_CPU_RESERVATION=1.0
-MOLTBOT_MEMORY_RESERVATION=1G
+OPENCLAW_CPU_LIMIT=2.0
+OPENCLAW_MEMORY_LIMIT=2G
+OPENCLAW_CPU_RESERVATION=1.0
+OPENCLAW_MEMORY_RESERVATION=1G
 ```
 
 ### Persistent Data
 
 Data is stored in two Docker volumes:
 
-- `moltbot_config`: Configuration files and credentials (~/.clawdbot)
-- `moltbot_workspace`: Agent workspace and skills (~/clawd)
+- `openclaw_config`: Configuration files and credentials (~/.openclaw)
+- `openclaw_workspace`: Agent workspace and skills (~/openclaw-workspace)
 
 To backup your data:
 
 ```bash
-docker run --rm -v moltbot_config:/data -v $(pwd):/backup alpine tar czf /backup/moltbot-config-backup.tar.gz /data
-docker run --rm -v moltbot_workspace:/data -v $(pwd):/backup alpine tar czf /backup/moltbot-workspace-backup.tar.gz /data
+docker run --rm -v openclaw_config:/data -v $(pwd):/backup alpine tar czf /backup/openclaw-config-backup.tar.gz /data
+docker run --rm -v openclaw_workspace:/data -v $(pwd):/backup alpine tar czf /backup/openclaw-workspace-backup.tar.gz /data
 ```
 
 ### Custom Configuration File
 
-Create a custom config file at `~/.clawdbot/moltbot.json` (inside the container):
+Create a custom config file at `~/.openclaw/openclaw.json` (inside the container):
 
 ```json
 {
@@ -169,7 +169,7 @@ Create a custom config file at `~/.clawdbot/moltbot.json` (inside the container)
 
 ### Gateway Won't Start
 
-1. Check logs: `docker compose logs moltbot-gateway`
+1. Check logs: `docker compose logs openclaw-gateway`
 2. Verify gateway token is set in `.env`
 3. Ensure port 18789 is not already in use
 
@@ -190,25 +190,25 @@ Create a custom config file at `~/.clawdbot/moltbot.json` (inside the container)
 The doctor command helps diagnose common issues:
 
 ```bash
-docker compose run --rm moltbot-cli doctor
+docker compose run --rm openclaw-cli doctor
 ```
 
 ## Documentation
 
-- [Official Website](https://molt.bot)
-- [Full Documentation](https://docs.molt.bot)
-- [Getting Started Guide](https://docs.molt.bot/start/getting-started)
-- [Configuration Reference](https://docs.molt.bot/gateway/configuration)
-- [Security Guide](https://docs.molt.bot/gateway/security)
-- [Docker Installation](https://docs.molt.bot/install/docker)
-- [GitHub Repository](https://github.com/moltbot/moltbot)
+- [Official Website](https://openclaw.bot)
+- [Full Documentation](https://docs.openclaw.bot)
+- [Getting Started Guide](https://docs.openclaw.bot/start/getting-started)
+- [Configuration Reference](https://docs.openclaw.bot/gateway/configuration)
+- [Security Guide](https://docs.openclaw.bot/gateway/security)
+- [Docker Installation](https://docs.openclaw.bot/install/docker)
+- [GitHub Repository](https://github.com/openclaw/openclaw)
 
 ## License
 
-MoltBot is released under the MIT License. See the [LICENSE](https://github.com/moltbot/moltbot/blob/main/LICENSE) file for details.
+OpenClaw is released under the MIT License. See the [LICENSE](https://github.com/openclaw/openclaw/blob/main/LICENSE) file for details.
 
 ## Community
 
 - [Discord](https://discord.gg/clawd)
-- [GitHub Discussions](https://github.com/moltbot/moltbot/discussions)
-- [Issues](https://github.com/moltbot/moltbot/issues)
+- [GitHub Discussions](https://github.com/openclaw/openclaw/discussions)
+- [Issues](https://github.com/openclaw/openclaw/issues)

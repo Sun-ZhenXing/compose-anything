@@ -1,6 +1,6 @@
-# MoltBot - Personal AI Assistant Docker Compose Configuration
-# Official Repository: https://github.com/moltbot/moltbot
-# Documentation: https://docs.molt.bot
+# OpenClaw - Personal AI Assistant Docker Compose Configuration
+# Official Repository: https://github.com/openclaw/openclaw
+# Documentation: https://docs.openclaw.bot
 
 x-defaults: &defaults
   restart: unless-stopped
@@ -11,18 +11,18 @@ x-defaults: &defaults
       max-file: "3"
 
 services:
-  moltbot-gateway:
+  openclaw-gateway:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-ghcr.io}/moltbot/moltbot:${MOLTBOT_VERSION:-main}
+    image: ${GLOBAL_REGISTRY:-ghcr.io}/openclaw/openclaw:${OPENCLAW_VERSION:-2026.2.3}
     environment:
       - TZ=${TZ:-UTC}
       - HOME=/home/node
       - NODE_ENV=production
       - TERM=xterm-256color
       # Gateway configuration
-      - CLAWDBOT_GATEWAY_TOKEN=${MOLTBOT_GATEWAY_TOKEN}
-      - CLAWDBOT_GATEWAY_BIND=${MOLTBOT_GATEWAY_BIND:-lan}
-      - CLAWDBOT_GATEWAY_PORT=${MOLTBOT_GATEWAY_PORT:-18789}
+      - OPENCLAW_GATEWAY_TOKEN=${OPENCLAW_GATEWAY_TOKEN}
+      - OPENCLAW_GATEWAY_BIND=${OPENCLAW_GATEWAY_BIND:-lan}
+      - OPENCLAW_GATEWAY_PORT=${OPENCLAW_GATEWAY_PORT:-18789}
       # Optional: Model API keys (if not using OAuth)
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
@@ -30,17 +30,17 @@ services:
       - CLAUDE_WEB_SESSION_KEY=${CLAUDE_WEB_SESSION_KEY:-}
       - CLAUDE_WEB_COOKIE=${CLAUDE_WEB_COOKIE:-}
     volumes:
-      - moltbot_config:/home/node/.clawdbot
-      - moltbot_workspace:/home/node/clawd
+      - openclaw_config:/home/node/.openclaw
+      - openclaw_workspace:/home/node/openclaw-workspace
     ports:
-      - "${MOLTBOT_GATEWAY_PORT_OVERRIDE:-18789}:18789"
-      - "${MOLTBOT_BRIDGE_PORT_OVERRIDE:-18790}:18790"
+      - "${OPENCLAW_GATEWAY_PORT_OVERRIDE:-18789}:18789"
+      - "${OPENCLAW_BRIDGE_PORT_OVERRIDE:-18790}:18790"
     command:
       - node
       - dist/index.js
       - gateway
       - --bind
-      - "${MOLTBOT_GATEWAY_BIND:-lan}"
+      - "${OPENCLAW_GATEWAY_BIND:-lan}"
       - --port
       - "18789"
     healthcheck:
@@ -52,15 +52,15 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${MOLTBOT_CPU_LIMIT:-2.0}
-          memory: ${MOLTBOT_MEMORY_LIMIT:-2G}
+          cpus: ${OPENCLAW_CPU_LIMIT:-2.0}
+          memory: ${OPENCLAW_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${MOLTBOT_CPU_RESERVATION:-1.0}
-          memory: ${MOLTBOT_MEMORY_RESERVATION:-1G}
+          cpus: ${OPENCLAW_CPU_RESERVATION:-1.0}
+          memory: ${OPENCLAW_MEMORY_RESERVATION:-1G}
 
-  moltbot-cli:
+  openclaw-cli:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-ghcr.io}/moltbot/moltbot:${MOLTBOT_VERSION:-main}
+    image: ${GLOBAL_REGISTRY:-ghcr.io}/openclaw/openclaw:${OPENCLAW_VERSION:-2026.2.3}
     environment:
       - TZ=${TZ:-UTC}
       - HOME=/home/node
@@ -80,9 +80,9 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${MOLTBOT_CLI_CPU_LIMIT:-1.0}
-          memory: ${MOLTBOT_CLI_MEMORY_LIMIT:-512M}
+          cpus: ${OPENCLAW_CLI_CPU_LIMIT:-1.0}
+          memory: ${OPENCLAW_CLI_MEMORY_LIMIT:-512M}
 
 volumes:
-  moltbot_config:
-  moltbot_workspace:
+  openclaw_config:
+  openclaw_workspace:

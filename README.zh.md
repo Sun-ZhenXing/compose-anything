@@ -1,5 +1,7 @@
 # Compose Anything
 
+[中文说明](README.zh.md) | [English](README.md)
+
 Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，帮助用户快速部署各种服务。这些配置约束了资源使用，可快速迁移到 K8S 等系统，并且易于理解和修改。
 
 ## 构建服务
@@ -12,7 +14,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [goose](./builds/goose)                     | 1.18.0 |
 | [IOPaint](./builds/io-paint)                | 1.6.0  |
 | [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2  |
-| [MinerU vLLM](./builds/mineru)              | 2.7.2  |
+| [MinerU vLLM](./builds/mineru)              | 2.7.6  |
 
 ## 已经支持的服务
 
@@ -89,6 +91,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [MongoDB Standalone](./src/mongodb-standalone)                 | 8.2.3                 |
 | [MySQL](./src/mysql)                                           | 9.4.0                 |
 | [n8n](./apps/n8n)                                              | 1.114.0               |
+| [Nanobot](./apps/nanobot)                                      | v0.1.3.post4          |
 | [Nacos](./src/nacos)                                           | v3.1.0                |
 | [NebulaGraph](./src/nebulagraph)                               | v3.8.0                |
 | [NexaSDK](./src/nexa-sdk)                                      | v0.2.62               |

@@ -1,0 +1,76 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  nanobot:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-ghcr.io/}hkuds/nanobot:${NANOBOT_VERSION:-v0.1.3.post4}
+    ports:
+      - "${NANOBOT_PORT_OVERRIDE:-18790}:18790"
+    volumes:
+      - nanobot_config:/root/.nanobot
+      - nanobot_workspace:/root/.nanobot/workspace
+    environment:
+      - TZ=${TZ:-UTC}
+      # LLM Provider Configuration
+      - NANOBOT_PROVIDERS__OPENROUTER__API_KEY=${OPENROUTER_API_KEY:-}
+      - NANOBOT_PROVIDERS__ANTHROPIC__API_KEY=${ANTHROPIC_API_KEY:-}
+      - NANOBOT_PROVIDERS__OPENAI__API_KEY=${OPENAI_API_KEY:-}
+      - NANOBOT_PROVIDERS__GEMINI__API_KEY=${GEMINI_API_KEY:-}
+      - NANOBOT_PROVIDERS__DEEPSEEK__API_KEY=${DEEPSEEK_API_KEY:-}
+      - NANOBOT_PROVIDERS__GROQ__API_KEY=${GROQ_API_KEY:-}
+      - NANOBOT_PROVIDERS__ZHIPU__API_KEY=${ZHIPU_API_KEY:-}
+      - NANOBOT_PROVIDERS__DASHSCOPE__API_KEY=${DASHSCOPE_API_KEY:-}
+      - NANOBOT_PROVIDERS__MOONSHOT__API_KEY=${MOONSHOT_API_KEY:-}
+      - NANOBOT_PROVIDERS__VLLM__API_KEY=${VLLM_API_KEY:-}
+      - NANOBOT_PROVIDERS__VLLM__API_BASE=${VLLM_API_BASE:-}
+      # Agent Configuration
+      - NANOBOT_AGENTS__DEFAULTS__MODEL=${NANOBOT_MODEL:-anthropic/claude-opus-4-5}
+      - NANOBOT_AGENTS__DEFAULTS__MAX_TOKENS=${NANOBOT_MAX_TOKENS:-8192}
+      - NANOBOT_AGENTS__DEFAULTS__TEMPERATURE=${NANOBOT_TEMPERATURE:-0.7}
+      - NANOBOT_AGENTS__DEFAULTS__MAX_TOOL_ITERATIONS=${NANOBOT_MAX_TOOL_ITERATIONS:-20}
+      # Channel Configuration
+      - NANOBOT_CHANNELS__TELEGRAM__ENABLED=${TELEGRAM_ENABLED:-false}
+      - NANOBOT_CHANNELS__TELEGRAM__TOKEN=${TELEGRAM_TOKEN:-}
+      - NANOBOT_CHANNELS__TELEGRAM__PROXY=${TELEGRAM_PROXY:-}
+      - NANOBOT_CHANNELS__DISCORD__ENABLED=${DISCORD_ENABLED:-false}
+      - NANOBOT_CHANNELS__DISCORD__TOKEN=${DISCORD_TOKEN:-}
+      - NANOBOT_CHANNELS__WHATSAPP__ENABLED=${WHATSAPP_ENABLED:-false}
+      - NANOBOT_CHANNELS__WHATSAPP__BRIDGE_URL=${WHATSAPP_BRIDGE_URL:-ws://localhost:3001}
+      - NANOBOT_CHANNELS__FEISHU__ENABLED=${FEISHU_ENABLED:-false}
+      - NANOBOT_CHANNELS__FEISHU__APP_ID=${FEISHU_APP_ID:-}
+      - NANOBOT_CHANNELS__FEISHU__APP_SECRET=${FEISHU_APP_SECRET:-}
+      - NANOBOT_CHANNELS__FEISHU__ENCRYPT_KEY=${FEISHU_ENCRYPT_KEY:-}
+      - NANOBOT_CHANNELS__FEISHU__VERIFICATION_TOKEN=${FEISHU_VERIFICATION_TOKEN:-}
+      # Tools Configuration
+      - NANOBOT_TOOLS__WEB__SEARCH__API_KEY=${BRAVE_API_KEY:-}
+      - NANOBOT_TOOLS__WEB__SEARCH__MAX_RESULTS=${WEB_SEARCH_MAX_RESULTS:-5}
+      - NANOBOT_TOOLS__EXEC__TIMEOUT=${EXEC_TIMEOUT:-60}
+      - NANOBOT_TOOLS__RESTRICT_TO_WORKSPACE=${RESTRICT_TO_WORKSPACE:-false}
+      # Gateway Configuration
+      - NANOBOT_GATEWAY__HOST=${GATEWAY_HOST:-0.0.0.0}
+      - NANOBOT_GATEWAY__PORT=${GATEWAY_PORT:-18790}
+    command: ${NANOBOT_COMMAND:-gateway}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${NANOBOT_CPU_LIMIT:-1.0}
+          memory: ${NANOBOT_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${NANOBOT_CPU_RESERVATION:-0.5}
+          memory: ${NANOBOT_MEMORY_RESERVATION:-512M}
+
+volumes:
+  nanobot_config:
+  nanobot_workspace:

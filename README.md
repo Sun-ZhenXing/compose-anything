@@ -1,5 +1,7 @@
 # Compose Anything
 
+[中文说明](README.zh.md) | [English](README.md)
+
 Compose Anything helps users quickly deploy various services by providing a set of high-quality Docker Compose configuration files. These configurations constrain resource usage, can be easily migrated to systems like K8S, and are easy to understand and modify.
 
 ## Build Services
@@ -12,7 +14,7 @@ These services require building custom Docker images from source.
 | [goose](./builds/goose)                     | 1.18.0  |
 | [IOPaint](./builds/io-paint)                | 1.6.0   |
 | [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2   |
-| [MinerU vLLM](./builds/mineru)              | 2.7.2   |
+| [MinerU vLLM](./builds/mineru)              | 2.7.6   |
 
 ## Supported Services
 
@@ -89,6 +91,7 @@ These services require building custom Docker images from source.
 | [MongoDB Standalone](./src/mongodb-standalone)                 | 8.2.3                |
 | [MySQL](./src/mysql)                                           | 9.4.0                |
 | [n8n](./apps/n8n)                                              | 1.114.0              |
+| [Nanobot](./apps/nanobot)                                      | v0.1.3.post4         |
 | [Nacos](./src/nacos)                                           | v3.1.0               |
 | [NebulaGraph](./src/nebulagraph)                               | v3.8.0               |
 | [NexaSDK](./src/nexa-sdk)                                      | v0.2.62              |
