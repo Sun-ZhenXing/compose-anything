@@ -1,0 +1,35 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  agentgateway:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}cr.agentgateway.dev/agentgateway:${AGENTGATEWAY_VERSION:-0.11.2}
+    ports:
+      - "${AGENTGATEWAY_PORT_OVERRIDE:-3000}:3000"
+      - "127.0.0.1:${AGENTGATEWAY_ADMIN_PORT_OVERRIDE:-15000}:15000"
+    volumes:
+      - ./config.yaml:/config.yaml:ro
+    environment:
+      - TZ=${TZ:-UTC}
+      - ADMIN_ADDR=${AGENTGATEWAY_ADMIN_ADDR:-0.0.0.0:15000}
+    command: ["-f", "/config.yaml"]
+    healthcheck:
+      test: ["CMD", "agentgateway", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${AGENTGATEWAY_CPU_LIMIT:-0.50}
+          memory: ${AGENTGATEWAY_MEMORY_LIMIT:-256M}
+        reservations:
+          cpus: ${AGENTGATEWAY_CPU_RESERVATION:-0.25}
+          memory: ${AGENTGATEWAY_MEMORY_RESERVATION:-128M}
