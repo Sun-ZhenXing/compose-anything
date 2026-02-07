@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   nginx:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}nginx:${NGINX_VERSION:-1.29.2-alpine3.22}
+    image: ${GLOBAL_REGISTRY:-}nginx:${NGINX_VERSION:-1.28.2-alpine3.22}
     ports:
       - "${NGINX_HTTP_PORT_OVERRIDE:-80}:80"
       - "${NGINX_HTTPS_PORT_OVERRIDE:-443}:443"
@@ -34,7 +34,15 @@ services:
           cpus: ${NGINX_CPU_RESERVATION:-0.25}
           memory: ${NGINX_MEMORY_RESERVATION:-64M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:80/",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3

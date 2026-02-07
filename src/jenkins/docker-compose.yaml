@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   jenkins:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}jenkins/jenkins:${JENKINS_VERSION:-2.486-lts-jdk17}
+    image: ${GLOBAL_REGISTRY:-}jenkins/jenkins:${JENKINS_VERSION:-2.541-lts-jdk17}
     ports:
       - "${JENKINS_HTTP_PORT_OVERRIDE:-8080}:8080"
       - "${JENKINS_AGENT_PORT_OVERRIDE:-50000}:50000"

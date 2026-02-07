@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   gitlab:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}gitlab/gitlab-ce:${GITLAB_VERSION:-18.4.0-ce.0}
+    image: ${GLOBAL_REGISTRY:-}gitlab/gitlab-ce:${GITLAB_VERSION:-18.8.3-ce.0}
     ports:
       - "${GITLAB_PORT_OVERRIDE_HTTPS:-5443}:443"
       - "${GITLAB_PORT_OVERRIDE_HTTP:-5080}:80"

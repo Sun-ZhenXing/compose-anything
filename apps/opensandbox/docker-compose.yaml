@@ -1,0 +1,48 @@
+# OpenSandbox Docker Compose Configuration
+# A general-purpose sandbox platform for AI applications
+# Provides multi-language SDKs, unified sandbox APIs, and Docker/Kubernetes runtimes
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  opensandbox-server:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}opensandbox/server:${OPENSANDBOX_SERVER_VERSION:-v1.0.5}
+    ports:
+      - "${OPENSANDBOX_SERVER_PORT_OVERRIDE:-8080}:8080"
+    volumes:
+      # Mount Docker socket to enable sandbox creation
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Configuration file
+      - ./config.toml:/etc/opensandbox/config.toml:ro
+      # Data persistence
+      - opensandbox_data:/app/data
+    environment:
+      - TZ=${TZ:-UTC}
+      # Server configuration
+      - SANDBOX_CONFIG_PATH=/etc/opensandbox/config.toml
+      # Docker runtime settings (override config.toml via env vars if needed)
+      - DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: ${OPENSANDBOX_SERVER_CPU_LIMIT:-2.0}
+          memory: ${OPENSANDBOX_SERVER_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${OPENSANDBOX_SERVER_CPU_RESERVATION:-1.0}
+          memory: ${OPENSANDBOX_SERVER_MEMORY_RESERVATION:-1G}
+
+volumes:
+  opensandbox_data:

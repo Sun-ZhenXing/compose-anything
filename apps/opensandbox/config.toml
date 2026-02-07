@@ -1,0 +1,46 @@
+# OpenSandbox Server Configuration
+# This is a minimal Docker runtime configuration for running OpenSandbox
+
+[server]
+host = "0.0.0.0"
+port = 8080
+log_level = "INFO"
+# IMPORTANT: Change this API key in production!
+api_key = "opensandbox-change-this-secret-key"
+
+[runtime]
+type = "docker"
+# The execd image that will be injected into sandbox containers
+execd_image = "opensandbox/execd:v1.0.5"
+
+[docker]
+# Network mode for sandbox containers
+# - "host": containers share host network (only one sandbox at a time)
+# - "bridge": containers have isolated networks (recommended for multiple sandboxes)
+network_mode = "bridge"
+
+# Security hardening options
+# Drop dangerous capabilities
+drop_capabilities = [
+    "AUDIT_WRITE",
+    "MKNOD",
+    "NET_ADMIN",
+    "NET_RAW",
+    "SYS_ADMIN",
+    "SYS_MODULE",
+    "SYS_PTRACE",
+    "SYS_TIME",
+    "SYS_TTY_CONFIG"
+]
+
+# Prevent privilege escalation inside containers
+no_new_privileges = true
+
+# AppArmor profile (optional, leave empty for Docker default)
+apparmor_profile = ""
+
+# Seccomp profile (optional, leave empty for Docker default)
+seccomp_profile = ""
+
+# Maximum number of processes per sandbox container
+pids_limit = 512
