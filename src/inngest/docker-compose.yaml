@@ -1,0 +1,147 @@
+# Inngest - Durable workflow engine for building reliable applications
+# https://www.inngest.com/
+# https://github.com/inngest/inngest
+#
+# Features:
+#   - Durable functions and workflows with automatic retries
+#   - Event-driven architecture with fan-out and scheduling
+#   - Built-in dashboard for monitoring and debugging
+#   - Connect WebSocket gateway for SDK communication
+#   - Supports PostgreSQL for persistence and Redis for queuing
+#
+# Default Ports:
+#   - 8288: API and Dashboard
+#   - 8289: Connect WebSocket gateway
+#
+# Default Credentials:
+#   - PostgreSQL: inngest / inngest (database: inngest)
+#   - Event Key: See .env.example (must be hex string with even number of chars)
+#   - Signing Key: See .env.example (must be hex string with even number of chars)
+#
+# Security Notes:
+#   - Change the default event key and signing key before production use
+#   - Change the default PostgreSQL password before production use
+#   - Both keys must be valid hex strings with an even number of characters
+#   - Generate secure keys with: openssl rand -hex 32
+#
+# License: Apache-2.0 (Elastic License 2.0 for some components)
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+
+services:
+  inngest:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}inngest/inngest:${INNGEST_VERSION:-v1.16.3}
+    command: >
+      inngest start
+      --host 0.0.0.0
+      --port 8288
+      --connect-gateway-port 8289
+      --postgres-uri postgresql://${INNGEST_PG_USER:-inngest}:${INNGEST_PG_PASSWORD:-inngest}@postgres:5432/${INNGEST_PG_DB:-inngest}?sslmode=disable
+      --redis-uri redis://redis:6379
+    ports:
+      - "${INNGEST_PORT_OVERRIDE:-8288}:8288"
+      - "${INNGEST_GATEWAY_PORT_OVERRIDE:-8289}:8289"
+    environment:
+      - TZ=${TZ:-UTC}
+      - INNGEST_EVENT_KEY=${INNGEST_EVENT_KEY:-deadbeefcafebabe0123456789abcdef}
+      - INNGEST_SIGNING_KEY=${INNGEST_SIGNING_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+      - INNGEST_LOG_LEVEL=${INNGEST_LOG_LEVEL:-info}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--spider",
+          "--quiet",
+          "http://localhost:8288/v0/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${INNGEST_CPU_LIMIT:-1.00}
+          memory: ${INNGEST_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${INNGEST_CPU_RESERVATION:-0.50}
+          memory: ${INNGEST_MEMORY_RESERVATION:-256M}
+
+  postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}postgres:${INNGEST_PG_VERSION:-17.6-alpine}
+    volumes:
+      - inngest_pg_data:/var/lib/postgresql/data
+    environment:
+      - TZ=${TZ:-UTC}
+      - POSTGRES_USER=${INNGEST_PG_USER:-inngest}
+      - POSTGRES_PASSWORD=${INNGEST_PG_PASSWORD:-inngest}
+      - POSTGRES_DB=${INNGEST_PG_DB:-inngest}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${INNGEST_PG_USER:-inngest} -d ${INNGEST_PG_DB:-inngest}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_READ_SEARCH
+      - FOWNER
+      - SETGID
+      - SETUID
+    deploy:
+      resources:
+        limits:
+          cpus: ${INNGEST_PG_CPU_LIMIT:-0.50}
+          memory: ${INNGEST_PG_MEMORY_LIMIT:-256M}
+        reservations:
+          cpus: ${INNGEST_PG_CPU_RESERVATION:-0.25}
+          memory: ${INNGEST_PG_MEMORY_RESERVATION:-128M}
+
+  redis:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}redis:${INNGEST_REDIS_VERSION:-7.4-alpine}
+    volumes:
+      - inngest_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+    deploy:
+      resources:
+        limits:
+          cpus: ${INNGEST_REDIS_CPU_LIMIT:-0.50}
+          memory: ${INNGEST_REDIS_MEMORY_LIMIT:-128M}
+        reservations:
+          cpus: ${INNGEST_REDIS_CPU_RESERVATION:-0.25}
+          memory: ${INNGEST_REDIS_MEMORY_RESERVATION:-64M}
+
+volumes:
+  inngest_pg_data:
+  inngest_redis_data:

@@ -65,6 +65,7 @@ These services require building custom Docker images from source.
 | [Harbor](./src/harbor)                                         | v2.12.0             |
 | [HashiCorp Consul](./src/consul)                               | 1.20.3              |
 | [InfluxDB](./src/influxdb)                                     | 2.8.0               |
+| [Inngest](./src/inngest)                                       | v1.16.3             |
 | [Jenkins](./src/jenkins)                                       | 2.541-lts           |
 | [JODConverter](./src/jodconverter)                             | latest              |
 | [Kestra](./src/kestra)                                         | latest-full         |
