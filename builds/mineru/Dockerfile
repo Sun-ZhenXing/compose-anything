@@ -10,10 +10,10 @@ FROM vllm/vllm-openai:v0.10.1.1
 # Install libgl for opencv support & Noto fonts for Chinese characters
 RUN apt-get update && \
     apt-get install -y \
-        fonts-noto-core \
-        fonts-noto-cjk \
-        fontconfig \
-        libgl1 && \
+    fonts-noto-core \
+    fonts-noto-cjk \
+    fontconfig \
+    libgl1 && \
     fc-cache -fv && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

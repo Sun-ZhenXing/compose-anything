@@ -16,6 +16,9 @@
   "[yaml]": {
     "editor.formatOnSave": true
   },
+  "[dockerfile]": {
+    "editor.formatOnSave": true
+  },
   "[dockercompose]": {
     "editor.formatOnSave": true
   },

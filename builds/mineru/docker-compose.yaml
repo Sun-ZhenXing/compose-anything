@@ -11,7 +11,7 @@ x-mineru-vllm: &mineru-vllm
   image: ${GLOBAL_REGISTRY:-}alexsuntop/mineru:${MINERU_VERSION:-2.7.6}
   build:
     context: .
-    dockerfile: Dockerfile
+    dockerfile: ${MINERU_DOCKERFILE_PATH:-Dockerfile}
     platforms:
       - linux/amd64
       - linux/arm64
