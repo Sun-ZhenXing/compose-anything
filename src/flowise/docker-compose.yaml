@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   flowise:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}flowiseai/flowise:${FLOWISE_VERSION:-3.0.12}
     ports:
-      - "${FLOWISE_PORT_OVERRIDE:-3000}:3000"
+      - '${FLOWISE_PORT_OVERRIDE:-3000}:3000'
     volumes:
       - flowise_data:/root/.flowise
     environment:
@@ -21,12 +21,11 @@ services:
       - FLOWISE_PASSWORD=${FLOWISE_PASSWORD:-}
     healthcheck:
       test:
-        [
-          "CMD",
-          "node",
-          "-e",
-          "require('http').get('http://localhost:3000/api/v1/ping',res=>process.exit(res.statusCode===200?0:1)).on('error',()=>process.exit(1))"
-        ]
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://localhost:3000/api/v1/ping',res=>process.exit(res.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+
       interval: 30s
       timeout: 10s
       retries: 5

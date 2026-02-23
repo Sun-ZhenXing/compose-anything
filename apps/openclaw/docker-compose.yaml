@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   openclaw-gateway:
@@ -33,18 +33,18 @@ services:
       - openclaw_config:/home/node/.openclaw
       - openclaw_workspace:/home/node/openclaw-workspace
     ports:
-      - "${OPENCLAW_GATEWAY_PORT_OVERRIDE:-18789}:18789"
-      - "${OPENCLAW_BRIDGE_PORT_OVERRIDE:-18790}:18790"
+      - '${OPENCLAW_GATEWAY_PORT_OVERRIDE:-18789}:18789'
+      - '${OPENCLAW_BRIDGE_PORT_OVERRIDE:-18790}:18790'
     command:
       - node
       - dist/index.js
       - gateway
       - --bind
-      - "${OPENCLAW_GATEWAY_BIND:-lan}"
+      - '${OPENCLAW_GATEWAY_BIND:-lan}'
       - --port
-      - "18789"
+      - '18789'
     healthcheck:
-      test: ["CMD", "node", "dist/index.js", "health", "--port", "18789"]
+      test: [CMD, node, dist/index.js, health, --port, '18789']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -74,7 +74,7 @@ services:
       - moltbot_workspace:/home/node/clawd
     stdin_open: true
     tty: true
-    entrypoint: ["node", "dist/index.js"]
+    entrypoint: [node, dist/index.js]
     profiles:
       - cli
     deploy:

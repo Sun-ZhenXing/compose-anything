@@ -20,7 +20,7 @@ This service deploys NebulaGraph, a distributed, fast open-source graph database
 ## Volumes
 
 - `nebula_meta_data`: Meta service data
-- `nebula_storage_data`: Storage service data  
+- `nebula_storage_data`: Storage service data
 - `nebula_*_logs`: Log files for each service
 
 ## Usage

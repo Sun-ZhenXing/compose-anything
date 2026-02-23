@@ -29,7 +29,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   conductor-server:
@@ -40,8 +40,8 @@ services:
       dockerfile: Dockerfile
     container_name: conductor-server
     ports:
-      - "${CONDUCTOR_SERVER_PORT_OVERRIDE:-8080}:8080"
-      - "${CONDUCTOR_UI_PORT_OVERRIDE:-5000}:5000"
+      - '${CONDUCTOR_SERVER_PORT_OVERRIDE:-8080}:8080'
+      - '${CONDUCTOR_UI_PORT_OVERRIDE:-5000}:5000'
     environment:
       # Database configuration
       - spring.datasource.url=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
@@ -67,14 +67,13 @@ services:
         condition: service_healthy
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--quiet",
-          "--tries=1",
-          "--spider",
-          "http://localhost:8080/health",
-        ]
+        - CMD
+        - wget
+        - --quiet
+        - --tries=1
+        - --spider
+        - 'http://localhost:8080/health'
+
       interval: 30s
       timeout: 10s
       retries: 5
@@ -82,11 +81,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "${CONDUCTOR_CPU_LIMIT:-2.0}"
-          memory: "${CONDUCTOR_MEMORY_LIMIT:-2G}"
+          cpus: '${CONDUCTOR_CPU_LIMIT:-2.0}'
+          memory: '${CONDUCTOR_MEMORY_LIMIT:-2G}'
         reservations:
-          cpus: "${CONDUCTOR_CPU_RESERVATION:-0.5}"
-          memory: "${CONDUCTOR_MEMORY_RESERVATION:-512M}"
+          cpus: '${CONDUCTOR_CPU_RESERVATION:-0.5}'
+          memory: '${CONDUCTOR_MEMORY_RESERVATION:-512M}'
 
   postgres:
     <<: *defaults
@@ -102,21 +101,20 @@ services:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER:-conductor} -d ${POSTGRES_DB:-conductor}",
-        ]
+        - CMD-SHELL
+        - 'pg_isready -U ${POSTGRES_USER:-conductor} -d ${POSTGRES_DB:-conductor}'
+
       interval: 10s
       timeout: 5s
       retries: 5
     deploy:
       resources:
         limits:
-          cpus: "${POSTGRES_CPU_LIMIT:-1.0}"
-          memory: "${POSTGRES_MEMORY_LIMIT:-1G}"
+          cpus: '${POSTGRES_CPU_LIMIT:-1.0}'
+          memory: '${POSTGRES_MEMORY_LIMIT:-1G}'
         reservations:
-          cpus: "${POSTGRES_CPU_RESERVATION:-0.25}"
-          memory: "${POSTGRES_MEMORY_RESERVATION:-256M}"
+          cpus: '${POSTGRES_CPU_RESERVATION:-0.25}'
+          memory: '${POSTGRES_MEMORY_RESERVATION:-256M}'
 
   elasticsearch:
     <<: *defaults
@@ -131,7 +129,7 @@ services:
       - elasticsearch_data:/usr/share/elasticsearch/data
     healthcheck:
       test:
-        ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+        [CMD-SHELL, 'curl -f http://localhost:9200/_cluster/health || exit 1']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -139,11 +137,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "${ELASTICSEARCH_CPU_LIMIT:-2.0}"
-          memory: "${ELASTICSEARCH_MEMORY_LIMIT:-2G}"
+          cpus: '${ELASTICSEARCH_CPU_LIMIT:-2.0}'
+          memory: '${ELASTICSEARCH_MEMORY_LIMIT:-2G}'
         reservations:
-          cpus: "${ELASTICSEARCH_CPU_RESERVATION:-0.5}"
-          memory: "${ELASTICSEARCH_MEMORY_RESERVATION:-1G}"
+          cpus: '${ELASTICSEARCH_CPU_RESERVATION:-0.5}'
+          memory: '${ELASTICSEARCH_MEMORY_RESERVATION:-1G}'
 
 volumes:
   postgres_data:

@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   ray-head:
@@ -12,9 +12,9 @@ services:
     image: ${GLOBAL_REGISTRY:-}rayproject/ray:${RAY_VERSION:-2.42.1-py312}
     command: ray start --head --dashboard-host=0.0.0.0 --port=6379 --block
     ports:
-      - "${RAY_DASHBOARD_PORT_OVERRIDE:-8265}:8265"
-      - "${RAY_CLIENT_PORT_OVERRIDE:-10001}:10001"
-      - "${RAY_GCS_PORT_OVERRIDE:-6379}:6379"
+      - '${RAY_DASHBOARD_PORT_OVERRIDE:-8265}:8265'
+      - '${RAY_CLIENT_PORT_OVERRIDE:-10001}:10001'
+      - '${RAY_GCS_PORT_OVERRIDE:-6379}:6379'
     environment:
       TZ: ${TZ:-UTC}
       RAY_NUM_CPUS: ${RAY_HEAD_NUM_CPUS:-4}
@@ -30,7 +30,7 @@ services:
           cpus: ${RAY_HEAD_CPU_RESERVATION:-2.0}
           memory: ${RAY_HEAD_MEMORY_RESERVATION:-4G}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8265/"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:8265/']
       interval: 30s
       timeout: 10s
       retries: 3

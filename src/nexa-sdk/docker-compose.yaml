@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   nexa-sdk:
@@ -17,7 +17,7 @@ services:
       - cpu
     image: ${GLOBAL_REGISTRY:-}nexa4ai/nexasdk:${NEXA_SDK_VERSION:-v0.2.65}
     ports:
-      - "${NEXA_SDK_PORT_OVERRIDE:-18181}:18181"
+      - '${NEXA_SDK_PORT_OVERRIDE:-18181}:18181'
     volumes:
       - nexa_data:/data
     environment:
@@ -25,7 +25,7 @@ services:
       - NEXA_TOKEN=${NEXA_TOKEN:-}
     command: serve
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:18181/docs/ui"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:18181/docs/ui']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -46,7 +46,7 @@ services:
       - gpu
     image: ${GLOBAL_REGISTRY:-}nexa4ai/nexasdk:${NEXA_SDK_VERSION:-v0.2.62}-cuda
     ports:
-      - "${NEXA_SDK_PORT_OVERRIDE:-18181}:18181"
+      - '${NEXA_SDK_PORT_OVERRIDE:-18181}:18181'
     volumes:
       - nexa_data:/data
     environment:
@@ -54,7 +54,7 @@ services:
       - NEXA_TOKEN=${NEXA_TOKEN:-}
     command: serve
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:18181/docs/ui"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:18181/docs/ui']
       interval: 30s
       timeout: 10s
       retries: 3

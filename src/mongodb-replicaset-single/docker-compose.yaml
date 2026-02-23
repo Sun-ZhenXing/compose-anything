@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 x-mongo: &mongo
   <<: *defaults
@@ -30,7 +30,7 @@ x-mongo: &mongo
     retries: 10
     start_period: 30s
   extra_hosts:
-    - "host.docker.internal:host-gateway"
+    - 'host.docker.internal:host-gateway'
   deploy:
     resources:
       limits:
@@ -40,12 +40,11 @@ x-mongo: &mongo
         cpus: ${MONGO_REPLICA_SINGLE_CPU_RESERVATION:-0.50}
         memory: ${MONGO_REPLICA_SINGLE_MEMORY_RESERVATION:-1024M}
 
-
 services:
   mongo1:
     <<: *mongo
     ports:
-      - "${MONGO_PORT_OVERRIDE_1:-27017}:27017"
+      - '${MONGO_PORT_OVERRIDE_1:-27017}:27017'
     volumes:
       - mongo_data:/data/db
       - ./secrets/rs0.key:/data/rs0.key:ro
@@ -67,7 +66,7 @@ services:
     volumes:
       - ./secrets/rs0.key:/data/rs0.key:ro
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - 'host.docker.internal:host-gateway'
     entrypoint:
       - bash
       - -c
@@ -108,7 +107,6 @@ services:
         reservations:
           cpus: ${MONGO_REPLICA_SINGLE_INIT_CPU_RESERVATION:-0.50}
           memory: ${MONGO_REPLICA_SINGLE_INIT_MEMORY_RESERVATION:-1024M}
-
 
 volumes:
   mongo_data:

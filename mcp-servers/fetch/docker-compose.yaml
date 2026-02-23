@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   mcp-fetch:
@@ -14,9 +14,9 @@ services:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}
     ports:
-      - "${MCP_FETCH_PORT_OVERRIDE:-8000}:8000"
+      - '${MCP_FETCH_PORT_OVERRIDE:-8000}:8000'
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      test: [CMD, wget, --spider, -q, 'http://localhost:8000/health']
       interval: 30s
       timeout: 10s
       retries: 3

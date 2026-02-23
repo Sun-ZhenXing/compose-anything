@@ -4,18 +4,18 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   consul:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}consul:${CONSUL_VERSION:-1.20.3}
     ports:
-      - "${CONSUL_HTTP_PORT_OVERRIDE:-8500}:8500"
-      - "${CONSUL_DNS_PORT_OVERRIDE:-8600}:8600/udp"
-      - "${CONSUL_SERF_LAN_PORT_OVERRIDE:-8301}:8301"
-      - "${CONSUL_SERF_WAN_PORT_OVERRIDE:-8302}:8302"
-      - "${CONSUL_SERVER_RPC_PORT_OVERRIDE:-8300}:8300"
+      - '${CONSUL_HTTP_PORT_OVERRIDE:-8500}:8500'
+      - '${CONSUL_DNS_PORT_OVERRIDE:-8600}:8600/udp'
+      - '${CONSUL_SERF_LAN_PORT_OVERRIDE:-8301}:8301'
+      - '${CONSUL_SERF_WAN_PORT_OVERRIDE:-8302}:8302'
+      - '${CONSUL_SERVER_RPC_PORT_OVERRIDE:-8300}:8300'
     volumes:
       - consul_data:/consul/data
       - consul_config:/consul/config
@@ -44,7 +44,7 @@ services:
           cpus: ${CONSUL_CPU_RESERVATION:-0.25}
           memory: ${CONSUL_MEMORY_RESERVATION:-128M}
     healthcheck:
-      test: ["CMD-SHELL", "consul members"]
+      test: [CMD-SHELL, consul members]
       interval: 30s
       timeout: 10s
       retries: 3

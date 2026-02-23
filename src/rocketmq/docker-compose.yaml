@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   namesrv:
@@ -13,9 +13,9 @@ services:
     command: sh mqnamesrv
     environment:
       TZ: ${TZ:-UTC}
-      JAVA_OPT_EXT: "-Xms512m -Xmx512m"
+      JAVA_OPT_EXT: -Xms512m -Xmx512m
     ports:
-      - "${ROCKETMQ_NAMESRV_PORT_OVERRIDE:-9876}:9876"
+      - '${ROCKETMQ_NAMESRV_PORT_OVERRIDE:-9876}:9876'
     volumes:
       - namesrv_logs:/home/rocketmq/logs
     deploy:
@@ -27,7 +27,7 @@ services:
           cpus: ${ROCKETMQ_NAMESRV_CPU_RESERVATION:-0.25}
           memory: ${ROCKETMQ_NAMESRV_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD-SHELL", "mqadmin clusterList -n localhost:9876 || exit 1"]
+      test: [CMD-SHELL, 'mqadmin clusterList -n localhost:9876 || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -39,11 +39,11 @@ services:
     command: sh mqbroker -n namesrv:9876 -c /home/rocketmq/broker.conf
     environment:
       TZ: ${TZ:-UTC}
-      JAVA_OPT_EXT: "-Xms1g -Xmx1g"
+      JAVA_OPT_EXT: -Xms1g -Xmx1g
     ports:
-      - "${ROCKETMQ_BROKER_PORT_OVERRIDE:-10909}:10909"
-      - "${ROCKETMQ_BROKER_VIP_PORT_OVERRIDE:-10911}:10911"
-      - "${ROCKETMQ_BROKER_HA_PORT_OVERRIDE:-10912}:10912"
+      - '${ROCKETMQ_BROKER_PORT_OVERRIDE:-10909}:10909'
+      - '${ROCKETMQ_BROKER_VIP_PORT_OVERRIDE:-10911}:10911'
+      - '${ROCKETMQ_BROKER_HA_PORT_OVERRIDE:-10912}:10912'
     volumes:
       - broker_logs:/home/rocketmq/logs
       - broker_store:/home/rocketmq/store
@@ -60,7 +60,7 @@ services:
           cpus: ${ROCKETMQ_BROKER_CPU_RESERVATION:-0.5}
           memory: ${ROCKETMQ_BROKER_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD-SHELL", "mqadmin clusterList -n namesrv:9876 | grep -q broker || exit 1"]
+      test: [CMD-SHELL, 'mqadmin clusterList -n namesrv:9876 | grep -q broker || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -71,9 +71,9 @@ services:
     image: ${GLOBAL_REGISTRY:-}apacherocketmq/rocketmq-dashboard:${ROCKETMQ_DASHBOARD_VERSION:-2.0.0}
     environment:
       TZ: ${TZ:-UTC}
-      JAVA_OPTS: "-Xms256m -Xmx256m -Drocketmq.namesrv.addr=namesrv:9876"
+      JAVA_OPTS: '-Xms256m -Xmx256m -Drocketmq.namesrv.addr=namesrv:9876'
     ports:
-      - "${ROCKETMQ_DASHBOARD_PORT_OVERRIDE:-8080}:8080"
+      - '${ROCKETMQ_DASHBOARD_PORT_OVERRIDE:-8080}:8080'
     depends_on:
       namesrv:
         condition: service_healthy
@@ -86,7 +86,7 @@ services:
           cpus: ${ROCKETMQ_DASHBOARD_CPU_RESERVATION:-0.25}
           memory: ${ROCKETMQ_DASHBOARD_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080 || exit 1"]
+      test: [CMD-SHELL, 'wget --no-verbose --tries=1 --spider http://localhost:8080 || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3

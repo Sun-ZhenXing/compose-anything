@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   litellm:
@@ -20,7 +20,7 @@ services:
     # command:
     #   - "--config=/app/config.yaml"
     ports:
-      - "${LITELLM_PORT_OVERRIDE:-4000}:4000"
+      - '${LITELLM_PORT_OVERRIDE:-4000}:4000'
     environment:
       - DATABASE_URL=postgresql://llmproxy:${POSTGRES_PASSWORD}@db:5432/litellm
       - STORE_MODEL_IN_DB=True
@@ -31,13 +31,13 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4000/health/liveliness"]
+      test: [CMD, curl, -f, 'http://localhost:4000/health/liveliness']
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - 'host.docker.internal:host-gateway'
     deploy:
       resources:
         limits:
@@ -56,11 +56,11 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - TZ=${TZ:-UTC}
     ports:
-      - "${POSTGRES_PORT_OVERRIDE:-5432}:5432"
+      - '${POSTGRES_PORT_OVERRIDE:-5432}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d litellm -U llmproxy"]
+      test: [CMD-SHELL, pg_isready -d litellm -U llmproxy]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -83,15 +83,15 @@ services:
       - prometheus_data:/prometheus
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
-      - "${PROMETHEUS_PORT_OVERRIDE:-9090}:9090"
+      - '${PROMETHEUS_PORT_OVERRIDE:-9090}:9090'
     command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
-      - "--storage.tsdb.retention.time=15d"
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/healthy"]
+      test: [CMD, wget, --spider, -q, 'http://localhost:9090/-/healthy']
       interval: 30s
       timeout: 10s
       retries: 3

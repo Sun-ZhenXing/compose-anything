@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   etcd:
@@ -20,7 +20,7 @@ services:
       - etcd_data:/etcd
     command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
     healthcheck:
-      test: ["CMD", "etcdctl", "endpoint", "health"]
+      test: [CMD, etcdctl, endpoint, health]
       interval: 30s
       timeout: 20s
       retries: 3
@@ -42,13 +42,13 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
     ports:
-      - "${MINIO_PORT_OVERRIDE_API:-9000}:9000"
-      - "${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001"
+      - '${MINIO_PORT_OVERRIDE_API:-9000}:9000'
+      - '${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001'
     volumes:
       - minio_data:/minio_data
     command: minio server /minio_data --console-address ":9001"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: [CMD, curl, -f, 'http://localhost:9000/minio/health/live']
       interval: 30s
       timeout: 20s
       retries: 3
@@ -65,7 +65,7 @@ services:
   milvus-standalone:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}milvusdb/milvus:${MILVUS_VERSION:-v2.6.7}
-    command: ["milvus", "run", "standalone"]
+    command: [milvus, run, standalone]
     security_opt:
       - seccomp:unconfined
     environment:
@@ -76,14 +76,14 @@ services:
     volumes:
       - milvus_data:/var/lib/milvus
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      test: [CMD, curl, -f, 'http://localhost:9091/healthz']
       interval: 30s
       start_period: 90s
       timeout: 20s
       retries: 3
     ports:
-      - "${MILVUS_PORT_OVERRIDE_HTTP:-19530}:19530"
-      - "${MILVUS_PORT_OVERRIDE_WEBUI:-9091}:9091"
+      - '${MILVUS_PORT_OVERRIDE_HTTP:-19530}:19530'
+      - '${MILVUS_PORT_OVERRIDE_WEBUI:-9091}:9091'
     depends_on:
       etcd:
         condition: service_healthy
@@ -107,7 +107,7 @@ services:
       - TZ=${TZ:-UTC}
       - MILVUS_URL=${MILVUS_URL:-milvus-standalone:19530}
     ports:
-      - "${ATTU_PORT_OVERRIDE:-8000}:3000"
+      - '${ATTU_PORT_OVERRIDE:-8000}:3000'
     depends_on:
       milvus-standalone:
         condition: service_healthy
@@ -121,14 +121,13 @@ services:
           memory: ${ATTU_MEMORY_RESERVATION:-128M}
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:3000/",
-        ]
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - 'http://localhost:3000/'
+
       interval: 30s
       timeout: 10s
       retries: 3

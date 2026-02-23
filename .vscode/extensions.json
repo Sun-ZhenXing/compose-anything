@@ -1,7 +1,7 @@
 {
   "recommendations": [
     "yzhang.markdown-all-in-one",
-    "DavidAnson.vscode-markdownlint",
-    "redhat.vscode-yaml"
+    "dbaeumer.vscode-eslint",
+    "ms-azuretools.vscode-containers"
   ]
 }

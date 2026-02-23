@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   redis:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-8.2.1-alpine3.22}
     ports:
-      - "${REDIS_PORT_OVERRIDE:-6379}:6379"
+      - '${REDIS_PORT_OVERRIDE:-6379}:6379'
     volumes:
       - redis_data:/data
       # Use a custom redis.conf file
@@ -30,7 +30,7 @@ services:
           redis-server
         fi
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 3s
       retries: 3

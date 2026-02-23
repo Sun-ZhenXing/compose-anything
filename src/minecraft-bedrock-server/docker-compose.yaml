@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   minecraft-bedrock:
@@ -12,24 +12,24 @@ services:
     image: ${GLOBAL_REGISTRY:-}itzg/minecraft-bedrock-server:${BEDROCK_VERSION:-latest}
     environment:
       TZ: ${TZ:-UTC}
-      EULA: "${EULA:-TRUE}"
-      VERSION: "${MINECRAFT_VERSION:-LATEST}"
-      GAMEMODE: "${GAMEMODE:-survival}"
-      DIFFICULTY: "${DIFFICULTY:-easy}"
-      SERVER_NAME: "${SERVER_NAME:-Dedicated Server}"
-      MAX_PLAYERS: "${MAX_PLAYERS:-10}"
-      ALLOW_CHEATS: "${ALLOW_CHEATS:-false}"
-      LEVEL_NAME: "${LEVEL_NAME:-Bedrock level}"
-      LEVEL_SEED: "${LEVEL_SEED:-}"
-      ONLINE_MODE: "${ONLINE_MODE:-true}"
-      WHITE_LIST: "${WHITE_LIST:-false}"
-      SERVER_PORT: "${SERVER_PORT:-19132}"
-      SERVER_PORT_V6: "${SERVER_PORT_V6:-19133}"
-      UID: "${UID:-1000}"
-      GID: "${GID:-1000}"
+      EULA: '${EULA:-TRUE}'
+      VERSION: '${MINECRAFT_VERSION:-LATEST}'
+      GAMEMODE: '${GAMEMODE:-survival}'
+      DIFFICULTY: '${DIFFICULTY:-easy}'
+      SERVER_NAME: '${SERVER_NAME:-Dedicated Server}'
+      MAX_PLAYERS: '${MAX_PLAYERS:-10}'
+      ALLOW_CHEATS: '${ALLOW_CHEATS:-false}'
+      LEVEL_NAME: '${LEVEL_NAME:-Bedrock level}'
+      LEVEL_SEED: '${LEVEL_SEED:-}'
+      ONLINE_MODE: '${ONLINE_MODE:-true}'
+      WHITE_LIST: '${WHITE_LIST:-false}'
+      SERVER_PORT: '${SERVER_PORT:-19132}'
+      SERVER_PORT_V6: '${SERVER_PORT_V6:-19133}'
+      UID: '${UID:-1000}'
+      GID: '${GID:-1000}'
     ports:
-      - "${SERVER_PORT_OVERRIDE:-19132}:19132/udp"
-      - "${SERVER_PORT_V6_OVERRIDE:-19133}:19133/udp"
+      - '${SERVER_PORT_OVERRIDE:-19132}:19132/udp'
+      - '${SERVER_PORT_V6_OVERRIDE:-19133}:19133/udp'
     volumes:
       - bedrock_data:/data
     stdin_open: true
@@ -43,7 +43,7 @@ services:
           cpus: ${BEDROCK_CPU_RESERVATION:-1.0}
           memory: ${BEDROCK_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD-SHELL", "[ -f /data/valid_known_packs.json ]"]
+      test: [CMD-SHELL, '[ -f /data/valid_known_packs.json ]']
       interval: 30s
       timeout: 10s
       retries: 3

@@ -30,14 +30,14 @@
 此服务需要 NVIDIA GPU 才能正常运行。在 `docker-compose.yaml` 中取消注释 GPU 配置：
 
 ```yaml
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    runtime: nvidia
+deploy:
+  resources:
+    reservations:
+      devices:
+        - driver: nvidia
+          count: 1
+          capabilities: [gpu]
+runtime: nvidia
 ```
 
 ## 使用方法
@@ -117,7 +117,7 @@ VLLM_MAX_MODEL_LEN=4096  # 支持最多 4K tokens
 对于更大的模型，增加共享内存：
 
 ```yaml
-shm_size: 8g  # 增加到 8GB
+shm_size: 8g # 增加到 8GB
 ```
 
 ## 注意事项

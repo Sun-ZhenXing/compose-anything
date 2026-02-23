@@ -25,24 +25,23 @@
 
 ```toml
 [[runners]]
-  [runners.docker]
-    tls_verify = false
-    pull_policy = "if-not-present"
-    image = "local/docker:1.0"
-    privileged = true
-    disable_entrypoint_overwrite = false
-    oom_kill_disable = false
-    disable_cache = false
-    volumes = [
-      "/var/run/docker.sock:/var/run/docker.sock",
-      "/cache",
-      "/builds:/builds"
-    ]
-    extra_hosts = [
-      "host.docker.internal:host-gateway",
-    ]
-    shm_size = 0
-    network_mtu = 0
+
+[runners.docker]
+tls_verify = false
+pull_policy = "if-not-present"
+image = "local/docker:1.0"
+privileged = true
+disable_entrypoint_overwrite = false
+oom_kill_disable = false
+disable_cache = false
+volumes = [
+  "/var/run/docker.sock:/var/run/docker.sock",
+  "/cache",
+  "/builds:/builds"
+]
+extra_hosts = [ "host.docker.internal:host-gateway", ]
+shm_size = 0
+network_mtu = 0
 ```
 
 ## 服务

@@ -62,7 +62,7 @@ If you need to mount the Prisma database files:
    ```yaml
    volumes:
      - easy_dataset_db:/app/local-db
-     - easy_dataset_prisma:/app/prisma  # Uncomment this line
+     - easy_dataset_prisma:/app/prisma # Uncomment this line
    ```
 
 3. Start the service:

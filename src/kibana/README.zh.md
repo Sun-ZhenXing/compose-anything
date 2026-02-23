@@ -45,8 +45,8 @@ Kibana 需要运行 Elasticsearch。确保 Elasticsearch 在配置的 `ELASTICSE
 
 ```yaml
 server.name: kibana
-server.host: "0.0.0.0"
-elasticsearch.hosts: ["http://elasticsearch:9200"]
+server.host: 0.0.0.0
+elasticsearch.hosts: ['http://elasticsearch:9200']
 monitoring.ui.container.elasticsearch.enabled: true
 ```
 

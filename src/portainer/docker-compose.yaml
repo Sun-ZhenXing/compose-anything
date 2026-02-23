@@ -4,15 +4,15 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   portainer:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}portainer/portainer-ce:${PORTAINER_VERSION:-2.27.3-alpine}
     ports:
-      - "${PORTAINER_WEB_PORT_OVERRIDE:-9000}:9000"
-      - "${PORTAINER_EDGE_PORT_OVERRIDE:-8000}:8000"
+      - '${PORTAINER_WEB_PORT_OVERRIDE:-9000}:9000'
+      - '${PORTAINER_EDGE_PORT_OVERRIDE:-8000}:8000'
     volumes:
       # ⚠️ Security Warning: Mounting Docker socket grants full control of Docker daemon
       # This is required for Portainer to function, but ensure access is properly secured
@@ -21,7 +21,7 @@ services:
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9000/api/system/status"]
+      test: [CMD, wget, --spider, -q, 'http://localhost:9000/api/system/status']
       interval: 30s
       timeout: 10s
       retries: 3

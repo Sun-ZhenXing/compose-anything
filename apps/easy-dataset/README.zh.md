@@ -62,7 +62,7 @@
    ```yaml
    volumes:
      - easy_dataset_db:/app/local-db
-     - easy_dataset_prisma:/app/prisma  # 取消此行注释
+     - easy_dataset_prisma:/app/prisma # 取消此行注释
    ```
 
 3. 启动服务：

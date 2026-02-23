@@ -57,7 +57,7 @@
 
 ```sql
 -- 创建键空间
-CREATE KEYSPACE test_keyspace 
+CREATE KEYSPACE test_keyspace
 WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
 
 -- 使用键空间
@@ -71,7 +71,7 @@ CREATE TABLE users (
 );
 
 -- 插入数据
-INSERT INTO users (id, name, email) 
+INSERT INTO users (id, name, email)
 VALUES (uuid(), 'John Doe', 'john@example.com');
 
 -- 查询数据

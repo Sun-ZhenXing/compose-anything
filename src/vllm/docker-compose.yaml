@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   vllm:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}vllm/vllm-openai:${VLLM_VERSION:-v0.13.0}
     ports:
-      - "${VLLM_PORT_OVERRIDE:-8000}:8000"
+      - '${VLLM_PORT_OVERRIDE:-8000}:8000'
     volumes:
       - vllm_models:/root/.cache/huggingface
     environment:
@@ -21,13 +21,13 @@ services:
       - --model
       - ${VLLM_MODEL:-facebook/opt-125m}
       - --host
-      - "0.0.0.0"
+      - 0.0.0.0
       - --port
-      - "8000"
+      - '8000'
       - --max-model-len
-      - "${VLLM_MAX_MODEL_LEN:-2048}"
+      - '${VLLM_MAX_MODEL_LEN:-2048}'
       - --gpu-memory-utilization
-      - "${VLLM_GPU_MEMORY_UTIL:-0.9}"
+      - '${VLLM_GPU_MEMORY_UTIL:-0.9}'
     deploy:
       resources:
         limits:
@@ -42,7 +42,7 @@ services:
               capabilities: [gpu]
     shm_size: 4g
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: [CMD, curl, -f, 'http://localhost:8000/health']
       interval: 30s
       timeout: 10s
       retries: 3

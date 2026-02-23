@@ -1,6 +1,9 @@
 {
+  // Disable Prettier, use ESLint for formatting instead
   "prettier.enable": false,
+  // Disable default formatOnSave, use ESLint fixOnSave
   "editor.formatOnSave": false,
+  // Markdown settings
   "[markdown]": {
     "editor.wordWrap": "on",
     "editor.formatOnSave": true,
@@ -13,15 +16,97 @@
       "strings": "off"
     }
   },
+  // YAML settings: auto-fix ESLint issues on save
   "[yaml]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
   },
   "[dockerfile]": {
     "editor.formatOnSave": true
   },
+  // Docker Compose settings
   "[dockercompose]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
   },
+  // File EOL configuration
   "files.eol": "\n",
-  "cSpell.enabled": false
+  // Disable spell checking
+  "cSpell.enabled": false,
+  // ESLint settings: auto-fix on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
+  },
+  // Silent stylistic rules in IDE but still auto-fix them
+  "eslint.rules.customizations": [
+    {
+      "rule": "style/*",
+      "severity": "off",
+      "fixable": true
+    },
+    {
+      "rule": "format/*",
+      "severity": "off",
+      "fixable": true
+    },
+    {
+      "rule": "*-indent",
+      "severity": "off",
+      "fixable": true
+    },
+    {
+      "rule": "*-spacing",
+      "severity": "off",
+      "fixable": true
+    },
+    {
+      "rule": "*-spaces",
+      "severity": "off",
+      "fixable": true
+    },
+    {
+      "rule": "*-order",
+      "severity": "off",
+      "fixable": true
+    },
+    {
+      "rule": "*-dangle",
+      "severity": "off",
+      "fixable": true
+    },
+    {
+      "rule": "*-newline",
+      "severity": "off",
+      "fixable": true
+    },
+    {
+      "rule": "*quotes",
+      "severity": "off",
+      "fixable": true
+    },
+    {
+      "rule": "*semi",
+      "severity": "off",
+      "fixable": true
+    }
+  ],
+  // Enable ESLint for supported languages
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml",
+    "dockercompose"
+  ]
 }

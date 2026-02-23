@@ -26,7 +26,7 @@ OpenClaw 是一个运行在你自己设备上的个人 AI 助手。它集成了�
    ```bash
    # 使用 OpenSSL
    openssl rand -hex 32
-   
+
    # 或使用 Python
    python3 -c "import secrets; print(secrets.token_hex(32))"
    ```

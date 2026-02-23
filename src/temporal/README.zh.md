@@ -131,14 +131,14 @@ from temporalio.worker import Worker
 
 async def main():
     client = await Client.connect("localhost:7233")
-    
+
     worker = Worker(
         client,
         task_queue="hello-queue",
         workflows=[HelloWorkflow],
         activities=[say_hello],
     )
-    
+
     await worker.run()
 ```
 
@@ -149,14 +149,14 @@ from temporalio.client import Client
 
 async def main():
     client = await Client.connect("localhost:7233")
-    
+
     result = await client.execute_workflow(
         HelloWorkflow.run,
         "World",
         id="hello-workflow",
         task_queue="hello-queue",
     )
-    
+
     print(result)
 ```
 

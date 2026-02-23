@@ -4,23 +4,23 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   agentgateway:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}cr.agentgateway.dev/agentgateway:${AGENTGATEWAY_VERSION:-0.11.2}
     ports:
-      - "${AGENTGATEWAY_PORT_OVERRIDE:-3000}:3000"
-      - "127.0.0.1:${AGENTGATEWAY_ADMIN_PORT_OVERRIDE:-15000}:15000"
+      - '${AGENTGATEWAY_PORT_OVERRIDE:-3000}:3000'
+      - '127.0.0.1:${AGENTGATEWAY_ADMIN_PORT_OVERRIDE:-15000}:15000'
     volumes:
       - ./config.yaml:/config.yaml:ro
     environment:
       - TZ=${TZ:-UTC}
       - ADMIN_ADDR=${AGENTGATEWAY_ADMIN_ADDR:-0.0.0.0:15000}
-    command: ["-f", "/config.yaml"]
+    command: [-f, /config.yaml]
     healthcheck:
-      test: ["CMD", "agentgateway", "--version"]
+      test: [CMD, agentgateway, --version]
       interval: 30s
       timeout: 10s
       retries: 3

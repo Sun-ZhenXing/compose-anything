@@ -7,7 +7,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   dind:
@@ -26,14 +26,14 @@ services:
         - INSTALL_NVIDIA_TOOLKIT=${INSTALL_NVIDIA_TOOLKIT:-false}
     privileged: true
     ports:
-      - "${DIND_PORT_OVERRIDE:-2375}:2375"
+      - '${DIND_PORT_OVERRIDE:-2375}:2375'
     volumes:
       - dind_data:/var/lib/docker
     environment:
       - TZ=${TZ:-UTC}
       - DOCKER_TLS_CERTDIR=${DOCKER_TLS_CERTDIR:-}
     healthcheck:
-      test: ["CMD", "docker", "info"]
+      test: [CMD, docker, info]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -64,7 +64,7 @@ services:
         - INSTALL_NVIDIA_TOOLKIT=true
     privileged: true
     ports:
-      - "${DIND_PORT_OVERRIDE:-2375}:2375"
+      - '${DIND_PORT_OVERRIDE:-2375}:2375'
     volumes:
       - dind_gpu_data:/var/lib/docker
     environment:
@@ -73,7 +73,7 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     healthcheck:
-      test: ["CMD", "docker", "info"]
+      test: [CMD, docker, info]
       interval: 30s
       timeout: 10s
       retries: 3

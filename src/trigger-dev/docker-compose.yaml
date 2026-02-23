@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   # =============================================================================
@@ -19,7 +19,7 @@ services:
     <<: *defaults
     image: ${GHCR_IO_REGISTRY:-ghcr.io}/triggerdotdev/trigger.dev:${TRIGGER_IMAGE_TAG:-v4.2.0}
     ports:
-      - "${TRIGGER_PORT:-8030}:3030"
+      - '${TRIGGER_PORT:-8030}:3030'
     environment:
       - TZ=${TZ:-UTC}
       # Secrets (required)
@@ -89,7 +89,7 @@ services:
       electric:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3030/healthcheck"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:3030/healthcheck']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -122,7 +122,7 @@ services:
     volumes:
       - trigger_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-trigger} -d ${POSTGRES_DB:-trigger}"]
+      test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-trigger} -d ${POSTGRES_DB:-trigger}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -143,7 +143,7 @@ services:
     volumes:
       - trigger_redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -170,7 +170,7 @@ services:
       - trigger_clickhouse_data:/var/lib/clickhouse
       - trigger_clickhouse_logs:/var/log/clickhouse-server
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "-O-", "http://localhost:8123/ping"]
+      test: [CMD, wget, --no-verbose, --tries=1, -O-, 'http://localhost:8123/ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -189,8 +189,8 @@ services:
     image: ${GLOBAL_REGISTRY:-}minio/minio:${MINIO_VERSION:-RELEASE.2025-04-22T22-12-26Z}
     command: server /data --console-address ":9001"
     ports:
-      - "${MINIO_API_PORT:-9000}:9000"
-      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+      - '${MINIO_API_PORT:-9000}:9000'
+      - '${MINIO_CONSOLE_PORT:-9001}:9001'
     environment:
       - TZ=${TZ:-UTC}
       - MINIO_ROOT_USER=${MINIO_ROOT_USER:-admin}
@@ -198,7 +198,7 @@ services:
     volumes:
       - trigger_minio_data:/data
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: [CMD, mc, ready, local]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -227,7 +227,7 @@ services:
     depends_on:
       trigger-minio:
         condition: service_healthy
-    restart: "no"
+    restart: no
 
   electric:
     <<: *defaults
@@ -239,7 +239,7 @@ services:
       trigger-postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/v1/health"]
+      test: [CMD, curl, -f, 'http://localhost:3000/v1/health']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -272,13 +272,13 @@ services:
       - REGISTRY_PASSWORD=${REGISTRY_PASSWORD:-very-secure-indeed}
     volumes:
       - trigger_registry_auth:/auth
-    restart: "no"
+    restart: no
 
   trigger-registry:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}registry:${REGISTRY_IMAGE_VERSION:-3}
     ports:
-      - "${REGISTRY_PORT:-5000}:5000"
+      - '${REGISTRY_PORT:-5000}:5000'
     environment:
       - TZ=${TZ:-UTC}
       - REGISTRY_AUTH=htpasswd
@@ -292,7 +292,7 @@ services:
       trigger-registry-init:
         condition: service_completed_successfully
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/v2/"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:5000/v2/']
       interval: 30s
       timeout: 10s
       retries: 3

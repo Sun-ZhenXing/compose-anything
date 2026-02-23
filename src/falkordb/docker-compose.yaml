@@ -4,21 +4,21 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   falkordb:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}falkordb/falkordb:${FALKORDB_VERSION:-v4.14.11}
     ports:
-      - "${FALKORDB_PORT_OVERRIDE:-6379}:6379"
-      - "${FALKORDB_BROWSER_PORT_OVERRIDE:-3000}:3000"
+      - '${FALKORDB_PORT_OVERRIDE:-6379}:6379'
+      - '${FALKORDB_BROWSER_PORT_OVERRIDE:-3000}:3000'
     volumes:
       - falkordb_data:/data
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 30s
       timeout: 10s
       retries: 3

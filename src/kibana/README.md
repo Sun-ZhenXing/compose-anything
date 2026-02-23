@@ -45,8 +45,8 @@ Uncomment the configuration volume in `docker-compose.yaml` and create `kibana.y
 
 ```yaml
 server.name: kibana
-server.host: "0.0.0.0"
-elasticsearch.hosts: ["http://elasticsearch:9200"]
+server.host: 0.0.0.0
+elasticsearch.hosts: ['http://elasticsearch:9200']
 monitoring.ui.container.elasticsearch.enabled: true
 ```
 

@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   bytebot-desktop:
     <<: *defaults
     image: ${GHCR_IO_REGISTRY:-ghcr.io}/bytebot-ai/bytebot-desktop:${BYTEBOT_VERSION:-edge}
     ports:
-      - "${BYTEBOT_DESKTOP_PORT_OVERRIDE:-9990}:9990"
+      - '${BYTEBOT_DESKTOP_PORT_OVERRIDE:-9990}:9990'
     environment:
       - TZ=${TZ:-UTC}
     shm_size: 2gb
@@ -25,14 +25,13 @@ services:
           memory: ${BYTEBOT_DESKTOP_MEMORY_RESERVATION:-2G}
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:9990/",
-        ]
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - 'http://localhost:9990/'
+
       interval: 30s
       timeout: 10s
       retries: 3
@@ -47,7 +46,7 @@ services:
       bytebot-db:
         condition: service_healthy
     ports:
-      - "${BYTEBOT_AGENT_PORT_OVERRIDE:-9991}:9991"
+      - '${BYTEBOT_AGENT_PORT_OVERRIDE:-9991}:9991'
     environment:
       - TZ=${TZ:-UTC}
       - BYTEBOTD_URL=http://bytebot-desktop:9990
@@ -65,14 +64,13 @@ services:
           memory: ${BYTEBOT_AGENT_MEMORY_RESERVATION:-512M}
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:9991/health",
-        ]
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - 'http://localhost:9991/health'
+
       interval: 30s
       timeout: 10s
       retries: 3
@@ -85,7 +83,7 @@ services:
       bytebot-agent:
         condition: service_healthy
     ports:
-      - "${BYTEBOT_UI_PORT_OVERRIDE:-9992}:9992"
+      - '${BYTEBOT_UI_PORT_OVERRIDE:-9992}:9992'
     environment:
       - TZ=${TZ:-UTC}
       - BYTEBOT_AGENT_BASE_URL=http://localhost:9991
@@ -100,14 +98,13 @@ services:
           memory: ${BYTEBOT_UI_MEMORY_RESERVATION:-256M}
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:9992/",
-        ]
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - 'http://localhost:9992/'
+
       interval: 30s
       timeout: 10s
       retries: 3
@@ -133,7 +130,7 @@ services:
           cpus: ${BYTEBOT_DB_CPU_RESERVATION:-0.25}
           memory: ${BYTEBOT_DB_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      test: [CMD-SHELL, pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB]
       interval: 30s
       timeout: 10s
       retries: 3

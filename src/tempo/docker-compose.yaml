@@ -4,27 +4,27 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   tempo:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}grafana/tempo:${TEMPO_VERSION:-2.7.2}
     ports:
-      - "${TEMPO_HTTP_PORT_OVERRIDE:-3200}:3200"   # HTTP
-      - "${TEMPO_GRPC_PORT_OVERRIDE:-9095}:9095"   # gRPC
-      - "${TEMPO_OTLP_HTTP_PORT_OVERRIDE:-4318}:4318"  # OTLP HTTP
-      - "${TEMPO_OTLP_GRPC_PORT_OVERRIDE:-4317}:4317"  # OTLP gRPC
-      - "${TEMPO_ZIPKIN_PORT_OVERRIDE:-9411}:9411"     # Zipkin
-      - "${TEMPO_JAEGER_THRIFT_HTTP_PORT_OVERRIDE:-14268}:14268"  # Jaeger Thrift HTTP
-      - "${TEMPO_JAEGER_GRPC_PORT_OVERRIDE:-14250}:14250"         # Jaeger gRPC
+      - '${TEMPO_HTTP_PORT_OVERRIDE:-3200}:3200' # HTTP
+      - '${TEMPO_GRPC_PORT_OVERRIDE:-9095}:9095' # gRPC
+      - '${TEMPO_OTLP_HTTP_PORT_OVERRIDE:-4318}:4318' # OTLP HTTP
+      - '${TEMPO_OTLP_GRPC_PORT_OVERRIDE:-4317}:4317' # OTLP gRPC
+      - '${TEMPO_ZIPKIN_PORT_OVERRIDE:-9411}:9411' # Zipkin
+      - '${TEMPO_JAEGER_THRIFT_HTTP_PORT_OVERRIDE:-14268}:14268' # Jaeger Thrift HTTP
+      - '${TEMPO_JAEGER_GRPC_PORT_OVERRIDE:-14250}:14250' # Jaeger gRPC
     volumes:
       - tempo_data:/tmp/tempo
       - ./tempo-config.yaml:/etc/tempo/tempo.yaml:ro
     environment:
       - TZ=${TZ:-UTC}
     command: -config.file=/etc/tempo/tempo.yaml
-    user: "10001:10001"  # Tempo user
+    user: '10001:10001' # Tempo user
     deploy:
       resources:
         limits:
@@ -34,7 +34,7 @@ services:
           cpus: ${TEMPO_CPU_RESERVATION:-0.25}
           memory: ${TEMPO_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3200/ready"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:3200/ready']
       interval: 30s
       timeout: 10s
       retries: 3

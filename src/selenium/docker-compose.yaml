@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   selenium-chrome:
@@ -16,8 +16,8 @@ services:
     image: ${GLOBAL_REGISTRY:-}selenium/standalone-chrome:${SELENIUM_VERSION:-144.0-20260120}
     shm_size: ${SELENIUM_SHM_SIZE:-2g}
     ports:
-      - "${SELENIUM_GRID_PORT_OVERRIDE:-4444}:4444"
-      - "${SELENIUM_VNC_PORT_OVERRIDE:-7900}:7900"
+      - '${SELENIUM_GRID_PORT_OVERRIDE:-4444}:4444'
+      - '${SELENIUM_VNC_PORT_OVERRIDE:-7900}:7900'
     volumes:
       - selenium_downloads:/home/seluser/Downloads
     environment:
@@ -32,7 +32,7 @@ services:
       - SE_START_XVFB=${SE_START_XVFB:-true}
     healthcheck:
       test:
-        ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
+        [CMD, /opt/bin/check-grid.sh, --host, 0.0.0.0, --port, '4444']
       interval: 30s
       timeout: 10s
       retries: 3

@@ -26,7 +26,7 @@ Redpanda is a Kafka-compatible streaming data platform built for performance and
    ```bash
    # Start only Redpanda (without console)
    docker compose up -d
-   
+
    # Or start with Redpanda Console UI
    docker compose --profile console up -d
    ```
@@ -106,7 +106,7 @@ Default resource limits:
 - **Redpanda**:
   - CPU: 1.0-2.0 cores
   - Memory: 1G-2G
-  
+
 - **Console**:
   - CPU: 0.25-0.5 cores
   - Memory: 256M-512M

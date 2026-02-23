@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 x-mariadb-galera: &mariadb-galera
   <<: *defaults
@@ -34,7 +34,7 @@ x-mariadb-galera: &mariadb-galera
         cpus: ${MARIADB_CPU_RESERVATION:-1.0}
         memory: ${MARIADB_MEMORY_RESERVATION:-1G}
   healthcheck:
-    test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+    test: [CMD, healthcheck.sh, --connect, --innodb_initialized]
     interval: 30s
     timeout: 10s
     retries: 3
@@ -45,7 +45,7 @@ services:
     <<: *mariadb-galera
     hostname: mariadb-galera-1
     ports:
-      - "${MARIADB_PORT_1_OVERRIDE:-3306}:3306"
+      - '${MARIADB_PORT_1_OVERRIDE:-3306}:3306'
     environment:
       <<: *galera-env
       WSREP_NODE_ADDRESS: mariadb-galera-1
@@ -67,7 +67,7 @@ services:
     <<: *mariadb-galera
     hostname: mariadb-galera-2
     ports:
-      - "${MARIADB_PORT_2_OVERRIDE:-3307}:3306"
+      - '${MARIADB_PORT_2_OVERRIDE:-3307}:3306'
     environment:
       <<: *galera-env
       WSREP_NODE_ADDRESS: mariadb-galera-2
@@ -91,7 +91,7 @@ services:
     <<: *mariadb-galera
     hostname: mariadb-galera-3
     ports:
-      - "${MARIADB_PORT_3_OVERRIDE:-3308}:3306"
+      - '${MARIADB_PORT_3_OVERRIDE:-3308}:3306'
     environment:
       <<: *galera-env
       WSREP_NODE_ADDRESS: mariadb-galera-3

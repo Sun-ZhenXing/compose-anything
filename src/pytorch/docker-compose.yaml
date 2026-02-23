@@ -4,15 +4,15 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   pytorch:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}pytorch/pytorch:${PYTORCH_VERSION:-2.6.0-cuda12.6-cudnn9-runtime}
     ports:
-      - "${JUPYTER_PORT_OVERRIDE:-8888}:8888"
-      - "${TENSORBOARD_PORT_OVERRIDE:-6006}:6006"
+      - '${JUPYTER_PORT_OVERRIDE:-8888}:8888'
+      - '${TENSORBOARD_PORT_OVERRIDE:-6006}:6006'
     environment:
       TZ: ${TZ:-UTC}
       NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
@@ -39,7 +39,7 @@ services:
               count: ${GPU_COUNT:-1}
               capabilities: [gpu]
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8888/"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:8888/']
       interval: 30s
       timeout: 10s
       retries: 3

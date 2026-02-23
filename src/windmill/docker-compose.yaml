@@ -32,7 +32,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   windmill-server:
@@ -40,7 +40,7 @@ services:
     image: ${GHCR_IO_REGISTRY:-ghcr.io}/windmill-labs/windmill:${WINDMILL_VERSION:-main}
     container_name: windmill-server
     ports:
-      - "${WINDMILL_PORT_OVERRIDE:-8000}:8000"
+      - '${WINDMILL_PORT_OVERRIDE:-8000}:8000'
     environment:
       # Database configuration
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
@@ -66,7 +66,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8000/api/version"]
+      test: [CMD, wget, --quiet, --tries=1, --spider, 'http://localhost:8000/api/version']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -74,11 +74,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "${WINDMILL_SERVER_CPU_LIMIT:-1.0}"
-          memory: "${WINDMILL_SERVER_MEMORY_LIMIT:-1G}"
+          cpus: '${WINDMILL_SERVER_CPU_LIMIT:-1.0}'
+          memory: '${WINDMILL_SERVER_MEMORY_LIMIT:-1G}'
         reservations:
-          cpus: "${WINDMILL_SERVER_CPU_RESERVATION:-0.25}"
-          memory: "${WINDMILL_SERVER_MEMORY_RESERVATION:-256M}"
+          cpus: '${WINDMILL_SERVER_CPU_RESERVATION:-0.25}'
+          memory: '${WINDMILL_SERVER_MEMORY_RESERVATION:-256M}'
 
   windmill-worker:
     <<: *defaults
@@ -99,7 +99,7 @@ services:
 
     volumes:
       - windmill_worker_data:/tmp/windmill
-      - /var/run/docker.sock:/var/run/docker.sock:ro  # For Docker execution
+      - /var/run/docker.sock:/var/run/docker.sock:ro # For Docker execution
     depends_on:
       postgres:
         condition: service_healthy
@@ -108,11 +108,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "${WINDMILL_WORKER_CPU_LIMIT:-2.0}"
-          memory: "${WINDMILL_WORKER_MEMORY_LIMIT:-2G}"
+          cpus: '${WINDMILL_WORKER_CPU_LIMIT:-2.0}'
+          memory: '${WINDMILL_WORKER_MEMORY_LIMIT:-2G}'
         reservations:
-          cpus: "${WINDMILL_WORKER_CPU_RESERVATION:-0.5}"
-          memory: "${WINDMILL_WORKER_MEMORY_RESERVATION:-512M}"
+          cpus: '${WINDMILL_WORKER_CPU_RESERVATION:-0.5}'
+          memory: '${WINDMILL_WORKER_MEMORY_RESERVATION:-512M}'
 
   postgres:
     <<: *defaults
@@ -127,18 +127,18 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-windmill} -d ${POSTGRES_DB:-windmill}"]
+      test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-windmill} -d ${POSTGRES_DB:-windmill}']
       interval: 10s
       timeout: 5s
       retries: 5
     deploy:
       resources:
         limits:
-          cpus: "${POSTGRES_CPU_LIMIT:-1.0}"
-          memory: "${POSTGRES_MEMORY_LIMIT:-1G}"
+          cpus: '${POSTGRES_CPU_LIMIT:-1.0}'
+          memory: '${POSTGRES_MEMORY_LIMIT:-1G}'
         reservations:
-          cpus: "${POSTGRES_CPU_RESERVATION:-0.25}"
-          memory: "${POSTGRES_MEMORY_RESERVATION:-256M}"
+          cpus: '${POSTGRES_CPU_RESERVATION:-0.25}'
+          memory: '${POSTGRES_MEMORY_RESERVATION:-256M}'
 
   # Optional: LSP service for code intelligence
   windmill-lsp:
@@ -148,7 +148,7 @@ services:
     profiles:
       - dev
     ports:
-      - "${WINDMILL_LSP_PORT:-3001}:3001"
+      - '${WINDMILL_LSP_PORT:-3001}:3001'
     deploy:
       resources:
         reservations:

@@ -53,14 +53,14 @@ Jenkins 可以使用配置即代码（JCasC）进行配置。创建一个 `jenki
 
 ```yaml
 jenkins:
-  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin"
-  
+  systemMessage: Jenkins configured automatically by Jenkins Configuration as Code plugin
+
   securityRealm:
     local:
       allowsSignup: false
       users:
-       - id: admin
-         password: admin123
+        - id: admin
+          password: admin123
 
   authorizationStrategy:
     loggedInUsersCanDoAnything:

@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   nanobot:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-ghcr.io/}hkuds/nanobot:${NANOBOT_VERSION:-v0.1.3.post4}
     ports:
-      - "${NANOBOT_PORT_OVERRIDE:-18790}:18790"
+      - '${NANOBOT_PORT_OVERRIDE:-18790}:18790'
     volumes:
       - nanobot_config:/root/.nanobot
       - nanobot_workspace:/root/.nanobot/workspace
@@ -57,7 +57,7 @@ services:
       - NANOBOT_GATEWAY__PORT=${GATEWAY_PORT:-18790}
     command: ${NANOBOT_COMMAND:-gateway}
     healthcheck:
-      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      test: [CMD, python, -c, import sys; sys.exit(0)]
       interval: 30s
       timeout: 10s
       retries: 3

@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   dockge:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}louislam/dockge:${DOCKGE_VERSION:-1}
     ports:
-      - "${PORT_OVERRIDE:-5001}:5001"
+      - '${PORT_OVERRIDE:-5001}:5001'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - dockge_data:/app/data
@@ -30,7 +30,7 @@ services:
           cpus: ${DOCKGE_CPU_RESERVATION:-0.25}
           memory: ${DOCKGE_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5001/"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:5001/']
       interval: 30s
       timeout: 10s
       retries: 3

@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   postgres:
@@ -26,7 +26,7 @@ services:
           cpus: ${POSTGRES_MLFLOW_CPU_RESERVATION:-0.5}
           memory: ${POSTGRES_MLFLOW_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mlflow}"]
+      test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-mlflow}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -41,8 +41,8 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio123}
     ports:
-      - "${MINIO_PORT_OVERRIDE:-9000}:9000"
-      - "${MINIO_CONSOLE_PORT_OVERRIDE:-9001}:9001"
+      - '${MINIO_PORT_OVERRIDE:-9000}:9000'
+      - '${MINIO_CONSOLE_PORT_OVERRIDE:-9001}:9001'
     volumes:
       - minio_data:/data
     deploy:
@@ -54,7 +54,7 @@ services:
           cpus: ${MINIO_MLFLOW_CPU_RESERVATION:-0.5}
           memory: ${MINIO_MLFLOW_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: [CMD, curl, -f, 'http://localhost:9000/minio/health/live']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -73,7 +73,7 @@ services:
       /usr/bin/mc mb minio/${MINIO_BUCKET:-mlflow} --ignore-existing;
       exit 0;
       "
-    restart: "no"
+    restart: no
 
   mlflow:
     <<: *defaults
@@ -86,7 +86,7 @@ services:
       minio-init:
         condition: service_completed_successfully
     ports:
-      - "${MLFLOW_PORT_OVERRIDE:-5000}:5000"
+      - '${MLFLOW_PORT_OVERRIDE:-5000}:5000'
     environment:
       TZ: ${TZ:-UTC}
       MLFLOW_BACKEND_STORE_URI: postgresql://${POSTGRES_USER:-mlflow}:${POSTGRES_PASSWORD:-mlflow}@postgres:5432/${POSTGRES_DB:-mlflow}
@@ -98,9 +98,9 @@ services:
       - mlflow
       - server
       - --host
-      - "0.0.0.0"
+      - 0.0.0.0
       - --port
-      - "5000"
+      - '5000'
       - --backend-store-uri
       - postgresql://${POSTGRES_USER:-mlflow}:${POSTGRES_PASSWORD:-mlflow}@postgres:5432/${POSTGRES_DB:-mlflow}
       - --default-artifact-root
@@ -114,7 +114,7 @@ services:
           cpus: ${MLFLOW_CPU_RESERVATION:-1.0}
           memory: ${MLFLOW_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:5000/health']
       interval: 30s
       timeout: 10s
       retries: 3

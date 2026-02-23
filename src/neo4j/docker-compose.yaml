@@ -4,15 +4,15 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   neo4j:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}neo4j:${NEO4J_VERSION:-5.27.4-community}
     ports:
-      - "${NEO4J_HTTP_PORT_OVERRIDE:-7474}:7474"
-      - "${NEO4J_BOLT_PORT_OVERRIDE:-7687}:7687"
+      - '${NEO4J_HTTP_PORT_OVERRIDE:-7474}:7474'
+      - '${NEO4J_BOLT_PORT_OVERRIDE:-7687}:7687'
     volumes:
       - neo4j_data:/data
       - neo4j_logs:/logs
@@ -34,7 +34,7 @@ services:
           cpus: ${NEO4J_CPU_RESERVATION:-0.5}
           memory: ${NEO4J_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7474/"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:7474/']
       interval: 30s
       timeout: 10s
       retries: 3

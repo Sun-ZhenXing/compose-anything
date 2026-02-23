@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   k3s:
@@ -28,15 +28,15 @@ services:
       - k3s_data:/var/lib/rancher/k3s
       - docker_data:/var/lib/docker
     ports:
-      - "${K3S_API_PORT_OVERRIDE:-6443}:6443"  # Kubernetes API server
-      - "${DOCKER_TLS_PORT_OVERRIDE:-2376}:2376"  # Docker daemon TLS port
+      - '${K3S_API_PORT_OVERRIDE:-6443}:6443' # Kubernetes API server
+      - '${DOCKER_TLS_PORT_OVERRIDE:-2376}:2376' # Docker daemon TLS port
     environment:
       - TZ=${TZ:-UTC}
       - K3S_TOKEN=${K3S_TOKEN:-}
       - K3S_DISABLE_SERVICES=${K3S_DISABLE_SERVICES:-traefik}
       - K3S_NODE_NAME=${K3S_NODE_NAME:-k3s-server}
     healthcheck:
-      test: ["CMD", "k3s", "kubectl", "get", "--raw", "/healthz"]
+      test: [CMD, k3s, kubectl, get, --raw, /healthz]
       interval: 30s
       timeout: 10s
       retries: 5

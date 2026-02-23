@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   frps:
@@ -26,7 +26,7 @@ services:
       FRP_ADMIN_USER: ${FRP_ADMIN_USER:-admin}
       FRP_ADMIN_PASSWORD: ${FRP_ADMIN_PASSWORD:-password}
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - 'host.docker.internal:host-gateway'
     deploy:
       resources:
         limits:
@@ -37,12 +37,11 @@ services:
           memory: ${FRPS_MEMORY_RESERVATION:-64M}
     healthcheck:
       test:
-        [
-          "CMD",
-          "sh",
-          "-c",
-          "curl -f http://$${FRP_ADMIN_USER}:$${FRP_ADMIN_PASSWORD}@localhost:$${FRP_ADMIN_PORT}/api/serverinfo || exit 1",
-        ]
+        - CMD
+        - sh
+        - -c
+        - 'curl -f http://$${FRP_ADMIN_USER}:$${FRP_ADMIN_PASSWORD}@localhost:$${FRP_ADMIN_PORT}/api/serverinfo || exit 1'
+
       interval: 30s
       timeout: 10s
       retries: 3

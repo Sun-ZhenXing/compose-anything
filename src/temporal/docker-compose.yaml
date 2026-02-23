@@ -32,7 +32,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   temporal:
@@ -40,7 +40,7 @@ services:
     image: ${GLOBAL_REGISTRY:-}temporalio/auto-setup:${TEMPORAL_VERSION:-1.24.2}
     container_name: temporal
     ports:
-      - "${TEMPORAL_FRONTEND_PORT_OVERRIDE:-7233}:7233"  # Frontend gRPC
+      - '${TEMPORAL_FRONTEND_PORT_OVERRIDE:-7233}:7233' # Frontend gRPC
     environment:
       # Database configuration
       - DB=postgresql
@@ -69,7 +69,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "tctl", "--address", "temporal:7233", "cluster", "health"]
+      test: [CMD, tctl, --address, 'temporal:7233', cluster, health]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -77,18 +77,18 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "${TEMPORAL_CPU_LIMIT:-2.0}"
-          memory: "${TEMPORAL_MEMORY_LIMIT:-2G}"
+          cpus: '${TEMPORAL_CPU_LIMIT:-2.0}'
+          memory: '${TEMPORAL_MEMORY_LIMIT:-2G}'
         reservations:
-          cpus: "${TEMPORAL_CPU_RESERVATION:-0.5}"
-          memory: "${TEMPORAL_MEMORY_RESERVATION:-512M}"
+          cpus: '${TEMPORAL_CPU_RESERVATION:-0.5}'
+          memory: '${TEMPORAL_MEMORY_RESERVATION:-512M}'
 
   temporal-ui:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}temporalio/ui:${TEMPORAL_UI_VERSION:-2.28.0}
     container_name: temporal-ui
     ports:
-      - "${TEMPORAL_UI_PORT_OVERRIDE:-8233}:8080"
+      - '${TEMPORAL_UI_PORT_OVERRIDE:-8233}:8080'
     environment:
       - TEMPORAL_ADDRESS=temporal:7233
       - TEMPORAL_CORS_ORIGINS=http://localhost:8233
@@ -98,7 +98,7 @@ services:
       temporal:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080"]
+      test: [CMD, wget, --quiet, --tries=1, --spider, 'http://localhost:8080']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -106,11 +106,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "${TEMPORAL_UI_CPU_LIMIT:-0.5}"
-          memory: "${TEMPORAL_UI_MEMORY_LIMIT:-512M}"
+          cpus: '${TEMPORAL_UI_CPU_LIMIT:-0.5}'
+          memory: '${TEMPORAL_UI_MEMORY_LIMIT:-512M}'
         reservations:
-          cpus: "${TEMPORAL_UI_CPU_RESERVATION:-0.1}"
-          memory: "${TEMPORAL_UI_MEMORY_RESERVATION:-128M}"
+          cpus: '${TEMPORAL_UI_CPU_RESERVATION:-0.1}'
+          memory: '${TEMPORAL_UI_MEMORY_RESERVATION:-128M}'
 
   temporal-admin-tools:
     <<: *defaults
@@ -149,18 +149,18 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-temporal} -d ${POSTGRES_DB:-temporal}"]
+      test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-temporal} -d ${POSTGRES_DB:-temporal}']
       interval: 10s
       timeout: 5s
       retries: 5
     deploy:
       resources:
         limits:
-          cpus: "${POSTGRES_CPU_LIMIT:-1.0}"
-          memory: "${POSTGRES_MEMORY_LIMIT:-1G}"
+          cpus: '${POSTGRES_CPU_LIMIT:-1.0}'
+          memory: '${POSTGRES_MEMORY_LIMIT:-1G}'
         reservations:
-          cpus: "${POSTGRES_CPU_RESERVATION:-0.25}"
-          memory: "${POSTGRES_MEMORY_RESERVATION:-256M}"
+          cpus: '${POSTGRES_CPU_RESERVATION:-0.25}'
+          memory: '${POSTGRES_MEMORY_RESERVATION:-256M}'
 
 volumes:
   postgres_data:

@@ -57,7 +57,7 @@ Please modify the `.env` file as needed for your use case.
 
 ```sql
 -- Create a keyspace
-CREATE KEYSPACE test_keyspace 
+CREATE KEYSPACE test_keyspace
 WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
 
 -- Use the keyspace
@@ -71,7 +71,7 @@ CREATE TABLE users (
 );
 
 -- Insert data
-INSERT INTO users (id, name, email) 
+INSERT INTO users (id, name, email)
 VALUES (uuid(), 'John Doe', 'john@example.com');
 
 -- Query data

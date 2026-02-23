@@ -4,15 +4,15 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   clash:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}centralx/clash:${CLASH_VERSION:-1.18.0}
     ports:
-      - "7880:80"
-      - "7890:7890"
+      - '7880:80'
+      - '7890:7890'
     volumes:
       - ./config.yaml:/home/runner/.config/clash/config.yaml
     environment:
@@ -26,7 +26,7 @@ services:
           cpus: ${CLASH_CPU_RESERVATION:-0.25}
           memory: ${CLASH_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:80/']
       interval: 30s
       timeout: 10s
       retries: 3

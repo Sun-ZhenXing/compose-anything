@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   redis-cluster-init:
@@ -43,7 +43,7 @@ services:
       - TZ=${TZ:-UTC}
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
     ports:
-      - "7000:6379"
+      - '7000:6379'
     volumes:
       - redis_1_data:/data
     deploy:
@@ -55,7 +55,7 @@ services:
           cpus: ${REDIS_CLUSTER_1_CPU_RESERVATION:-0.25}
           memory: ${REDIS_CLUSTER_1_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -68,7 +68,7 @@ services:
       - TZ=${TZ:-UTC}
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
     ports:
-      - "7001:6379"
+      - '7001:6379'
     volumes:
       - redis_2_data:/data
     deploy:
@@ -80,7 +80,7 @@ services:
           cpus: ${REDIS_CLUSTER_2_CPU_RESERVATION:-0.25}
           memory: ${REDIS_CLUSTER_2_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -93,7 +93,7 @@ services:
       - TZ=${TZ:-UTC}
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
     ports:
-      - "7002:6379"
+      - '7002:6379'
     volumes:
       - redis_3_data:/data
     deploy:
@@ -105,7 +105,7 @@ services:
           cpus: ${REDIS_CLUSTER_3_CPU_RESERVATION:-0.25}
           memory: ${REDIS_CLUSTER_3_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -118,7 +118,7 @@ services:
       - TZ=${TZ:-UTC}
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
     ports:
-      - "7003:6379"
+      - '7003:6379'
     volumes:
       - redis_4_data:/data
     deploy:
@@ -130,7 +130,7 @@ services:
           cpus: ${REDIS_CLUSTER_4_CPU_RESERVATION:-0.25}
           memory: ${REDIS_CLUSTER_4_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -143,7 +143,7 @@ services:
       - TZ=${TZ:-UTC}
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
     ports:
-      - "7004:6379"
+      - '7004:6379'
     volumes:
       - redis_5_data:/data
     deploy:
@@ -155,7 +155,7 @@ services:
           cpus: ${REDIS_CLUSTER_5_CPU_RESERVATION:-0.25}
           memory: ${REDIS_CLUSTER_5_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -168,7 +168,7 @@ services:
       - TZ=${TZ:-UTC}
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes
     ports:
-      - "7005:6379"
+      - '7005:6379'
     volumes:
       - redis_6_data:/data
     deploy:
@@ -180,7 +180,7 @@ services:
           cpus: ${REDIS_CLUSTER_6_CPU_RESERVATION:-0.25}
           memory: ${REDIS_CLUSTER_6_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 3s
       retries: 3

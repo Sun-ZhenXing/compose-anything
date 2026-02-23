@@ -8,15 +8,15 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   deeptutor:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-ghcr.io}/hkuds/deeptutor:${DEEPTUTOR_VERSION:-latest}
     ports:
-      - "${DEEPTUTOR_BACKEND_PORT_OVERRIDE:-8001}:${BACKEND_PORT:-8001}"
-      - "${DEEPTUTOR_FRONTEND_PORT_OVERRIDE:-3782}:${FRONTEND_PORT:-3782}"
+      - '${DEEPTUTOR_BACKEND_PORT_OVERRIDE:-8001}:${BACKEND_PORT:-8001}'
+      - '${DEEPTUTOR_FRONTEND_PORT_OVERRIDE:-3782}:${FRONTEND_PORT:-3782}'
     volumes:
       - deeptutor_data:/app/data
       - ./config:/app/config:ro
@@ -42,15 +42,14 @@ services:
       - PGID=${PGID:-1000}
     healthcheck:
       test:
-        [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:${BACKEND_PORT:-8001}/health",
-          "||",
-          "exit",
-          "1",
-        ]
+        - CMD
+        - curl
+        - -f
+        - 'http://localhost:${BACKEND_PORT:-8001}/health'
+        - '||'
+        - exit
+        - '1'
+
       interval: 30s
       timeout: 10s
       retries: 3

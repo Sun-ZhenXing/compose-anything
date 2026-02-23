@@ -53,11 +53,11 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'prometheus'
+  - job_name: prometheus
     static_configs:
       - targets: ['localhost:9090']
-  
-  - job_name: 'node_exporter'
+
+  - job_name: node_exporter
     static_configs:
       - targets: ['node_exporter:9100']
 ```
@@ -101,7 +101,7 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     ports:
-      - "8080:8080"
+      - '8080:8080'
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro

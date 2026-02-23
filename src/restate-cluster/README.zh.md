@@ -29,10 +29,10 @@
    ```bash
    # 检查节点 1
    curl http://localhost:9070/health
-   
+
    # 检查节点 2
    curl http://localhost:29070/health
-   
+
    # 检查节点 3
    curl http://localhost:39070/health
    ```

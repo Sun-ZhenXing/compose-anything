@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   metad:
@@ -24,9 +24,9 @@ services:
       - nebula_meta_data:/data/meta
       - nebula_meta_logs:/logs
     ports:
-      - "9559:9559"
-      - "19559:19559"
-      - "19560:19560"
+      - '9559:9559'
+      - '19559:19559'
+      - '19560:19560'
     deploy:
       resources:
         limits:
@@ -36,7 +36,7 @@ services:
           cpus: ${NEBULA_METAD_CPU_RESERVATION:-0.25}
           memory: ${NEBULA_METAD_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "/usr/local/nebula/bin/nebula-metad", "--version"]
+      test: [CMD, /usr/local/nebula/bin/nebula-metad, --version]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -62,9 +62,9 @@ services:
       - nebula_storage_data:/data/storage
       - nebula_storage_logs:/logs
     ports:
-      - "9779:9779"
-      - "19779:19779"
-      - "19780:19780"
+      - '9779:9779'
+      - '19779:19779'
+      - '19780:19780'
     deploy:
       resources:
         limits:
@@ -74,7 +74,7 @@ services:
           cpus: ${NEBULA_STORAGED_CPU_RESERVATION:-0.5}
           memory: ${NEBULA_STORAGED_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "/usr/local/nebula/bin/nebula-storaged", "--version"]
+      test: [CMD, /usr/local/nebula/bin/nebula-storaged, --version]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -100,9 +100,9 @@ services:
     volumes:
       - nebula_graph_logs:/logs
     ports:
-      - "${NEBULA_GRAPHD_PORT_OVERRIDE:-9669}:9669"
-      - "19669:19669"
-      - "19670:19670"
+      - '${NEBULA_GRAPHD_PORT_OVERRIDE:-9669}:9669'
+      - '19669:19669'
+      - '19670:19670'
     deploy:
       resources:
         limits:
@@ -112,7 +112,7 @@ services:
           cpus: ${NEBULA_GRAPHD_CPU_RESERVATION:-0.5}
           memory: ${NEBULA_GRAPHD_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "/usr/local/nebula/bin/nebula-graphd", "--version"]
+      test: [CMD, /usr/local/nebula/bin/nebula-graphd, --version]
       interval: 30s
       timeout: 10s
       retries: 3

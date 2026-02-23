@@ -4,16 +4,16 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   gitlab:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}gitlab/gitlab-ce:${GITLAB_VERSION:-18.8.3-ce.0}
     ports:
-      - "${GITLAB_PORT_OVERRIDE_HTTPS:-5443}:443"
-      - "${GITLAB_PORT_OVERRIDE_HTTP:-5080}:80"
-      - "${GITLAB_PORT_OVERRIDE_SSH:-5022}:22"
+      - '${GITLAB_PORT_OVERRIDE_HTTPS:-5443}:443'
+      - '${GITLAB_PORT_OVERRIDE_HTTP:-5080}:80'
+      - '${GITLAB_PORT_OVERRIDE_SSH:-5022}:22'
     volumes:
       - ./config:/etc/gitlab
       - gitlab_logs:/var/log/gitlab
@@ -30,7 +30,7 @@ services:
           cpus: ${GITLAB_CPU_RESERVATION:-1.0}
           memory: ${GITLAB_MEMORY_RESERVATION:-4G}
     healthcheck:
-      test: ["CMD", "/opt/gitlab/bin/gitlab-healthcheck", "--fail"]
+      test: [CMD, /opt/gitlab/bin/gitlab-healthcheck, --fail]
       interval: 60s
       timeout: 30s
       retries: 5

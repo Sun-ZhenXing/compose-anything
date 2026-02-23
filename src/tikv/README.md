@@ -43,10 +43,10 @@ async fn main() {
     let client = RawClient::new(vec!["127.0.0.1:2379"], None)
         .await
         .unwrap();
-    
+
     // Put a key-value pair
     client.put("key".to_owned(), "value".to_owned()).await.unwrap();
-    
+
     // Get the value
     let value = client.get("key".to_owned()).await.unwrap();
     println!("Value: {:?}", value);

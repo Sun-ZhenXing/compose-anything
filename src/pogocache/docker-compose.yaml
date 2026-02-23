@@ -8,14 +8,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 10m
-      max-file: "3"
+      max-file: '3'
 
 services:
   pogocache:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}pogocache/pogocache:${POGOCACHE_VERSION:-1.3.1}
     ports:
-      - "${POGOCACHE_PORT_OVERRIDE:-9401}:9401"
+      - '${POGOCACHE_PORT_OVERRIDE:-9401}:9401'
     environment:
       - TZ=${TZ:-UTC}
     volumes:
@@ -24,7 +24,7 @@ services:
       ${POGOCACHE_EXTRA_ARGS:-}
       --persist /data/pogocache.db
     healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 9401 || exit 1"]
+      test: [CMD-SHELL, 'nc -z localhost 9401 || exit 1']
       interval: 10s
       timeout: 5s
       retries: 5

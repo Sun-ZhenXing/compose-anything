@@ -90,8 +90,8 @@ services:
 logging:
   driver: loki
   options:
-    loki-url: "http://localhost:3100/loki/api/v1/push"
-    loki-batch-size: "400"
+    loki-url: 'http://localhost:3100/loki/api/v1/push'
+    loki-batch-size: '400'
 ```
 
 ### 使用 HTTP API

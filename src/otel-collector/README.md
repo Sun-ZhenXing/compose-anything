@@ -77,7 +77,7 @@ processors:
 exporters:
   logging:
     loglevel: info
-  
+
   # Example: Export to Jaeger
   # otlp/jaeger:
   #   endpoint: jaeger:4317
@@ -168,15 +168,15 @@ trace.set_tracer_provider(provider)
 **Node.js Example**:
 
 ```javascript
-const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc')
+const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node')
 
-const provider = new NodeTracerProvider();
+const provider = new NodeTracerProvider()
 const exporter = new OTLPTraceExporter({
   url: 'http://localhost:4317',
-});
-provider.addSpanProcessor(new BatchSpanProcessor(exporter));
-provider.register();
+})
+provider.addSpanProcessor(new BatchSpanProcessor(exporter))
+provider.register()
 ```
 
 ## Resource Requirements

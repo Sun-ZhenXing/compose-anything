@@ -70,7 +70,7 @@ npm install openlit
 ```typescript
 import Openlit from 'openlit';
 
-Openlit.init({ 
+Openlit.init({
     otlpEndpoint: 'http://localhost:4318'
 });
 ```

@@ -8,14 +8,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   openobserve:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-public.ecr.aws/zinclabs/}openobserve:${OPENOBSERVE_VERSION:-v0.50.0}
     ports:
-      - "${OPENOBSERVE_PORT_OVERRIDE:-5080}:5080"
+      - '${OPENOBSERVE_PORT_OVERRIDE:-5080}:5080'
     volumes:
       - openobserve_data:/data
     environment:
@@ -29,7 +29,7 @@ services:
       - ZO_S3_ACCESS_KEY=${ZO_S3_ACCESS_KEY:-}
       - ZO_S3_SECRET_KEY=${ZO_S3_SECRET_KEY:-}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5080/healthz"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:5080/healthz']
       interval: 30s
       timeout: 10s
       retries: 3

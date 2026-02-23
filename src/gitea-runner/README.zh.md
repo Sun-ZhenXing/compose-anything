@@ -17,8 +17,8 @@
    ```yaml
    cache:
      enabled: true
-     dir: ""
-     host: "192.168.8.17"
+     dir: ''
+     host: 192.168.8.17
      port: 8088
    ```
 

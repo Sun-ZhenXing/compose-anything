@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   tavily:
@@ -14,9 +14,9 @@ services:
       - TAVILY_API_KEY=${TAVILY_API_KEY}
       - TZ=${TZ:-UTC}
     ports:
-      - "${TAVILY_PORT_OVERRIDE:-8000}:8000"
+      - '${TAVILY_PORT_OVERRIDE:-8000}:8000'
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      test: [CMD, wget, --spider, -q, 'http://localhost:8000/health']
       interval: 30s
       timeout: 10s
       retries: 3

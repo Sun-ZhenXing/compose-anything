@@ -79,12 +79,12 @@ To send telemetry data to SigNoz, configure your application to use OpenTelemetr
 Example for Node.js:
 
 ```javascript
-const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc')
+const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node')
 
 const exporter = new OTLPTraceExporter({
   url: 'http://localhost:4317',
-});
+})
 ```
 
 ## Architecture

@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   pocketbase:
@@ -19,7 +19,7 @@ services:
       PB_ADMIN_EMAIL: ${PB_ADMIN_EMAIL:-admin@example.com}
       PB_ADMIN_PASSWORD: ${PB_ADMIN_PASSWORD:-supersecret123}
     ports:
-      - "${PB_PORT:-8090}:8090"
+      - '${PB_PORT:-8090}:8090'
     volumes:
       - pb_data:/pb_data
 

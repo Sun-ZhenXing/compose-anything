@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   milvus-standalone-embed:
@@ -14,7 +14,7 @@ services:
       - seccomp:unconfined
     environment:
       TZ: ${TZ:-UTC}
-      ETCD_USE_EMBED: "true"
+      ETCD_USE_EMBED: 'true'
       ETCD_DATA_DIR: /var/lib/milvus/etcd
       ETCD_CONFIG_PATH: /milvus/configs/embed_etcd.yaml
       COMMON_STORAGETYPE: local
@@ -24,16 +24,16 @@ services:
       - ./embed_etcd.yaml:/milvus/configs/embed_etcd.yaml
       - ./user.yaml:/milvus/configs/user.yaml
     ports:
-      - "${MILVUS_PORT_OVERRIDE_HTTP:-19530}:19530"
-      - "${MILVUS_PORT_OVERRIDE_WEBUI:-9091}:9091"
-      - "${MILVUS_PORT_OVERRIDE_ETCD:-2379}:2379"
+      - '${MILVUS_PORT_OVERRIDE_HTTP:-19530}:19530'
+      - '${MILVUS_PORT_OVERRIDE_WEBUI:-9091}:9091'
+      - '${MILVUS_PORT_OVERRIDE_ETCD:-2379}:2379'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      test: [CMD, curl, -f, 'http://localhost:9091/healthz']
       interval: 30s
       start_period: 90s
       timeout: 20s
       retries: 3
-    command: ["milvus", "run", "standalone"]
+    command: [milvus, run, standalone]
     deploy:
       resources:
         limits:
@@ -52,7 +52,7 @@ services:
       TZ: ${TZ:-UTC}
       MILVUS_URL: ${MILVUS_URL:-milvus-standalone-embed:19530}
     ports:
-      - "${ATTU_OVERRIDE_PORT:-8000}:3000"
+      - '${ATTU_OVERRIDE_PORT:-8000}:3000'
     depends_on:
       milvus-standalone-embed:
         condition: service_healthy
@@ -66,14 +66,13 @@ services:
           memory: ${ATTU_MEMORY_RESERVATION:-128M}
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:3000/",
-        ]
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - 'http://localhost:3000/'
+
       interval: 30s
       timeout: 10s
       retries: 3

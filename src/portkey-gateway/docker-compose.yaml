@@ -4,18 +4,18 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   portkey-gateway:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}portkeyai/gateway:${PORTKEY_GATEWAY_VERSION:-latest}
     ports:
-      - "${PORTKEY_GATEWAY_PORT_OVERRIDE:-8787}:8787"
+      - '${PORTKEY_GATEWAY_PORT_OVERRIDE:-8787}:8787'
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8787"]
+      test: [CMD, wget, --spider, -q, 'http://localhost:8787']
       interval: 30s
       timeout: 10s
       retries: 3

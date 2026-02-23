@@ -6,7 +6,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   netdata:
@@ -35,7 +35,7 @@ services:
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:19999/api/v1/info"]
+      test: [CMD, curl, -f, 'http://localhost:19999/api/v1/info']
       interval: 30s
       timeout: 10s
       retries: 3

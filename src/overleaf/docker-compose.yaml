@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   # MongoDB for Overleaf data storage
@@ -21,7 +21,7 @@ services:
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: [CMD, mongosh, --eval, "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -46,7 +46,7 @@ services:
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -66,7 +66,7 @@ services:
     image: ${GLOBAL_REGISTRY:-}sharelatex/sharelatex:${OVERLEAF_VERSION:-5.2.1}
     hostname: overleaf
     ports:
-      - "${OVERLEAF_PORT_OVERRIDE:-8080}:80"
+      - '${OVERLEAF_PORT_OVERRIDE:-8080}:80'
     volumes:
       - overleaf_data:/var/lib/overleaf
     environment:
@@ -86,7 +86,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost/health || exit 1"]
+      test: [CMD-SHELL, 'curl -sf http://localhost/health || exit 1']
       interval: 30s
       timeout: 10s
       retries: 5

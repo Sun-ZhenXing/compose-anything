@@ -218,7 +218,7 @@ For production deployments:
    ```bash
    # Generate a secure key
    python -c "from secrets import token_urlsafe; print(token_urlsafe(32))"
-   
+
    # Add to .env
    LANGFLOW_SECRET_KEY=<generated-key>
    ```

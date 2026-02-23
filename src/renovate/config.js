@@ -40,4 +40,4 @@ module.exports = {
   //     labels: ['major-update'],
   //   },
   // ],
-};
+}

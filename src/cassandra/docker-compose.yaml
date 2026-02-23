@@ -4,15 +4,15 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   cassandra:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}cassandra:${CASSANDRA_VERSION:-5.0.2}
     ports:
-      - "${CASSANDRA_CQL_PORT_OVERRIDE:-9042}:9042"
-      - "${CASSANDRA_THRIFT_PORT_OVERRIDE:-9160}:9160"
+      - '${CASSANDRA_CQL_PORT_OVERRIDE:-9042}:9042'
+      - '${CASSANDRA_THRIFT_PORT_OVERRIDE:-9160}:9160'
     volumes:
       - cassandra_data:/var/lib/cassandra
       - cassandra_logs:/var/log/cassandra
@@ -39,7 +39,7 @@ services:
           cpus: ${CASSANDRA_CPU_RESERVATION:-0.50}
           memory: ${CASSANDRA_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD-SHELL", "cqlsh -e 'DESCRIBE CLUSTER'"]
+      test: [CMD-SHELL, "cqlsh -e 'DESCRIBE CLUSTER'"]
       interval: 30s
       timeout: 10s
       retries: 5

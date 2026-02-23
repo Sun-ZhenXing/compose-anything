@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   # llama.cpp server - OpenAI-compatible API server
@@ -17,32 +17,31 @@ services:
     <<: *defaults
     image: ${GHCR_REGISTRY:-ghcr.io/}ggml-org/llama.cpp:${LLAMA_CPP_SERVER_VARIANT:-server}
     ports:
-      - "${LLAMA_CPP_SERVER_PORT_OVERRIDE:-8080}:8080"
+      - '${LLAMA_CPP_SERVER_PORT_OVERRIDE:-8080}:8080'
     volumes:
       - llama_cpp_models:/models
     command:
-      - "-m"
-      - "${LLAMA_CPP_MODEL_PATH:-/models/model.gguf}"
-      - "--port"
-      - "8080"
-      - "--host"
-      - "0.0.0.0"
-      - "-n"
-      - "${LLAMA_CPP_CONTEXT_SIZE:-512}"
-      - "--n-gpu-layers"
-      - "${LLAMA_CPP_GPU_LAYERS:-0}"
+      - -m
+      - '${LLAMA_CPP_MODEL_PATH:-/models/model.gguf}'
+      - --port
+      - '8080'
+      - --host
+      - 0.0.0.0
+      - -n
+      - '${LLAMA_CPP_CONTEXT_SIZE:-512}'
+      - --n-gpu-layers
+      - '${LLAMA_CPP_GPU_LAYERS:-0}'
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--quiet",
-          "--tries=1",
-          "--spider",
-          "http://localhost:8080/health",
-        ]
+        - CMD
+        - wget
+        - --quiet
+        - --tries=1
+        - --spider
+        - 'http://localhost:8080/health'
+
       interval: 30s
       timeout: 10s
       retries: 3
@@ -63,32 +62,31 @@ services:
     <<: *defaults
     image: ${GHCR_REGISTRY:-ghcr.io/}ggml-org/llama.cpp:server-cuda
     ports:
-      - "${LLAMA_CPP_SERVER_PORT_OVERRIDE:-8080}:8080"
+      - '${LLAMA_CPP_SERVER_PORT_OVERRIDE:-8080}:8080'
     volumes:
       - llama_cpp_models:/models
     command:
-      - "-m"
-      - "${LLAMA_CPP_MODEL_PATH:-/models/model.gguf}"
-      - "--port"
-      - "8080"
-      - "--host"
-      - "0.0.0.0"
-      - "-n"
-      - "${LLAMA_CPP_CONTEXT_SIZE:-512}"
-      - "--n-gpu-layers"
-      - "${LLAMA_CPP_GPU_LAYERS:-99}"
+      - -m
+      - '${LLAMA_CPP_MODEL_PATH:-/models/model.gguf}'
+      - --port
+      - '8080'
+      - --host
+      - 0.0.0.0
+      - -n
+      - '${LLAMA_CPP_CONTEXT_SIZE:-512}'
+      - --n-gpu-layers
+      - '${LLAMA_CPP_GPU_LAYERS:-99}'
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--quiet",
-          "--tries=1",
-          "--spider",
-          "http://localhost:8080/health",
-        ]
+        - CMD
+        - wget
+        - --quiet
+        - --tries=1
+        - --spider
+        - 'http://localhost:8080/health'
+
       interval: 30s
       timeout: 10s
       retries: 3
@@ -114,35 +112,34 @@ services:
     <<: *defaults
     image: ${GHCR_REGISTRY:-ghcr.io/}ggml-org/llama.cpp:server-rocm
     ports:
-      - "${LLAMA_CPP_SERVER_PORT_OVERRIDE:-8080}:8080"
+      - '${LLAMA_CPP_SERVER_PORT_OVERRIDE:-8080}:8080'
     volumes:
       - llama_cpp_models:/models
     devices:
       - /dev/kfd
       - /dev/dri
     command:
-      - "-m"
-      - "${LLAMA_CPP_MODEL_PATH:-/models/model.gguf}"
-      - "--port"
-      - "8080"
-      - "--host"
-      - "0.0.0.0"
-      - "-n"
-      - "${LLAMA_CPP_CONTEXT_SIZE:-512}"
-      - "--n-gpu-layers"
-      - "${LLAMA_CPP_GPU_LAYERS:-99}"
+      - -m
+      - '${LLAMA_CPP_MODEL_PATH:-/models/model.gguf}'
+      - --port
+      - '8080'
+      - --host
+      - 0.0.0.0
+      - -n
+      - '${LLAMA_CPP_CONTEXT_SIZE:-512}'
+      - --n-gpu-layers
+      - '${LLAMA_CPP_GPU_LAYERS:-99}'
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--quiet",
-          "--tries=1",
-          "--spider",
-          "http://localhost:8080/health",
-        ]
+        - CMD
+        - wget
+        - --quiet
+        - --tries=1
+        - --spider
+        - 'http://localhost:8080/health'
+
       interval: 30s
       timeout: 10s
       retries: 3
@@ -167,12 +164,12 @@ services:
       - llama_cpp_models:/models
     entrypoint: /app/llama-cli
     command:
-      - "-m"
-      - "${LLAMA_CPP_MODEL_PATH:-/models/model.gguf}"
-      - "-p"
-      - "${LLAMA_CPP_PROMPT:-Hello, how are you?}"
-      - "-n"
-      - "${LLAMA_CPP_CONTEXT_SIZE:-512}"
+      - -m
+      - '${LLAMA_CPP_MODEL_PATH:-/models/model.gguf}'
+      - -p
+      - '${LLAMA_CPP_PROMPT:-Hello, how are you?}'
+      - -n
+      - '${LLAMA_CPP_CONTEXT_SIZE:-512}'
     environment:
       - TZ=${TZ:-UTC}
     deploy:
@@ -192,7 +189,7 @@ services:
     image: ${GHCR_REGISTRY:-ghcr.io/}ggml-org/llama.cpp:${LLAMA_CPP_FULL_VARIANT:-full}
     volumes:
       - llama_cpp_models:/models
-    command: ["sleep", "infinity"]
+    command: [sleep, infinity]
     environment:
       - TZ=${TZ:-UTC}
     deploy:

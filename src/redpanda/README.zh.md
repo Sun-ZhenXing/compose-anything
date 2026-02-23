@@ -26,7 +26,7 @@ Redpanda 是一个与 Kafka 兼容的流数据平台，专为性能和开发者�
    ```bash
    # 仅启动 Redpanda（不包含控制台）
    docker compose up -d
-   
+
    # 或者启动包含 Redpanda Console UI
    docker compose --profile console up -d
    ```

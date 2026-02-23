@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   microsandbox:
@@ -25,7 +25,7 @@ services:
         - MICROSANDBOX_AUTO_PULL_IMAGES=${MICROSANDBOX_AUTO_PULL_IMAGES:-true}
     image: ${GLOBAL_REGISTRY:-ghcr.io}/zerocore-ai/microsandbox:${MICROSANDBOX_VERSION:-latest}
     ports:
-      - "${MICROSANDBOX_PORT_OVERRIDE:-5555}:${MICROSANDBOX_PORT:-5555}"
+      - '${MICROSANDBOX_PORT_OVERRIDE:-5555}:${MICROSANDBOX_PORT:-5555}'
     # Privileged mode and relaxed security profiles are required for KVM access
     # This provides hardware-level isolation inside the container
     # See README.md for security considerations
@@ -58,7 +58,7 @@ services:
         exec server start --host 0.0.0.0 --port $${MICROSANDBOX_PORT:-5555} $${DEV_FLAG};
     working_dir: /workspace
     healthcheck:
-      test: ["CMD-SHELL", "msb --version || exit 1"]
+      test: [CMD-SHELL, 'msb --version || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3

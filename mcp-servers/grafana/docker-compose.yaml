@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   mcp-grafana:
@@ -16,12 +16,12 @@ services:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}
     ports:
-      - "${MCP_GRAFANA_PORT_OVERRIDE:-8000}:8000"
+      - '${MCP_GRAFANA_PORT_OVERRIDE:-8000}:8000'
     depends_on:
       grafana:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      test: [CMD, wget, --spider, -q, 'http://localhost:8000/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -45,13 +45,13 @@ services:
       - GF_SERVER_ROOT_URL=${GRAFANA_ROOT_URL:-http://localhost:3000}
       - TZ=${TZ:-UTC}
     ports:
-      - "${GRAFANA_PORT_OVERRIDE:-3000}:3000"
+      - '${GRAFANA_PORT_OVERRIDE:-3000}:3000'
     volumes:
       - grafana_data:/var/lib/grafana
       - grafana_config:/etc/grafana
       - grafana_logs:/var/log/grafana
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      test: [CMD, wget, --spider, -q, 'http://localhost:3000/api/health']
       interval: 10s
       timeout: 5s
       retries: 5

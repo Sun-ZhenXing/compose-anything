@@ -129,14 +129,14 @@ apisix:
 
 etcd:
   host:
-    - "http://etcd:2379"
-  prefix: "/apisix"
+    - 'http://etcd:2379'
+  prefix: /apisix
   timeout: 30
 
 plugin_attr:
   prometheus:
     export_addr:
-      ip: "0.0.0.0"
+      ip: 0.0.0.0
       port: 9091
 ```
 

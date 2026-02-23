@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   ollama:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}ollama/ollama:${OLLAMA_VERSION:-0.14.3}
     ports:
-      - "${OLLAMA_PORT_OVERRIDE:-11434}:11434"
+      - '${OLLAMA_PORT_OVERRIDE:-11434}:11434'
     volumes:
       - ollama_models:/root/.ollama
     environment:
@@ -19,14 +19,13 @@ services:
     ipc: host
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:11434/",
-        ]
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - 'http://localhost:11434/'
+
       interval: 30s
       timeout: 10s
       retries: 3
@@ -41,7 +40,7 @@ services:
           memory: ${OLLAMA_MEMORY_RESERVATION:-4G}
           devices:
             - driver: nvidia
-              device_ids: ["0"]
+              device_ids: ['0']
               capabilities: [gpu]
 
 volumes:

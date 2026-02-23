@@ -50,8 +50,8 @@ deploy:
     reservations:
       devices:
         - driver: nvidia
-          device_ids: [ '0' ]
-          capabilities: [ gpu ]
+          device_ids: ['0']
+          capabilities: [gpu]
 ```
 
 ### Requirements
@@ -78,8 +78,8 @@ To use AMD GPUs with ROCm support:
        reservations:
          devices:
            - driver: amdgpu
-             device_ids: [ '0' ]
-             capabilities: [ gpu ]
+             device_ids: ['0']
+             capabilities: [gpu]
    ```
 
 ## Usage

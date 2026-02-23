@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   # Harbor Core
@@ -47,7 +47,7 @@ services:
           cpus: ${HARBOR_CORE_CPU_RESERVATION:-0.5}
           memory: ${HARBOR_CORE_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/v2.0/ping"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:8080/api/v2.0/ping']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -102,7 +102,7 @@ services:
           cpus: ${HARBOR_REGISTRY_CPU_RESERVATION:-0.25}
           memory: ${HARBOR_REGISTRY_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:5000/']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -128,8 +128,8 @@ services:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}goharbor/nginx-photon:${HARBOR_VERSION:-v2.12.0}
     ports:
-      - "${HARBOR_HTTP_PORT_OVERRIDE:-80}:8080"
-      - "${HARBOR_HTTPS_PORT_OVERRIDE:-443}:8443"
+      - '${HARBOR_HTTP_PORT_OVERRIDE:-80}:8080'
+      - '${HARBOR_HTTPS_PORT_OVERRIDE:-443}:8443'
     depends_on:
       harbor-core:
         condition: service_healthy
@@ -148,7 +148,7 @@ services:
           cpus: ${HARBOR_PROXY_CPU_RESERVATION:-0.25}
           memory: ${HARBOR_PROXY_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:8080/']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -173,7 +173,7 @@ services:
           cpus: ${HARBOR_DB_CPU_RESERVATION:-0.25}
           memory: ${HARBOR_DB_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [CMD-SHELL, pg_isready -U postgres]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -196,7 +196,7 @@ services:
           cpus: ${HARBOR_REDIS_CPU_RESERVATION:-0.10}
           memory: ${HARBOR_REDIS_MEMORY_RESERVATION:-64M}
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 3s
       retries: 3

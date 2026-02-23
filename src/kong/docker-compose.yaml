@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   # Kong Database
@@ -27,7 +27,7 @@ services:
           cpus: ${KONG_DB_CPU_RESERVATION:-0.25}
           memory: ${KONG_DB_MEMORY_RESERVATION:-128M}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U kong"]
+      test: [CMD-SHELL, pg_isready -U kong]
       interval: 30s
       timeout: 5s
       retries: 5
@@ -48,7 +48,7 @@ services:
       - KONG_PG_PASSWORD=${KONG_DB_PASSWORD:-kongpass}
       - KONG_PG_DATABASE=kong
     command: kong migrations bootstrap
-    restart: "no"
+    restart: no
 
   # Kong Gateway
   kong:
@@ -60,10 +60,10 @@ services:
       kong-migrations:
         condition: service_completed_successfully
     ports:
-      - "${KONG_PROXY_PORT_OVERRIDE:-8000}:8000"
-      - "${KONG_PROXY_SSL_PORT_OVERRIDE:-8443}:8443"
-      - "${KONG_ADMIN_API_PORT_OVERRIDE:-8001}:8001"
-      - "${KONG_ADMIN_SSL_PORT_OVERRIDE:-8444}:8444"
+      - '${KONG_PROXY_PORT_OVERRIDE:-8000}:8000'
+      - '${KONG_PROXY_SSL_PORT_OVERRIDE:-8443}:8443'
+      - '${KONG_ADMIN_API_PORT_OVERRIDE:-8001}:8001'
+      - '${KONG_ADMIN_SSL_PORT_OVERRIDE:-8444}:8444'
 
       # Custom configuration
       # - ./kong.conf:/etc/kong/kong.conf:ro
@@ -89,7 +89,7 @@ services:
           cpus: ${KONG_CPU_RESERVATION:-0.25}
           memory: ${KONG_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD-SHELL", "kong health"]
+      test: [CMD-SHELL, kong health]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -103,7 +103,7 @@ services:
       kong:
         condition: service_healthy
     ports:
-      - "${KONG_GUI_PORT_OVERRIDE:-1337}:1337"
+      - '${KONG_GUI_PORT_OVERRIDE:-1337}:1337'
     volumes:
       - konga_data:/app/kongadata
     environment:

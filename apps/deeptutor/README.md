@@ -6,8 +6,8 @@
 
 DeepTutor is an AI-powered personalized learning assistant that transforms any document into an interactive learning experience with multi-agent intelligence. It helps you solve problems, generate questions, conduct research, collaborate on writing, organize notes, and guides you through learning paths.
 
-**Project:** <https://github.com/HKUDS/DeepTutor>  
-**License:** Apache-2.0  
+**Project:** <https://github.com/HKUDS/DeepTutor>
+**License:** Apache-2.0
 **Documentation:** <https://hkuds.github.io/DeepTutor/>
 
 ## Features

@@ -43,10 +43,10 @@ async fn main() {
     let client = RawClient::new(vec!["127.0.0.1:2379"], None)
         .await
         .unwrap();
-    
+
     // 存储键值对
     client.put("key".to_owned(), "value".to_owned()).await.unwrap();
-    
+
     // 获取值
     let value = client.get("key".to_owned()).await.unwrap();
     println!("Value: {:?}", value);

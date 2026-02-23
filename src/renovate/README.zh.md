@@ -69,14 +69,14 @@ Renovate 是一个自动化依赖更新工具，当有新版本可用时，它�
 module.exports = {
   platform: 'github',
   repositories: ['myorg/repo1', 'myorg/repo2'],
-  
+
   // 调度（cron 格式）
   schedule: ['before 5am on monday'],
-  
+
   // 自动合并设置
   automerge: true,
   automergeType: 'pr',
-  
+
   // 包规则
   packageRules: [
     {
@@ -84,7 +84,7 @@ module.exports = {
       automerge: true,
     },
   ],
-};
+}
 ```
 
 ## 使用示例
@@ -204,9 +204,11 @@ Renovate 支持 100 多个包管理器，包括：
 
 在 `config.js` 中配置速率限制：
 
-```javascript
-prConcurrentLimit: 10,
-prHourlyLimit: 2,
+```json
+{
+  "prConcurrentLimit": 10,
+  "prHourlyLimit": 2
+}
 ```
 
 ## 文档

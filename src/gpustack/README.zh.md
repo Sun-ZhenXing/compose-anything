@@ -50,8 +50,8 @@ deploy:
     reservations:
       devices:
         - driver: nvidia
-          device_ids: [ '0' ]
-          capabilities: [ gpu ]
+          device_ids: ['0']
+          capabilities: [gpu]
 ```
 
 ### 要求
@@ -78,8 +78,8 @@ deploy:
        reservations:
          devices:
            - driver: amdgpu
-             device_ids: [ '0' ]
-             capabilities: [ gpu ]
+             device_ids: ['0']
+             capabilities: [gpu]
    ```
 
 ## 使用方法

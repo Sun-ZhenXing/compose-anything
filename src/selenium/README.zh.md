@@ -96,22 +96,23 @@ driver.quit()
 ### 基础 WebDriver 测试（Node.js）
 
 ```javascript
-const { Builder } = require('selenium-webdriver');
+const { Builder } = require('selenium-webdriver')
 const chrome = require('selenium-webdriver/chrome');
 
 (async function example() {
-    let driver = await new Builder()
-        .forBrowser('chrome')
-        .usingServer('http://localhost:4444')
-        .build();
-    
-    try {
-        await driver.get('https://www.selenium.dev/');
-        console.log(await driver.getTitle());
-    } finally {
-        await driver.quit();
-    }
-})();
+  const driver = await new Builder()
+    .forBrowser('chrome')
+    .usingServer('http://localhost:4444')
+    .build()
+
+  try {
+    await driver.get('https://www.selenium.dev/')
+    console.log(await driver.getTitle())
+  }
+  finally {
+    await driver.quit()
+  }
+})()
 ```
 
 ### 查看浏览器会话

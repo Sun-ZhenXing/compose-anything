@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: ${GOOSE_LOG_MAX_SIZE:-100m}
-      max-file: "${GOOSE_LOG_MAX_FILE:-3}"
+      max-file: '${GOOSE_LOG_MAX_FILE:-3}'
 
 services:
   goose:

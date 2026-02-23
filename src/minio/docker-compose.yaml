@@ -4,15 +4,15 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   minio:
     <<: *defaults
     image: ${CGR_DEV_REGISTRY:cgr.dev-}/chainguard/minio:${MINIO_VERSION:-0.20251015}
     ports:
-      - "${MINIO_PORT_OVERRIDE_API:-9000}:9000"
-      - "${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001"
+      - '${MINIO_PORT_OVERRIDE_API:-9000}:9000'
+      - '${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001'
     environment:
       TZ: ${TZ:-UTC}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
@@ -21,7 +21,7 @@ services:
       - minio_data:/data
     command: server /data --console-address ':9001'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: [CMD, curl, -f, 'http://localhost:9000/minio/health/live']
       interval: 30s
       timeout: 20s
       retries: 5

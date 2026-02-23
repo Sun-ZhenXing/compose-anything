@@ -218,7 +218,7 @@ curl -X POST http://localhost:7860/api/v1/run/{flow_id} \
    ```bash
    # 生成安全密钥
    python -c "from secrets import token_urlsafe; print(token_urlsafe(32))"
-   
+
    # 添加到 .env
    LANGFLOW_SECRET_KEY=<生成的密钥>
    ```

@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   n8n:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}n8nio/n8n:${N8N_VERSION:-1.114.0}
     ports:
-      - "${N8N_PORT:-5678}:5678"
+      - '${N8N_PORT:-5678}:5678'
     volumes:
       - n8n_data:/home/node/.n8n
     environment:
@@ -48,7 +48,7 @@ services:
           cpus: ${N8N_CPU_RESERVATION:-0.5}
           memory: ${N8N_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5678/healthz"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:5678/healthz']
       interval: 30s
       timeout: 10s
       retries: 3

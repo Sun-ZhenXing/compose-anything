@@ -4,16 +4,16 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   nacos:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}nacos/nacos-server:${NACOS_VERSION:-v3.1.0-slim}
     ports:
-      - "${NACOS_HTTP_PORT_OVERRIDE:-8848}:8848"
-      - "${NACOS_GRPC_PORT_OVERRIDE:-9848}:9848"
-      - "${NACOS_GRPC_PORT2_OVERRIDE:-9849}:9849"
+      - '${NACOS_HTTP_PORT_OVERRIDE:-8848}:8848'
+      - '${NACOS_GRPC_PORT_OVERRIDE:-9848}:9848'
+      - '${NACOS_GRPC_PORT2_OVERRIDE:-9849}:9849'
     volumes:
       - nacos_logs:/home/nacos/logs
     environment:
@@ -37,7 +37,7 @@ services:
           cpus: ${NACOS_CPU_RESERVATION:-0.5}
           memory: ${NACOS_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8848/nacos/"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:8848/nacos/']
       interval: 30s
       timeout: 10s
       retries: 3

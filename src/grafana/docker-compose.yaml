@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   grafana:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}grafana/grafana:${GRAFANA_VERSION:-12.3.2}
     ports:
-      - "${GRAFANA_PORT_OVERRIDE:-3000}:3000"
+      - '${GRAFANA_PORT_OVERRIDE:-3000}:3000'
     volumes:
       - grafana_data:/var/lib/grafana
       - grafana_logs:/var/log/grafana
@@ -27,7 +27,7 @@ services:
       - GF_INSTALL_PLUGINS=${GRAFANA_PLUGINS:-}
       - GF_SERVER_ROOT_URL=${GRAFANA_ROOT_URL:-http://localhost:3000}
       - GF_SECURITY_SECRET_KEY=${GRAFANA_SECRET_KEY:-}
-    user: "472:472" # Grafana user
+    user: '472:472' # Grafana user
     deploy:
       resources:
         limits:
@@ -38,14 +38,13 @@ services:
           memory: ${GRAFANA_MEMORY_RESERVATION:-256M}
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:3000/api/health",
-        ]
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - 'http://localhost:3000/api/health'
+
       interval: 30s
       timeout: 10s
       retries: 3

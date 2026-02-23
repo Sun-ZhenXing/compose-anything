@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   mcp-mongodb:
@@ -16,12 +16,12 @@ services:
       - MCP_HOST=0.0.0.0
       - TZ=${TZ:-UTC}
     ports:
-      - "${MCP_MONGODB_PORT_OVERRIDE:-8000}:8000"
+      - '${MCP_MONGODB_PORT_OVERRIDE:-8000}:8000'
     depends_on:
       mongodb:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8000/health"]
+      test: [CMD, wget, --spider, -q, 'http://localhost:8000/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -44,12 +44,12 @@ services:
       - MONGO_INITDB_DATABASE=${MONGODB_DATABASE:-mcp_db}
       - TZ=${TZ:-UTC}
     ports:
-      - "${MONGODB_PORT_OVERRIDE:-27017}:27017"
+      - '${MONGODB_PORT_OVERRIDE:-27017}:27017'
     volumes:
       - mongodb_data:/data/db
       - mongodb_config:/data/configdb
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: [CMD, mongosh, --eval, "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5

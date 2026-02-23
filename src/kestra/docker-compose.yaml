@@ -30,7 +30,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   kestra:
@@ -39,8 +39,8 @@ services:
     container_name: kestra
     command: server standalone
     ports:
-      - "${KESTRA_PORT_OVERRIDE:-8080}:8080"
-      - "${KESTRA_MANAGEMENT_PORT:-8081}:8081"
+      - '${KESTRA_PORT_OVERRIDE:-8080}:8080'
+      - '${KESTRA_MANAGEMENT_PORT:-8081}:8081'
     environment:
       # Database configuration
       - KESTRA_CONFIGURATION=datasources.postgres.url=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
@@ -71,12 +71,12 @@ services:
     volumes:
       - kestra_data:/app/storage
       - kestra_logs:/app/logs
-      - /var/run/docker.sock:/var/run/docker.sock:ro  # For Docker task runner
+      - /var/run/docker.sock:/var/run/docker.sock:ro # For Docker task runner
     depends_on:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      test: [CMD, wget, --quiet, --tries=1, --spider, 'http://localhost:8080/health']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -84,11 +84,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "${KESTRA_CPU_LIMIT:-2.0}"
-          memory: "${KESTRA_MEMORY_LIMIT:-2G}"
+          cpus: '${KESTRA_CPU_LIMIT:-2.0}'
+          memory: '${KESTRA_MEMORY_LIMIT:-2G}'
         reservations:
-          cpus: "${KESTRA_CPU_RESERVATION:-0.5}"
-          memory: "${KESTRA_MEMORY_RESERVATION:-512M}"
+          cpus: '${KESTRA_CPU_RESERVATION:-0.5}'
+          memory: '${KESTRA_MEMORY_RESERVATION:-512M}'
 
   postgres:
     <<: *defaults
@@ -103,18 +103,18 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kestra} -d ${POSTGRES_DB:-kestra}"]
+      test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-kestra} -d ${POSTGRES_DB:-kestra}']
       interval: 10s
       timeout: 5s
       retries: 5
     deploy:
       resources:
         limits:
-          cpus: "${POSTGRES_CPU_LIMIT:-1.0}"
-          memory: "${POSTGRES_MEMORY_LIMIT:-1G}"
+          cpus: '${POSTGRES_CPU_LIMIT:-1.0}'
+          memory: '${POSTGRES_MEMORY_LIMIT:-1G}'
         reservations:
-          cpus: "${POSTGRES_CPU_RESERVATION:-0.25}"
-          memory: "${POSTGRES_MEMORY_RESERVATION:-256M}"
+          cpus: '${POSTGRES_CPU_RESERVATION:-0.25}'
+          memory: '${POSTGRES_MEMORY_RESERVATION:-256M}'
 
 volumes:
   postgres_data:

@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 x-environment: &common-env
   TZ: ${TZ:-UTC}
@@ -45,17 +45,17 @@ services:
   restate-1:
     <<: *restate-defaults
     ports:
-      - "${NODE1_INGRESS_PORT_OVERRIDE:-8080}:8080"  # Ingress API
-      - "${NODE1_ADMIN_PORT_OVERRIDE:-9070}:9070"    # Admin API
-      - "${NODE1_NODE_PORT_OVERRIDE:-5122}:5122"     # Node-to-node
+      - '${NODE1_INGRESS_PORT_OVERRIDE:-8080}:8080' # Ingress API
+      - '${NODE1_ADMIN_PORT_OVERRIDE:-9070}:9070' # Admin API
+      - '${NODE1_NODE_PORT_OVERRIDE:-5122}:5122' # Node-to-node
     environment:
       <<: *common-env
       RESTATE_NODE_NAME: restate-1
       RESTATE_FORCE_NODE_ID: 1
       RESTATE_ADVERTISED_ADDRESS: ${RESTATE_NODE1_ADVERTISED_ADDRESS:-http://restate-1:5122}
-      RESTATE_AUTO_PROVISION: "true"  # Only first node provisions cluster
+      RESTATE_AUTO_PROVISION: 'true' # Only first node provisions cluster
     healthcheck:
-      test: ["CMD", "sh", "-c", "wget --no-verbose --tries=1 --spider http://localhost:9070/health || exit 1"]
+      test: [CMD, sh, -c, 'wget --no-verbose --tries=1 --spider http://localhost:9070/health || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -67,17 +67,17 @@ services:
   restate-2:
     <<: *restate-defaults
     ports:
-      - "${NODE2_INGRESS_PORT_OVERRIDE:-28080}:8080"
-      - "${NODE2_ADMIN_PORT_OVERRIDE:-29070}:9070"
-      - "${NODE2_NODE_PORT_OVERRIDE:-25122}:5122"
+      - '${NODE2_INGRESS_PORT_OVERRIDE:-28080}:8080'
+      - '${NODE2_ADMIN_PORT_OVERRIDE:-29070}:9070'
+      - '${NODE2_NODE_PORT_OVERRIDE:-25122}:5122'
     environment:
       <<: *common-env
       RESTATE_NODE_NAME: restate-2
       RESTATE_FORCE_NODE_ID: 2
       RESTATE_ADVERTISED_ADDRESS: ${RESTATE_NODE2_ADVERTISED_ADDRESS:-http://restate-2:5122}
-      RESTATE_AUTO_PROVISION: "false"
+      RESTATE_AUTO_PROVISION: 'false'
     healthcheck:
-      test: ["CMD", "sh", "-c", "wget --no-verbose --tries=1 --spider http://localhost:9070/health || exit 1"]
+      test: [CMD, sh, -c, 'wget --no-verbose --tries=1 --spider http://localhost:9070/health || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -91,17 +91,17 @@ services:
   restate-3:
     <<: *restate-defaults
     ports:
-      - "${NODE3_INGRESS_PORT_OVERRIDE:-38080}:8080"
-      - "${NODE3_ADMIN_PORT_OVERRIDE:-39070}:9070"
-      - "${NODE3_NODE_PORT_OVERRIDE:-35122}:5122"
+      - '${NODE3_INGRESS_PORT_OVERRIDE:-38080}:8080'
+      - '${NODE3_ADMIN_PORT_OVERRIDE:-39070}:9070'
+      - '${NODE3_NODE_PORT_OVERRIDE:-35122}:5122'
     environment:
       <<: *common-env
       RESTATE_NODE_NAME: restate-3
       RESTATE_FORCE_NODE_ID: 3
       RESTATE_ADVERTISED_ADDRESS: ${RESTATE_NODE3_ADVERTISED_ADDRESS:-http://restate-3:5122}
-      RESTATE_AUTO_PROVISION: "false"
+      RESTATE_AUTO_PROVISION: 'false'
     healthcheck:
-      test: ["CMD", "sh", "-c", "wget --no-verbose --tries=1 --spider http://localhost:9070/health || exit 1"]
+      test: [CMD, sh, -c, 'wget --no-verbose --tries=1 --spider http://localhost:9070/health || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -115,17 +115,17 @@ services:
   minio:
     <<: *defaults
     image: quay.io/minio/minio:${MINIO_VERSION:-latest}
-    command: ["sh", "-c", "mkdir -p /data/restate && /usr/bin/minio server --quiet /data --console-address :9001"]
+    command: [sh, -c, 'mkdir -p /data/restate && /usr/bin/minio server --quiet /data --console-address :9001']
     ports:
-      - "${MINIO_API_PORT_OVERRIDE:-9000}:9000"
-      - "${MINIO_CONSOLE_PORT_OVERRIDE:-9001}:9001"
+      - '${MINIO_API_PORT_OVERRIDE:-9000}:9000'
+      - '${MINIO_CONSOLE_PORT_OVERRIDE:-9001}:9001'
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
     volumes:
       - minio_data:/data
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: [CMD, mc, ready, local]
       interval: 10s
       timeout: 5s
       retries: 5

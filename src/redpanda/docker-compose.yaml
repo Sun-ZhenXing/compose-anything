@@ -7,7 +7,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   redpanda:
@@ -29,17 +29,17 @@ services:
       - --reserve-memory 0M
       - --memory ${REDPANDA_MEMORY:-1G}
     ports:
-      - "${REDPANDA_SCHEMA_PORT_OVERRIDE:-18081}:8081"
-      - "${REDPANDA_PROXY_PORT_OVERRIDE:-18082}:8082"
-      - "${REDPANDA_KAFKA_PORT_OVERRIDE:-19092}:19092"
-      - "${REDPANDA_ADMIN_PORT_OVERRIDE:-19644}:9644"
+      - '${REDPANDA_SCHEMA_PORT_OVERRIDE:-18081}:8081'
+      - '${REDPANDA_PROXY_PORT_OVERRIDE:-18082}:8082'
+      - '${REDPANDA_KAFKA_PORT_OVERRIDE:-19092}:19092'
+      - '${REDPANDA_ADMIN_PORT_OVERRIDE:-19644}:9644'
     volumes:
       - redpanda_data:/var/lib/redpanda/data
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
       test:
-        ["CMD-SHELL", "rpk cluster health | grep -E 'Healthy:.+true' || exit 1"]
+        [CMD-SHELL, "rpk cluster health | grep -E 'Healthy:.+true' || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 5
@@ -59,7 +59,7 @@ services:
     profiles:
       - console
     ports:
-      - "${REDPANDA_CONSOLE_PORT_OVERRIDE:-8080}:8080"
+      - '${REDPANDA_CONSOLE_PORT_OVERRIDE:-8080}:8080'
     environment:
       - KAFKA_BROKERS=redpanda:9092
       - KAFKA_SCHEMAREGISTRY_ENABLED=true
@@ -72,7 +72,7 @@ services:
         condition: service_healthy
     healthcheck:
       test:
-        ["CMD", "wget", "--spider", "-q", "http://localhost:8080/admin/health"]
+        [CMD, wget, --spider, -q, 'http://localhost:8080/admin/health']
       interval: 10s
       timeout: 5s
       retries: 3

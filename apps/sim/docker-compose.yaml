@@ -8,14 +8,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: ${LOG_MAX_SIZE:-100m}
-      max-file: "${LOG_MAX_FILE:-3}"
+      max-file: '${LOG_MAX_FILE:-3}'
 
 services:
   simstudio:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}ghcr.io/simstudioai/simstudio:${SIM_VERSION:-latest}
     ports:
-      - "${SIM_PORT_OVERRIDE:-3000}:3000"
+      - '${SIM_PORT_OVERRIDE:-3000}:3000'
     environment:
       - TZ=${TZ:-UTC}
       - NODE_ENV=production
@@ -37,7 +37,7 @@ services:
       realtime:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--spider", "--quiet", "http://127.0.0.1:3000"]
+      test: [CMD, wget, --spider, --quiet, 'http://127.0.0.1:3000']
       interval: 90s
       timeout: 10s
       retries: 3
@@ -55,7 +55,7 @@ services:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}ghcr.io/simstudioai/realtime:${SIM_REALTIME_VERSION:-latest}
     ports:
-      - "${SIM_REALTIME_PORT_OVERRIDE:-3002}:3002"
+      - '${SIM_REALTIME_PORT_OVERRIDE:-3002}:3002'
     environment:
       - TZ=${TZ:-UTC}
       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-simstudio}
@@ -66,7 +66,7 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--spider", "--quiet", "http://127.0.0.1:3002/health"]
+      test: [CMD, wget, --spider, --quiet, 'http://127.0.0.1:3002/health']
       interval: 90s
       timeout: 10s
       retries: 3
@@ -89,13 +89,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: ["bun", "run", "db:migrate"]
-    restart: "no"
+    command: [bun, run, 'db:migrate']
+    restart: no
     logging:
       driver: json-file
       options:
         max-size: ${LOG_MAX_SIZE:-100m}
-        max-file: "${LOG_MAX_FILE:-3}"
+        max-file: '${LOG_MAX_FILE:-3}'
     deploy:
       resources:
         limits:
@@ -109,7 +109,7 @@ services:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}pgvector/pgvector:${PGVECTOR_VERSION:-pg17}
     ports:
-      - "${POSTGRES_PORT_OVERRIDE:-5432}:5432"
+      - '${POSTGRES_PORT_OVERRIDE:-5432}:5432'
     environment:
       - TZ=${TZ:-UTC}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
@@ -118,7 +118,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-postgres}']
       interval: 10s
       timeout: 5s
       retries: 5

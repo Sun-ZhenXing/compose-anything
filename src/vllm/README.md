@@ -30,14 +30,14 @@ Please modify the `.env` file as needed for your use case.
 This service requires NVIDIA GPU to run properly. Uncomment the GPU configuration in `docker-compose.yaml`:
 
 ```yaml
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    runtime: nvidia
+deploy:
+  resources:
+    reservations:
+      devices:
+        - driver: nvidia
+          count: 1
+          capabilities: [gpu]
+runtime: nvidia
 ```
 
 ## Usage
@@ -117,7 +117,7 @@ VLLM_MAX_MODEL_LEN=4096  # Support up to 4K tokens
 For larger models, increase shared memory:
 
 ```yaml
-shm_size: 8g  # Increase to 8GB
+shm_size: 8g # Increase to 8GB
 ```
 
 ## Notes

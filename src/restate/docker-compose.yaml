@@ -4,24 +4,24 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   restate:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}restatedev/restate:${RESTATE_VERSION:-1.5.3}
-    command: ["--node-name=restate-1"]
+    command: [--node-name=restate-1]
     ports:
-      - "${INGRESS_PORT_OVERRIDE:-8080}:8080"    # Ingress API
-      - "${ADMIN_PORT_OVERRIDE:-9070}:9070"      # Admin API
-      - "${NODE_PORT_OVERRIDE:-5122}:5122"       # Node-to-node communication
+      - '${INGRESS_PORT_OVERRIDE:-8080}:8080' # Ingress API
+      - '${ADMIN_PORT_OVERRIDE:-9070}:9070' # Admin API
+      - '${NODE_PORT_OVERRIDE:-5122}:5122' # Node-to-node communication
     volumes:
       - restate_data:/restate-data
     environment:
       - TZ=${TZ:-UTC}
       - RESTATE_LOG_FILTER=${RESTATE_LOG_FILTER:-restate=info}
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl --no-verbose --tries=1 --spider http://localhost:9070/health || exit 1"]
+      test: [CMD, sh, -c, 'curl --no-verbose --tries=1 --spider http://localhost:9070/health || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3

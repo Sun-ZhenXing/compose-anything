@@ -52,14 +52,14 @@ Jenkins can be configured using Configuration as Code (JCasC). Create a `jenkins
 Example configuration:
 ```yaml
 jenkins:
-  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin"
-  
+  systemMessage: Jenkins configured automatically by Jenkins Configuration as Code plugin
+
   securityRealm:
     local:
       allowsSignup: false
       users:
-       - id: admin
-         password: admin123
+        - id: admin
+          password: admin123
 
   authorizationStrategy:
     loggedInUsersCanDoAnything:

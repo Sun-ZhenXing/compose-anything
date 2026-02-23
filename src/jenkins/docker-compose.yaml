@@ -4,15 +4,15 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   jenkins:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}jenkins/jenkins:${JENKINS_VERSION:-2.541-lts-jdk17}
     ports:
-      - "${JENKINS_HTTP_PORT_OVERRIDE:-8080}:8080"
-      - "${JENKINS_AGENT_PORT_OVERRIDE:-50000}:50000"
+      - '${JENKINS_HTTP_PORT_OVERRIDE:-8080}:8080'
+      - '${JENKINS_AGENT_PORT_OVERRIDE:-50000}:50000'
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -24,7 +24,7 @@ services:
       - JENKINS_OPTS=${JENKINS_OPTS:---httpPort=8080}
       - JAVA_OPTS=${JAVA_OPTS:--Djenkins.install.runSetupWizard=false -Xmx2g}
       - CASC_JENKINS_CONFIG=${CASC_JENKINS_CONFIG:-/var/jenkins_home/casc_configs}
-    user: "${JENKINS_USER_ID:-1000}:${JENKINS_GROUP_ID:-1000}"
+    user: '${JENKINS_USER_ID:-1000}:${JENKINS_GROUP_ID:-1000}'
     deploy:
       resources:
         limits:
@@ -34,7 +34,7 @@ services:
           cpus: ${JENKINS_CPU_RESERVATION:-0.50}
           memory: ${JENKINS_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/login || exit 1"]
+      test: [CMD-SHELL, 'curl -f http://localhost:8080/login || exit 1']
       interval: 30s
       timeout: 10s
       retries: 5

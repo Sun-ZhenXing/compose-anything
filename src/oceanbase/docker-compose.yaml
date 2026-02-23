@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   oceanbase:
@@ -23,8 +23,8 @@ services:
     volumes:
       - oceanbase_data:/root/ob
     ports:
-      - "${OCEANBASE_SQL_PORT_OVERRIDE:-2881}:2881"
-      - "${OCEANBASE_RPC_PORT_OVERRIDE:-2882}:2882"
+      - '${OCEANBASE_SQL_PORT_OVERRIDE:-2881}:2881'
+      - '${OCEANBASE_RPC_PORT_OVERRIDE:-2882}:2882'
     deploy:
       resources:
         limits:
@@ -34,7 +34,7 @@ services:
           cpus: ${OCEANBASE_CPU_RESERVATION:-2.0}
           memory: ${OCEANBASE_MEMORY_RESERVATION:-8G}
     healthcheck:
-      test: ["CMD-SHELL", "mysql -h127.0.0.1 -P2881 -uroot -p$$OB_ROOT_PASSWORD -e 'SELECT 1' || exit 1"]
+      test: [CMD-SHELL, "mysql -h127.0.0.1 -P2881 -uroot -p$$OB_ROOT_PASSWORD -e 'SELECT 1' || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5

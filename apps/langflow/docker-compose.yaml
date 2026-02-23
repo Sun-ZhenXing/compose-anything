@@ -31,14 +31,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: ${LOG_MAX_SIZE:-100m}
-      max-file: "${LOG_MAX_FILE:-3}"
+      max-file: '${LOG_MAX_FILE:-3}'
 
 services:
   langflow:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}langflowai/langflow:${LANGFLOW_VERSION:-1.1.1}
     ports:
-      - "${LANGFLOW_PORT_OVERRIDE:-7860}:7860"
+      - '${LANGFLOW_PORT_OVERRIDE:-7860}:7860'
     environment:
       # Database configuration
       - LANGFLOW_DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
@@ -82,7 +82,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:7860/health_check', timeout=5)"]
+      test: [CMD, python, -c, "import requests; requests.get('http://localhost:7860/health_check', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -90,11 +90,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "${LANGFLOW_CPU_LIMIT:-2.0}"
-          memory: "${LANGFLOW_MEMORY_LIMIT:-2G}"
+          cpus: '${LANGFLOW_CPU_LIMIT:-2.0}'
+          memory: '${LANGFLOW_MEMORY_LIMIT:-2G}'
         reservations:
-          cpus: "${LANGFLOW_CPU_RESERVATION:-0.5}"
-          memory: "${LANGFLOW_MEMORY_RESERVATION:-512M}"
+          cpus: '${LANGFLOW_CPU_RESERVATION:-0.5}'
+          memory: '${LANGFLOW_MEMORY_RESERVATION:-512M}'
 
   postgres:
     <<: *defaults
@@ -108,7 +108,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-langflow} -d ${POSTGRES_DB:-langflow}"]
+      test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-langflow} -d ${POSTGRES_DB:-langflow}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -116,11 +116,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "${POSTGRES_CPU_LIMIT:-1.0}"
-          memory: "${POSTGRES_MEMORY_LIMIT:-1G}"
+          cpus: '${POSTGRES_CPU_LIMIT:-1.0}'
+          memory: '${POSTGRES_MEMORY_LIMIT:-1G}'
         reservations:
-          cpus: "${POSTGRES_CPU_RESERVATION:-0.25}"
-          memory: "${POSTGRES_MEMORY_RESERVATION:-256M}"
+          cpus: '${POSTGRES_CPU_RESERVATION:-0.25}'
+          memory: '${POSTGRES_MEMORY_RESERVATION:-256M}'
 
 volumes:
   postgres_data:

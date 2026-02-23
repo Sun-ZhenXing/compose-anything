@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   pd:
@@ -22,7 +22,7 @@ services:
     volumes:
       - pd_data:/data
     ports:
-      - "${TIDB_PD_PORT_OVERRIDE:-2379}:2379"
+      - '${TIDB_PD_PORT_OVERRIDE:-2379}:2379'
     deploy:
       resources:
         limits:
@@ -32,7 +32,7 @@ services:
           cpus: ${TIDB_PD_CPU_RESERVATION:-0.25}
           memory: ${TIDB_PD_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:2379/health || exit 1"]
+      test: [CMD-SHELL, 'wget -q -O - http://localhost:2379/health || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -51,7 +51,7 @@ services:
     volumes:
       - tikv_data:/data
     ports:
-      - "${TIDB_TIKV_PORT_OVERRIDE:-20160}:20160"
+      - '${TIDB_TIKV_PORT_OVERRIDE:-20160}:20160'
     depends_on:
       pd:
         condition: service_healthy
@@ -64,7 +64,7 @@ services:
           cpus: ${TIDB_TIKV_CPU_RESERVATION:-0.5}
           memory: ${TIDB_TIKV_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:20180/status || exit 1"]
+      test: [CMD-SHELL, 'wget -q -O - http://localhost:20180/status || exit 1']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -80,8 +80,8 @@ services:
     environment:
       TZ: ${TZ:-UTC}
     ports:
-      - "${TIDB_PORT_OVERRIDE:-4000}:4000"
-      - "${TIDB_STATUS_PORT_OVERRIDE:-10080}:10080"
+      - '${TIDB_PORT_OVERRIDE:-4000}:4000'
+      - '${TIDB_STATUS_PORT_OVERRIDE:-10080}:10080'
     depends_on:
       tikv:
         condition: service_healthy
@@ -94,7 +94,7 @@ services:
           cpus: ${TIDB_CPU_RESERVATION:-0.5}
           memory: ${TIDB_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:10080/status || exit 1"]
+      test: [CMD-SHELL, 'wget -q -O - http://localhost:10080/status || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3

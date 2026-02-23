@@ -35,7 +35,7 @@ docker compose up -d
 
 ```yaml
 scrape_configs:
-  - job_name: 'node'
+  - job_name: node
     static_configs:
       - targets: ['localhost:9100']
 ```

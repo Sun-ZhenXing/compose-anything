@@ -79,12 +79,12 @@ SigNoz 是一个开源的可观测性平台，为分布式应用程序提供监�
 Node.js 示例：
 
 ```javascript
-const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc')
+const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node')
 
 const exporter = new OTLPTraceExporter({
   url: 'http://localhost:4317',
-});
+})
 ```
 
 ## 架构说明

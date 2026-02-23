@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   lmdeploy:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}openmmlab/lmdeploy:${LMDEPLOY_VERSION:-v0.11.1-cu12.8}
     ports:
-      - "${LMDEPLOY_PORT_OVERRIDE:-23333}:23333"
+      - '${LMDEPLOY_PORT_OVERRIDE:-23333}:23333'
     volumes:
       - lmdeploy_data:/root/.cache
     environment:
@@ -23,11 +23,11 @@ services:
       - api_server
       - ${LMDEPLOY_MODEL:-internlm/internlm2-chat-1_8b}
       - --server-name
-      - "0.0.0.0"
+      - 0.0.0.0
       - --server-port
-      - "23333"
+      - '23333'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:23333/v1/models"]
+      test: [CMD, curl, -f, 'http://localhost:23333/v1/models']
       interval: 30s
       timeout: 10s
       retries: 3

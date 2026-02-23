@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   valkey:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}valkey/valkey:${VALKEY_VERSION:-8.0-alpine}
     ports:
-      - "${VALKEY_PORT_OVERRIDE:-6379}:6379"
+      - '${VALKEY_PORT_OVERRIDE:-6379}:6379'
     volumes:
       - valkey_data:/data
       # Use a custom valkey.conf file
@@ -36,7 +36,7 @@ services:
           cpus: ${VALKEY_CPU_RESERVATION:-0.25}
           memory: ${VALKEY_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "valkey-cli", "ping"]
+      test: [CMD, valkey-cli, ping]
       interval: 10s
       timeout: 3s
       retries: 3

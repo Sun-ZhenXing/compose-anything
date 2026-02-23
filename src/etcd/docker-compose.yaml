@@ -4,15 +4,15 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   etcd:
     <<: *defaults
     image: quay.io/coreos/etcd:${ETCD_VERSION:-v3.6.0}
     ports:
-      - "${ETCD_CLIENT_PORT_OVERRIDE:-2379}:2379"
-      - "${ETCD_PEER_PORT_OVERRIDE:-2380}:2380"
+      - '${ETCD_CLIENT_PORT_OVERRIDE:-2379}:2379'
+      - '${ETCD_PEER_PORT_OVERRIDE:-2380}:2380'
     volumes:
       - etcd_data:/etcd-data
     environment:
@@ -56,7 +56,7 @@ services:
           cpus: ${ETCD_CPU_RESERVATION:-0.25}
           memory: ${ETCD_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD", "etcdctl", "endpoint", "health"]
+      test: [CMD, etcdctl, endpoint, health]
       interval: 30s
       timeout: 10s
       retries: 3

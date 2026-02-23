@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   redis:
@@ -18,7 +18,7 @@ services:
       - TZ=${TZ:-UTC}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
     ports:
-      - "${REDIS_PORT_OVERRIDE:-6379}:6379"
+      - '${REDIS_PORT_OVERRIDE:-6379}:6379'
     volumes:
       - redis_data:/data
     command: >
@@ -30,7 +30,7 @@ services:
         fi
       '
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping 2>/dev/null || redis-cli ping"]
+      test: [CMD-SHELL, 'redis-cli -a $$REDIS_PASSWORD ping 2>/dev/null || redis-cli ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -54,11 +54,11 @@ services:
       - POSTGRES_DB=${DB_DATABASE:-buildingai}
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
-      - "${POSTGRES_PORT_OVERRIDE:-5432}:5432"
+      - '${POSTGRES_PORT_OVERRIDE:-5432}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
+      test: [CMD-SHELL, 'pg_isready -U ${DB_USERNAME:-postgres}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -93,11 +93,11 @@ services:
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
     ports:
-      - "${BUILDINGAI_PORT_OVERRIDE:-4090}:${SERVER_PORT:-4090}"
+      - '${BUILDINGAI_PORT_OVERRIDE:-4090}:${SERVER_PORT:-4090}'
     volumes:
       - buildingai_data:/app/data
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:${SERVER_PORT:-4090}/consoleapi/health || exit 1"]
+      test: [CMD-SHELL, 'curl -f http://localhost:${SERVER_PORT:-4090}/consoleapi/health || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3

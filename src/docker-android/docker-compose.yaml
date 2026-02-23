@@ -4,15 +4,15 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   docker_android:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}halimqarroum/docker-android:${DOCKER_ANDROID_VERSION:-api-33}
     ports:
-      - "${DOCKER_ANDROID_ADB_PORT_OVERRIDE:-5555}:5555"
-      - "${DOCKER_ANDROID_CONSOLE_PORT_OVERRIDE:-5554}:5554"
+      - '${DOCKER_ANDROID_ADB_PORT_OVERRIDE:-5555}:5555'
+      - '${DOCKER_ANDROID_CONSOLE_PORT_OVERRIDE:-5554}:5554'
     volumes:
       - docker_android_data:/data
       - ${DOCKER_ANDROID_KEYS_DIR:-./keys}:/keys:ro
@@ -24,9 +24,9 @@ services:
       - MEMORY=${DOCKER_ANDROID_MEMORY:-8192}
       - CORES=${DOCKER_ANDROID_CORES:-4}
     devices:
-      - "${DOCKER_ANDROID_KVM_DEVICE:-/dev/kvm}:/dev/kvm"
+      - '${DOCKER_ANDROID_KVM_DEVICE:-/dev/kvm}:/dev/kvm'
     healthcheck:
-      test: ["CMD-SHELL", "adb devices 2>/dev/null | grep -q emulator"]
+      test: [CMD-SHELL, 'adb devices 2>/dev/null | grep -q emulator']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -46,8 +46,8 @@ services:
       - gpu
     image: ${GLOBAL_REGISTRY:-}halimqarroum/docker-android:${DOCKER_ANDROID_GPU_VERSION:-api-33-cuda}
     ports:
-      - "${DOCKER_ANDROID_ADB_PORT_OVERRIDE:-5555}:5555"
-      - "${DOCKER_ANDROID_CONSOLE_PORT_OVERRIDE:-5554}:5554"
+      - '${DOCKER_ANDROID_ADB_PORT_OVERRIDE:-5555}:5555'
+      - '${DOCKER_ANDROID_CONSOLE_PORT_OVERRIDE:-5554}:5554'
     volumes:
       - docker_android_data:/data
       - ${DOCKER_ANDROID_KEYS_DIR:-./keys}:/keys:ro
@@ -59,9 +59,9 @@ services:
       - MEMORY=${DOCKER_ANDROID_MEMORY:-8192}
       - CORES=${DOCKER_ANDROID_CORES:-4}
     devices:
-      - "${DOCKER_ANDROID_KVM_DEVICE:-/dev/kvm}:/dev/kvm"
+      - '${DOCKER_ANDROID_KVM_DEVICE:-/dev/kvm}:/dev/kvm'
     healthcheck:
-      test: ["CMD-SHELL", "adb devices 2>/dev/null | grep -q emulator"]
+      test: [CMD-SHELL, 'adb devices 2>/dev/null | grep -q emulator']
       interval: 30s
       timeout: 10s
       retries: 5

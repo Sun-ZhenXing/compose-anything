@@ -93,7 +93,7 @@ This service deploys Langfuse, an open-source LLM engineering platform for obser
 All services have configurable CPU and memory limits:
 
 - **langfuse-worker**: 2 CPU cores, 2GB RAM
-- **langfuse-web**: 2 CPU cores, 2GB RAM  
+- **langfuse-web**: 2 CPU cores, 2GB RAM
 - **clickhouse**: 2 CPU cores, 4GB RAM
 - **minio**: 1 CPU core, 1GB RAM
 - **redis**: 1 CPU core, 512MB RAM

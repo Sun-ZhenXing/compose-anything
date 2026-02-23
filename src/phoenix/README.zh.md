@@ -32,7 +32,7 @@ Arize Phoenix 是一个开源的 AI 可观测性平台，专为 LLM 应用设计
 | 变量名                           | 描述                                     | 默认值            |
 | -------------------------------- | ---------------------------------------- | ----------------- |
 | COMPOSE_PROFILES                 | 激活的配置文件（`sqlite` 或 `postgres`） | `sqlite`          |
-| PHOENIX_VERSION                  | Phoenix 镜像版本                         | `12.31.2-nonroot` |
+| PHOENIX_VERSION                  | Phoenix 镜像版本                         | `12.35.0-nonroot` |
 | PHOENIX_PORT_OVERRIDE            | Phoenix UI 和 HTTP API 的主机端口        | `6006`            |
 | PHOENIX_GRPC_PORT_OVERRIDE       | OTLP gRPC 采集器的主机端口               | `4317`            |
 | PHOENIX_PROMETHEUS_PORT_OVERRIDE | Prometheus 指标的主机端口                | `9090`            |

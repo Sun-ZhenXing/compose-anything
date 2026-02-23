@@ -69,14 +69,14 @@ For advanced configuration, edit `config.js`:
 module.exports = {
   platform: 'github',
   repositories: ['myorg/repo1', 'myorg/repo2'],
-  
+
   // Schedule (cron format)
   schedule: ['before 5am on monday'],
-  
+
   // Auto-merge settings
   automerge: true,
   automergeType: 'pr',
-  
+
   // Package rules
   packageRules: [
     {
@@ -84,7 +84,7 @@ module.exports = {
       automerge: true,
     },
   ],
-};
+}
 ```
 
 ## Usage Examples
@@ -204,9 +204,11 @@ Verify token scopes:
 
 Configure rate limits in `config.js`:
 
-```javascript
-prConcurrentLimit: 10,
-prHourlyLimit: 2,
+```json
+{
+  "prConcurrentLimit": 10,
+  "prHourlyLimit": 2
+}
 ```
 
 ## Documentation

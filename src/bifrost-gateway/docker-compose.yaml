@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   bifrost:
@@ -13,7 +13,7 @@ services:
     volumes:
       - bifrost_data:/app/data
     ports:
-      - "${BIFROST_PORT:-28080}:8080"
+      - '${BIFROST_PORT:-28080}:8080'
     environment:
       - TZ=${TZ:-UTC}
     deploy:
@@ -26,14 +26,13 @@ services:
           memory: ${BIFROST_MEMORY_RESERVATION:-128M}
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:8080/health",
-        ]
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - 'http://localhost:8080/health'
+
       interval: 30s
       timeout: 10s
       retries: 3
@@ -42,27 +41,26 @@ services:
   prometheus:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}prom/prometheus:${PROMETHEUS_VERSION:-v3.8.1}
-    profiles: ["telemetry"]
+    profiles: [telemetry]
     volumes:
       - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
-      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
-      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
     ports:
-      - "${PROMETHEUS_PORT:-29090}:9090"
+      - '${PROMETHEUS_PORT:-29090}:9090'
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:9090/-/healthy",
-        ]
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - 'http://localhost:9090/-/healthy'
+
       interval: 30s
       timeout: 10s
       retries: 3
@@ -79,7 +77,7 @@ services:
   grafana:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}grafana/grafana:${GRAFANA_VERSION:-12.3.1}
-    profiles: ["telemetry"]
+    profiles: [telemetry]
     volumes:
       - ./config/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
       - grafana_data:/var/lib/grafana
@@ -88,17 +86,16 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
     ports:
-      - "${GRAFANA_PORT:-23000}:3000"
+      - '${GRAFANA_PORT:-23000}:3000'
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:3000/api/health",
-        ]
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - 'http://localhost:3000/api/health'
+
       interval: 30s
       timeout: 10s
       retries: 3

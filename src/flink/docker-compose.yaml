@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   jobmanager:
@@ -24,8 +24,8 @@ services:
       # Custom Flink jobs
       # - ./jobs:/opt/flink/jobs
     ports:
-      - "${FLINK_JOBMANAGER_RPC_PORT_OVERRIDE:-6123}:6123"
-      - "${FLINK_JOBMANAGER_UI_PORT_OVERRIDE:-8081}:8081"
+      - '${FLINK_JOBMANAGER_RPC_PORT_OVERRIDE:-6123}:6123'
+      - '${FLINK_JOBMANAGER_UI_PORT_OVERRIDE:-8081}:8081'
     deploy:
       resources:
         limits:
@@ -35,7 +35,7 @@ services:
           cpus: ${FLINK_JOBMANAGER_CPU_RESERVATION:-0.5}
           memory: ${FLINK_JOBMANAGER_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8081 || exit 1"]
+      test: [CMD-SHELL, 'wget --no-verbose --tries=1 --spider http://localhost:8081 || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -68,7 +68,7 @@ services:
           cpus: ${FLINK_TASKMANAGER_CPU_RESERVATION:-0.5}
           memory: ${FLINK_TASKMANAGER_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD-SHELL", "ps aux | grep -v grep | grep -q taskmanager || exit 1"]
+      test: [CMD-SHELL, 'ps aux | grep -v grep | grep -q taskmanager || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3

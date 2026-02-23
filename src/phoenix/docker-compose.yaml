@@ -7,27 +7,26 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 x-phoenix-common: &phoenix-common
   <<: *defaults
-  image: ${GLOBAL_REGISTRY:-}arizephoenix/phoenix:${PHOENIX_VERSION:-12.31.2-nonroot}
+  image: ${GLOBAL_REGISTRY:-}arizephoenix/phoenix:${PHOENIX_VERSION:-12.35.0-nonroot}
   ports:
-    - "${PHOENIX_PORT_OVERRIDE:-6006}:6006" # UI and OTLP HTTP collector
-    - "${PHOENIX_GRPC_PORT_OVERRIDE:-4317}:4317" # OTLP gRPC collector
-    - "${PHOENIX_PROMETHEUS_PORT_OVERRIDE:-9090}:9090" # Prometheus metrics
+    - '${PHOENIX_PORT_OVERRIDE:-6006}:6006' # UI and OTLP HTTP collector
+    - '${PHOENIX_GRPC_PORT_OVERRIDE:-4317}:4317' # OTLP gRPC collector
+    - '${PHOENIX_PROMETHEUS_PORT_OVERRIDE:-9090}:9090' # Prometheus metrics
   environment:
     - TZ=${TZ:-UTC}
     - PHOENIX_ENABLE_PROMETHEUS=${PHOENIX_ENABLE_PROMETHEUS:-false}
     - PHOENIX_SECRET=${PHOENIX_SECRET:-}
   healthcheck:
     test:
-      [
-        "CMD",
-        "python3",
-        "-c",
-        "import httpx;r=httpx.get('http://localhost:6006/healthz').raise_for_status()",
-      ]
+      - CMD
+      - python3
+      - -c
+      - "import httpx;r=httpx.get('http://localhost:6006/healthz').raise_for_status()"
+
     interval: 30s
     timeout: 10s
     retries: 3
@@ -59,7 +58,7 @@ services:
   # PostgreSQL configuration
   phoenix-pg:
     <<: *phoenix-common
-    profiles: ["postgres", "pg"]
+    profiles: [postgres, pg]
     environment:
       - TZ=${TZ:-UTC}
       - PHOENIX_ENABLE_PROMETHEUS=${PHOENIX_ENABLE_PROMETHEUS:-false}
@@ -71,7 +70,7 @@ services:
 
   phoenix-db:
     <<: *defaults
-    profiles: ["postgres", "pg"]
+    profiles: [postgres, pg]
     image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.2-alpine3.21}
     environment:
       - TZ=${TZ:-UTC}
@@ -81,7 +80,7 @@ services:
     volumes:
       - phoenix_db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-postgres}']
       interval: 10s
       timeout: 5s
       retries: 5

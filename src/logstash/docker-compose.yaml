@@ -4,17 +4,17 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   logstash:
     <<: *defaults
     image: docker.elastic.co/logstash/logstash:${LOGSTASH_VERSION:-8.16.1}
     ports:
-      - "${LOGSTASH_BEATS_PORT_OVERRIDE:-5044}:5044"
-      - "${LOGSTASH_TCP_PORT_OVERRIDE:-5000}:5000/tcp"
-      - "${LOGSTASH_UDP_PORT_OVERRIDE:-5000}:5000/udp"
-      - "${LOGSTASH_HTTP_PORT_OVERRIDE:-9600}:9600"
+      - '${LOGSTASH_BEATS_PORT_OVERRIDE:-5044}:5044'
+      - '${LOGSTASH_TCP_PORT_OVERRIDE:-5000}:5000/tcp'
+      - '${LOGSTASH_UDP_PORT_OVERRIDE:-5000}:5000/udp'
+      - '${LOGSTASH_HTTP_PORT_OVERRIDE:-9600}:9600'
     volumes:
       - logstash_data:/usr/share/logstash/data
       - logstash_logs:/usr/share/logstash/logs
@@ -44,7 +44,7 @@ services:
           cpus: ${LOGSTASH_CPU_RESERVATION:-0.50}
           memory: ${LOGSTASH_MEMORY_RESERVATION:-1G}
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9600/_node/stats || exit 1"]
+      test: [CMD-SHELL, 'curl -f http://localhost:9600/_node/stats || exit 1']
       interval: 30s
       timeout: 10s
       retries: 5

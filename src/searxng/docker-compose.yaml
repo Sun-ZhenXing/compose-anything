@@ -5,7 +5,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   caddy:
@@ -25,7 +25,7 @@ services:
     cap_add:
       - NET_BIND_SERVICE
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:2019/config/"]
+      test: [CMD, wget, --spider, -q, 'http://localhost:2019/config/']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -54,7 +54,7 @@ services:
       - SETUID
       - DAC_OVERRIDE
     healthcheck:
-      test: ["CMD", "valkey-cli", "ping"]
+      test: [CMD, valkey-cli, ping]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -74,7 +74,7 @@ services:
     networks:
       - searxng
     ports:
-      - "${SEARXNG_PORT_OVERRIDE:-8080}:8080"
+      - '${SEARXNG_PORT_OVERRIDE:-8080}:8080'
     volumes:
       - ./searxng:/etc/searxng:rw
     environment:
@@ -92,7 +92,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/healthz"]
+      test: [CMD, wget, --spider, -q, 'http://localhost:8080/healthz']
       interval: 30s
       timeout: 10s
       retries: 3

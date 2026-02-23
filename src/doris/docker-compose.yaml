@@ -8,7 +8,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   # Doris Frontend (FE) node
@@ -17,10 +17,10 @@ services:
     image: ${GLOBAL_REGISTRY:-}apache/doris:${DORIS_VERSION:-3.0.0}-fe-x86_64
     hostname: doris-fe
     ports:
-      - "${DORIS_FE_QUERY_PORT_OVERRIDE:-9030}:9030"
-      - "${DORIS_FE_HTTP_PORT_OVERRIDE:-8030}:8030"
-      - "${DORIS_FE_RPC_PORT_OVERRIDE:-9020}:9020"
-      - "${DORIS_FE_EDIT_LOG_PORT_OVERRIDE:-9010}:9010"
+      - '${DORIS_FE_QUERY_PORT_OVERRIDE:-9030}:9030'
+      - '${DORIS_FE_HTTP_PORT_OVERRIDE:-8030}:8030'
+      - '${DORIS_FE_RPC_PORT_OVERRIDE:-9020}:9020'
+      - '${DORIS_FE_EDIT_LOG_PORT_OVERRIDE:-9010}:9010'
     volumes:
       - doris_fe_data:/opt/apache-doris/fe/doris-meta
     environment:
@@ -28,7 +28,7 @@ services:
       - FE_SERVERS=doris-fe:9010
       - FRONTEND_REPLICAS=1
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8030/api/v2/system/info || exit 1"]
+      test: [CMD-SHELL, 'curl -sf http://localhost:8030/api/v2/system/info || exit 1']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -48,9 +48,9 @@ services:
     image: ${GLOBAL_REGISTRY:-}apache/doris:${DORIS_VERSION:-3.0.0}-be-x86_64
     hostname: doris-be
     ports:
-      - "${DORIS_BE_HEARTBEAT_PORT_OVERRIDE:-9050}:9050"
-      - "${DORIS_BE_THRIFT_RPC_PORT_OVERRIDE:-9060}:9060"
-      - "${DORIS_BE_HTTP_PORT_OVERRIDE:-8040}:8040"
+      - '${DORIS_BE_HEARTBEAT_PORT_OVERRIDE:-9050}:9050'
+      - '${DORIS_BE_THRIFT_RPC_PORT_OVERRIDE:-9060}:9060'
+      - '${DORIS_BE_HTTP_PORT_OVERRIDE:-8040}:8040'
     volumes:
       - doris_be_data:/opt/apache-doris/be/storage
     environment:
@@ -60,7 +60,7 @@ services:
       doris-fe:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8040/api/health || exit 1"]
+      test: [CMD-SHELL, 'curl -sf http://localhost:8040/api/health || exit 1']
       interval: 30s
       timeout: 10s
       retries: 5

@@ -4,15 +4,15 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   apache:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}httpd:${APACHE_VERSION:-2.4.62-alpine3.20}
     ports:
-      - "${APACHE_HTTP_PORT_OVERRIDE:-80}:80"
-      - "${APACHE_HTTPS_PORT_OVERRIDE:-443}:443"
+      - '${APACHE_HTTP_PORT_OVERRIDE:-80}:80'
+      - '${APACHE_HTTPS_PORT_OVERRIDE:-443}:443'
     volumes:
       - apache_logs:/usr/local/apache2/logs
       - ./htdocs:/usr/local/apache2/htdocs:ro
@@ -33,7 +33,7 @@ services:
           cpus: ${APACHE_CPU_RESERVATION:-0.25}
           memory: ${APACHE_MEMORY_RESERVATION:-128M}
     healthcheck:
-      test: ["CMD", "httpd", "-t"]
+      test: [CMD, httpd, -t]
       interval: 30s
       timeout: 10s
       retries: 3

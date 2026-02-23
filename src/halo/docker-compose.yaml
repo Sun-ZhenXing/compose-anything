@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   halo:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}halohub/halo:${HALO_VERSION:-2.21.9}
     ports:
-      - "${HALO_PORT:-8090}:8090"
+      - '${HALO_PORT:-8090}:8090'
     volumes:
       - halo_data:/root/.halo2
     environment:
@@ -35,7 +35,7 @@ services:
           cpus: ${HALO_CPU_RESERVATION:-0.5}
           memory: ${HALO_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8090/actuator/health"]
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:8090/actuator/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -53,7 +53,7 @@ services:
     volumes:
       - halo_db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: [CMD-SHELL, pg_isready]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -90,8 +90,8 @@ You can configure Docker to send logs directly to Loki:
 logging:
   driver: loki
   options:
-    loki-url: "http://localhost:3100/loki/api/v1/push"
-    loki-batch-size: "400"
+    loki-url: 'http://localhost:3100/loki/api/v1/push'
+    loki-batch-size: '400'
 ```
 
 ### Using HTTP API

@@ -7,15 +7,15 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   pingap:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}vicanso/pingap:${PINGAP_VERSION:-0.12.7-full}
     ports:
-      - "${PINGAP_HTTP_PORT_OVERRIDE:-80}:80"
-      - "${PINGAP_HTTPS_PORT_OVERRIDE:-443}:443"
+      - '${PINGAP_HTTP_PORT_OVERRIDE:-80}:80'
+      - '${PINGAP_HTTPS_PORT_OVERRIDE:-443}:443'
     volumes:
       - pingap_data:/opt/pingap
     environment:
@@ -28,7 +28,7 @@ services:
       - pingap
       - --autoreload
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/80'"]
+      test: [CMD-SHELL, "bash -c 'echo > /dev/tcp/localhost/80'"]
       interval: 30s
       timeout: 10s
       retries: 3

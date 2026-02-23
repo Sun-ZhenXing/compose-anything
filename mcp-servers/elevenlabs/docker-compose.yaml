@@ -3,8 +3,8 @@ x-defaults: &defaults
   logging:
     driver: json-file
     options:
-      max-size: "100m"
-      max-file: "3"
+      max-size: 100m
+      max-file: '3'
   deploy:
     resources:
       limits:
@@ -23,9 +23,9 @@ services:
       - TZ=${TZ:-UTC}
       - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
     ports:
-      - "${MCP_ELEVENLABS_PORT_OVERRIDE:-8000}:8000"
+      - '${MCP_ELEVENLABS_PORT_OVERRIDE:-8000}:8000'
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8000/health"]
+      test: [CMD, wget, --quiet, --tries=1, --spider, 'http://localhost:8000/health']
       interval: 30s
       timeout: 10s
       retries: 3

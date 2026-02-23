@@ -32,7 +32,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   inngest:
@@ -46,8 +46,8 @@ services:
       --postgres-uri postgresql://${INNGEST_PG_USER:-inngest}:${INNGEST_PG_PASSWORD:-inngest}@postgres:5432/${INNGEST_PG_DB:-inngest}?sslmode=disable
       --redis-uri redis://redis:6379
     ports:
-      - "${INNGEST_PORT_OVERRIDE:-8288}:8288"
-      - "${INNGEST_GATEWAY_PORT_OVERRIDE:-8289}:8289"
+      - '${INNGEST_PORT_OVERRIDE:-8288}:8288'
+      - '${INNGEST_GATEWAY_PORT_OVERRIDE:-8289}:8289'
     environment:
       - TZ=${TZ:-UTC}
       - INNGEST_EVENT_KEY=${INNGEST_EVENT_KEY:-deadbeefcafebabe0123456789abcdef}
@@ -60,13 +60,12 @@ services:
         condition: service_healthy
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--spider",
-          "--quiet",
-          "http://localhost:8288/v0/health",
-        ]
+        - CMD
+        - wget
+        - --spider
+        - --quiet
+        - 'http://localhost:8288/v0/health'
+
       interval: 30s
       timeout: 10s
       retries: 3
@@ -92,10 +91,9 @@ services:
       - POSTGRES_DB=${INNGEST_PG_DB:-inngest}
     healthcheck:
       test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U ${INNGEST_PG_USER:-inngest} -d ${INNGEST_PG_DB:-inngest}",
-        ]
+        - CMD-SHELL
+        - 'pg_isready -U ${INNGEST_PG_USER:-inngest} -d ${INNGEST_PG_DB:-inngest}'
+
       interval: 10s
       timeout: 5s
       retries: 5
@@ -123,7 +121,7 @@ services:
     volumes:
       - inngest_redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 3s
       retries: 3

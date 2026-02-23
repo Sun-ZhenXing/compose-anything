@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   # Zookeeper for Kafka coordination
@@ -12,7 +12,7 @@ services:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}confluentinc/cp-zookeeper:${KAFKA_VERSION:-7.8.0}
     ports:
-      - "${ZOOKEEPER_CLIENT_PORT_OVERRIDE:-2181}:2181"
+      - '${ZOOKEEPER_CLIENT_PORT_OVERRIDE:-2181}:2181'
     volumes:
       - zookeeper_data:/var/lib/zookeeper/data
       - zookeeper_log:/var/lib/zookeeper/log
@@ -34,7 +34,7 @@ services:
           cpus: ${ZOOKEEPER_CPU_RESERVATION:-0.25}
           memory: ${ZOOKEEPER_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: ["CMD-SHELL", "echo ruok | nc localhost 2181 | grep imok"]
+      test: [CMD-SHELL, 'echo ruok | nc localhost 2181 | grep imok']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -48,8 +48,8 @@ services:
       zookeeper:
         condition: service_healthy
     ports:
-      - "${KAFKA_BROKER_PORT_OVERRIDE:-9092}:9092"
-      - "${KAFKA_JMX_PORT_OVERRIDE:-9999}:9999"
+      - '${KAFKA_BROKER_PORT_OVERRIDE:-9092}:9092'
+      - '${KAFKA_JMX_PORT_OVERRIDE:-9999}:9999'
     volumes:
       - kafka_data:/var/lib/kafka/data
     environment:
@@ -83,10 +83,9 @@ services:
           memory: ${KAFKA_MEMORY_RESERVATION:-1G}
     healthcheck:
       test:
-        [
-          "CMD-SHELL",
-          "kafka-broker-api-versions --bootstrap-server localhost:9092",
-        ]
+        - CMD-SHELL
+        - 'kafka-broker-api-versions --bootstrap-server localhost:9092'
+
       interval: 30s
       timeout: 10s
       retries: 5
@@ -104,7 +103,7 @@ services:
       zookeeper:
         condition: service_healthy
     ports:
-      - "${KAFKA_UI_PORT_OVERRIDE:-8080}:8080"
+      - '${KAFKA_UI_PORT_OVERRIDE:-8080}:8080'
     environment:
       - TZ=${TZ:-UTC}
       - KAFKA_CLUSTERS_0_NAME=local

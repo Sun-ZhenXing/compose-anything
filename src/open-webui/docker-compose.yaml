@@ -4,14 +4,14 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   open_webui:
     <<: *defaults
     image: ${GHCR_IO_REGISTRY:-ghcr.io}/open-webui/open-webui:${OPEN_WEBUI_VERSION:-main}
     ports:
-      - "${OPEN_WEBUI_PORT_OVERRIDE:-8080}:8080"
+      - '${OPEN_WEBUI_PORT_OVERRIDE:-8080}:8080'
     volumes:
       - open_webui_data:/app/backend/data
     environment:

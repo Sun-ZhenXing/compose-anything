@@ -2,7 +2,7 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
-  - job_name: 'bifrost'
-    metrics_path: '/metrics'
+  - job_name: bifrost
+    metrics_path: /metrics
     static_configs:
       - targets: ['bifrost:8080']

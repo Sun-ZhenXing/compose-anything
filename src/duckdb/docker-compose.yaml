@@ -4,13 +4,13 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   duckdb:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}davidgasquez/duckdb:${DUCKDB_VERSION:-v1.1.3}
-    command: ["duckdb", "/data/duckdb.db"]
+    command: [duckdb, /data/duckdb.db]
     stdin_open: true
     tty: true
     environment:
@@ -28,7 +28,7 @@ services:
           cpus: ${DUCKDB_CPU_RESERVATION:-0.5}
           memory: ${DUCKDB_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD-SHELL", "duckdb /data/duckdb.db -c 'SELECT 1' || exit 1"]
+      test: [CMD-SHELL, "duckdb /data/duckdb.db -c 'SELECT 1' || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3

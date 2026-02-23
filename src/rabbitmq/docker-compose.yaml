@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   rabbitmq:
@@ -28,7 +28,7 @@ services:
           cpus: ${RABBITMQ_CPU_RESERVATION:-0.5}
           memory: ${RABBITMQ_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      test: [CMD, rabbitmq-diagnostics, -q, ping]
       interval: 30s
       timeout: 10s
       retries: 3

@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   opensearch:
@@ -16,7 +16,7 @@ services:
       node.name: opensearch
       discovery.type: single-node
       bootstrap.memory_lock: true
-      OPENSEARCH_JAVA_OPTS: "-Xms${OPENSEARCH_HEAP_SIZE:-512m} -Xmx${OPENSEARCH_HEAP_SIZE:-512m}"
+      OPENSEARCH_JAVA_OPTS: '-Xms${OPENSEARCH_HEAP_SIZE:-512m} -Xmx${OPENSEARCH_HEAP_SIZE:-512m}'
       OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_ADMIN_PASSWORD:-Admin@123}
       DISABLE_SECURITY_PLUGIN: ${DISABLE_SECURITY_PLUGIN:-false}
     ulimits:
@@ -27,8 +27,8 @@ services:
         soft: 65536
         hard: 65536
     ports:
-      - "${OPENSEARCH_PORT_OVERRIDE:-9200}:9200"
-      - "${OPENSEARCH_PERF_ANALYZER_PORT_OVERRIDE:-9600}:9600"
+      - '${OPENSEARCH_PORT_OVERRIDE:-9200}:9200'
+      - '${OPENSEARCH_PERF_ANALYZER_PORT_OVERRIDE:-9600}:9600'
     volumes:
       - opensearch_data:/usr/share/opensearch/data
     deploy:
@@ -41,7 +41,7 @@ services:
           memory: ${OPENSEARCH_MEMORY_RESERVATION:-1G}
     healthcheck:
       test:
-        ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+        [CMD-SHELL, 'curl -f http://localhost:9200/_cluster/health || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -51,7 +51,7 @@ services:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}opensearchproject/opensearch-dashboards:${OPENSEARCH_DASHBOARDS_VERSION:-2.19.0}
     ports:
-      - "${OPENSEARCH_DASHBOARDS_PORT_OVERRIDE:-5601}:5601"
+      - '${OPENSEARCH_DASHBOARDS_PORT_OVERRIDE:-5601}:5601'
     environment:
       TZ: ${TZ:-UTC}
       OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
@@ -69,14 +69,13 @@ services:
           memory: ${OPENSEARCH_DASHBOARDS_MEMORY_RESERVATION:-512M}
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:5601/api/status",
-        ]
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - 'http://localhost:5601/api/status'
+
       interval: 30s
       timeout: 10s
       retries: 3

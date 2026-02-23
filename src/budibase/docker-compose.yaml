@@ -31,7 +31,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   budibase:
@@ -39,7 +39,7 @@ services:
     image: ${GLOBAL_REGISTRY:-}budibase/budibase:${BUDIBASE_VERSION:-3.23.0}
     container_name: budibase
     ports:
-      - "${BUDIBASE_PORT_OVERRIDE:-10000}:80"
+      - '${BUDIBASE_PORT_OVERRIDE:-10000}:80'
     environment:
       # Core settings
       - APP_PORT=${BUDIBASE_APP_PORT:-4002}
@@ -75,14 +75,13 @@ services:
         condition: service_healthy
     healthcheck:
       test:
-        [
-          "CMD",
-          "wget",
-          "--quiet",
-          "--tries=1",
-          "--spider",
-          "http://localhost/health",
-        ]
+        - CMD
+        - wget
+        - --quiet
+        - --tries=1
+        - --spider
+        - 'http://localhost/health'
+
       interval: 30s
       timeout: 10s
       retries: 3
@@ -90,11 +89,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "${BUDIBASE_CPU_LIMIT:-2.0}"
-          memory: "${BUDIBASE_MEMORY_LIMIT:-2G}"
+          cpus: '${BUDIBASE_CPU_LIMIT:-2.0}'
+          memory: '${BUDIBASE_MEMORY_LIMIT:-2G}'
         reservations:
-          cpus: "${BUDIBASE_CPU_RESERVATION:-0.5}"
-          memory: "${BUDIBASE_MEMORY_RESERVATION:-512M}"
+          cpus: '${BUDIBASE_CPU_RESERVATION:-0.5}'
+          memory: '${BUDIBASE_MEMORY_RESERVATION:-512M}'
 
   redis:
     <<: *defaults
@@ -104,18 +103,18 @@ services:
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [CMD, redis-cli, ping]
       interval: 10s
       timeout: 5s
       retries: 5
     deploy:
       resources:
         limits:
-          cpus: "${REDIS_CPU_LIMIT:-0.5}"
-          memory: "${REDIS_MEMORY_LIMIT:-512M}"
+          cpus: '${REDIS_CPU_LIMIT:-0.5}'
+          memory: '${REDIS_MEMORY_LIMIT:-512M}'
         reservations:
-          cpus: "${REDIS_CPU_RESERVATION:-0.1}"
-          memory: "${REDIS_MEMORY_RESERVATION:-128M}"
+          cpus: '${REDIS_CPU_RESERVATION:-0.1}'
+          memory: '${REDIS_MEMORY_RESERVATION:-128M}'
 
 volumes:
   budibase_data:

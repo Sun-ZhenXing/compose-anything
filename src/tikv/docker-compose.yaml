@@ -4,7 +4,7 @@ x-defaults: &defaults
     driver: json-file
     options:
       max-size: 100m
-      max-file: "3"
+      max-file: '3'
 
 services:
   pd:
@@ -22,8 +22,8 @@ services:
     volumes:
       - pd_data:/data
     ports:
-      - "${TIKV_PD_PORT_OVERRIDE:-2379}:2379"
-      - "${TIKV_PD_PEER_PORT_OVERRIDE:-2380}:2380"
+      - '${TIKV_PD_PORT_OVERRIDE:-2379}:2379'
+      - '${TIKV_PD_PEER_PORT_OVERRIDE:-2380}:2380'
     deploy:
       resources:
         limits:
@@ -33,7 +33,7 @@ services:
           cpus: ${TIKV_PD_CPU_RESERVATION:-0.25}
           memory: ${TIKV_PD_MEMORY_RESERVATION:-512M}
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:2379/health || exit 1"]
+      test: [CMD-SHELL, 'wget -q -O - http://localhost:2379/health || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -55,8 +55,8 @@ services:
       - tikv_data:/data
       - tikv_logs:/logs
     ports:
-      - "${TIKV_PORT_OVERRIDE:-20160}:20160"
-      - "${TIKV_STATUS_PORT_OVERRIDE:-20180}:20180"
+      - '${TIKV_PORT_OVERRIDE:-20160}:20160'
+      - '${TIKV_STATUS_PORT_OVERRIDE:-20180}:20180'
     depends_on:
       pd:
         condition: service_healthy
@@ -69,7 +69,7 @@ services:
           cpus: ${TIKV_CPU_RESERVATION:-0.5}
           memory: ${TIKV_MEMORY_RESERVATION:-2G}
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:20180/status || exit 1"]
+      test: [CMD-SHELL, 'wget -q -O - http://localhost:20180/status || exit 1']
       interval: 30s
       timeout: 10s
       retries: 5

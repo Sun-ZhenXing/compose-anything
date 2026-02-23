@@ -29,10 +29,10 @@ A highly-available 3-node Restate cluster for production workloads. This configu
    ```bash
    # Check node 1
    curl http://localhost:9070/health
-   
+
    # Check node 2
    curl http://localhost:29070/health
-   
+
    # Check node 3
    curl http://localhost:39070/health
    ```

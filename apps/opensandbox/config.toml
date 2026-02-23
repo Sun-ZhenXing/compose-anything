@@ -22,15 +22,15 @@ network_mode = "bridge"
 # Security hardening options
 # Drop dangerous capabilities
 drop_capabilities = [
-    "AUDIT_WRITE",
-    "MKNOD",
-    "NET_ADMIN",
-    "NET_RAW",
-    "SYS_ADMIN",
-    "SYS_MODULE",
-    "SYS_PTRACE",
-    "SYS_TIME",
-    "SYS_TTY_CONFIG"
+  "AUDIT_WRITE",
+  "MKNOD",
+  "NET_ADMIN",
+  "NET_RAW",
+  "SYS_ADMIN",
+  "SYS_MODULE",
+  "SYS_PTRACE",
+  "SYS_TIME",
+  "SYS_TTY_CONFIG"
 ]
 
 # Prevent privilege escalation inside containers
