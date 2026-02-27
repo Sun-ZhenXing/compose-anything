@@ -105,7 +105,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [Odoo](./src/odoo)                                             | 19.0                |
 | [Ollama](./src/ollama)                                         | 0.14.3              |
 | [Open WebUI](./src/open-webui)                                 | main                |
-| [Phoenix (Arize)](./src/phoenix)                               | 12.35.0-nonroot     |
+| [Phoenix (Arize)](./src/phoenix)                               | 13.3.0              |
 | [Pingora Proxy Manager](./src/pingora-proxy-manager)           | v1.0.3              |
 | [Open WebUI Rust](./src/open-webui-rust)                       | latest              |
 | [OpenCode](./src/opencode)                                     | 1.1.27              |
@@ -113,6 +113,7 @@ Compose Anything 通过提供一组高质量的 Docker Compose 配置文件，�
 | [OpenCut](./src/opencut)                                       | latest              |
 | [OpenList](./src/openlist)                                     | latest              |
 | [OpenLIT](./apps/openlit)                                      | latest              |
+| [Opik](./apps/opik)                                            | 1.10.23             |
 | [OpenSandbox](./apps/opensandbox)                              | v1.0.5              |
 | [OpenObserve](./apps/openobserve)                              | v0.50.0             |
 | [OpenSearch](./src/opensearch)                                 | 2.19.0              |
