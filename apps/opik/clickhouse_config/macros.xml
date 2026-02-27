@@ -1,0 +1,7 @@
+<clickhouse>
+  <macros>
+    <cluster>opik_cluster</cluster>
+    <shard>01</shard>
+    <replica>01</replica>
+  </macros>
+</clickhouse>

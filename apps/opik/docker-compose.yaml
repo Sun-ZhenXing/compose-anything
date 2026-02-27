@@ -13,7 +13,6 @@ services:
   mysql:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}mysql:${MYSQL_VERSION:-8.4.2}
-    hostname: mysql
     environment:
       TZ: ${TZ:-UTC}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-opik}
@@ -40,7 +39,6 @@ services:
   redis:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-7.2.4-alpine3.19}
-    hostname: redis
     command: redis-server --requirepass ${REDIS_PASSWORD:-opik}
     environment:
       TZ: ${TZ:-UTC}
@@ -64,7 +62,6 @@ services:
   zookeeper:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}zookeeper:${ZOOKEEPER_VERSION:-3.9.4}
-    hostname: zookeeper
     user: root
     entrypoint:
       - /bin/bash
@@ -81,6 +78,9 @@ services:
       ZOO_DATA_LOG_DIR: /bitnami/zookeeper/data
     volumes:
       - zookeeper_data:/bitnami/zookeeper
+      - zookeeper_data_dir:/data
+      - zookeeper_datalog:/datalog
+      - zookeeper_logs:/logs
     healthcheck:
       test: [CMD-SHELL, 'echo ruok | nc localhost 2181 | grep -q imok']
       interval: 5s
@@ -99,6 +99,7 @@ services:
   clickhouse-init:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}alpine:${ALPINE_VERSION:-latest}
+    restart: on-failure
     volumes:
       - ./clickhouse_config:/clickhouse_config_files:ro
       - clickhouse_config:/config
@@ -116,7 +117,6 @@ services:
   clickhouse:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}clickhouse/clickhouse-server:${CLICKHOUSE_VERSION:-25.3.6.56-alpine}
-    hostname: clickhouse
     environment:
       TZ: ${TZ:-UTC}
       CLICKHOUSE_DB: ${CLICKHOUSE_DB:-opik}
@@ -154,7 +154,6 @@ services:
   minio:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}minio/minio:${MINIO_VERSION:-RELEASE.2025-03-12T18-04-18Z}
-    hostname: minio
     environment:
       TZ: ${TZ:-UTC}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-opikminio}
@@ -202,7 +201,6 @@ services:
   backend:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}ghcr.io/comet-ml/opik/opik-backend:${OPIK_VERSION:-1.10.23}
-    hostname: backend
     command: [bash, -c, './run_db_migrations.sh && ./entrypoint.sh']
     environment:
       TZ: ${TZ:-UTC}
@@ -260,13 +258,12 @@ services:
         reservations:
           cpus: ${BACKEND_CPU_RESERVATION:-0.5}
           memory: ${BACKEND_MEMORY_RESERVATION:-1G}
-    tmpfs:
-      - /tmp
+    volumes:
+      - backend_tmp:/tmp
 
   python-backend:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}ghcr.io/comet-ml/opik/opik-python-backend:${OPIK_VERSION:-1.10.23}
-    hostname: python-backend
     privileged: true
     environment:
       TZ: ${TZ:-UTC}
@@ -310,24 +307,23 @@ services:
         reservations:
           cpus: ${PYTHON_BACKEND_CPU_RESERVATION:-0.5}
           memory: ${PYTHON_BACKEND_MEMORY_RESERVATION:-512M}
-    tmpfs:
-      - /var/lib/docker
+    volumes:
+      - python_backend_docker:/var/lib/docker
 
   frontend:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}ghcr.io/comet-ml/opik/opik-frontend:${OPIK_VERSION:-1.10.23}
-    hostname: frontend
     ports:
-      - '${OPIK_PORT_OVERRIDE:-5173}:5173'
+      - '${OPIK_PORT_OVERRIDE:-5173}:80'
     environment:
       TZ: ${TZ:-UTC}
-      NGINX_PORT: ${NGINX_PORT:-5173}
+      NGINX_PORT: ${NGINX_PORT:-80}
       NGINX_CONF_SUFFIX: ${NGINX_CONF_SUFFIX:-local}
     depends_on:
       backend:
         condition: service_healthy
     healthcheck:
-      test: [CMD-SHELL, 'curl --fail --fail-early http://localhost:5173/health']
+      test: [CMD-SHELL, 'curl --fail --fail-early http://localhost:80/']
       interval: 10s
       timeout: 10s
       retries: 10
@@ -345,7 +341,12 @@ volumes:
   mysql_data:
   redis_data:
   zookeeper_data:
+  zookeeper_data_dir:
+  zookeeper_datalog:
+  zookeeper_logs:
   clickhouse_data:
   clickhouse_logs:
   clickhouse_config:
   minio_data:
+  backend_tmp:
+  python_backend_docker:
