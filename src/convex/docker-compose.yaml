@@ -1,0 +1,195 @@
+# Convex - Open-source Reactive Database
+# https://github.com/get-convex/convex-backend
+#
+# Convex is an open-source reactive database designed to make life easy for
+# web app developers. It provides real-time data synchronization, automatic
+# caching, and a powerful query language.
+#
+# Key Features:
+# - Reactive queries that automatically update when data changes
+# - Real-time subscriptions for live UI updates
+# - Built-in authentication and authorization
+# - Serverless functions with TypeScript/JavaScript
+# - Automatic scaling and caching
+#
+# Default Credentials:
+# - Dashboard at http://localhost:6791
+# - Backend API at http://localhost:3210
+# - Site proxy at http://localhost:3211
+#
+# Security Notes:
+# - Set a strong INSTANCE_SECRET in production
+# - Enable SSL/TLS in production
+# - Use strong database passwords
+# - Restrict network access to Convex services
+#
+# License: Apache-2.0 (https://github.com/get-convex/convex-backend/blob/main/LICENSE)
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  convex-backend:
+    <<: *defaults
+    image: ${GHCR_REGISTRY:-ghcr.io/}get-convex/convex-backend:${CONVEX_BACKEND_VERSION:-33cef775a8a6228cbacee4a09ac2c4073d62ed13}
+    stop_grace_period: 10s
+    stop_signal: SIGINT
+    ports:
+      - '${CONVEX_BACKEND_PORT_OVERRIDE:-3210}:3210'
+      - '${CONVEX_SITE_PROXY_PORT_OVERRIDE:-3211}:3211'
+    volumes:
+      - convex_data:/convex/data
+    environment:
+      # Instance configuration
+      - INSTANCE_NAME=${INSTANCE_NAME:-convex-self-hosted}
+      - INSTANCE_SECRET=${INSTANCE_SECRET}
+
+      # Origins
+      - CONVEX_CLOUD_ORIGIN=${CONVEX_CLOUD_ORIGIN:-http://127.0.0.1:3210}
+      - CONVEX_SITE_ORIGIN=${CONVEX_SITE_ORIGIN:-http://127.0.0.1:3211}
+
+      # Database configuration (PostgreSQL)
+      - POSTGRES_URL=${POSTGRES_URL:-postgresql://postgres:${POSTGRES_PASSWORD:-convex}@postgres:5432/convex}
+
+      # Application limits
+      - APPLICATION_MAX_CONCURRENT_MUTATIONS=${APPLICATION_MAX_CONCURRENT_MUTATIONS:-16}
+      - APPLICATION_MAX_CONCURRENT_NODE_ACTIONS=${APPLICATION_MAX_CONCURRENT_NODE_ACTIONS:-16}
+      - APPLICATION_MAX_CONCURRENT_QUERIES=${APPLICATION_MAX_CONCURRENT_QUERIES:-16}
+      - APPLICATION_MAX_CONCURRENT_V8_ACTIONS=${APPLICATION_MAX_CONCURRENT_V8_ACTIONS:-16}
+
+      # Actions timeout
+      - ACTIONS_USER_TIMEOUT_SECS=${ACTIONS_USER_TIMEOUT_SECS:-}
+
+      # SSL/TLS settings
+      - DO_NOT_REQUIRE_SSL=${DO_NOT_REQUIRE_SSL:-true}
+
+      # Document retention (default 2 days in seconds)
+      - DOCUMENT_RETENTION_DELAY=${DOCUMENT_RETENTION_DELAY:-172800}
+
+      # Metrics and beacon
+      - DISABLE_BEACON=${DISABLE_BEACON:-false}
+      - DISABLE_METRICS_ENDPOINT=${DISABLE_METRICS_ENDPOINT:-true}
+
+      # Logging
+      - RUST_LOG=${RUST_LOG:-info}
+      - RUST_BACKTRACE=${RUST_BACKTRACE:-}
+      - REDACT_LOGS_TO_CLIENT=${REDACT_LOGS_TO_CLIENT:-}
+
+      # HTTP server timeout
+      - HTTP_SERVER_TIMEOUT_SECONDS=${HTTP_SERVER_TIMEOUT_SECONDS:-}
+
+      # AWS S3 configuration (optional, for external storage)
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_REGION=${AWS_REGION:-}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:-}
+      - S3_ENDPOINT_URL=${S3_ENDPOINT_URL:-}
+      - S3_STORAGE_EXPORTS_BUCKET=${S3_STORAGE_EXPORTS_BUCKET:-}
+      - S3_STORAGE_FILES_BUCKET=${S3_STORAGE_FILES_BUCKET:-}
+      - S3_STORAGE_MODULES_BUCKET=${S3_STORAGE_MODULES_BUCKET:-}
+      - S3_STORAGE_SEARCH_BUCKET=${S3_STORAGE_SEARCH_BUCKET:-}
+      - S3_STORAGE_SNAPSHOT_IMPORTS_BUCKET=${S3_STORAGE_SNAPSHOT_IMPORTS_BUCKET:-}
+      - AWS_S3_DISABLE_CHECKSUMS=${AWS_S3_DISABLE_CHECKSUMS:-}
+      - AWS_S3_DISABLE_SSE=${AWS_S3_DISABLE_SSE:-}
+      - AWS_S3_FORCE_PATH_STYLE=${AWS_S3_FORCE_PATH_STYLE:-}
+
+      # MySQL URL (alternative to PostgreSQL)
+      - MYSQL_URL=${MYSQL_URL:-}
+
+      # Development settings
+      - CONVEX_RELEASE_VERSION_DEV=${CONVEX_RELEASE_VERSION_DEV:-}
+
+      # Timezone
+      - TZ=${TZ:-UTC}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:3210/version
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '${CONVEX_BACKEND_CPU_LIMIT:-2.0}'
+          memory: '${CONVEX_BACKEND_MEMORY_LIMIT:-2G}'
+        reservations:
+          cpus: '${CONVEX_BACKEND_CPU_RESERVATION:-0.5}'
+          memory: '${CONVEX_BACKEND_MEMORY_RESERVATION:-512M}'
+
+  convex-dashboard:
+    <<: *defaults
+    image: ${GHCR_REGISTRY:-ghcr.io/}get-convex/convex-dashboard:${CONVEX_DASHBOARD_VERSION:-33cef775a8a6228cbacee4a09ac2c4073d62ed13}
+    stop_grace_period: 10s
+    stop_signal: SIGINT
+    ports:
+      - '${CONVEX_DASHBOARD_PORT_OVERRIDE:-6791}:6791'
+    environment:
+      - NEXT_PUBLIC_DEPLOYMENT_URL=${NEXT_PUBLIC_DEPLOYMENT_URL:-http://127.0.0.1:3210}
+      - NEXT_PUBLIC_LOAD_MONACO_INTERNALLY=${NEXT_PUBLIC_LOAD_MONACO_INTERNALLY:-}
+    depends_on:
+      convex-backend:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --quiet
+        - --tries=1
+        - --spider
+        - http://localhost:6791
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '${CONVEX_DASHBOARD_CPU_LIMIT:-0.5}'
+          memory: '${CONVEX_DASHBOARD_MEMORY_LIMIT:-256M}'
+        reservations:
+          cpus: '${CONVEX_DASHBOARD_CPU_RESERVATION:-0.25}'
+          memory: '${CONVEX_DASHBOARD_MEMORY_RESERVATION:-128M}'
+
+  postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17-alpine}
+    environment:
+      - POSTGRES_DB=convex
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-convex}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF8
+      - TZ=${TZ:-UTC}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U postgres
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '${POSTGRES_CPU_LIMIT:-1.0}'
+          memory: '${POSTGRES_MEMORY_LIMIT:-1G}'
+        reservations:
+          cpus: '${POSTGRES_CPU_RESERVATION:-0.25}'
+          memory: '${POSTGRES_MEMORY_RESERVATION:-256M}'
+
+volumes:
+  convex_data:
+  postgres_data:

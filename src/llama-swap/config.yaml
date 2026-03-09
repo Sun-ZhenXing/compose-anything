@@ -1,0 +1,47 @@
+# llama-swap configuration file
+# https://github.com/mostlygeek/llama-swap/blob/main/docs/config.md
+#
+# This is the main configuration file for llama-swap.
+# Mount this file to /app/config.yaml inside the container.
+#
+# llama-swap will automatically swap models on demand:
+# - Only the requested model is loaded at a time.
+# - Idle models are unloaded when a new one is requested.
+
+# Maximum time (in seconds) to wait for a model to become healthy.
+# A high value is useful when downloading models from HuggingFace.
+healthCheckTimeout: 300
+
+# Macro definitions: reusable command snippets for model configuration.
+# Reference with $${macro-name} inside cmd fields.
+macros:
+  "llama-server": >
+    /app/llama-server
+    --port ${PORT}
+
+# Model definitions
+models:
+  # Example: a local GGUF model stored in the models volume.
+  # The volume `llama_swap_models` is mounted to /root/.cache/llama.cpp inside
+  # the container. Place your .gguf files there and reference them with
+  # /root/.cache/llama.cpp/<filename>.gguf
+  "my-local-model":
+    # ${PORT} is automatically assigned by llama-swap
+    cmd: >
+      $${llama-server}
+      --model /root/.cache/llama.cpp/model.gguf
+      --ctx-size 4096
+      --n-gpu-layers 0
+    proxy: "http://localhost:${PORT}"
+    # Automatically unload the model after 15 minutes of inactivity
+    ttl: 900
+
+  # Example: download a model from HuggingFace on first use (requires internet access)
+  # "Qwen2.5-7B-Instruct":
+  #   cmd: >
+  #     $${llama-server}
+  #     -hf bartowski/Qwen2.5-7B-Instruct-GGUF:Q4_K_M
+  #     --ctx-size 8192
+  #     --n-gpu-layers 99
+  #   proxy: "http://localhost:${PORT}"
+  #   ttl: 900

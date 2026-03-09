@@ -1,0 +1,126 @@
+# Docker Compose configuration for llama-swap
+# https://github.com/mostlygeek/llama-swap
+# Reliable model swapping for any local OpenAI/Anthropic compatible server
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  # llama-swap - CPU variant (default)
+  llama-swap:
+    <<: *defaults
+    image: ${GHCR_REGISTRY:-ghcr.io/}mostlygeek/llama-swap:${LLAMA_SWAP_VERSION:-cpu}
+    ports:
+      - '${LLAMA_SWAP_PORT_OVERRIDE:-9292}:8080'
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - llama_swap_models:/root/.cache/llama.cpp
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --quiet
+        - --tries=1
+        - --spider
+        - 'http://localhost:8080/v1/models'
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LLAMA_SWAP_CPU_LIMIT:-4.0}
+          memory: ${LLAMA_SWAP_MEMORY_LIMIT:-8G}
+        reservations:
+          cpus: ${LLAMA_SWAP_CPU_RESERVATION:-2.0}
+          memory: ${LLAMA_SWAP_MEMORY_RESERVATION:-4G}
+
+  # llama-swap - NVIDIA CUDA variant
+  # Requires NVIDIA Container Toolkit: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html
+  llama-swap-cuda:
+    <<: *defaults
+    image: ${GHCR_REGISTRY:-ghcr.io/}mostlygeek/llama-swap:${LLAMA_SWAP_CUDA_VERSION:-cuda}
+    ports:
+      - '${LLAMA_SWAP_PORT_OVERRIDE:-9292}:8080'
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - llama_swap_models:/root/.cache/llama.cpp
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --quiet
+        - --tries=1
+        - --spider
+        - 'http://localhost:8080/v1/models'
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LLAMA_SWAP_CPU_LIMIT:-4.0}
+          memory: ${LLAMA_SWAP_MEMORY_LIMIT:-8G}
+        reservations:
+          cpus: ${LLAMA_SWAP_CPU_RESERVATION:-2.0}
+          memory: ${LLAMA_SWAP_MEMORY_RESERVATION:-4G}
+          devices:
+            - driver: nvidia
+              count: ${LLAMA_SWAP_GPU_COUNT:-1}
+              capabilities: [gpu]
+    profiles:
+      - gpu
+
+  # llama-swap - AMD ROCm / Vulkan variant (AMD GPU)
+  # For AMD GPUs, ensure /dev/dri and /dev/kfd are accessible
+  llama-swap-amd:
+    <<: *defaults
+    image: ${GHCR_REGISTRY:-ghcr.io/}mostlygeek/llama-swap:${LLAMA_SWAP_AMD_VERSION:-vulkan}
+    ports:
+      - '${LLAMA_SWAP_PORT_OVERRIDE:-9292}:8080'
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - llama_swap_models:/root/.cache/llama.cpp
+    devices:
+      - /dev/dri:/dev/dri
+      - /dev/kfd:/dev/kfd
+    group_add:
+      - video
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --quiet
+        - --tries=1
+        - --spider
+        - 'http://localhost:8080/v1/models'
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LLAMA_SWAP_CPU_LIMIT:-4.0}
+          memory: ${LLAMA_SWAP_MEMORY_LIMIT:-8G}
+        reservations:
+          cpus: ${LLAMA_SWAP_CPU_RESERVATION:-2.0}
+          memory: ${LLAMA_SWAP_MEMORY_RESERVATION:-4G}
+    profiles:
+      - gpu-amd
+
+volumes:
+  llama_swap_models:

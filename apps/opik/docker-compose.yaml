@@ -182,6 +182,7 @@ services:
   minio-init:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}minio/mc:${MINIO_MC_VERSION:-RELEASE.2025-03-12T17-29-24Z}
+    restart: on-failure
     depends_on:
       minio:
         condition: service_healthy

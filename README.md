@@ -37,6 +37,7 @@ These services require building custom Docker images from source.
 | [Clash](./src/clash)                                           | 1.18.0              |
 | [ClickHouse](./src/clickhouse)                                 | 24.11.1             |
 | [Conductor](./src/conductor)                                   | latest              |
+| [Convex](./src/convex)                                         | 33cef775            |
 | [DeepTutor](./apps/deeptutor)                                  | latest              |
 | [Dify](./apps/dify)                                            | 0.18.2              |
 | [DNSMasq](./src/dnsmasq)                                       | 2.91                |
@@ -77,6 +78,7 @@ These services require building custom Docker images from source.
 | [LibreOffice](./src/libreoffice)                               | latest              |
 | [libSQL Server](./src/libsql)                                  | latest              |
 | [LiteLLM](./src/litellm)                                       | main-stable         |
+| [llama-swap](./src/llama-swap)                                 | cpu                 |
 | [llama.cpp](./src/llama.cpp)                                   | server              |
 | [LMDeploy](./src/lmdeploy)                                     | v0.11.1             |
 | [Logstash](./src/logstash)                                     | 8.16.1              |
