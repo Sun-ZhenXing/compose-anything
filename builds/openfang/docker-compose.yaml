@@ -1,0 +1,71 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: ${OPENFANG_LOG_MAX_SIZE:-100m}
+      max-file: '${OPENFANG_LOG_MAX_FILE:-3}'
+
+services:
+  openfang:
+    <<: *defaults
+    build:
+      context: https://github.com/RightNow-AI/openfang.git#${OPENFANG_VERSION:-0.1.0}
+      dockerfile: Dockerfile
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/openfang:${OPENFANG_VERSION:-0.1.0}
+    ports:
+      - '${OPENFANG_PORT_OVERRIDE:-4200}:4200'
+    environment:
+      - TZ=${TZ:-UTC}
+      - OPENFANG_HOME=/data
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+    env_file:
+      - .env
+    entrypoint:
+      - /bin/sh
+      - -ec
+    command: |
+      : > /data/config.toml
+      if [ -n "${OPENFANG_API_KEY:-}" ]; then
+        printf 'api_key = "%s"\n' "${OPENFANG_API_KEY}" >> /data/config.toml
+      fi
+      cat >> /data/config.toml <<EOF
+      api_listen = "0.0.0.0:4200"
+      log_level = "${OPENFANG_LOG_LEVEL:-info}"
+
+      [default_model]
+      provider = "${OPENFANG_PROVIDER:-anthropic}"
+      model = "${OPENFANG_MODEL:-claude-sonnet-4-20250514}"
+      api_key_env = "${OPENFANG_API_KEY_ENV:-ANTHROPIC_API_KEY}"
+
+      [memory]
+      decay_rate = ${OPENFANG_MEMORY_DECAY_RATE:-0.05}
+
+      [exec_policy]
+      mode = "${OPENFANG_EXEC_MODE:-allowlist}"
+      timeout_secs = ${OPENFANG_EXEC_TIMEOUT_SECS:-30}
+      EOF
+      exec openfang start
+    volumes:
+      - openfang_data:/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:4200/api/health', timeout=5)"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${OPENFANG_CPU_LIMIT:-2.00}
+          memory: ${OPENFANG_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${OPENFANG_CPU_RESERVATION:-0.50}
+          memory: ${OPENFANG_MEMORY_RESERVATION:-512M}
+
+volumes:
+  openfang_data:

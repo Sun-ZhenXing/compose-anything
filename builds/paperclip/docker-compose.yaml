@@ -1,0 +1,53 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: ${PAPERCLIP_LOG_MAX_SIZE:-100m}
+      max-file: '${PAPERCLIP_LOG_MAX_FILE:-3}'
+
+services:
+  paperclip:
+    <<: *defaults
+    build:
+      context: https://github.com/paperclipai/paperclip.git#${PAPERCLIP_GIT_REF:-main}
+      dockerfile: Dockerfile
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/paperclip:${PAPERCLIP_GIT_REF:-main}
+    ports:
+      - '${PAPERCLIP_PORT_OVERRIDE:-3100}:3100'
+    environment:
+      - TZ=${TZ:-UTC}
+      - HOST=0.0.0.0
+      - PORT=3100
+      - SERVE_UI=true
+      - PAPERCLIP_HOME=/paperclip
+      - PAPERCLIP_DEPLOYMENT_MODE=${PAPERCLIP_DEPLOYMENT_MODE:-authenticated}
+      - PAPERCLIP_DEPLOYMENT_EXPOSURE=${PAPERCLIP_DEPLOYMENT_EXPOSURE:-private}
+      - PAPERCLIP_PUBLIC_URL=${PAPERCLIP_PUBLIC_URL:-http://localhost:3100}
+      - PAPERCLIP_ALLOWED_HOSTNAMES=${PAPERCLIP_ALLOWED_HOSTNAMES:-localhost}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - DATABASE_URL=${DATABASE_URL:-}
+    env_file:
+      - .env
+    volumes:
+      - paperclip_data:/paperclip
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -fsS http://127.0.0.1:3100/api/health >/dev/null || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${PAPERCLIP_CPU_LIMIT:-2.00}
+          memory: ${PAPERCLIP_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${PAPERCLIP_CPU_RESERVATION:-0.50}
+          memory: ${PAPERCLIP_MEMORY_RESERVATION:-1G}
+
+volumes:
+  paperclip_data:

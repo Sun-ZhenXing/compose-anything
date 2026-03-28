@@ -1,0 +1,171 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: ${DEER_FLOW_LOG_MAX_SIZE:-100m}
+      max-file: '${DEER_FLOW_LOG_MAX_FILE:-3}'
+
+services:
+  deerflow-gateway:
+    <<: *defaults
+    build:
+      context: https://github.com/bytedance/deer-flow.git#${DEER_FLOW_VERSION:-main}
+      dockerfile: backend/Dockerfile
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/deer-flow-backend:${DEER_FLOW_VERSION:-main}
+    environment:
+      - TZ=${TZ:-UTC}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    env_file:
+      - .env
+    entrypoint:
+      - /bin/sh
+      - -ec
+    command: |
+      cat >/tmp/config.yaml <<EOF
+      config_version: 1
+      models:
+        - name: ${DEER_FLOW_MODEL_NAME:-openai-default}
+          display_name: ${DEER_FLOW_MODEL_DISPLAY_NAME:-OpenAI}
+          use: langchain_openai:ChatOpenAI
+          model: ${DEER_FLOW_MODEL_ID:-gpt-4.1-mini}
+          api_key: \$OPENAI_API_KEY
+      sandbox:
+        use: deerflow.sandbox.local:LocalSandboxProvider
+      EOF
+      cat >/tmp/extensions_config.json <<EOF
+      {"mcpServers":{},"skills":{}}
+      EOF
+      export DEER_FLOW_CONFIG_PATH=/tmp/config.yaml
+      export DEER_FLOW_EXTENSIONS_CONFIG_PATH=/tmp/extensions_config.json
+      export GATEWAY_HOST=0.0.0.0
+      export GATEWAY_PORT=8001
+      export CORS_ORIGINS=${DEER_FLOW_CORS_ORIGINS:-http://localhost:2026}
+      exec sh -c 'cd backend && PYTHONPATH=. uv run uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001'
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/docs', timeout=5)"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${DEER_FLOW_GATEWAY_CPU_LIMIT:-2.00}
+          memory: ${DEER_FLOW_GATEWAY_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${DEER_FLOW_GATEWAY_CPU_RESERVATION:-0.50}
+          memory: ${DEER_FLOW_GATEWAY_MEMORY_RESERVATION:-512M}
+
+  deerflow-langgraph:
+    <<: *defaults
+    build:
+      context: https://github.com/bytedance/deer-flow.git#${DEER_FLOW_VERSION:-main}
+      dockerfile: backend/Dockerfile
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/deer-flow-backend:${DEER_FLOW_VERSION:-main}
+    environment:
+      - TZ=${TZ:-UTC}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    env_file:
+      - .env
+    entrypoint:
+      - /bin/sh
+      - -ec
+    command: |
+      cat >/tmp/config.yaml <<EOF
+      config_version: 1
+      models:
+        - name: ${DEER_FLOW_MODEL_NAME:-openai-default}
+          display_name: ${DEER_FLOW_MODEL_DISPLAY_NAME:-OpenAI}
+          use: langchain_openai:ChatOpenAI
+          model: ${DEER_FLOW_MODEL_ID:-gpt-4.1-mini}
+          api_key: \$OPENAI_API_KEY
+      sandbox:
+        use: deerflow.sandbox.local:LocalSandboxProvider
+      EOF
+      cat >/tmp/extensions_config.json <<EOF
+      {"mcpServers":{},"skills":{}}
+      EOF
+      export DEER_FLOW_CONFIG_PATH=/tmp/config.yaml
+      export DEER_FLOW_EXTENSIONS_CONFIG_PATH=/tmp/extensions_config.json
+      exec sh -c 'cd backend && NO_COLOR=1 uv run langgraph dev --no-browser --allow-blocking --no-reload'
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - python3 -c "import socket; s=socket.create_connection(('127.0.0.1', 2024), 5); s.close()"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${DEER_FLOW_LANGGRAPH_CPU_LIMIT:-2.00}
+          memory: ${DEER_FLOW_LANGGRAPH_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${DEER_FLOW_LANGGRAPH_CPU_RESERVATION:-0.50}
+          memory: ${DEER_FLOW_LANGGRAPH_MEMORY_RESERVATION:-512M}
+
+  deerflow-frontend:
+    <<: *defaults
+    build:
+      context: https://github.com/bytedance/deer-flow.git#${DEER_FLOW_VERSION:-main}
+      dockerfile: frontend/Dockerfile
+      target: prod
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/deer-flow-frontend:${DEER_FLOW_VERSION:-main}
+    environment:
+      - TZ=${TZ:-UTC}
+      - BETTER_AUTH_SECRET=${DEER_FLOW_BETTER_AUTH_SECRET:-deer-flow-dev-secret-change-me}
+      - NEXT_PUBLIC_BACKEND_BASE_URL=
+      - NEXT_PUBLIC_LANGGRAPH_BASE_URL=/api/langgraph
+    env_file:
+      - .env
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - node -e "fetch('http://127.0.0.1:3000').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${DEER_FLOW_FRONTEND_CPU_LIMIT:-1.00}
+          memory: ${DEER_FLOW_FRONTEND_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${DEER_FLOW_FRONTEND_CPU_RESERVATION:-0.25}
+          memory: ${DEER_FLOW_FRONTEND_MEMORY_RESERVATION:-256M}
+
+  deerflow-nginx:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}nginx:${NGINX_VERSION:-1.28-alpine}
+    depends_on:
+      deerflow-gateway:
+        condition: service_healthy
+      deerflow-langgraph:
+        condition: service_healthy
+      deerflow-frontend:
+        condition: service_healthy
+    ports:
+      - '${DEER_FLOW_PORT_OVERRIDE:-2026}:2026'
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget --no-verbose --tries=1 --spider http://127.0.0.1:2026 >/dev/null || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${DEER_FLOW_NGINX_CPU_LIMIT:-0.50}
+          memory: ${DEER_FLOW_NGINX_MEMORY_LIMIT:-256M}
+        reservations:
+          cpus: ${DEER_FLOW_NGINX_CPU_RESERVATION:-0.10}
+          memory: ${DEER_FLOW_NGINX_MEMORY_RESERVATION:-64M}

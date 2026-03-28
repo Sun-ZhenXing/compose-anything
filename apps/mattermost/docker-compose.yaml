@@ -1,0 +1,84 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: ${MATTERMOST_LOG_MAX_SIZE:-100m}
+      max-file: '${MATTERMOST_LOG_MAX_FILE:-3}'
+
+services:
+  mattermost-postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17-alpine}
+    environment:
+      - TZ=${TZ:-UTC}
+      - POSTGRES_DB=${POSTGRES_DB:-mattermost}
+      - POSTGRES_USER=${POSTGRES_USER:-mmuser}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-mmchangeit}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - mattermost_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: ${MATTERMOST_DB_CPU_LIMIT:-1.00}
+          memory: ${MATTERMOST_DB_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${MATTERMOST_DB_CPU_RESERVATION:-0.25}
+          memory: ${MATTERMOST_DB_MEMORY_RESERVATION:-256M}
+
+  mattermost:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}mattermost/mattermost-team-edition:${MATTERMOST_VERSION:-11.3}
+    depends_on:
+      mattermost-postgres:
+        condition: service_healthy
+    ports:
+      - '${MATTERMOST_PORT_OVERRIDE:-8065}:8065'
+    environment:
+      - TZ=${TZ:-UTC}
+      - MM_SQLSETTINGS_DRIVERNAME=postgres
+      - MM_SQLSETTINGS_DATASOURCE=postgres://${POSTGRES_USER:-mmuser}:${POSTGRES_PASSWORD:-mmchangeit}@mattermost-postgres:5432/${POSTGRES_DB:-mattermost}?sslmode=disable&connect_timeout=10
+      - MM_SERVICESETTINGS_SITEURL=${MATTERMOST_SITE_URL:-http://localhost:8065}
+      - MM_SERVICESETTINGS_ENABLELOCALMODE=${MATTERMOST_ENABLE_LOCAL_MODE:-false}
+      - MM_PLUGINSETTINGS_ENABLEUPLOADS=true
+      - MM_BLEVESETTINGS_INDEXDIR=/mattermost/bleve-indexes
+      - MM_FILESETTINGS_DIRECTORY=/mattermost/data
+    env_file:
+      - .env
+    volumes:
+      - mattermost_config:/mattermost/config
+      - mattermost_data:/mattermost/data
+      - mattermost_logs:/mattermost/logs
+      - mattermost_plugins:/mattermost/plugins
+      - mattermost_client_plugins:/mattermost/client/plugins
+      - mattermost_bleve_indexes:/mattermost/bleve-indexes
+    healthcheck:
+      test: [CMD, /mattermost/bin/mmctl, system, status, --local]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${MATTERMOST_CPU_LIMIT:-2.00}
+          memory: ${MATTERMOST_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${MATTERMOST_CPU_RESERVATION:-0.50}
+          memory: ${MATTERMOST_MEMORY_RESERVATION:-512M}
+
+volumes:
+  mattermost_postgres_data:
+  mattermost_config:
+  mattermost_data:
+  mattermost_logs:
+  mattermost_plugins:
+  mattermost_client_plugins:
+  mattermost_bleve_indexes:

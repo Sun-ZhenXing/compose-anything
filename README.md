@@ -11,10 +11,13 @@ These services require building custom Docker images from source.
 | Service                                     | Version |
 | ------------------------------------------- | ------- |
 | [Debian DinD](./builds/debian-dind)         | 0.1.2   |
+| [DeerFlow](./builds/deer-flow)              | 2.0     |
 | [goose](./builds/goose)                     | 1.18.0  |
 | [IOPaint](./builds/io-paint)                | 1.6.0   |
 | [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2   |
 | [MinerU vLLM](./builds/mineru)              | 2.7.6   |
+| [OpenFang](./builds/openfang)               | 0.1.0   |
+| [Paperclip](./builds/paperclip)             | main    |
 
 ## Supported Services
 
@@ -29,7 +32,7 @@ These services require building custom Docker images from source.
 | [Apache Pulsar](./src/pulsar)                                  | 4.0.7               |
 | [Apache RocketMQ](./src/rocketmq)                              | 5.3.1               |
 | [Agentgateway](./src/agentgateway)                             | 0.11.2              |
-| [Bifrost Gateway](./src/bifrost-gateway)                       | v1.3.63             |
+| [Bifrost Gateway](./src/bifrost-gateway)                       | v1.4.17             |
 | [Bolt.diy](./apps/bolt-diy)                                    | latest              |
 | [Budibase](./src/budibase)                                     | 3.23.0              |
 | [BuildingAI](./apps/buildingai)                                | latest              |
@@ -83,6 +86,7 @@ These services require building custom Docker images from source.
 | [LMDeploy](./src/lmdeploy)                                     | v0.11.1             |
 | [Logstash](./src/logstash)                                     | 8.16.1              |
 | [MariaDB Galera Cluster](./src/mariadb-galera)                 | 11.7.2              |
+| [Mattermost](./apps/mattermost)                                | 11.3                |
 | [Memos](./src/memos)                                           | 0.25.3              |
 | [Milvus Standalone Embed](./src/milvus-standalone-embed)       | v2.6.7              |
 | [Milvus Standalone](./src/milvus-standalone)                   | v2.6.7              |
@@ -107,7 +111,7 @@ These services require building custom Docker images from source.
 | [Odoo](./src/odoo)                                             | 19.0                |
 | [Ollama](./src/ollama)                                         | 0.14.3              |
 | [Open WebUI](./src/open-webui)                                 | main                |
-| [Phoenix (Arize)](./src/phoenix)                               | 13.3.0              |
+| [Phoenix (Arize)](./src/phoenix)                               | 13.19.2             |
 | [Pingora Proxy Manager](./src/pingora-proxy-manager)           | v1.0.3              |
 | [Open WebUI Rust](./src/open-webui-rust)                       | latest              |
 | [OpenCode](./src/opencode)                                     | 1.1.27              |
@@ -120,6 +124,7 @@ These services require building custom Docker images from source.
 | [OpenObserve](./apps/openobserve)                              | v0.50.0             |
 | [OpenSearch](./src/opensearch)                                 | 2.19.0              |
 | [OpenTelemetry Collector](./src/otel-collector)                | 0.115.1             |
+| [OpenViking](./src/openviking)                                 | 0.1.0               |
 | [Overleaf](./src/overleaf)                                     | 5.2.1               |
 | [PocketBase](./src/pocketbase)                                 | 0.30.0              |
 | [Podman](./src/podman)                                         | v5.7.1              |

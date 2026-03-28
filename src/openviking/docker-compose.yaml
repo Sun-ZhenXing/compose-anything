@@ -1,0 +1,85 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: ${OPENVIKING_LOG_MAX_SIZE:-100m}
+      max-file: '${OPENVIKING_LOG_MAX_FILE:-3}'
+
+services:
+  openviking:
+    <<: *defaults
+    image: ${GHCR_IO_REGISTRY:-ghcr.io}/volcengine/openviking:${OPENVIKING_VERSION:-main}
+    ports:
+      - '${OPENVIKING_PORT_OVERRIDE:-1933}:1933'
+    environment:
+      - TZ=${TZ:-UTC}
+    env_file:
+      - .env
+    entrypoint:
+      - /bin/sh
+      - -ec
+    command: |
+      cat >/app/ov.conf <<EOF
+      {
+        "server": {
+          "host": "0.0.0.0",
+          "port": 1933,
+          "auth_mode": "api_key",
+          "root_api_key": "${OPENVIKING_ROOT_API_KEY:-openviking-dev-root-key}",
+          "cors_origins": ["*"]
+        },
+        "storage": {
+          "workspace": "/app/data/workspace",
+          "vectordb": {
+            "name": "context",
+            "backend": "local"
+          },
+          "agfs": {
+            "backend": "local",
+            "log_level": "warn"
+          }
+        },
+        "log": {
+          "level": "${OPENVIKING_LOG_LEVEL:-INFO}",
+          "output": "stdout"
+        },
+        "embedding": {
+          "dense": {
+            "provider": "${OPENVIKING_EMBEDDING_PROVIDER:-openai}",
+            "api_base": "${OPENVIKING_EMBEDDING_API_BASE:-https://api.openai.com/v1}",
+            "api_key": "${OPENVIKING_EMBEDDING_API_KEY:-}",
+            "dimension": ${OPENVIKING_EMBEDDING_DIMENSION:-1536},
+            "model": "${OPENVIKING_EMBEDDING_MODEL:-text-embedding-3-small}"
+          }
+        },
+        "vlm": {
+          "provider": "${OPENVIKING_VLM_PROVIDER:-openai}",
+          "api_base": "${OPENVIKING_VLM_API_BASE:-https://api.openai.com/v1}",
+          "api_key": "${OPENVIKING_VLM_API_KEY:-}",
+          "model": "${OPENVIKING_VLM_MODEL:-gpt-4o-mini}"
+        }
+      }
+      EOF
+      exec openviking-server --config /app/ov.conf
+    volumes:
+      - openviking_data:/app/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -fsS http://127.0.0.1:1933/health >/dev/null || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${OPENVIKING_CPU_LIMIT:-2.00}
+          memory: ${OPENVIKING_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${OPENVIKING_CPU_RESERVATION:-0.50}
+          memory: ${OPENVIKING_MEMORY_RESERVATION:-512M}
+
+volumes:
+  openviking_data:
