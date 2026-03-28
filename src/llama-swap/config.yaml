@@ -15,7 +15,7 @@ healthCheckTimeout: 300
 # Macro definitions: reusable command snippets for model configuration.
 # Reference with $${macro-name} inside cmd fields.
 macros:
-  "llama-server": >
+  llama-server: >
     /app/llama-server
     --port ${PORT}
 
@@ -25,14 +25,14 @@ models:
   # The volume `llama_swap_models` is mounted to /root/.cache/llama.cpp inside
   # the container. Place your .gguf files there and reference them with
   # /root/.cache/llama.cpp/<filename>.gguf
-  "my-local-model":
+  my-local-model:
     # ${PORT} is automatically assigned by llama-swap
     cmd: >
       $${llama-server}
       --model /root/.cache/llama.cpp/model.gguf
       --ctx-size 4096
       --n-gpu-layers 0
-    proxy: "http://localhost:${PORT}"
+    proxy: 'http://localhost:${PORT}'
     # Automatically unload the model after 15 minutes of inactivity
     ttl: 900
 
