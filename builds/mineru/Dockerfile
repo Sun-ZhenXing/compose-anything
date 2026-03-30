@@ -1,10 +1,7 @@
-# Use the official vllm image for gpu with Ampere、Ada Lovelace、Hopper architecture (8.0 <= Compute Capability <= 9.0)
+# Use DaoCloud mirrored vllm image for China region for gpu with Volta、Turing、Ampere、Ada Lovelace、Hopper、Blackwell architecture (7.0 <= Compute Capability <= 12.0)
 # Compute Capability version query (https://developer.nvidia.com/cuda-gpus)
-FROM vllm/vllm-openai:v0.10.2
-
-# Use the official vllm image for gpu with Volta、Turing、Blackwell architecture (7.0 < Compute Capability < 8.0 or Compute Capability >= 10.0)
 # support x86_64 architecture and ARM(AArch64) architecture
-# FROM vllm/vllm-openai:v0.11.0
+FROM docker.m.daocloud.io/vllm/vllm-openai:v0.11.2
 
 # Install libgl for opencv support & Noto fonts for Chinese characters
 RUN apt-get update && \
@@ -18,11 +15,11 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install mineru latest
-RUN python3 -m pip install -U 'mineru[core]>=2.7.6' --break-system-packages && \
+RUN python3 -m pip install -U 'mineru[core]>=3.0.0' -i https://mirrors.aliyun.com/pypi/simple --break-system-packages && \
     python3 -m pip cache purge
 
 # Download models and update the configuration file
-RUN /bin/bash -c "mineru-models-download -s huggingface -m all"
+RUN /bin/bash -c "mineru-models-download -s modelscope -m all"
 
 # Set the entry point to activate the virtual environment and run the command line tool
 ENTRYPOINT ["/bin/bash", "-c", "export MINERU_MODEL_SOURCE=local && exec \"$@\"", "--"]
