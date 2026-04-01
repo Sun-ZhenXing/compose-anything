@@ -38,7 +38,6 @@ services:
   temporal:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}temporalio/auto-setup:${TEMPORAL_VERSION:-1.24.2}
-    container_name: temporal
     ports:
       - '${TEMPORAL_FRONTEND_PORT_OVERRIDE:-7233}:7233' # Frontend gRPC
     environment:
@@ -86,7 +85,6 @@ services:
   temporal-ui:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}temporalio/ui:${TEMPORAL_UI_VERSION:-2.28.0}
-    container_name: temporal-ui
     ports:
       - '${TEMPORAL_UI_PORT_OVERRIDE:-8233}:8080'
     environment:
@@ -115,7 +113,6 @@ services:
   temporal-admin-tools:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}temporalio/admin-tools:${TEMPORAL_VERSION:-1.24.2}
-    container_name: temporal-admin-tools
     profiles:
       - dev
     environment:
@@ -139,7 +136,6 @@ services:
   postgres:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-16-alpine}
-    container_name: temporal-postgres
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-temporal}
       - POSTGRES_USER=${POSTGRES_USER:-temporal}

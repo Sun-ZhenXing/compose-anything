@@ -18,7 +18,6 @@ services:
   mcp-firecrawl:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}mcp/firecrawl:${MCP_FIRECRAWL_VERSION:-latest}
-    container_name: mcp-firecrawl
     environment:
       - TZ=${TZ:-UTC}
       - FIRECRAWL_API_KEY=${FIRECRAWL_API_KEY}

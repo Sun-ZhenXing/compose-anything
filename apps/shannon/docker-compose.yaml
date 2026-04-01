@@ -1,0 +1,353 @@
+# Shannon - Production-Oriented Multi-Agent Orchestration Framework
+# https://github.com/Kocoro-lab/Shannon
+#
+# NOTE: Run `make setup` before first launch to download required config files
+# and create your .env file, then add at least one LLM API key.
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+x-shannon-config: &shannon-config
+  volumes:
+    - ./config:/app/config:ro
+
+services:
+  postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}pgvector/pgvector:${POSTGRES_VERSION:-pg16}
+    environment:
+      TZ: ${TZ:-UTC}
+      POSTGRES_USER: ${POSTGRES_USER:-shannon}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shannon}
+      POSTGRES_DB: ${POSTGRES_DB:-shannon}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-shannon} -d ${POSTGRES_DB:-shannon}']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: ${POSTGRES_CPU_LIMIT:-1.0}
+          memory: ${POSTGRES_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${POSTGRES_CPU_RESERVATION:-0.25}
+          memory: ${POSTGRES_MEMORY_RESERVATION:-256M}
+
+  redis:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-7.2-alpine}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: ${REDIS_CPU_LIMIT:-0.5}
+          memory: ${REDIS_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${REDIS_CPU_RESERVATION:-0.1}
+          memory: ${REDIS_MEMORY_RESERVATION:-128M}
+
+  qdrant:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}qdrant/qdrant:${QDRANT_VERSION:-v1.17}
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: [CMD-SHELL, 'wget -qO- http://localhost:6333/health | grep -q ok || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: ${QDRANT_CPU_LIMIT:-1.0}
+          memory: ${QDRANT_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${QDRANT_CPU_RESERVATION:-0.25}
+          memory: ${QDRANT_MEMORY_RESERVATION:-256M}
+
+  temporal:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}temporalio/auto-setup:${TEMPORAL_VERSION:-1.28.3}
+    environment:
+      TZ: ${TZ:-UTC}
+      DB: postgres12
+      DB_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USER: ${POSTGRES_USER:-shannon}
+      POSTGRES_PWD: ${POSTGRES_PASSWORD:-shannon}
+      POSTGRES_SEEDS: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD-SHELL, 'temporal operator cluster health --address localhost:7233 | grep -q SERVING || exit 1']
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${TEMPORAL_CPU_LIMIT:-1.0}
+          memory: ${TEMPORAL_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${TEMPORAL_CPU_RESERVATION:-0.25}
+          memory: ${TEMPORAL_MEMORY_RESERVATION:-256M}
+
+  temporal-ui:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}temporalio/ui:${TEMPORAL_UI_VERSION:-2.40.1}
+    environment:
+      TZ: ${TZ:-UTC}
+      TEMPORAL_ADDRESS: temporal:7233
+    ports:
+      - '${TEMPORAL_UI_PORT_OVERRIDE:-8088}:8080'
+    depends_on:
+      temporal:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD-SHELL, 'wget -qO- http://localhost:8080 > /dev/null || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    profiles:
+      - metrics
+    deploy:
+      resources:
+        limits:
+          cpus: ${TEMPORAL_UI_CPU_LIMIT:-0.5}
+          memory: ${TEMPORAL_UI_MEMORY_LIMIT:-256M}
+        reservations:
+          cpus: ${TEMPORAL_UI_CPU_RESERVATION:-0.1}
+          memory: ${TEMPORAL_UI_MEMORY_RESERVATION:-128M}
+
+  llm-service:
+    <<: [*defaults, *shannon-config]
+    image: ${GLOBAL_REGISTRY:-}waylandzhang/llm-service:${SHANNON_VERSION:-v0.3.1}
+    environment:
+      TZ: ${TZ:-UTC}
+      # LLM API Keys (at least one is required)
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      XAI_API_KEY: ${XAI_API_KEY:-}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      # Optional search/tool API keys
+      SERPAPI_API_KEY: ${SERPAPI_API_KEY:-}
+      FIRECRAWL_API_KEY: ${FIRECRAWL_API_KEY:-}
+      # Internal service configuration
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USER: ${POSTGRES_USER:-shannon}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shannon}
+      POSTGRES_DB: ${POSTGRES_DB:-shannon}
+      POSTGRES_SSLMODE: ${POSTGRES_SSLMODE:-disable}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      REDIS_ADDR: ${REDIS_ADDR:-redis:6379}
+      QDRANT_HOST: ${QDRANT_HOST:-qdrant}
+      QDRANT_PORT: ${QDRANT_PORT:-6333}
+      AGENT_CORE_ADDR: agent-core:50051
+      # Config paths
+      LLM_CONFIG_PATH: /app/config
+      MODELS_CONFIG_PATH: ${MODELS_CONFIG_PATH:-/app/config/models.yaml}
+      # Model selection
+      DEFAULT_MODEL_TIER: ${DEFAULT_MODEL_TIER:-small}
+      MAX_TOKENS: ${MAX_TOKENS:-2000}
+      TEMPERATURE: ${TEMPERATURE:-0.7}
+      MAX_TOKENS_PER_REQUEST: ${MAX_TOKENS_PER_REQUEST:-10000}
+      # Telemetry
+      OTEL_ENABLED: ${OTEL_ENABLED:-false}
+      DEBUG: ${DEBUG:-false}
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      agent-core:
+        condition: service_started
+    healthcheck:
+      test: [CMD-SHELL, 'wget -qO- http://localhost:8001/health > /dev/null || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LLM_SERVICE_CPU_LIMIT:-2.0}
+          memory: ${LLM_SERVICE_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${LLM_SERVICE_CPU_RESERVATION:-0.5}
+          memory: ${LLM_SERVICE_MEMORY_RESERVATION:-512M}
+
+  agent-core:
+    <<: [*defaults, *shannon-config]
+    # Note: agent-core is only built for linux/amd64.
+    # On Apple Silicon (ARM64), Docker Desktop uses Rosetta emulation automatically.
+    image: ${GLOBAL_REGISTRY:-}waylandzhang/agent-core:${SHANNON_VERSION:-v0.3.1}
+    platform: linux/amd64
+    environment:
+      TZ: ${TZ:-UTC}
+      RUST_LOG: ${RUST_LOG:-info}
+      CONFIG_PATH: /app/config/features.yaml
+      WASI_MEMORY_LIMIT_MB: ${WASI_MEMORY_LIMIT_MB:-512}
+      WASI_TIMEOUT_SECONDS: ${WASI_TIMEOUT_SECONDS:-60}
+      SHANNON_USE_WASI_SANDBOX: ${SHANNON_USE_WASI_SANDBOX:-1}
+      ENFORCE_TIMEOUT_SECONDS: ${ENFORCE_TIMEOUT_SECONDS:-300}
+      ENFORCE_MAX_TOKENS: ${ENFORCE_MAX_TOKENS:-32768}
+      OTEL_ENABLED: ${OTEL_ENABLED:-false}
+    volumes:
+      - ./config:/app/config:ro
+      - shannon_sessions:/app/sessions
+    healthcheck:
+      test: [CMD-SHELL, 'pgrep -x shannon-agent-core > /dev/null || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: ${AGENT_CORE_CPU_LIMIT:-2.0}
+          memory: ${AGENT_CORE_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${AGENT_CORE_CPU_RESERVATION:-0.5}
+          memory: ${AGENT_CORE_MEMORY_RESERVATION:-512M}
+
+  orchestrator:
+    <<: [*defaults, *shannon-config]
+    image: ${GLOBAL_REGISTRY:-}waylandzhang/orchestrator:${SHANNON_VERSION:-v0.3.1}
+    environment:
+      TZ: ${TZ:-UTC}
+      # Temporal workflow engine
+      TEMPORAL_HOST_PORT: temporal:7233
+      TEMPORAL_NAMESPACE: ${TEMPORAL_NAMESPACE:-default}
+      # Internal service URLs
+      LLM_SERVICE_URL: ${LLM_SERVICE_URL:-http://llm-service:8001}
+      QDRANT_HOST: ${QDRANT_HOST:-qdrant}
+      QDRANT_PORT: ${QDRANT_PORT:-6333}
+      # Database and cache
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USER: ${POSTGRES_USER:-shannon}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shannon}
+      POSTGRES_DB: ${POSTGRES_DB:-shannon}
+      POSTGRES_SSLMODE: ${POSTGRES_SSLMODE:-disable}
+      REDIS_ADDR: ${REDIS_ADDR:-redis:6379}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      REDIS_TTL_SECONDS: ${REDIS_TTL_SECONDS:-3600}
+      # Worker pool sizing
+      WORKER_ACT_CRITICAL: ${WORKER_ACT_CRITICAL:-12}
+      WORKER_WF_CRITICAL: ${WORKER_WF_CRITICAL:-12}
+      WORKER_ACT_HIGH: ${WORKER_ACT_HIGH:-10}
+      WORKER_WF_HIGH: ${WORKER_WF_HIGH:-10}
+      WORKER_ACT_NORMAL: ${WORKER_ACT_NORMAL:-8}
+      WORKER_WF_NORMAL: ${WORKER_WF_NORMAL:-8}
+      WORKER_ACT_LOW: ${WORKER_ACT_LOW:-4}
+      WORKER_WF_LOW: ${WORKER_WF_LOW:-4}
+      # Workflow settings
+      WORKFLOW_SYNTH_BYPASS_SINGLE: ${WORKFLOW_SYNTH_BYPASS_SINGLE:-true}
+      PROVIDER_RATE_CONTROL_ENABLED: ${PROVIDER_RATE_CONTROL_ENABLED:-false}
+      # Security
+      JWT_SECRET: ${JWT_SECRET:-development-only-secret-change-in-production}
+      # Telemetry
+      OTEL_ENABLED: ${OTEL_ENABLED:-false}
+      DEBUG: ${DEBUG:-false}
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+    depends_on:
+      temporal:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      llm-service:
+        condition: service_healthy
+      agent-core:
+        condition: service_started
+    healthcheck:
+      test: [CMD-SHELL, 'wget -qO- http://localhost:8081/health > /dev/null || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${ORCHESTRATOR_CPU_LIMIT:-2.0}
+          memory: ${ORCHESTRATOR_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${ORCHESTRATOR_CPU_RESERVATION:-0.5}
+          memory: ${ORCHESTRATOR_MEMORY_RESERVATION:-512M}
+
+  gateway:
+    <<: [*defaults, *shannon-config]
+    image: ${GLOBAL_REGISTRY:-}waylandzhang/gateway:${SHANNON_VERSION:-v0.3.1}
+    environment:
+      TZ: ${TZ:-UTC}
+      PORT: ${GATEWAY_PORT:-8080}
+      ORCHESTRATOR_GRPC: ${ORCHESTRATOR_GRPC:-orchestrator:50052}
+      ADMIN_SERVER: ${ADMIN_SERVER:-http://orchestrator:8081}
+      # Database and cache
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USER: ${POSTGRES_USER:-shannon}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shannon}
+      POSTGRES_DB: ${POSTGRES_DB:-shannon}
+      POSTGRES_SSLMODE: ${POSTGRES_SSLMODE:-disable}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      # Security
+      JWT_SECRET: ${JWT_SECRET:-development-only-secret-change-in-production}
+      # Set GATEWAY_SKIP_AUTH=0 to enable authentication in production
+      GATEWAY_SKIP_AUTH: ${GATEWAY_SKIP_AUTH:-1}
+    ports:
+      - '${GATEWAY_PORT_OVERRIDE:-8080}:8080'
+    depends_on:
+      orchestrator:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD-SHELL, 'wget -qO- http://localhost:8080/health > /dev/null || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${GATEWAY_CPU_LIMIT:-1.0}
+          memory: ${GATEWAY_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${GATEWAY_CPU_RESERVATION:-0.25}
+          memory: ${GATEWAY_MEMORY_RESERVATION:-256M}
+
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:
+  shannon_sessions:

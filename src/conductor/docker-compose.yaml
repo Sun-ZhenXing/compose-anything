@@ -38,7 +38,6 @@ services:
     build:
       context: https://github.com/conductor-oss/conductor.git#main:docker/server
       dockerfile: Dockerfile
-    container_name: conductor-server
     ports:
       - '${CONDUCTOR_SERVER_PORT_OVERRIDE:-8080}:8080'
       - '${CONDUCTOR_UI_PORT_OVERRIDE:-5000}:5000'
@@ -90,7 +89,6 @@ services:
   postgres:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-16-alpine}
-    container_name: conductor-postgres
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-conductor}
       - POSTGRES_USER=${POSTGRES_USER:-conductor}
@@ -119,7 +117,6 @@ services:
   elasticsearch:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}elasticsearch:${ELASTICSEARCH_VERSION:-8.11.0}
-    container_name: conductor-elasticsearch
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false

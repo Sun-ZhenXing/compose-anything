@@ -145,6 +145,7 @@ These services require building custom Docker images from source.
 | [Restate](./src/restate)                                       | 1.5.3               |
 | [SearXNG](./src/searxng)                                       | 2025.1.20-1ce14ef99 |
 | [Selenium](./src/selenium)                                     | 144.0-20260120      |
+| [Shannon](./apps/shannon)                                      | v0.3.1              |
 | [SigNoz](./src/signoz)                                         | 0.55.0              |
 | [Sim](./apps/sim)                                              | latest              |
 | [Stable Diffusion WebUI](./apps/stable-diffusion-webui-docker) | latest              |
