@@ -4,6 +4,28 @@
 
 Compose Anything helps users quickly deploy various services by providing a set of high-quality Docker Compose configuration files. These configurations constrain resource usage, can be easily migrated to systems like K8S, and are easy to understand and modify.
 
+## Quick Start
+
+Choose a service directory, then start it with Docker Compose:
+
+```bash
+git clone https://github.com/Sun-ZhenXing/compose-anything.git
+cd src/<service>
+docker compose up -d
+```
+
+Most stacks are designed to run with the default settings. Use `.env.example` as a reference, and only create a `.env` file when you need to override ports, passwords, or image versions.
+
+### Example: Start Redis
+
+```bash
+cd src/redis
+docker compose up -d
+docker compose exec redis redis-cli ping
+```
+
+If the stack is healthy, the final command returns `PONG`. By default, Redis is exposed on `localhost:6379`. For authentication, custom ports, or image changes, see [src/redis](./src/redis).
+
 ## Build Services
 
 These services require building custom Docker images from source.
@@ -190,7 +212,7 @@ These services require building custom Docker images from source.
 | [OpenWeather](./mcp-servers/openweather)                | latest  |
 | [Paper Search](./mcp-servers/paper-search)              | latest  |
 | [Playwright](./mcp-servers/playwright)                  | latest  |
-| [Redis MCP](./mcp-servers/redis-mcp)                    | latest  |
+| [Redis MCP](./mcp-servers/redis)                        | latest  |
 | [Rust Filesystem](./mcp-servers/rust-mcp-filesystem)    | latest  |
 | [Sequential Thinking](./mcp-servers/sequentialthinking) | latest  |
 | [SQLite](./mcp-servers/sqlite)                          | latest  |
