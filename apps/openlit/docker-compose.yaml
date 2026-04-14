@@ -23,6 +23,8 @@ services:
       - CLICKHOUSE_ALWAYS_RUN_INITDB_SCRIPTS=true
     volumes:
       - clickhouse_data:/var/lib/clickhouse
+      - ./assets/clickhouse-config.xml:/etc/clickhouse-server/config.d/custom-config.xml:ro
+      - ./assets/clickhouse-init.sh:/docker-entrypoint-initdb.d/init.sh:ro
     ports:
       - '${CLICKHOUSE_HTTP_PORT_OVERRIDE:-8123}:8123'
       - '${CLICKHOUSE_NATIVE_PORT_OVERRIDE:-9000}:9000'
@@ -77,6 +79,7 @@ services:
         condition: service_healthy
     volumes:
       - openlit_data:/app/client/data
+      - ./assets/otel-collector-config.yaml:/etc/otel/otel-collector-config.yaml:ro
     healthcheck:
       test: [CMD, wget, --quiet, --tries=1, --spider, 'http://localhost:${OPENLIT_INTERNAL_PORT:-3000}/health']
       interval: 30s
