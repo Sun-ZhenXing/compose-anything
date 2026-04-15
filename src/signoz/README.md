@@ -13,133 +13,109 @@ SigNoz is an open-source observability platform that provides monitoring and tro
 - **Alerts**: Configure alerts based on metrics and traces
 - **OpenTelemetry Native**: Built on top of OpenTelemetry standards
 
+## Services
+
+| Service                          | Image                                 | Description                                            |
+| -------------------------------- | ------------------------------------- | ------------------------------------------------------ |
+| `signoz`                         | signoz/signoz:v0.118.0                | All-in-one backend, frontend UI, and alert manager     |
+| `otel-collector`                 | signoz/signoz-otel-collector:v0.144.2 | Receives, processes, and exports telemetry data        |
+| `clickhouse`                     | clickhouse/clickhouse-server:25.5.6   | Time-series database for traces, metrics, and logs     |
+| `zookeeper-1`                    | signoz/zookeeper:3.7.1                | ZooKeeper for ClickHouse replication metadata          |
+| `init-clickhouse`                | clickhouse/clickhouse-server:25.5.6   | One-shot init that downloads the histogramQuantile UDF |
+| `signoz-telemetrystore-migrator` | signoz/signoz-otel-collector:v0.144.2 | One-shot schema migration for ClickHouse               |
+
 ## Quick Start
 
-1. Copy the environment file and adjust if needed:
+1. Copy the environment file and set the JWT secret:
 
    ```bash
    cp .env.example .env
+   # Edit .env and set SIGNOZ_JWT_SECRET to a random string
    ```
 
-2. Create required configuration files:
-
-   ```bash
-   mkdir -p query-service frontend
-   # Download or create configuration files as needed
-   ```
-
-3. Start the services:
+2. Start the services:
 
    ```bash
    docker compose up -d
    ```
 
-4. Access SigNoz UI at `http://localhost:3301`
+3. Access SigNoz UI at `http://localhost:8080`
+
+> **Note**: On first start, `init-clickhouse` must download a binary from GitHub (~10 MB). Ensure internet access is available.
 
 ## Default Ports
 
 | Service               | Port | Description          |
 | --------------------- | ---- | -------------------- |
-| Frontend UI           | 3301 | SigNoz web interface |
+| SigNoz UI             | 8080 | SigNoz web interface |
 | OTel Collector (gRPC) | 4317 | OTLP gRPC receiver   |
 | OTel Collector (HTTP) | 4318 | OTLP HTTP receiver   |
 
 ## Configuration
 
-### Environment Variables
+### Key Environment Variables
 
-Key environment variables (see `.env.example` for complete list):
+| Variable                         | Default                     | Description                                    |
+| -------------------------------- | --------------------------- | ---------------------------------------------- |
+| `SIGNOZ_JWT_SECRET`              | `please-change-this-secret` | JWT secret for token signing — **change this** |
+| `SIGNOZ_PORT_OVERRIDE`           | `8080`                      | SigNoz UI host port                            |
+| `SIGNOZ_OTEL_GRPC_PORT_OVERRIDE` | `4317`                      | OTLP gRPC receiver host port                   |
+| `SIGNOZ_OTEL_HTTP_PORT_OVERRIDE` | `4318`                      | OTLP HTTP receiver host port                   |
+| `SIGNOZ_VERSION`                 | `v0.118.0`                  | SigNoz image version                           |
+| `SIGNOZ_OTEL_COLLECTOR_VERSION`  | `v0.144.2`                  | OTel Collector image version                   |
+| `SIGNOZ_CLICKHOUSE_VERSION`      | `25.5.6`                    | ClickHouse image version                       |
+| `TZ`                             | `UTC`                       | Timezone                                       |
 
-- `SIGNOZ_PORT_OVERRIDE`: Frontend UI port (default: 3301)
-- `SIGNOZ_OTEL_GRPC_PORT_OVERRIDE`: OTLP gRPC receiver port (default: 4317)
-- `SIGNOZ_OTEL_HTTP_PORT_OVERRIDE`: OTLP HTTP receiver port (default: 4318)
-- `SIGNOZ_CLICKHOUSE_VERSION`: ClickHouse version
-- `SIGNOZ_QUERY_SERVICE_VERSION`: Query service version
-- `SIGNOZ_FRONTEND_VERSION`: Frontend version
-
-### Required Configuration Files
-
-This setup requires several configuration files:
-
-1. **clickhouse-config.xml**: ClickHouse server configuration
-2. **clickhouse-users.xml**: ClickHouse user configuration
-3. **otel-collector-config.yaml**: OTel Collector pipeline configuration
-4. **query-service/prometheus.yml**: Query service Prometheus configuration
-5. **frontend/nginx-config.conf**: Nginx configuration for frontend
-
-You can obtain these files from the [official SigNoz repository](https://github.com/SigNoz/signoz/tree/main/deploy/docker/clickhouse-setup).
+See `.env.example` for the complete list including resource limits.
 
 ### Sending Telemetry Data
 
-To send telemetry data to SigNoz, configure your application to use OpenTelemetry with the following endpoints:
+Configure your application's OpenTelemetry SDK to export to:
 
-- **gRPC**: `localhost:4317`
-- **HTTP**: `localhost:4318`
-
-Example for Node.js:
-
-```javascript
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc')
-const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node')
-
-const exporter = new OTLPTraceExporter({
-  url: 'http://localhost:4317',
-})
-```
+- **gRPC**: `http://localhost:4317`
+- **HTTP**: `http://localhost:4318`
 
 ## Architecture
 
-SigNoz consists of the following components:
+```text
+User → SigNoz UI (8080) → signoz backend
+              ↓
+App  → OTel Collector (4317/4318) → ClickHouse
+                                         ↑
+                          Zookeeper (replication metadata)
+```
 
-1. **ClickHouse**: Time-series database for storing traces, metrics, and logs
-2. **OTel Collector**: Receives, processes, and exports telemetry data
-3. **Query Service**: Queries data from ClickHouse
-4. **Frontend**: Web UI for visualization and analysis
-5. **Alert Manager**: Manages and sends alerts
+Startup order:
 
-## Resource Requirements
+1. `init-clickhouse` downloads histogramQuantile binary → `zookeeper-1` starts
+2. `clickhouse` starts (after init completes and zookeeper is healthy)
+3. `signoz-telemetrystore-migrator` runs schema migrations
+4. `signoz` and `otel-collector` start
 
-Minimum recommended resources:
-
-- **CPU**: 4 cores
-- **Memory**: 8GB RAM
-- **Storage**: 20GB for data
 
 ## Data Persistence
 
-Data is persisted in Docker volumes:
+Data is persisted in Docker named volumes:
 
-- `clickhouse_data`: ClickHouse database files
-- `signoz_data`: SigNoz application data
-- `alertmanager_data`: Alert manager data
+| Volume                    | Contents                              |
+| ------------------------- | ------------------------------------- |
+| `clickhouse_data`         | ClickHouse database files             |
+| `clickhouse_user_scripts` | histogramQuantile UDF binary          |
+| `signoz_data`             | SigNoz SQLite DB and application data |
+| `zookeeper_data`          | ZooKeeper state                       |
 
 ## Security Considerations
 
-- Change default credentials if applicable
-- Use environment variables for sensitive configuration
-- Consider using secrets management for production deployments
-- Restrict network access to necessary ports only
-- Enable authentication for production use
-
-## Healthchecks
-
-All services include healthchecks to ensure proper startup and dependency management:
-
-- ClickHouse: HTTP health endpoint
-- OTel Collector: HTTP health endpoint
-- Query Service: HTTP health endpoint
-- Frontend: HTTP health endpoint
-- Alert Manager: HTTP health endpoint
+- **Change `SIGNOZ_JWT_SECRET`** to a unique random value before production use
+- Restrict port exposure to trusted networks in production
+- Run behind a reverse proxy with TLS termination for production
 
 ## Troubleshooting
 
-1. **Services not starting**: Check logs with `docker compose logs`
-2. **No data visible**: Verify OTel Collector configuration and application instrumentation
-3. **High memory usage**: Adjust ClickHouse memory limits or data retention policies
-
-## License
-
-SigNoz is licensed under the MIT License. See the [official repository](https://github.com/SigNoz/signoz) for more details.
+1. **Services not starting**: `docker compose logs` — check for connection errors
+2. **init-clickhouse fails**: No internet access — the UDF binary cannot be downloaded
+3. **otel-collector unhealthy**: May be waiting for migrations to settle; check with `docker compose logs signoz-telemetrystore-migrator`
+4. **No data visible**: Verify OTel Collector configuration and application instrumentation
 
 ## References
 
