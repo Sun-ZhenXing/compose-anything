@@ -1,0 +1,46 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  easytier:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}easytier/easytier:${EASYTIER_VERSION:-v2.6.0}
+    command:
+      - --network-name=${EASYTIER_NETWORK_NAME:-easytier}
+      - --network-secret=${EASYTIER_NETWORK_SECRET:-}
+      - --ipv4=${EASYTIER_IPV4:-10.144.144.1}
+      - --listeners
+      - tcp://0.0.0.0:11010
+      - udp://0.0.0.0:11010
+      - --rpc-portal=0.0.0.0:15888
+      - --no-tun
+    ports:
+      # Peer listener ports — must be reachable from the public internet
+      - '${EASYTIER_TCP_PORT_OVERRIDE:-11010}:11010/tcp'
+      - '${EASYTIER_UDP_PORT_OVERRIDE:-11010}:11010/udp'
+      # Management RPC — bind to localhost only by default for security
+      - '127.0.0.1:${EASYTIER_RPC_PORT_OVERRIDE:-15888}:15888'
+    environment:
+      - TZ=${TZ:-UTC}
+    # No TUN interface in server-relay mode; no special capabilities required
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        limits:
+          cpus: ${EASYTIER_CPU_LIMIT:-0.50}
+          memory: ${EASYTIER_MEMORY_LIMIT:-128M}
+        reservations:
+          cpus: ${EASYTIER_CPU_RESERVATION:-0.10}
+          memory: ${EASYTIER_MEMORY_RESERVATION:-32M}
+    healthcheck:
+      test: ['CMD', 'easytier-cli', '-p', '127.0.0.1:15888', 'node', 'info']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

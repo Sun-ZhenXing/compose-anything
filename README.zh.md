@@ -55,6 +55,7 @@ docker compose exec redis redis-cli ping
 | [Apache Pulsar](./src/pulsar)                                  | 4.0.7               |
 | [Apache RocketMQ](./src/rocketmq)                              | 5.3.1               |
 | [Agentgateway](./src/agentgateway)                             | 0.11.2              |
+| [AnythingLLM](./src/anythingllm)                               | latest              |
 | [Bifrost Gateway](./src/bifrost-gateway)                       | v1.4.17             |
 | [Bolt.diy](./apps/bolt-diy)                                    | latest              |
 | [Budibase](./src/budibase)                                     | 3.23.0              |
@@ -73,6 +74,7 @@ docker compose exec redis redis-cli ping
 | [Doris](./src/doris)                                           | 3.0.0               |
 | [DuckDB](./src/duckdb)                                         | v1.1.3              |
 | [Easy Dataset](./apps/easy-dataset)                            | 1.5.1               |
+| [EasyTier](./src/easytier)                                     | v2.6.0              |
 | [Elasticsearch](./src/elasticsearch)                           | 9.3.0               |
 | [etcd](./src/etcd)                                             | 3.6.0               |
 | [FalkorDB](./src/falkordb)                                     | v4.14.11            |
@@ -101,12 +103,15 @@ docker compose exec redis redis-cli ping
 | [Kong](./src/kong)                                             | 3.8.0               |
 | [Langflow](./apps/langflow)                                    | latest              |
 | [Langfuse](./apps/langfuse)                                    | 3.115.0             |
+| [Letta](./src/letta)                                           | 0.16.7              |
+| [LibreChat](./apps/librechat)                                  | v0.8.4              |
 | [LibreOffice](./src/libreoffice)                               | latest              |
 | [libSQL Server](./src/libsql)                                  | latest              |
 | [LiteLLM](./src/litellm)                                       | main-stable         |
 | [llama-swap](./src/llama-swap)                                 | cpu                 |
 | [llama.cpp](./src/llama.cpp)                                   | server              |
 | [LMDeploy](./src/lmdeploy)                                     | v0.11.1             |
+| [LobeChat](./src/lobe-chat)                                    | 1.143.3             |
 | [Logstash](./src/logstash)                                     | 8.16.1              |
 | [MariaDB Galera Cluster](./src/mariadb-galera)                 | 11.7.2              |
 | [Mattermost](./apps/mattermost)                                | 11.3                |
@@ -159,6 +164,7 @@ docker compose exec redis redis-cli ping
 | [PyTorch](./src/pytorch)                                       | 2.6.0               |
 | [Qdrant](./src/qdrant)                                         | 1.15.4              |
 | [RabbitMQ](./src/rabbitmq)                                     | 4.2.3               |
+| [RAGFlow](./apps/ragflow)                                      | v0.24.0             |
 | [Ray](./src/ray)                                               | 2.42.1              |
 | [Redpanda](./src/redpanda)                                     | v24.3.1             |
 | [Redis Cluster](./src/redis-cluster)                           | 8.2.1               |
@@ -171,6 +177,7 @@ docker compose exec redis redis-cli ping
 | [Shannon](./apps/shannon)                                      | v0.3.1              |
 | [SigNoz](./src/signoz)                                         | 0.55.0              |
 | [Sim](./apps/sim)                                              | latest              |
+| [Skyvern](./apps/skyvern)                                      | v1.0.31             |
 | [Stable Diffusion WebUI](./apps/stable-diffusion-webui-docker) | latest              |
 | [Stirling-PDF](./apps/stirling-pdf)                            | latest              |
 | [Temporal](./src/temporal)                                     | 1.24.2              |

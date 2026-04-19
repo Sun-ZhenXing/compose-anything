@@ -1,0 +1,42 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  anythingllm:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}mintplexlabs/anythingllm:${ANYTHINGLLM_VERSION:-latest}
+    ports:
+      - '${ANYTHINGLLM_PORT_OVERRIDE:-3001}:3001'
+    volumes:
+      - anythingllm_storage:/app/server/storage
+    environment:
+      - TZ=${TZ:-UTC}
+      - STORAGE_DIR=/app/server/storage
+      - UID=${ANYTHINGLLM_UID:-1000}
+      - GID=${ANYTHINGLLM_GID:-1000}
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://localhost:3001/api/ping',res=>process.exit(res.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${ANYTHINGLLM_CPU_LIMIT:-2}
+          memory: ${ANYTHINGLLM_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${ANYTHINGLLM_CPU_RESERVATION:-0.5}
+          memory: ${ANYTHINGLLM_MEMORY_RESERVATION:-512M}
+
+volumes:
+  anythingllm_storage:

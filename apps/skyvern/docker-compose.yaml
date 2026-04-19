@@ -1,0 +1,110 @@
+# Change SKYVERN_API_KEY before exposing this stack externally.
+# Fields marked with CHANGEME must be updated for any non-local deployment.
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  skyvern:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}skyvern/skyvern:${SKYVERN_VERSION:-v1.0.31}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - '${SKYVERN_PORT_OVERRIDE:-8000}:8000'
+    volumes:
+      - skyvern_artifacts:/data/artifacts
+      - skyvern_videos:/data/videos
+      - skyvern_har:/data/har
+    environment:
+      - TZ=${TZ:-UTC}
+      - DATABASE_STRING=postgresql+psycopg2://skyvern:${POSTGRES_PASSWORD:-skyvern}@postgres:5432/skyvern
+      - SKYVERN_API_KEY=${SKYVERN_API_KEY:-changeme_skyvern_api_key_CHANGEME}
+      - BROWSER_TYPE=${BROWSER_TYPE:-chromium-headless}
+      - VIDEO_PATH=/data/videos
+      - HAR_PATH=/data/har
+      - ARTIFACT_STORAGE_PATH=/data/artifacts
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    healthcheck:
+      test:
+        - CMD
+        - python3
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/heartbeat')"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${SKYVERN_CPU_LIMIT:-2}
+          memory: ${SKYVERN_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${SKYVERN_CPU_RESERVATION:-0.5}
+          memory: ${SKYVERN_MEMORY_RESERVATION:-1G}
+
+  skyvern-ui:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}skyvern/skyvern-ui:${SKYVERN_VERSION:-v1.0.31}
+    depends_on:
+      skyvern:
+        condition: service_healthy
+    ports:
+      - '${SKYVERN_UI_PORT_OVERRIDE:-8080}:8080'
+    environment:
+      - TZ=${TZ:-UTC}
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:8000}
+      - VITE_WSS_BASE_URL=${VITE_WSS_BASE_URL:-ws://localhost:8000}
+    healthcheck:
+      test: [CMD-SHELL, "curl -sf http://localhost:8080/ > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: ${SKYVERN_UI_CPU_LIMIT:-0.5}
+          memory: ${SKYVERN_UI_MEMORY_LIMIT:-256M}
+        reservations:
+          cpus: ${SKYVERN_UI_CPU_RESERVATION:-0.1}
+          memory: ${SKYVERN_UI_MEMORY_RESERVATION:-64M}
+
+  postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-15}
+    environment:
+      - POSTGRES_USER=skyvern
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-skyvern}
+      - POSTGRES_DB=skyvern
+      - TZ=UTC
+      - PGTZ=UTC
+    volumes:
+      - skyvern_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U skyvern]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: ${POSTGRES_CPU_LIMIT:-1}
+          memory: ${POSTGRES_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${POSTGRES_CPU_RESERVATION:-0.25}
+          memory: ${POSTGRES_MEMORY_RESERVATION:-256M}
+
+volumes:
+  skyvern_artifacts:
+  skyvern_videos:
+  skyvern_har:
+  skyvern_postgres_data:

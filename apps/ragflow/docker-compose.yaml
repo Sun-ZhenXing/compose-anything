@@ -1,0 +1,157 @@
+# RAGFlow requires substantial system resources.
+# Elasticsearch alone needs ~2 GB RAM. Total recommended: 8+ GB RAM.
+# This stack is x86-64 (amd64) only; ARM64 is not supported.
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  ragflow:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}infiniflow/ragflow:${RAGFLOW_VERSION:-v0.24.0}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      es01:
+        condition: service_healthy
+    ports:
+      - '${RAGFLOW_PORT_OVERRIDE:-80}:80'
+    volumes:
+      - ragflow_logs:/ragflow/logs
+    environment:
+      - TZ=${TZ:-UTC}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-ragflow}
+      - MINIO_USER=${MINIO_USER:-minioadmin}
+      - MINIO_PASSWORD=${MINIO_PASSWORD:-minioadmin}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-redispassword}
+      - SECRET_KEY=${SECRET_KEY:-changeme_secret_key_CHANGEME}
+    healthcheck:
+      test: [CMD-SHELL, "curl -sf http://localhost/ > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 10
+      start_period: 120s
+    deploy:
+      resources:
+        limits:
+          cpus: ${RAGFLOW_CPU_LIMIT:-4}
+          memory: ${RAGFLOW_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${RAGFLOW_CPU_RESERVATION:-1}
+          memory: ${RAGFLOW_MEMORY_RESERVATION:-2G}
+
+  es01:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}elasticsearch:${ELASTICSEARCH_VERSION:-8.11.3}
+    environment:
+      - TZ=${TZ:-UTC}
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx1g
+    volumes:
+      - ragflow_es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: [CMD-SHELL, "curl -sf http://localhost:9200/_cluster/health | grep -qE '\"status\":\"(green|yellow)\"' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${ELASTICSEARCH_CPU_LIMIT:-2}
+          memory: ${ELASTICSEARCH_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${ELASTICSEARCH_CPU_RESERVATION:-0.5}
+          memory: ${ELASTICSEARCH_MEMORY_RESERVATION:-1G}
+
+  mysql:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}mysql:${MYSQL_VERSION:-8.0.39}
+    environment:
+      - TZ=${TZ:-UTC}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD:-ragflow}
+      - MYSQL_DATABASE=rag_flow
+    volumes:
+      - ragflow_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [CMD, mysqladmin, ping, -h, localhost]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${MYSQL_CPU_LIMIT:-1}
+          memory: ${MYSQL_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${MYSQL_CPU_RESERVATION:-0.25}
+          memory: ${MYSQL_MEMORY_RESERVATION:-256M}
+
+  redis:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-7}
+    command: >
+      --requirepass ${REDIS_PASSWORD:-redispassword}
+      --maxmemory-policy noeviction
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-redispassword}
+    volumes:
+      - ragflow_redis_data:/data
+    healthcheck:
+      test: [CMD-SHELL, "redis-cli -a $$REDIS_PASSWORD ping | grep -q PONG"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: ${REDIS_CPU_LIMIT:-0.5}
+          memory: ${REDIS_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${REDIS_CPU_RESERVATION:-0.1}
+          memory: ${REDIS_MEMORY_RESERVATION:-128M}
+
+  minio:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}minio/minio:${MINIO_VERSION:-RELEASE.2025-01-20T14-49-07Z}
+    command: server /data --console-address ':9001'
+    environment:
+      - TZ=${TZ:-UTC}
+      - MINIO_ROOT_USER=${MINIO_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_PASSWORD:-minioadmin}
+    volumes:
+      - ragflow_minio_data:/data
+    ports:
+      - '${MINIO_CONSOLE_PORT_OVERRIDE:-9001}:9001'
+    healthcheck:
+      test: [CMD-SHELL, "curl -sf http://localhost:9000/minio/health/live || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${MINIO_CPU_LIMIT:-1}
+          memory: ${MINIO_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${MINIO_CPU_RESERVATION:-0.25}
+          memory: ${MINIO_MEMORY_RESERVATION:-256M}
+
+volumes:
+  ragflow_logs:
+  ragflow_es_data:
+  ragflow_mysql_data:
+  ragflow_redis_data:
+  ragflow_minio_data:

@@ -1,0 +1,39 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  lobe-chat:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}lobehub/lobe-chat:${LOBE_CHAT_VERSION:-1.143.3}
+    ports:
+      - '${LOBE_CHAT_PORT_OVERRIDE:-3210}:3210'
+    environment:
+      - TZ=${TZ:-UTC}
+      - ACCESS_CODE=${ACCESS_CODE:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_PROXY_URL=${OPENAI_PROXY_URL:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://localhost:3210/api/health',res=>process.exit(res.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LOBE_CHAT_CPU_LIMIT:-0.5}
+          memory: ${LOBE_CHAT_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${LOBE_CHAT_CPU_RESERVATION:-0.1}
+          memory: ${LOBE_CHAT_MEMORY_RESERVATION:-128M}

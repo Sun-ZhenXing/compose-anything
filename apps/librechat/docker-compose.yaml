@@ -1,0 +1,108 @@
+# Make sure to change the secret placeholders before exposing this stack externally.
+# Fields marked with CHANGEME must be updated for any non-local deployment.
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  librechat:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}librechat/librechat:${LIBRECHAT_VERSION:-v0.8.4}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+    ports:
+      - '${LIBRECHAT_PORT_OVERRIDE:-3080}:3080'
+    volumes:
+      - librechat_images:/app/client/public/images
+      - librechat_logs:/app/api/logs
+    environment:
+      - TZ=${TZ:-UTC}
+      - MONGO_URI=mongodb://mongodb:27017/LibreChat
+      - MEILI_HOST=http://meilisearch:7700
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-changeme_meili_master_key_CHANGEME}
+      - JWT_SECRET=${JWT_SECRET:-changeme_jwt_secret_please_change_CHANGEME}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-changeme_jwt_refresh_secret_CHANGEME}
+      - CREDS_KEY=${CREDS_KEY:-changeme_creds_key_32_chars_only}
+      - CREDS_IV=${CREDS_IV:-changeme_iv_16ch}
+      - ALLOW_REGISTRATION=${ALLOW_REGISTRATION:-true}
+      - ALLOW_SOCIAL_LOGIN=${ALLOW_SOCIAL_LOGIN:-false}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://localhost:3080/health',res=>process.exit(res.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LIBRECHAT_CPU_LIMIT:-2}
+          memory: ${LIBRECHAT_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${LIBRECHAT_CPU_RESERVATION:-0.5}
+          memory: ${LIBRECHAT_MEMORY_RESERVATION:-512M}
+
+  mongodb:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}mongo:${MONGODB_VERSION:-8.0}
+    volumes:
+      - librechat_mongo_data:/data/db
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test: [CMD, mongosh, --eval, "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: ${MONGODB_CPU_LIMIT:-1}
+          memory: ${MONGODB_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${MONGODB_CPU_RESERVATION:-0.25}
+          memory: ${MONGODB_MEMORY_RESERVATION:-256M}
+
+  meilisearch:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}getmeili/meilisearch:${MEILISEARCH_VERSION:-v1.12.8}
+    volumes:
+      - librechat_meilisearch_data:/meili_data
+    environment:
+      - TZ=${TZ:-UTC}
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-changeme_meili_master_key_CHANGEME}
+      - MEILI_NO_ANALYTICS=true
+    healthcheck:
+      test: [CMD-SHELL, "curl -sf http://localhost:7700/health || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${MEILISEARCH_CPU_LIMIT:-0.5}
+          memory: ${MEILISEARCH_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${MEILISEARCH_CPU_RESERVATION:-0.1}
+          memory: ${MEILISEARCH_MEMORY_RESERVATION:-128M}
+
+volumes:
+  librechat_images:
+  librechat_logs:
+  librechat_mongo_data:
+  librechat_meilisearch_data:
