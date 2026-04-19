@@ -92,7 +92,6 @@ Startup order:
 3. `signoz-telemetrystore-migrator` runs schema migrations
 4. `signoz` and `otel-collector` start
 
-
 ## Data Persistence
 
 Data is persisted in Docker named volumes:

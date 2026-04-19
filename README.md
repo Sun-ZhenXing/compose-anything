@@ -37,7 +37,7 @@ These services require building custom Docker images from source.
 | [goose](./builds/goose)                     | 1.18.0  |
 | [IOPaint](./builds/io-paint)                | 1.6.0   |
 | [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2   |
-| [MinerU vLLM](./builds/mineru)              | 3.0.1   |
+| [MinerU vLLM](./builds/mineru)              | 3.1.0   |
 | [Multica](./builds/multica)                 | v0.1.32 |
 | [OpenFang](./builds/openfang)               | 0.1.0   |
 | [Paperclip](./builds/paperclip)             | main    |

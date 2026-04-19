@@ -201,7 +201,7 @@ services:
 
   backend:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}ghcr.io/comet-ml/opik/opik-backend:${OPIK_VERSION:-1.10.23}
+    image: ${GLOBAL_REGISTRY:-}ghcr.io/comet-ml/opik/opik-backend:${OPIK_VERSION:-1.11.9}
     command: [bash, -c, './run_db_migrations.sh && ./entrypoint.sh']
     environment:
       TZ: ${TZ:-UTC}
@@ -231,6 +231,7 @@ services:
       TOGGLE_OPIK_AI_ENABLED: ${TOGGLE_OPIK_AI_ENABLED:-false}
       TOGGLE_GUARDRAILS_ENABLED: ${TOGGLE_GUARDRAILS_ENABLED:-false}
       TOGGLE_WELCOME_WIZARD_ENABLED: ${TOGGLE_WELCOME_WIZARD_ENABLED:-true}
+      TOGGLE_RUNNERS_ENABLED: ${TOGGLE_RUNNERS_ENABLED:-false}
       CORS: ${CORS:-false}
       ATTACHMENTS_STRIP_MIN_SIZE: ${ATTACHMENTS_STRIP_MIN_SIZE:-256000}
       JACKSON_MAX_STRING_LENGTH: ${JACKSON_MAX_STRING_LENGTH:-104857600}
@@ -264,19 +265,19 @@ services:
 
   python-backend:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}ghcr.io/comet-ml/opik/opik-python-backend:${OPIK_VERSION:-1.10.23}
+    image: ${GLOBAL_REGISTRY:-}ghcr.io/comet-ml/opik/opik-python-backend:${OPIK_VERSION:-1.11.9}
     privileged: true
     environment:
       TZ: ${TZ:-UTC}
       OPIK_OTEL_SDK_ENABLED: 'false'
-      PYTHON_CODE_EXECUTOR_IMAGE_TAG: ${OPIK_VERSION:-1.10.23}
+      PYTHON_CODE_EXECUTOR_IMAGE_TAG: ${OPIK_VERSION:-1.11.9}
       PYTHON_CODE_EXECUTOR_STRATEGY: ${PYTHON_CODE_EXECUTOR_STRATEGY:-process}
       PYTHON_CODE_EXECUTOR_CONTAINERS_NUM: ${PYTHON_CODE_EXECUTOR_CONTAINERS_NUM:-5}
       PYTHON_CODE_EXECUTOR_EXEC_TIMEOUT_IN_SECS: ${PYTHON_CODE_EXECUTOR_EXEC_TIMEOUT_IN_SECS:-3}
       PYTHON_CODE_EXECUTOR_ALLOW_NETWORK: ${PYTHON_CODE_EXECUTOR_ALLOW_NETWORK:-false}
       PYTHON_CODE_EXECUTOR_CPU_SHARES: ${PYTHON_CODE_EXECUTOR_CPU_SHARES:-512}
       PYTHON_CODE_EXECUTOR_MEM_LIMIT: ${PYTHON_CODE_EXECUTOR_MEM_LIMIT:-256m}
-      OPIK_VERSION: ${OPIK_VERSION:-1.10.23}
+      OPIK_VERSION: ${OPIK_VERSION:-1.11.9}
       OPIK_REVERSE_PROXY_URL: http://frontend:5173/api
       PYTHON_BACKEND_PORT: ${PYTHON_BACKEND_PORT:-8000}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
@@ -313,7 +314,7 @@ services:
 
   frontend:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}ghcr.io/comet-ml/opik/opik-frontend:${OPIK_VERSION:-1.10.23}
+    image: ${GLOBAL_REGISTRY:-}ghcr.io/comet-ml/opik/opik-frontend:${OPIK_VERSION:-1.11.9}
     ports:
       - '${OPIK_PORT_OVERRIDE:-5173}:80'
     environment:
