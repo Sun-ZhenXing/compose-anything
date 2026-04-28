@@ -13,7 +13,7 @@ This service deploys Stirling-PDF, a locally hosted web-based PDF manipulation t
 | Variable Name        | Description                           | Default Value  |
 | -------------------- | ------------------------------------- | -------------- |
 | STIRLING_VERSION     | Stirling-PDF image version            | `latest`       |
-| PORT_OVERRIDE        | Host port mapping                     | `8080`         |
+| STIRLING_PORT_OVERRIDE | Host port mapping                     | `8080`         |
 | ENABLE_SECURITY      | Enable security features              | `false`        |
 | ENABLE_LOGIN         | Enable login functionality            | `false`        |
 | INITIAL_USERNAME     | Initial admin username                | `admin`        |

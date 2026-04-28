@@ -57,7 +57,7 @@ services:
       - NANOBOT_GATEWAY__PORT=${GATEWAY_PORT:-18790}
     command: ${NANOBOT_COMMAND:-gateway}
     healthcheck:
-      test: [CMD, python, -c, import sys; sys.exit(0)]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:18790/')"]
       interval: 30s
       timeout: 10s
       retries: 3

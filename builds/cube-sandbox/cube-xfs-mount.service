@@ -1,0 +1,18 @@
+[Unit]
+Description=CubeSandbox XFS loop volume mount
+# Must run before dockerd and the installer because install.sh validates that
+# /data/cubelet is an XFS filesystem before proceeding.
+DefaultDependencies=no
+Before=cube-install.service docker.service
+After=local-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=-/etc/cube-sandbox.env
+ExecStart=/usr/local/bin/cube-xfs-setup.sh
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,110 @@
+# CubeSandbox running inside a privileged systemd+DinD container.
+#
+# WHY THIS LOOKS UNUSUAL
+# ----------------------
+# CubeSandbox is NOT a containerized project upstream. Its core components
+# (Cubelet, network-agent, cube-shim, CubeAPI, CubeMaster) ship as host
+# binaries, and the official install.sh registers them as systemd units and
+# manages them with systemctl.
+#
+# To run it purely with Docker without modifying the WSL2 host, this stack:
+#   1. Runs systemd as PID 1 inside a privileged container so that
+#      install.sh can call systemctl enable / start / status normally.
+#   2. Runs its own dockerd (DinD) for MySQL / Redis / CoreDNS / CubeProxy.
+#   3. Mounts an XFS loop volume at /data/cubelet (install.sh hard-requires XFS).
+#   4. Executes the upstream online-install.sh via cube-install.service.
+#
+# The /run and /run/lock paths are tmpfs so systemd can write its runtime
+# state (PID files, socket files, etc.) during the container lifetime.
+# stop_signal RTMIN+3 is the standard graceful-shutdown signal for systemd.
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  cube-sandbox:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}compose-anything/cube-sandbox:${CUBE_SANDBOX_VERSION:-0.1.7}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - UBUNTU_IMAGE=${UBUNTU_IMAGE:-ubuntu:22.04}
+
+    # CubeSandbox needs:
+    #   - /dev/kvm for the MicroVM hypervisor
+    #   - /dev/net/tun for cube TAP interfaces
+    #   - SYS_ADMIN/NET_ADMIN to mount the XFS loop volume and create TAPs
+    #   - Its own dockerd for MySQL / Redis / CubeProxy / CoreDNS
+    #   - systemd as PID 1 so install.sh can register and start services
+    # The simplest correct configuration is privileged + host network.
+    privileged: true
+    network_mode: host
+
+    devices:
+      - /dev/kvm:/dev/kvm
+      - /dev/net/tun:/dev/net/tun
+
+    # cgroupns:host lets the in-container systemd + dockerd share the host's
+    # (i.e. WSL2's) cgroup v2 hierarchy directly — more reliable than private.
+    cgroup: host
+
+    # systemd needs to write its runtime state to /run; use tmpfs so it does
+    # not leak across container restarts and does not consume the named volumes.
+    tmpfs:
+      - /run:size=100m
+      - /run/lock:size=10m
+      - /tmp:size=2g,exec
+
+    # SIGRTMIN+3 is the proper graceful-shutdown signal for systemd.
+    stop_signal: RTMIN+3
+
+    environment:
+      - TZ=${TZ:-Asia/Shanghai}
+      # cn = pull installer + images via the cnb.cool / Tencent Cloud mirror
+      # gh = pull from raw.githubusercontent.com (slower in mainland China)
+      - CUBE_MIRROR=${CUBE_MIRROR:-cn}
+      # Size of the XFS loop file that backs /data/cubelet
+      - CUBE_XFS_SIZE=${CUBE_XFS_SIZE:-50G}
+      # Set to 1 to re-run install.sh even if a previous install is detected
+      - CUBE_FORCE_REINSTALL=${CUBE_FORCE_REINSTALL:-0}
+
+    volumes:
+      # DinD docker daemon storage (images for MySQL, Redis, CoreDNS, CubeProxy)
+      - cube_dind_data:/var/lib/docker
+      # XFS loop image + mounted /data/cubelet + cube-shim disks + logs
+      - cube_data:/data
+      # Installed CubeSandbox binaries & scripts
+      - cube_toolbox:/usr/local/services/cubetoolbox
+
+    # No `ports:` block — we use network_mode: host so the CubeAPI on
+    # 127.0.0.1:3000 inside the container is the same socket as
+    # 127.0.0.1:3000 on the WSL2 host.
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - "curl -fsS http://127.0.0.1:3000/health && curl -fsS http://127.0.0.1:8089/notify/health && curl -fsS http://127.0.0.1:19090/healthz"
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 600s   # First boot downloads ~400 MB + Docker images; be generous.
+
+    deploy:
+      resources:
+        limits:
+          cpus: '${CUBE_CPU_LIMIT:-8}'
+          memory: ${CUBE_MEMORY_LIMIT:-16G}
+        reservations:
+          cpus: '${CUBE_CPU_RESERVATION:-2}'
+          memory: ${CUBE_MEMORY_RESERVATION:-8G}
+
+volumes:
+  cube_dind_data:
+  cube_data:
+  cube_toolbox:

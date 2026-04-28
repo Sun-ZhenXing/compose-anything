@@ -32,6 +32,7 @@ These services require building custom Docker images from source.
 
 | Service                                     | Version |
 | ------------------------------------------- | ------- |
+| [CubeSandbox](./builds/cube-sandbox)        | 0.1.7   |
 | [Debian DinD](./builds/debian-dind)         | 0.1.2   |
 | [DeerFlow](./builds/deer-flow)              | 2.0     |
 | [goose](./builds/goose)                     | 1.18.0  |
@@ -121,7 +122,7 @@ These services require building custom Docker images from source.
 | [Minecraft Bedrock Server](./src/minecraft-bedrock-server)     | latest              |
 | [MinIO](./src/minio)                                           | 0.20260202          |
 | [MLflow](./src/mlflow)                                         | v2.20.2             |
-| [MoltBot](./apps/moltbot)                                      | main                |
+| [OpenClaw](./apps/openclaw)                                    | 2026.2.3            |
 | [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)   | 8.2.3               |
 | [MongoDB ReplicaSet](./src/mongodb-replicaset)                 | 8.2.3               |
 | [MongoDB Standalone](./src/mongodb-standalone)                 | 8.2.3               |
@@ -140,6 +141,7 @@ These services require building custom Docker images from source.
 | [Ollama](./src/ollama)                                         | 0.14.3              |
 | [Open WebUI](./src/open-webui)                                 | main                |
 | [Phoenix (Arize)](./src/phoenix)                               | 13.19.2             |
+| [Pingap](./src/pingap)                                         | 0.12.7-full         |
 | [Pingora Proxy Manager](./src/pingora-proxy-manager)           | v1.0.3              |
 | [Open WebUI Rust](./src/open-webui-rust)                       | latest              |
 | [OpenCode](./src/opencode)                                     | 1.1.27              |
@@ -185,6 +187,7 @@ These services require building custom Docker images from source.
 | [TiKV](./src/tikv)                                             | v8.5.0              |
 | [Trigger.dev](./src/trigger-dev)                               | v4.2.0              |
 | [TrailBase](./src/trailbase)                                   | 0.22.4              |
+| [TurboOCR](./src/turboocr)                                     | v2.1.1              |
 | [Valkey Cluster](./src/valkey-cluster)                         | 8.0                 |
 | [Valkey](./src/valkey)                                         | 8.0                 |
 | [Verdaccio](./src/verdaccio)                                   | 6.1.2               |

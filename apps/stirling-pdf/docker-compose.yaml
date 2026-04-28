@@ -11,7 +11,7 @@ services:
     <<: *defaults
     image: ${GLOBAL_REGISTRY:-}stirlingtools/stirling-pdf:${STIRLING_VERSION:-latest}
     ports:
-      - '${PORT_OVERRIDE:-8080}:8080'
+      - '${STIRLING_PORT_OVERRIDE:-8080}:8080'
     volumes:
       - stirling_trainingData:/usr/share/tessdata
       - stirling_configs:/configs

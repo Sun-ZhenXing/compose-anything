@@ -1,0 +1,71 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  turboocr:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-ghcr.io/}aiptimizer/turboocr:${TURBOOCR_VERSION:-v2.1.1}
+    ports:
+      - '${TURBOOCR_HTTP_PORT_OVERRIDE:-8000}:8000'
+      - '${TURBOOCR_GRPC_PORT_OVERRIDE:-50051}:50051'
+    volumes:
+      # Named volume caches TensorRT engines built from ONNX on first start (~90s).
+      # Must be a named volume - bind-mounting an empty host dir would shadow the
+      # baked-in language bundles and prevent the server from loading models.
+      - turboocr_trt_cache:/home/ocr/.cache/turbo-ocr
+    environment:
+      - TZ=${TZ:-UTC}
+      # Language bundle: latin (default), chinese, greek, eslav, arabic, korean, thai
+      - OCR_LANG=${TURBOOCR_LANG:-}
+      # Set to 1 with OCR_LANG=chinese to use the 84MB server rec instead of 16MB mobile
+      - OCR_SERVER=${TURBOOCR_SERVER:-}
+      # Concurrent GPU pipelines (~1.4 GB VRAM each); empty = auto
+      - PIPELINE_POOL_SIZE=${TURBOOCR_PIPELINE_POOL_SIZE:-}
+      # Set to 1 to disable PP-DocLayoutV3 layout detection (saves ~300-500 MB VRAM)
+      - DISABLE_LAYOUT=${TURBOOCR_DISABLE_LAYOUT:-0}
+      # Default PDF mode: ocr (safest) / geometric / auto / auto_verified
+      - ENABLE_PDF_MODE=${TURBOOCR_PDF_MODE:-ocr}
+      # Skip angle classifier (~0.4ms savings)
+      - DISABLE_ANGLE_CLS=${TURBOOCR_DISABLE_ANGLE_CLS:-0}
+      # Max detection input size
+      - DET_MAX_SIDE=${TURBOOCR_DET_MAX_SIDE:-960}
+      # PDF render parallelism
+      - PDF_DAEMONS=${TURBOOCR_PDF_DAEMONS:-16}
+      - PDF_WORKERS=${TURBOOCR_PDF_WORKERS:-4}
+      # Maximum pages per PDF request
+      - MAX_PDF_PAGES=${TURBOOCR_MAX_PDF_PAGES:-2000}
+      # Log level: debug / info / warn / error
+      - LOG_LEVEL=${TURBOOCR_LOG_LEVEL:-info}
+      # Log format: json (structured) / text (human-readable)
+      - LOG_FORMAT=${TURBOOCR_LOG_FORMAT:-json}
+    healthcheck:
+      test: [CMD, curl, -fsS, 'http://localhost:8000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      # First start builds TensorRT engines from ONNX. Build time varies by GPU:
+      # ~5 min on high-end desktop GPUs, 20-30 min on laptop GPUs. The container
+      # may show "unhealthy" during compilation but will become healthy once done.
+      # Subsequent restarts reuse the cached engines and start in seconds.
+      start_period: 30m
+    deploy:
+      resources:
+        limits:
+          cpus: ${TURBOOCR_CPU_LIMIT:-8.0}
+          memory: ${TURBOOCR_MEMORY_LIMIT:-12G}
+        reservations:
+          cpus: ${TURBOOCR_CPU_RESERVATION:-2.0}
+          memory: ${TURBOOCR_MEMORY_RESERVATION:-4G}
+          devices:
+            - driver: nvidia
+              count: ${TURBOOCR_GPU_COUNT:-1}
+              capabilities: [gpu]
+    shm_size: ${TURBOOCR_SHM_SIZE:-2g}
+
+volumes:
+  turboocr_trt_cache:

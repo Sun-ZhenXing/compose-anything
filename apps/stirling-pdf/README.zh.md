@@ -13,7 +13,7 @@
 | 变量名               | 说明                   | 默认值         |
 | -------------------- | ---------------------- | -------------- |
 | STIRLING_VERSION     | Stirling-PDF 镜像版本  | `latest`       |
-| PORT_OVERRIDE        | 主机端口映射           | `8080`         |
+| STIRLING_PORT_OVERRIDE | 主机端口映射           | `8080`         |
 | ENABLE_SECURITY      | 启用安全功能           | `false`        |
 | ENABLE_LOGIN         | 启用登录功能           | `false`        |
 | INITIAL_USERNAME     | 初始管理员用户名       | `admin`        |

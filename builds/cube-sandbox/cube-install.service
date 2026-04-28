@@ -1,0 +1,24 @@
+[Unit]
+Description=CubeSandbox one-click installer
+# Requires both the XFS volume and dockerd to be ready before running.
+# install.sh will pull Docker images (MySQL, Redis, CubeProxy, CoreDNS)
+# and then register Cubelet / CubeAPI / CubeMaster / network-agent as
+# systemd units via `systemctl enable --now`.
+After=docker.service cube-xfs-mount.service
+Requires=docker.service cube-xfs-mount.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=-/etc/cube-sandbox.env
+ExecStart=/usr/local/bin/cube-install.sh
+# First boot downloads ~400 MB + pulls several Docker images; allow 30 min.
+TimeoutStartSec=1800
+# Retry on transient network failures (e.g. download interrupted).
+Restart=on-failure
+RestartSec=30s
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
