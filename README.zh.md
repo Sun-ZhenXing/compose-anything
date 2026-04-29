@@ -42,6 +42,7 @@ docker compose exec redis redis-cli ping
 | [Multica](./builds/multica)                 | v0.1.32 |
 | [OpenFang](./builds/openfang)               | 0.1.0   |
 | [Paperclip](./builds/paperclip)             | main    |
+| [TurboOCR](./builds/turboocr)               | v2.1.1  |
 
 ## 已经支持的服务
 

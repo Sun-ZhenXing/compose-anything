@@ -1,0 +1,118 @@
+# ============================================================
+# TurboOCR — CUDA 12.x build (TensorRT 10.8 / CUDA 12.7)
+# Base image: nvcr.io/nvidia/tensorrt:24.12-py3
+#
+# Supported compute capabilities (NVIDIA GPU reference):
+#   https://developer.nvidia.com/cuda-gpus
+#   7.5  Turing     — GTX 16xx / RTX 20xx
+#   8.0  Ampere     — A100, RTX 30xx server-class
+#   8.6  Ampere     — RTX 30xx desktop / laptop
+#   8.9  Ada        — RTX 40xx
+#
+# Blackwell (CC 12.0) requires CUDA 13.x.
+# For that, use the upstream docker/Dockerfile.gpu (tensorrt:26.03-py3).
+#
+# Build:  docker build -f Dockerfile.cuda12 -t turboocr-cuda12 .
+# ============================================================
+
+ARG TURBOOCR_VERSION=v2.1.1
+ARG CMAKE_VERSION=3.31.6
+ARG ORT_VERSION=1.22.0
+# NGC registry mirror prefix — leave empty for direct pull from nvcr.io.
+# Note: standard Docker Hub mirrors (e.g. DaoCloud) do NOT proxy nvcr.io.
+# Set this only if you have a dedicated NGC mirror or a pull-through proxy.
+ARG NGC_MIRROR=
+
+FROM ${NGC_MIRROR}nvcr.io/nvidia/tensorrt:24.12-py3
+
+# Re-declare ARGs after FROM so they remain in scope
+ARG TURBOOCR_VERSION
+ARG CMAKE_VERSION
+ARG ORT_VERSION
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    pkg-config \
+    libopencv-dev \
+    nginx \
+    gosu \
+    libgrpc++-dev \
+    libprotobuf-dev \
+    protobuf-compiler-grpc \
+    libjsoncpp-dev \
+    uuid-dev \
+    zlib1g-dev \
+    libssl-dev \
+    libc-ares-dev \
+    git \
+    wget \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Drogon HTTP framework (async, epoll-based)
+RUN cd /tmp && \
+    git clone --depth 1 --branch v1.9.12 https://github.com/drogonframework/drogon.git && \
+    cd drogon && git submodule update --init && \
+    mkdir build && cd build && \
+    cmake .. -DBUILD_EXAMPLES=OFF -DBUILD_CTL=OFF -DBUILD_ORM=OFF \
+             -DBUILD_POSTGRESQL=OFF -DBUILD_MYSQL=OFF -DBUILD_SQLITE=OFF \
+             -DBUILD_REDIS=OFF -DBUILD_TESTING=OFF && \
+    make -j$(nproc) && make install && \
+    rm -rf /tmp/drogon
+
+# Upgrade CMake (the base image may ship an older version)
+RUN cd /tmp && \
+    wget -q "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz" && \
+    tar xzf "cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz" && \
+    cp -r "cmake-${CMAKE_VERSION}-linux-x86_64/bin/"* /usr/local/bin/ && \
+    cp -r "cmake-${CMAKE_VERSION}-linux-x86_64/share/"* /usr/local/share/ && \
+    rm -rf /tmp/cmake*
+
+# Install ONNX Runtime C++ SDK (used by the CPU inference fallback path)
+RUN cd /tmp && \
+    wget -q "https://github.com/microsoft/onnxruntime/releases/download/v${ORT_VERSION}/onnxruntime-linux-x64-${ORT_VERSION}.tgz" && \
+    tar xzf "onnxruntime-linux-x64-${ORT_VERSION}.tgz" && \
+    cp -r "onnxruntime-linux-x64-${ORT_VERSION}/include/"* /usr/local/include/ && \
+    cp "onnxruntime-linux-x64-${ORT_VERSION}/lib/libonnxruntime.so"* /usr/local/lib/ && \
+    ldconfig && rm -rf /tmp/onnxruntime*
+
+# Clone TurboOCR at the pinned release tag
+RUN git clone --depth 1 --branch "${TURBOOCR_VERSION}" \
+    https://github.com/aiptimizer/TurboOCR.git /app
+
+WORKDIR /app
+
+# Install fastpdf2png (PDF renderer — PDFium vendored in third_party/)
+RUN bash scripts/install_fastpdf2png.sh && \
+    cp bin/libpdfium.so /usr/lib/ && ldconfig
+
+# Build GPU mode.
+# - CUDA_ARCHITECTURES: 7.5-8.9 covers Turing through Ada Lovelace under CUDA 12.x.
+#   CC 12.0 (Blackwell) is excluded — it requires CUDA 13.x.
+# - TENSORRT_DIR: /usr/local/tensorrt is the cmake default and matches the 24.12-py3
+#   base image layout. No override needed (upstream 26.03 uses /usr/lib/x86_64-linux-gnu).
+# - FETCH_MODELS=OFF: models are fetched in a separate layer below for better caching.
+RUN mkdir -p build && cd build && \
+    cmake .. \
+      -DFETCH_MODELS=OFF \
+      -DCMAKE_CUDA_ARCHITECTURES="75;80;86;89" \
+    && make -j$(nproc)
+
+# Create non-root user and redirect /app/models/rec into the named cache volume.
+# TRT engines built at first start are persisted via: -v turboocr_cache:/home/ocr/.cache/turbo-ocr
+RUN useradd -m -s /bin/bash ocr \
+    && chmod +x /app/scripts/entrypoint.sh \
+    && mkdir -p /home/ocr/.cache/turbo-ocr/models/rec /app/models \
+    && ln -s /home/ocr/.cache/turbo-ocr/models/rec /app/models/rec
+
+# Fetch all PP-OCRv5 language bundles (SHA256-verified from pinned GitHub Release)
+ARG OCR_INCLUDE_SERVER=1
+ENV OCR_INCLUDE_SERVER=${OCR_INCLUDE_SERVER}
+RUN bash scripts/fetch_release_models.sh \
+    && chown -R ocr:ocr /app /home/ocr/.cache
+
+EXPOSE 8000 50051
+
+ENTRYPOINT ["/app/scripts/entrypoint.sh"]
+CMD ["./build/paddle_highspeed_cpp"]

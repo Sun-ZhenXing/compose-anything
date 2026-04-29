@@ -14,7 +14,7 @@ services:
       - '${TURBOOCR_HTTP_PORT_OVERRIDE:-8000}:8000'
       - '${TURBOOCR_GRPC_PORT_OVERRIDE:-50051}:50051'
     volumes:
-      # Named volume caches TensorRT engines built from ONNX on first start (~90s).
+      # Named volume caches TensorRT engines built from ONNX on first start.
       # Must be a named volume - bind-mounting an empty host dir would shadow the
       # baked-in language bundles and prevent the server from loading models.
       - turboocr_trt_cache:/home/ocr/.cache/turbo-ocr
@@ -48,11 +48,13 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-      # First start builds TensorRT engines from ONNX. Build time varies by GPU:
-      # ~5 min on high-end desktop GPUs, 20-30 min on laptop GPUs. The container
-      # may show "unhealthy" during compilation but will become healthy once done.
-      # Subsequent restarts reuse the cached engines and start in seconds.
-      start_period: 30m
+      # First start builds 4 TensorRT engines from ONNX. Measured build times:
+      #   det (~5 min) + rec (~30 min) + cls (~4 min) + layout (~28 min) ≈ 67-90 min
+      # on an RTX 3070 Laptop. High-end desktop GPUs finish in ~15 min.
+      # Set TURBOOCR_DISABLE_LAYOUT=1 to skip the layout engine and cut ~28 min.
+      # The container shows "unhealthy" while building but recovers once done.
+      # Subsequent restarts reuse cached engines and start in seconds.
+      start_period: 120m
     deploy:
       resources:
         limits:

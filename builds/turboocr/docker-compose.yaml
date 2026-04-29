@@ -1,0 +1,110 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: ${TURBOOCR_LOG_MAX_SIZE:-100m}
+      max-file: '${TURBOOCR_LOG_MAX_FILE:-3}'
+
+x-turboocr-common: &turboocr-common
+  <<: *defaults
+  ports:
+    - '${TURBOOCR_HTTP_PORT_OVERRIDE:-8000}:8000'
+    - '${TURBOOCR_GRPC_PORT_OVERRIDE:-50051}:50051'
+  volumes:
+    # Named volume persists TRT engines (GPU) or ONNX model cache (CPU).
+    # Must be a named volume — bind-mounting an empty host dir shadows the
+    # baked-in language bundles and prevents the server from loading models.
+    - turboocr_build_cache:/home/ocr/.cache/turbo-ocr
+  environment:
+    - TZ=${TZ:-UTC}
+    # Language bundle: latin (default), chinese, greek, eslav, arabic, korean, thai
+    - OCR_LANG=${TURBOOCR_LANG:-}
+    # Set to 1 with OCR_LANG=chinese to use the 84 MB server rec model
+    - OCR_SERVER=${TURBOOCR_SERVER:-}
+    # Concurrent GPU pipelines (~1.4 GB VRAM each); empty = auto; ignored in CPU mode
+    - PIPELINE_POOL_SIZE=${TURBOOCR_PIPELINE_POOL_SIZE:-}
+    # Set to 1 to disable PP-DocLayoutV3 layout detection (saves ~300-500 MB VRAM)
+    - DISABLE_LAYOUT=${TURBOOCR_DISABLE_LAYOUT:-0}
+    # Default PDF mode: ocr (safest) / geometric / auto / auto_verified
+    - ENABLE_PDF_MODE=${TURBOOCR_PDF_MODE:-ocr}
+    # Skip angle classifier (~0.4 ms savings)
+    - DISABLE_ANGLE_CLS=${TURBOOCR_DISABLE_ANGLE_CLS:-0}
+    # Max detection input size in pixels
+    - DET_MAX_SIDE=${TURBOOCR_DET_MAX_SIDE:-960}
+    # PDF render parallelism
+    - PDF_DAEMONS=${TURBOOCR_PDF_DAEMONS:-16}
+    - PDF_WORKERS=${TURBOOCR_PDF_WORKERS:-4}
+    # Maximum pages per PDF request
+    - MAX_PDF_PAGES=${TURBOOCR_MAX_PDF_PAGES:-2000}
+    # Log level: debug / info / warn / error
+    - LOG_LEVEL=${TURBOOCR_LOG_LEVEL:-info}
+    # Log format: json (structured) / text (human-readable)
+    - LOG_FORMAT=${TURBOOCR_LOG_FORMAT:-json}
+
+services:
+  turboocr-cuda12:
+    <<: *turboocr-common
+    profiles: [gpu]
+    build:
+      context: .
+      dockerfile: Dockerfile.cuda12
+      args:
+        TURBOOCR_VERSION: ${TURBOOCR_VERSION:-v2.1.1}
+        NGC_MIRROR: ${TURBOOCR_NGC_MIRROR:-}
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/turboocr-cuda12:${TURBOOCR_VERSION:-v2.1.1}
+    healthcheck:
+      test: [CMD, curl, -fsS, 'http://localhost:8000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      # First start builds 4 TensorRT engines from ONNX. Measured times on an
+      # RTX 3070 Laptop: det (~5 min) + rec (~30 min) + cls (~4 min) +
+      # layout (~28 min) = ~67-90 min. High-end desktop GPUs finish in ~15 min.
+      # Set TURBOOCR_DISABLE_LAYOUT=1 to skip layout and save ~28 min.
+      # Subsequent restarts reuse the cached engines and start in seconds.
+      start_period: 120m
+    deploy:
+      resources:
+        limits:
+          cpus: ${TURBOOCR_CPU_LIMIT:-8.0}
+          memory: ${TURBOOCR_MEMORY_LIMIT:-12G}
+        reservations:
+          cpus: ${TURBOOCR_CPU_RESERVATION:-2.0}
+          memory: ${TURBOOCR_MEMORY_RESERVATION:-4G}
+          devices:
+            - driver: nvidia
+              count: ${TURBOOCR_GPU_COUNT:-1}
+              capabilities: [gpu]
+    shm_size: ${TURBOOCR_SHM_SIZE:-2g}
+
+  turboocr-cpu:
+    <<: *turboocr-common
+    profiles: [cpu]
+    build:
+      context: .
+      dockerfile: Dockerfile.cpu
+      args:
+        TURBOOCR_VERSION: ${TURBOOCR_VERSION:-v2.1.1}
+        DOCKER_MIRROR: ${TURBOOCR_DOCKER_MIRROR:-}
+    image: ${GLOBAL_REGISTRY:-}alexsuntop/turboocr-cpu:${TURBOOCR_VERSION:-v2.1.1}
+    healthcheck:
+      test: [CMD, curl, -fsS, 'http://localhost:8000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      # CPU mode uses ONNX Runtime directly — no TRT compilation on first start.
+      # Expect startup in under 60 s on most hardware.
+      start_period: 2m
+    deploy:
+      resources:
+        limits:
+          cpus: ${TURBOOCR_CPU_LIMIT:-8.0}
+          memory: ${TURBOOCR_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${TURBOOCR_CPU_RESERVATION:-2.0}
+          memory: ${TURBOOCR_MEMORY_RESERVATION:-1G}
+    shm_size: ${TURBOOCR_SHM_SIZE:-512m}
+
+volumes:
+  turboocr_build_cache:

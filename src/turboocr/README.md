@@ -52,7 +52,9 @@ Copy `.env.example` to `.env` and override only the variables you need to change
 docker compose up -d
 ```
 
-The first start builds TensorRT engines from ONNX. Build time depends on your GPU: roughly 5 minutes on high-end desktop GPUs and 20–30 minutes on laptop GPUs. The container may report `unhealthy` while compilation is in progress — this is normal. Once the build finishes the server starts and the container transitions to `healthy`. Subsequent restarts reuse the cached engines and start in seconds.
+The first start builds 4 TensorRT engines from ONNX. Measured build times on an RTX 3070 Laptop: det (~5 min) + rec (~30 min) + cls (~4 min) + layout (~28 min) = **~67–90 minutes total**. High-end desktop GPUs finish in ~15 minutes. The container reports `unhealthy` while compilation is in progress — this is expected. Once all engines are built the server starts and the container transitions to `healthy`. Subsequent restarts reuse the cached engines and start in seconds.
+
+> **Tip — faster first boot:** Set `TURBOOCR_DISABLE_LAYOUT=1` to skip the layout detection engine (~28 min on laptop GPUs). Only do this if you don't need the `?layout=1` PDF endpoint.
 
 ### Endpoints
 
