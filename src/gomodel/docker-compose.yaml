@@ -1,0 +1,63 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  gomodel:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}enterpilot/gomodel:${GOMODEL_VERSION:-0.1.25}
+    ports:
+      - '${GOMODEL_PORT_OVERRIDE:-8080}:8080'
+    volumes:
+      - gomodel_data:/app/data
+      - gomodel_cache:/app/.cache
+    read_only: true
+    cap_drop:
+      - ALL
+    environment:
+      - TZ=${TZ:-UTC}
+      # Storage backend: sqlite (default), postgresql, or mongodb
+      - STORAGE_TYPE=${GOMODEL_STORAGE_TYPE:-sqlite}
+      - SQLITE_PATH=/app/data/gomodel.db
+      # Master key for API authentication — strongly recommended for production;
+      # leave empty to run in unsafe/open mode (local evaluation only)
+      - GOMODEL_MASTER_KEY=${GOMODEL_MASTER_KEY:-}
+      # Enable full audit logging of requests and responses to storage
+      - LOGGING_ENABLED=${GOMODEL_LOGGING_ENABLED:-false}
+      # Provider API keys — set at least one; unused entries are safely ignored
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - XAI_API_KEY=${XAI_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - ZAI_API_KEY=${ZAI_API_KEY:-}
+      # Ollama / vLLM base URLs (no key required for default local setups)
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-}
+      - VLLM_BASE_URL=${VLLM_BASE_URL:-}
+    # The image is built on distroless/static-debian12:nonroot which ships no
+    # shell, wget, or curl. /gomodel --version exits 0 while the binary is
+    # alive and serves as a process-level liveness probe.
+    healthcheck:
+      test: [CMD, /gomodel, --version]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: ${GOMODEL_CPU_LIMIT:-1.00}
+          memory: ${GOMODEL_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${GOMODEL_CPU_RESERVATION:-0.25}
+          memory: ${GOMODEL_MEMORY_RESERVATION:-128M}
+
+volumes:
+  gomodel_data:
+  gomodel_cache:
