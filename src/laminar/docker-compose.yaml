@@ -1,0 +1,262 @@
+# Laminar - Open-source observability platform for AI agents
+# https://laminar.sh/
+# https://github.com/lmnr-ai/lmnr
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}postgres:${LAMINAR_POSTGRES_VERSION:-16-alpine}
+    environment:
+      - TZ=${TZ:-UTC}
+      - POSTGRES_USER=${LAMINAR_POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${LAMINAR_POSTGRES_PASSWORD:-postgres_password}
+      - POSTGRES_DB=${LAMINAR_POSTGRES_DB:-laminar}
+    volumes:
+      - laminar_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD
+        - pg_isready
+        - -U
+        - ${LAMINAR_POSTGRES_USER:-postgres}
+        - -d
+        - ${LAMINAR_POSTGRES_DB:-laminar}
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LAMINAR_POSTGRES_CPU_LIMIT:-1.0}
+          memory: ${LAMINAR_POSTGRES_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${LAMINAR_POSTGRES_CPU_RESERVATION:-0.25}
+          memory: ${LAMINAR_POSTGRES_MEMORY_RESERVATION:-256M}
+
+  clickhouse:
+    <<: *defaults
+    # Version 26.3 will break queries on the spans_v0 view, if they are
+    # not filtered by trace_id and/or ordered by start_time. This is a
+    # known bug, tracking https://github.com/ClickHouse/ClickHouse/pull/101218.
+    # We will pin to the earliest stable version once this is fixed
+    image: ${GLOBAL_REGISTRY:-}clickhouse/clickhouse-server:${LAMINAR_CLICKHOUSE_VERSION:-latest}
+    environment:
+      - TZ=${TZ:-UTC}
+      - CLICKHOUSE_USER=${LAMINAR_CLICKHOUSE_USER:-clickhouse}
+      - CLICKHOUSE_PASSWORD=${LAMINAR_CLICKHOUSE_PASSWORD:-clickhouse_password}
+    volumes:
+      - laminar_clickhouse_data:/var/lib/clickhouse
+      - laminar_clickhouse_logs:/var/log/clickhouse-server
+      - ./clickhouse-profiles-config.xml:/etc/clickhouse-server/users.d/lmnar.xml:ro
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:8123/ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LAMINAR_CLICKHOUSE_CPU_LIMIT:-2.0}
+          memory: ${LAMINAR_CLICKHOUSE_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${LAMINAR_CLICKHOUSE_CPU_RESERVATION:-0.5}
+          memory: ${LAMINAR_CLICKHOUSE_MEMORY_RESERVATION:-512M}
+
+  quickwit:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}quickwit/quickwit:${LAMINAR_QUICKWIT_VERSION:-v0.8.2}
+    command:
+      - run
+    environment:
+      - TZ=${TZ:-UTC}
+      - QW_DATA_DIR=/quickwit/qwdata
+    volumes:
+      - laminar_quickwit_data:/quickwit/qwdata
+    ports:
+      - '${LAMINAR_QUICKWIT_PORT_OVERRIDE:-7280}:7280'
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:7280/health/livez
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LAMINAR_QUICKWIT_CPU_LIMIT:-1.0}
+          memory: ${LAMINAR_QUICKWIT_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${LAMINAR_QUICKWIT_CPU_RESERVATION:-0.25}
+          memory: ${LAMINAR_QUICKWIT_MEMORY_RESERVATION:-256M}
+
+  query-engine:
+    <<: *defaults
+    image: ${LAMINAR_QUERY_ENGINE_REGISTRY:-ghcr.io/lmnr-ai/}query-engine:${LAMINAR_QUERY_ENGINE_VERSION:-latest}
+    environment:
+      - TZ=${TZ:-UTC}
+      - PORT=8903
+    ports:
+      - '${LAMINAR_QUERY_ENGINE_PORT_OVERRIDE:-8903}:8903'
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:8903/health
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LAMINAR_QUERY_ENGINE_CPU_LIMIT:-1.0}
+          memory: ${LAMINAR_QUERY_ENGINE_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${LAMINAR_QUERY_ENGINE_CPU_RESERVATION:-0.25}
+          memory: ${LAMINAR_QUERY_ENGINE_MEMORY_RESERVATION:-128M}
+
+  app-server:
+    <<: *defaults
+    image: ${LAMINAR_APP_SERVER_REGISTRY:-ghcr.io/lmnr-ai/}app-server:${LAMINAR_APP_SERVER_VERSION:-latest}
+    environment:
+      - TZ=${TZ:-UTC}
+      - PORT=8000
+      - GRPC_PORT=8001
+      - RT_PORT=8002
+      - DATABASE_URL=postgres://${LAMINAR_POSTGRES_USER:-postgres}:${LAMINAR_POSTGRES_PASSWORD:-postgres_password}@postgres:5432/${LAMINAR_POSTGRES_DB:-laminar}
+      - SHARED_SECRET_TOKEN=${LAMINAR_SHARED_SECRET_TOKEN:-shared_secret}
+      - CLICKHOUSE_URL=http://clickhouse:8123
+      - CLICKHOUSE_USER=${LAMINAR_CLICKHOUSE_USER:-clickhouse}
+      - CLICKHOUSE_PASSWORD=${LAMINAR_CLICKHOUSE_PASSWORD:-clickhouse_password}
+      - CLICKHOUSE_RO_USER=${LAMINAR_CLICKHOUSE_USER:-clickhouse}
+      - CLICKHOUSE_RO_PASSWORD=${LAMINAR_CLICKHOUSE_PASSWORD:-clickhouse_password}
+      - ENVIRONMENT=LITE
+      - AEAD_SECRET_KEY=${LAMINAR_AEAD_SECRET_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+      - QUERY_ENGINE_URL=http://query-engine:8903
+      - QUICKWIT_SEARCH_URL=http://quickwit:7280
+      - QUICKWIT_INGEST_URL=http://quickwit:7281
+      - QUICKWIT_SPANS_INDEX_ID=spans_v2
+      - GOOGLE_GENERATIVE_AI_API_KEY=${LAMINAR_GOOGLE_GENERATIVE_AI_API_KEY:-}
+    ports:
+      - '${LAMINAR_APP_SERVER_PORT_OVERRIDE:-8000}:8000'
+      - '${LAMINAR_APP_SERVER_GRPC_PORT_OVERRIDE:-8001}:8001'
+      - '${LAMINAR_APP_SERVER_RT_PORT_OVERRIDE:-8002}:8002'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      quickwit:
+        condition: service_healthy
+      query-engine:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:8000/health
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LAMINAR_APP_SERVER_CPU_LIMIT:-2.0}
+          memory: ${LAMINAR_APP_SERVER_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${LAMINAR_APP_SERVER_CPU_RESERVATION:-0.5}
+          memory: ${LAMINAR_APP_SERVER_MEMORY_RESERVATION:-512M}
+
+  frontend:
+    <<: *defaults
+    image: ${LAMINAR_FRONTEND_REGISTRY:-ghcr.io/lmnr-ai/}frontend:${LAMINAR_FRONTEND_VERSION:-latest}
+    environment:
+      - TZ=${TZ:-UTC}
+      - PORT=5667
+      - DATABASE_URL=postgres://${LAMINAR_POSTGRES_USER:-postgres}:${LAMINAR_POSTGRES_PASSWORD:-postgres_password}@postgres:5432/${LAMINAR_POSTGRES_DB:-laminar}
+      - BACKEND_URL=http://app-server:8000
+      - BACKEND_RT_URL=http://app-server:8002
+      - SHARED_SECRET_TOKEN=${LAMINAR_SHARED_SECRET_TOKEN:-shared_secret}
+      - NEXTAUTH_URL=${LAMINAR_NEXTAUTH_URL:-http://localhost:5667}
+      - NEXTAUTH_SECRET=${LAMINAR_NEXTAUTH_SECRET:-nextauth_secret_change_in_production}
+      - NEXT_PUBLIC_URL=${LAMINAR_NEXT_PUBLIC_URL:-http://localhost:5667}
+      - ENVIRONMENT=LITE
+      - CLICKHOUSE_URL=http://clickhouse:8123
+      - CLICKHOUSE_USER=${LAMINAR_CLICKHOUSE_USER:-clickhouse}
+      - CLICKHOUSE_PASSWORD=${LAMINAR_CLICKHOUSE_PASSWORD:-clickhouse_password}
+      - CLICKHOUSE_RO_USER=${LAMINAR_CLICKHOUSE_USER:-clickhouse}
+      - CLICKHOUSE_RO_PASSWORD=${LAMINAR_CLICKHOUSE_PASSWORD:-clickhouse_password}
+      - QUICKWIT_SEARCH_URL=http://quickwit:7280
+      - OPENAI_API_KEY=${LAMINAR_OPENAI_API_KEY:-}
+      - AEAD_SECRET_KEY=${LAMINAR_AEAD_SECRET_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+      - GOOGLE_GENERATIVE_AI_API_KEY=${LAMINAR_GOOGLE_GENERATIVE_AI_API_KEY:-}
+    ports:
+      - '${LAMINAR_FRONTEND_PORT_OVERRIDE:-5667}:5667'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      quickwit:
+        condition: service_healthy
+      query-engine:
+        condition: service_healthy
+      app-server:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:5667/api/health
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${LAMINAR_FRONTEND_CPU_LIMIT:-1.0}
+          memory: ${LAMINAR_FRONTEND_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${LAMINAR_FRONTEND_CPU_RESERVATION:-0.25}
+          memory: ${LAMINAR_FRONTEND_MEMORY_RESERVATION:-256M}
+
+volumes:
+  laminar_postgres_data:
+  laminar_clickhouse_data:
+  laminar_clickhouse_logs:
+  laminar_quickwit_data:

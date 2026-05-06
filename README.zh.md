@@ -104,6 +104,7 @@ docker compose exec redis redis-cli ping
 | [Kodbox](./src/kodbox)                                         | 1.62                |
 | [Kong](./src/kong)                                             | 3.8.0               |
 | [Langflow](./apps/langflow)                                    | latest              |
+| [Laminar](./src/laminar)                                       | latest              |
 | [Langfuse](./apps/langfuse)                                    | 3.115.0             |
 | [Letta](./src/letta)                                           | 0.16.7              |
 | [LibreChat](./apps/librechat)                                  | v0.8.4              |

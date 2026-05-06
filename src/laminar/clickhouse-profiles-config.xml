@@ -1,0 +1,18 @@
+<clickhouse>
+    <profiles>
+        <default>
+            <async_insert>1</async_insert>
+            <async_insert_busy_timeout_ms>1000</async_insert_busy_timeout_ms>
+            <async_insert_max_data_size>1048576</async_insert_max_data_size>
+            <wait_for_async_insert>0</wait_for_async_insert>
+        </default>
+        <readonly>
+            <readonly>1</readonly>
+        </readonly>
+    </profiles>
+    <users>
+        <default>
+            <profile>default</profile>
+        </default>
+    </users>
+</clickhouse>
