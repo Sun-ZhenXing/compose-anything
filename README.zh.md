@@ -88,7 +88,7 @@ docker compose exec redis redis-cli ping
 | [Gitea](./src/gitea)                                           | 1.25.4-rootless     |
 | [GitLab Runner](./src/gitlab-runner)                           | 17.10.1             |
 | [GitLab](./src/gitlab)                                         | 18.8.3-ce.0         |
-| [GoModel](./src/gomodel)                                       | v0.1.25             |
+| [GoModel](./src/gomodel)                                       | v0.1.27             |
 | [GPUStack](./src/gpustack)                                     | v0.5.3              |
 | [Grafana](./src/grafana)                                       | 12.3.2              |
 | [Grafana Loki](./src/loki)                                     | 3.3.2               |

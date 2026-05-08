@@ -14,7 +14,7 @@
 docker compose up -d
 ```
 
-服务启动后可通过 `http://localhost:8080` 访问。默认以开放（无鉴权）模式运行，使用 SQLite 存储，且未配置任何提供商密钥。
+服务启动后可通过 `http://localhost:8080` 访问。**GoModel 启动必须配置至少一个 Provider 凭据**，若未配置任何提供商，服务将在启动时直接退出。默认以开放（无鉴权）模式运行，使用 SQLite 存储。
 
 接入真实流量，请先从示例文件创建 `.env` 并填入至少一个提供商凭据：
 
@@ -46,7 +46,7 @@ curl http://localhost:8080/v1/chat/completions \
 
 | 变量                      | 默认值   | 说明                                             |
 | ------------------------- | -------- | ------------------------------------------------ |
-| `GOMODEL_VERSION`         | `0.1.25` | Docker 镜像版本                                  |
+| `GOMODEL_VERSION`         | `0.1.27` | Docker 镜像版本                                  |
 | `GOMODEL_PORT_OVERRIDE`   | `8080`   | API 宿主机端口                                   |
 | `GOMODEL_MASTER_KEY`      | _（空）_ | API 鉴权密钥——**向本机以外的网络暴露时必须设置** |
 | `GOMODEL_STORAGE_TYPE`    | `sqlite` | 存储后端：`sqlite`、`postgresql` 或 `mongodb`    |

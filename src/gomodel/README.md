@@ -14,7 +14,7 @@
 docker compose up -d
 ```
 
-The gateway is available at `http://localhost:8080`. By default it starts in open (unauthenticated) mode with SQLite storage and no provider keys configured.
+The gateway is available at `http://localhost:8080`. **At least one provider credential is required** for GoModel to start — the gateway will exit immediately if no provider is configured. It runs in open (unauthenticated) mode with SQLite storage by default.
 
 To route real traffic, create a `.env` file from the example and add at least one provider credential:
 
@@ -46,7 +46,7 @@ List available models: `http://localhost:8080/v1/models`
 
 | Variable                  | Default   | Description                                                        |
 | ------------------------- | --------- | ------------------------------------------------------------------ |
-| `GOMODEL_VERSION`         | `0.1.25`  | Docker image version                                               |
+| `GOMODEL_VERSION`         | `0.1.27`  | Docker image version                                               |
 | `GOMODEL_PORT_OVERRIDE`   | `8080`    | Host port for the API                                              |
 | `GOMODEL_MASTER_KEY`      | _(empty)_ | API authentication key — **set this for any non-local deployment** |
 | `GOMODEL_STORAGE_TYPE`    | `sqlite`  | Storage backend: `sqlite`, `postgresql`, or `mongodb`              |
