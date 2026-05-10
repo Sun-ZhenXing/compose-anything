@@ -11,7 +11,7 @@ x-defaults: &defaults
 
 x-phoenix-common: &phoenix-common
   <<: *defaults
-  image: ${GLOBAL_REGISTRY:-}arizephoenix/phoenix:${PHOENIX_VERSION:-13.19.2}
+  image: ${GLOBAL_REGISTRY:-}arizephoenix/phoenix:${PHOENIX_VERSION:-15.5.0}
   ports:
     - '${PHOENIX_PORT_OVERRIDE:-6006}:6006' # UI and OTLP HTTP collector
     - '${PHOENIX_GRPC_PORT_OVERRIDE:-4317}:4317' # OTLP gRPC collector
@@ -50,7 +50,7 @@ services:
     environment:
       - TZ=${TZ:-UTC}
       - PHOENIX_ENABLE_PROMETHEUS=${PHOENIX_ENABLE_PROMETHEUS:-false}
-      - PHOENIX_SECRET=${PHOENIX_SECRET:-}
+      - PHOENIX_SECRET=${PHOENIX_SECRET:-NOT_SECURE_0fdf298eefb2ceef8ab3d7bd5319060e} # Default secret for SQLite, should be overridden in production
       - PHOENIX_WORKING_DIR=/data
     volumes:
       - phoenix_data:/data
@@ -63,7 +63,7 @@ services:
     environment:
       - TZ=${TZ:-UTC}
       - PHOENIX_ENABLE_PROMETHEUS=${PHOENIX_ENABLE_PROMETHEUS:-false}
-      - PHOENIX_SECRET=${PHOENIX_SECRET:-}
+      - PHOENIX_SECRET=${PHOENIX_SECRET:-NOT_SECURE_0fdf298eefb2ceef8ab3d7bd5319060e} # Default secret for PostgreSQL, should be overridden in production
       - PHOENIX_SQL_DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@phoenix-db:5432/${POSTGRES_DB:-phoenix}
     depends_on:
       phoenix-db:

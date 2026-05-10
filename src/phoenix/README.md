@@ -15,9 +15,7 @@ Arize Phoenix is an open-source AI observability platform for LLM applications. 
 This project supports two modes of operation via Docker Compose profiles:
 
 1. **sqlite** (Default): Uses SQLite for storage. Simple and good for local development.
-   Set `COMPOSE_PROFILES=sqlite` in `.env`.
 2. **postgres**: Uses PostgreSQL for storage. Recommended for production.
-   Set `COMPOSE_PROFILES=postgres` in `.env`.
 
 ## Ports
 
@@ -29,19 +27,19 @@ This project supports two modes of operation via Docker Compose profiles:
 
 ## Environment Variables
 
-| Variable Name                    | Description                              | Default Value     |
-| -------------------------------- | ---------------------------------------- | ----------------- |
-| COMPOSE_PROFILES                 | Active profiles (`sqlite` or `postgres`) | `sqlite`          |
-| PHOENIX_VERSION                  | Phoenix image version                    | `13.19.2`         |
-| PHOENIX_PORT_OVERRIDE            | Host port for Phoenix UI and HTTP API    | `6006`            |
-| PHOENIX_GRPC_PORT_OVERRIDE       | Host port for OTLP gRPC collector        | `4317`            |
-| PHOENIX_PROMETHEUS_PORT_OVERRIDE | Host port for Prometheus metrics         | `9090`            |
-| PHOENIX_ENABLE_PROMETHEUS        | Enable Prometheus metrics endpoint       | `false`           |
-| PHOENIX_SECRET                   | Secret for authentication (optional)     | `""`              |
-| POSTGRES_VERSION                 | PostgreSQL image version                 | `17.2-alpine3.21` |
-| POSTGRES_USER                    | PostgreSQL username                      | `postgres`        |
-| POSTGRES_PASSWORD                | PostgreSQL password                      | `postgres`        |
-| POSTGRES_DB                      | PostgreSQL database name                 | `phoenix`         |
+| Variable Name                    | Description                              | Default Value                                   |
+| -------------------------------- | ---------------------------------------- | ----------------------------------------------- |
+| COMPOSE_PROFILES                 | Active profiles (`sqlite` or `postgres`) | `sqlite`                                        |
+| PHOENIX_VERSION                  | Phoenix image version                    | `15.5.0`                                        |
+| PHOENIX_PORT_OVERRIDE            | Host port for Phoenix UI and HTTP API    | `6006`                                          |
+| PHOENIX_GRPC_PORT_OVERRIDE       | Host port for OTLP gRPC collector        | `4317`                                          |
+| PHOENIX_PROMETHEUS_PORT_OVERRIDE | Host port for Prometheus metrics         | `9090`                                          |
+| PHOENIX_ENABLE_PROMETHEUS        | Enable Prometheus metrics endpoint       | `false`                                         |
+| PHOENIX_SECRET                   | Secret for authentication (optional)     | `"NOT_SECURE_0fdf298eefb2ceef8ab3d7bd5319060e"` |
+| POSTGRES_VERSION                 | PostgreSQL image version                 | `17.2-alpine3.21`                               |
+| POSTGRES_USER                    | PostgreSQL username                      | `postgres`                                      |
+| POSTGRES_PASSWORD                | PostgreSQL password                      | `postgres`                                      |
+| POSTGRES_DB                      | PostgreSQL database name                 | `phoenix`                                       |
 
 ## Volumes
 

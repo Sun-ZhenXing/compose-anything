@@ -143,7 +143,7 @@ docker compose exec redis redis-cli ping
 | [Odoo](./src/odoo)                                             | 19.0                |
 | [Ollama](./src/ollama)                                         | 0.14.3              |
 | [Open WebUI](./src/open-webui)                                 | main                |
-| [Phoenix (Arize)](./src/phoenix)                               | 13.19.2             |
+| [Phoenix (Arize)](./src/phoenix)                               | 15.5.0              |
 | [Pingap](./src/pingap)                                         | 0.12.7-full         |
 | [Pingora Proxy Manager](./src/pingora-proxy-manager)           | v1.0.3              |
 | [Open WebUI Rust](./src/open-webui-rust)                       | latest              |
@@ -185,6 +185,7 @@ docker compose exec redis redis-cli ping
 | [Skyvern](./apps/skyvern)                                      | v1.0.31             |
 | [Stable Diffusion WebUI](./apps/stable-diffusion-webui-docker) | latest              |
 | [Stirling-PDF](./apps/stirling-pdf)                            | latest              |
+| [Sub2API](./src/sub2api)                                       | 0.1.124             |
 | [Temporal](./src/temporal)                                     | 1.24.2              |
 | [TiDB](./src/tidb)                                             | v8.5.0              |
 | [TiKV](./src/tikv)                                             | v8.5.0              |

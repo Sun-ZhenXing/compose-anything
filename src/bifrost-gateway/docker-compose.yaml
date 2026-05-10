@@ -30,7 +30,7 @@ services:
         - wget
         - --no-verbose
         - --tries=1
-        - --spider
+        - --output-document=/dev/null
         - 'http://localhost:8080/health'
 
       interval: 30s
