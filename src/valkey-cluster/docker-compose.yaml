@@ -28,10 +28,10 @@ x-valkey-node: &valkey-node
   deploy:
     resources:
       limits:
-        cpus: ${VALKEY_CLUSTER_CPU_LIMIT:-0.50}
+        cpus: ${VALKEY_CLUSTER_CPU_LIMIT:-0.5}
         memory: ${VALKEY_CLUSTER_MEMORY_LIMIT:-512M}
       reservations:
-        cpus: ${VALKEY_CLUSTER_CPU_RESERVATION:-0.25}
+        cpus: ${VALKEY_CLUSTER_CPU_RESERVATION:-0.1}
         memory: ${VALKEY_CLUSTER_MEMORY_RESERVATION:-256M}
   healthcheck:
     test: [CMD, valkey-cli, -a, '${VALKEY_PASSWORD:-passw0rd}', ping]
@@ -125,7 +125,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${VALKEY_CLUSTER_INIT_CPU_LIMIT:-0.10}
+          cpus: ${VALKEY_CLUSTER_INIT_CPU_LIMIT:-0.1}
           memory: ${VALKEY_CLUSTER_INIT_MEMORY_LIMIT:-128M}
 
 volumes:

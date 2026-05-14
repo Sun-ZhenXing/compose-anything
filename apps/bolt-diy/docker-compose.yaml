@@ -19,10 +19,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${BOLT_DIY_CPU_LIMIT:-2.00}
+          cpus: ${BOLT_DIY_CPU_LIMIT:-2.0}
           memory: ${BOLT_DIY_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${BOLT_DIY_CPU_RESERVATION:-0.5}
+          cpus: ${BOLT_DIY_CPU_RESERVATION:-0.1}
           memory: ${BOLT_DIY_MEMORY_RESERVATION:-512M}
     healthcheck:
       test:

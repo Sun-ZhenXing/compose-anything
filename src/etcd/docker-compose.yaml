@@ -53,7 +53,7 @@ services:
           cpus: ${ETCD_CPU_LIMIT:-1.0}
           memory: ${ETCD_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${ETCD_CPU_RESERVATION:-0.25}
+          cpus: ${ETCD_CPU_RESERVATION:-0.1}
           memory: ${ETCD_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, etcdctl, endpoint, health]

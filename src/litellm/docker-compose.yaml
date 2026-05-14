@@ -41,10 +41,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${LITELLM_CPU_LIMIT:-2.00}
+          cpus: ${LITELLM_CPU_LIMIT:-2.0}
           memory: ${LITELLM_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${LITELLM_CPU_RESERVATION:-0.50}
+          cpus: ${LITELLM_CPU_RESERVATION:-0.1}
           memory: ${LITELLM_MEMORY_RESERVATION:-512M}
 
   db:
@@ -68,10 +68,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${LITELLM_DB_CPU_LIMIT:-1.00}
+          cpus: ${LITELLM_DB_CPU_LIMIT:-1.0}
           memory: ${LITELLM_DB_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${LITELLM_DB_CPU_RESERVATION:-0.25}
+          cpus: ${LITELLM_DB_CPU_RESERVATION:-0.1}
           memory: ${LITELLM_DB_MEMORY_RESERVATION:-256M}
 
   prometheus:
@@ -99,10 +99,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${LITELLM_PROMETHEUS_CPU_LIMIT:-1.00}
+          cpus: ${LITELLM_PROMETHEUS_CPU_LIMIT:-1.0}
           memory: ${LITELLM_PROMETHEUS_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${LITELLM_PROMETHEUS_CPU_RESERVATION:-0.25}
+          cpus: ${LITELLM_PROMETHEUS_CPU_RESERVATION:-0.1}
           memory: ${LITELLM_PROMETHEUS_MEMORY_RESERVATION:-256M}
 
 volumes:

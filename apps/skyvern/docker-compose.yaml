@@ -45,10 +45,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${SKYVERN_CPU_LIMIT:-2}
+          cpus: ${SKYVERN_CPU_LIMIT:-2.0}
           memory: ${SKYVERN_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${SKYVERN_CPU_RESERVATION:-0.5}
+          cpus: ${SKYVERN_CPU_RESERVATION:-0.1}
           memory: ${SKYVERN_MEMORY_RESERVATION:-1G}
 
   skyvern-ui:
@@ -64,7 +64,7 @@ services:
       - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:8000}
       - VITE_WSS_BASE_URL=${VITE_WSS_BASE_URL:-ws://localhost:8000}
     healthcheck:
-      test: [CMD-SHELL, "curl -sf http://localhost:8080/ > /dev/null 2>&1 || exit 1"]
+      test: [CMD-SHELL, 'curl -sf http://localhost:8080/ > /dev/null 2>&1 || exit 1']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -97,10 +97,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${POSTGRES_CPU_LIMIT:-1}
+          cpus: ${POSTGRES_CPU_LIMIT:-1.0}
           memory: ${POSTGRES_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${POSTGRES_CPU_RESERVATION:-0.25}
+          cpus: ${POSTGRES_CPU_RESERVATION:-0.1}
           memory: ${POSTGRES_MEMORY_RESERVATION:-256M}
 
 volumes:

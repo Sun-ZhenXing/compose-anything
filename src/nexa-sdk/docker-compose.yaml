@@ -36,7 +36,7 @@ services:
           cpus: ${NEXA_SDK_CPU_LIMIT:-4.0}
           memory: ${NEXA_SDK_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${NEXA_SDK_CPU_RESERVATION:-1.0}
+          cpus: ${NEXA_SDK_CPU_RESERVATION:-0.1}
           memory: ${NEXA_SDK_MEMORY_RESERVATION:-2G}
 
   # GPU-accelerated service with CUDA support
@@ -65,7 +65,7 @@ services:
           cpus: ${NEXA_SDK_CPU_LIMIT:-8.0}
           memory: ${NEXA_SDK_MEMORY_LIMIT:-16G}
         reservations:
-          cpus: ${NEXA_SDK_CPU_RESERVATION:-2.0}
+          cpus: ${NEXA_SDK_CPU_RESERVATION:-0.1}
           memory: ${NEXA_SDK_MEMORY_RESERVATION:-4G}
           devices:
             - driver: nvidia

@@ -34,7 +34,7 @@ services:
           cpus: ${GITEA_CPU_LIMIT:-1.0}
           memory: ${GITEA_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${GITEA_CPU_RESERVATION:-0.5}
+          cpus: ${GITEA_CPU_RESERVATION:-0.1}
           memory: ${GITEA_MEMORY_RESERVATION:-512M}
     healthcheck:
       test:
@@ -68,7 +68,7 @@ services:
           cpus: ${GITEA_DB_CPU_LIMIT:-1.0}
           memory: ${GITEA_DB_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${GITEA_DB_CPU_RESERVATION:-0.5}
+          cpus: ${GITEA_DB_CPU_RESERVATION:-0.1}
           memory: ${GITEA_DB_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: [CMD-SHELL, pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB]

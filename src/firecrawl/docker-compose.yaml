@@ -52,7 +52,7 @@ services:
           cpus: ${PLAYWRIGHT_CPU_LIMIT:-1.0}
           memory: ${PLAYWRIGHT_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${PLAYWRIGHT_CPU_RESERVATION:-0.5}
+          cpus: ${PLAYWRIGHT_CPU_RESERVATION:-0.1}
           memory: ${PLAYWRIGHT_MEMORY_RESERVATION:-512M}
 
   api:
@@ -81,7 +81,7 @@ services:
           cpus: ${FIRECRAWL_API_CPU_LIMIT:-2.0}
           memory: ${FIRECRAWL_API_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${FIRECRAWL_API_CPU_RESERVATION:-1.0}
+          cpus: ${FIRECRAWL_API_CPU_RESERVATION:-0.1}
           memory: ${FIRECRAWL_API_MEMORY_RESERVATION:-2G}
     healthcheck:
       test:
@@ -109,7 +109,7 @@ services:
           cpus: ${REDIS_CPU_LIMIT:-0.5}
           memory: ${REDIS_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${REDIS_CPU_RESERVATION:-0.25}
+          cpus: ${REDIS_CPU_RESERVATION:-0.1}
           memory: ${REDIS_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, redis-cli, ping]
@@ -135,7 +135,7 @@ services:
           cpus: ${NUQPOSTGRES_CPU_LIMIT:-1.0}
           memory: ${NUQPOSTGRES_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${NUQPOSTGRES_CPU_RESERVATION:-0.5}
+          cpus: ${NUQPOSTGRES_CPU_RESERVATION:-0.1}
           memory: ${NUQPOSTGRES_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-postgres}']

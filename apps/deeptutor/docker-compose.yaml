@@ -57,10 +57,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${DEEPTUTOR_CPU_LIMIT:-4.00}
+          cpus: ${DEEPTUTOR_CPU_LIMIT:-4.0}
           memory: ${DEEPTUTOR_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${DEEPTUTOR_CPU_RESERVATION:-1.00}
+          cpus: ${DEEPTUTOR_CPU_RESERVATION:-0.1}
           memory: ${DEEPTUTOR_MEMORY_RESERVATION:-2G}
 
 volumes:

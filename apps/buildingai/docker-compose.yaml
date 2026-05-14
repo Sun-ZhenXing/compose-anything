@@ -38,10 +38,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${REDIS_CPU_LIMIT:-0.25}
+          cpus: ${REDIS_CPU_LIMIT:-0.3}
           memory: ${REDIS_MEMORY_LIMIT:-256M}
         reservations:
-          cpus: ${REDIS_CPU_RESERVATION:-0.10}
+          cpus: ${REDIS_CPU_RESERVATION:-0.1}
           memory: ${REDIS_MEMORY_RESERVATION:-128M}
 
   postgres:
@@ -69,7 +69,7 @@ services:
           cpus: ${POSTGRES_CPU_LIMIT:-1.0}
           memory: ${POSTGRES_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${POSTGRES_CPU_RESERVATION:-0.25}
+          cpus: ${POSTGRES_CPU_RESERVATION:-0.1}
           memory: ${POSTGRES_MEMORY_RESERVATION:-256M}
 
   buildingai:
@@ -108,7 +108,7 @@ services:
           cpus: ${BUILDINGAI_CPU_LIMIT:-2.0}
           memory: ${BUILDINGAI_MEMORY_LIMIT:-3584M}
         reservations:
-          cpus: ${BUILDINGAI_CPU_RESERVATION:-0.5}
+          cpus: ${BUILDINGAI_CPU_RESERVATION:-0.1}
           memory: ${BUILDINGAI_MEMORY_RESERVATION:-512M}
 
 volumes:

@@ -44,7 +44,7 @@ services:
           cpus: ${DIND_CPU_LIMIT:-2.0}
           memory: ${DIND_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${DIND_CPU_RESERVATION:-1.0}
+          cpus: ${DIND_CPU_RESERVATION:-0.1}
           memory: ${DIND_MEMORY_RESERVATION:-2G}
 
   # GPU-enabled DinD (optional)
@@ -84,7 +84,7 @@ services:
           cpus: ${DIND_CPU_LIMIT:-2.0}
           memory: ${DIND_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${DIND_CPU_RESERVATION:-1.0}
+          cpus: ${DIND_CPU_RESERVATION:-0.1}
           memory: ${DIND_MEMORY_RESERVATION:-2G}
           devices:
             - driver: nvidia

@@ -28,7 +28,7 @@ services:
           cpus: ${HBASE_CPU_LIMIT:-4.0}
           memory: ${HBASE_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${HBASE_CPU_RESERVATION:-1.0}
+          cpus: ${HBASE_CPU_RESERVATION:-0.1}
           memory: ${HBASE_MEMORY_RESERVATION:-2G}
     healthcheck:
       test: [CMD-SHELL, "echo 'status' | hbase shell -n || exit 1"]

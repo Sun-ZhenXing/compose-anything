@@ -35,7 +35,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-redispassword}
       - SECRET_KEY=${SECRET_KEY:-changeme_secret_key_CHANGEME}
     healthcheck:
-      test: [CMD-SHELL, "curl -sf http://localhost/ > /dev/null 2>&1 || exit 1"]
+      test: [CMD-SHELL, 'curl -sf http://localhost/ > /dev/null 2>&1 || exit 1']
       interval: 30s
       timeout: 15s
       retries: 10
@@ -43,10 +43,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${RAGFLOW_CPU_LIMIT:-4}
+          cpus: ${RAGFLOW_CPU_LIMIT:-4.0}
           memory: ${RAGFLOW_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${RAGFLOW_CPU_RESERVATION:-1}
+          cpus: ${RAGFLOW_CPU_RESERVATION:-0.1}
           memory: ${RAGFLOW_MEMORY_RESERVATION:-2G}
 
   es01:
@@ -68,10 +68,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${ELASTICSEARCH_CPU_LIMIT:-2}
+          cpus: ${ELASTICSEARCH_CPU_LIMIT:-2.0}
           memory: ${ELASTICSEARCH_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${ELASTICSEARCH_CPU_RESERVATION:-0.5}
+          cpus: ${ELASTICSEARCH_CPU_RESERVATION:-0.1}
           memory: ${ELASTICSEARCH_MEMORY_RESERVATION:-1G}
 
   mysql:
@@ -92,10 +92,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${MYSQL_CPU_LIMIT:-1}
+          cpus: ${MYSQL_CPU_LIMIT:-1.0}
           memory: ${MYSQL_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${MYSQL_CPU_RESERVATION:-0.25}
+          cpus: ${MYSQL_CPU_RESERVATION:-0.1}
           memory: ${MYSQL_MEMORY_RESERVATION:-256M}
 
   redis:
@@ -109,7 +109,7 @@ services:
     volumes:
       - ragflow_redis_data:/data
     healthcheck:
-      test: [CMD-SHELL, "redis-cli -a $$REDIS_PASSWORD ping | grep -q PONG"]
+      test: [CMD-SHELL, 'redis-cli -a $$REDIS_PASSWORD ping | grep -q PONG']
       interval: 5s
       timeout: 10s
       retries: 10
@@ -135,7 +135,7 @@ services:
     ports:
       - '${MINIO_CONSOLE_PORT_OVERRIDE:-9001}:9001'
     healthcheck:
-      test: [CMD-SHELL, "curl -sf http://localhost:9000/minio/health/live || exit 1"]
+      test: [CMD-SHELL, 'curl -sf http://localhost:9000/minio/health/live || exit 1']
       interval: 10s
       timeout: 5s
       retries: 10
@@ -143,10 +143,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${MINIO_CPU_LIMIT:-1}
+          cpus: ${MINIO_CPU_LIMIT:-1.0}
           memory: ${MINIO_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${MINIO_CPU_RESERVATION:-0.25}
+          cpus: ${MINIO_CPU_RESERVATION:-0.1}
           memory: ${MINIO_MEMORY_RESERVATION:-256M}
 
 volumes:

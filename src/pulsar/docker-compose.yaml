@@ -31,10 +31,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${PULSAR_CPU_LIMIT:-2.00}
+          cpus: ${PULSAR_CPU_LIMIT:-2.0}
           memory: ${PULSAR_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${PULSAR_CPU_RESERVATION:-0.50}
+          cpus: ${PULSAR_CPU_RESERVATION:-0.1}
           memory: ${PULSAR_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: [CMD-SHELL, 'bin/pulsar-admin brokers healthcheck || exit 1']
@@ -64,10 +64,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${ZOOKEEPER_CPU_LIMIT:-1.00}
+          cpus: ${ZOOKEEPER_CPU_LIMIT:-1.0}
           memory: ${ZOOKEEPER_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${ZOOKEEPER_CPU_RESERVATION:-0.25}
+          cpus: ${ZOOKEEPER_CPU_RESERVATION:-0.1}
           memory: ${ZOOKEEPER_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, bin/pulsar-zookeeper-ruok.sh]
@@ -118,10 +118,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${BOOKIE_CPU_LIMIT:-1.00}
+          cpus: ${BOOKIE_CPU_LIMIT:-1.0}
           memory: ${BOOKIE_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${BOOKIE_CPU_RESERVATION:-0.25}
+          cpus: ${BOOKIE_CPU_RESERVATION:-0.1}
           memory: ${BOOKIE_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: [CMD, bin/bookkeeper, shell, bookiesanity]
@@ -159,10 +159,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${BROKER_CPU_LIMIT:-2.00}
+          cpus: ${BROKER_CPU_LIMIT:-2.0}
           memory: ${BROKER_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${BROKER_CPU_RESERVATION:-0.50}
+          cpus: ${BROKER_CPU_RESERVATION:-0.1}
           memory: ${BROKER_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: [CMD, bin/pulsar-admin, brokers, healthcheck]

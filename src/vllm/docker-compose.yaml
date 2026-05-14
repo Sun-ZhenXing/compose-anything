@@ -34,7 +34,7 @@ services:
           cpus: ${VLLM_CPU_LIMIT:-4.0}
           memory: ${VLLM_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${VLLM_CPU_RESERVATION:-2.0}
+          cpus: ${VLLM_CPU_RESERVATION:-0.1}
           memory: ${VLLM_MEMORY_RESERVATION:-4G}
           devices:
             - driver: nvidia

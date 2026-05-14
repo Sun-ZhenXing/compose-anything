@@ -52,7 +52,7 @@ services:
           cpus: ${REDIS_CLUSTER_1_CPU_LIMIT:-0.5}
           memory: ${REDIS_CLUSTER_1_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${REDIS_CLUSTER_1_CPU_RESERVATION:-0.25}
+          cpus: ${REDIS_CLUSTER_1_CPU_RESERVATION:-0.1}
           memory: ${REDIS_CLUSTER_1_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, redis-cli, ping]
@@ -77,7 +77,7 @@ services:
           cpus: ${REDIS_CLUSTER_2_CPU_LIMIT:-0.5}
           memory: ${REDIS_CLUSTER_2_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${REDIS_CLUSTER_2_CPU_RESERVATION:-0.25}
+          cpus: ${REDIS_CLUSTER_2_CPU_RESERVATION:-0.1}
           memory: ${REDIS_CLUSTER_2_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, redis-cli, ping]
@@ -102,7 +102,7 @@ services:
           cpus: ${REDIS_CLUSTER_3_CPU_LIMIT:-0.5}
           memory: ${REDIS_CLUSTER_3_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${REDIS_CLUSTER_3_CPU_RESERVATION:-0.25}
+          cpus: ${REDIS_CLUSTER_3_CPU_RESERVATION:-0.1}
           memory: ${REDIS_CLUSTER_3_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, redis-cli, ping]
@@ -127,7 +127,7 @@ services:
           cpus: ${REDIS_CLUSTER_4_CPU_LIMIT:-0.5}
           memory: ${REDIS_CLUSTER_4_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${REDIS_CLUSTER_4_CPU_RESERVATION:-0.25}
+          cpus: ${REDIS_CLUSTER_4_CPU_RESERVATION:-0.1}
           memory: ${REDIS_CLUSTER_4_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, redis-cli, ping]
@@ -152,7 +152,7 @@ services:
           cpus: ${REDIS_CLUSTER_5_CPU_LIMIT:-0.5}
           memory: ${REDIS_CLUSTER_5_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${REDIS_CLUSTER_5_CPU_RESERVATION:-0.25}
+          cpus: ${REDIS_CLUSTER_5_CPU_RESERVATION:-0.1}
           memory: ${REDIS_CLUSTER_5_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, redis-cli, ping]
@@ -177,7 +177,7 @@ services:
           cpus: ${REDIS_CLUSTER_6_CPU_LIMIT:-0.5}
           memory: ${REDIS_CLUSTER_6_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${REDIS_CLUSTER_6_CPU_RESERVATION:-0.25}
+          cpus: ${REDIS_CLUSTER_6_CPU_RESERVATION:-0.1}
           memory: ${REDIS_CLUSTER_6_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, redis-cli, ping]

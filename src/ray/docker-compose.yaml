@@ -17,7 +17,7 @@ services:
       - '${RAY_GCS_PORT_OVERRIDE:-6379}:6379'
     environment:
       TZ: ${TZ:-UTC}
-      RAY_NUM_CPUS: ${RAY_HEAD_NUM_CPUS:-4}
+      RAY_NUM_CPUS: ${RAY_HEAD_NUM_CPUS:-4.0}
       RAY_MEMORY: ${RAY_HEAD_MEMORY:-8589934592}
     volumes:
       - ray_storage:/tmp/ray
@@ -27,7 +27,7 @@ services:
           cpus: ${RAY_HEAD_CPU_LIMIT:-4.0}
           memory: ${RAY_HEAD_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${RAY_HEAD_CPU_RESERVATION:-2.0}
+          cpus: ${RAY_HEAD_CPU_RESERVATION:-0.1}
           memory: ${RAY_HEAD_MEMORY_RESERVATION:-4G}
     healthcheck:
       test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:8265/']
@@ -45,7 +45,7 @@ services:
         condition: service_healthy
     environment:
       TZ: ${TZ:-UTC}
-      RAY_NUM_CPUS: ${RAY_WORKER_NUM_CPUS:-2}
+      RAY_NUM_CPUS: ${RAY_WORKER_NUM_CPUS:-2.0}
       RAY_MEMORY: ${RAY_WORKER_MEMORY:-4294967296}
     deploy:
       resources:
@@ -53,7 +53,7 @@ services:
           cpus: ${RAY_WORKER_1_CPU_LIMIT:-2.0}
           memory: ${RAY_WORKER_1_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${RAY_WORKER_1_CPU_RESERVATION:-1.0}
+          cpus: ${RAY_WORKER_1_CPU_RESERVATION:-0.1}
           memory: ${RAY_WORKER_1_MEMORY_RESERVATION:-2G}
 
   ray-worker-2:
@@ -65,7 +65,7 @@ services:
         condition: service_healthy
     environment:
       TZ: ${TZ:-UTC}
-      RAY_NUM_CPUS: ${RAY_WORKER_NUM_CPUS:-2}
+      RAY_NUM_CPUS: ${RAY_WORKER_NUM_CPUS:-2.0}
       RAY_MEMORY: ${RAY_WORKER_MEMORY:-4294967296}
     deploy:
       resources:
@@ -73,7 +73,7 @@ services:
           cpus: ${RAY_WORKER_2_CPU_LIMIT:-2.0}
           memory: ${RAY_WORKER_2_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${RAY_WORKER_2_CPU_RESERVATION:-1.0}
+          cpus: ${RAY_WORKER_2_CPU_RESERVATION:-0.1}
           memory: ${RAY_WORKER_2_MEMORY_RESERVATION:-2G}
 
 volumes:

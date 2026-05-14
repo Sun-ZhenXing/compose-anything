@@ -43,7 +43,7 @@ services:
           cpus: ${SELENIUM_CPU_LIMIT:-2.0}
           memory: ${SELENIUM_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${SELENIUM_CPU_RESERVATION:-1.0}
+          cpus: ${SELENIUM_CPU_RESERVATION:-0.1}
           memory: ${SELENIUM_MEMORY_RESERVATION:-1G}
 
 volumes:

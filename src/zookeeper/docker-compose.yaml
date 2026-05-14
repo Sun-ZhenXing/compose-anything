@@ -32,7 +32,7 @@ services:
           cpus: ${ZOOKEEPER_CPU_LIMIT:-1.0}
           memory: ${ZOOKEEPER_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${ZOOKEEPER_CPU_RESERVATION:-0.25}
+          cpus: ${ZOOKEEPER_CPU_RESERVATION:-0.1}
           memory: ${ZOOKEEPER_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: [CMD-SHELL, 'echo ruok | nc localhost 2181 | grep imok']

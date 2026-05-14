@@ -32,10 +32,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${POGOCACHE_CPU_LIMIT:-0.50}
+          cpus: ${POGOCACHE_CPU_LIMIT:-0.5}
           memory: ${POGOCACHE_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${POGOCACHE_CPU_RESERVATION:-0.10}
+          cpus: ${POGOCACHE_CPU_RESERVATION:-0.1}
           memory: ${POGOCACHE_MEMORY_RESERVATION:-128M}
 
 volumes:

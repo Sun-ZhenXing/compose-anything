@@ -26,10 +26,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${MULTICA_POSTGRES_CPU_LIMIT:-1.00}
+          cpus: ${MULTICA_POSTGRES_CPU_LIMIT:-1.0}
           memory: ${MULTICA_POSTGRES_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${MULTICA_POSTGRES_CPU_RESERVATION:-0.25}
+          cpus: ${MULTICA_POSTGRES_CPU_RESERVATION:-0.1}
           memory: ${MULTICA_POSTGRES_MEMORY_RESERVATION:-256M}
 
   multica-backend:
@@ -67,10 +67,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${MULTICA_BACKEND_CPU_LIMIT:-2.00}
+          cpus: ${MULTICA_BACKEND_CPU_LIMIT:-2.0}
           memory: ${MULTICA_BACKEND_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${MULTICA_BACKEND_CPU_RESERVATION:-0.50}
+          cpus: ${MULTICA_BACKEND_CPU_RESERVATION:-0.1}
           memory: ${MULTICA_BACKEND_MEMORY_RESERVATION:-512M}
 
   multica-frontend:
@@ -99,10 +99,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${MULTICA_FRONTEND_CPU_LIMIT:-1.00}
+          cpus: ${MULTICA_FRONTEND_CPU_LIMIT:-1.0}
           memory: ${MULTICA_FRONTEND_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${MULTICA_FRONTEND_CPU_RESERVATION:-0.25}
+          cpus: ${MULTICA_FRONTEND_CPU_RESERVATION:-0.1}
           memory: ${MULTICA_FRONTEND_MEMORY_RESERVATION:-256M}
 
 volumes:

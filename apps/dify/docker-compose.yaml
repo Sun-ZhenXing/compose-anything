@@ -37,7 +37,7 @@ services:
           cpus: ${DIFY_API_CPU_LIMIT:-1.0}
           memory: ${DIFY_API_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${DIFY_API_CPU_RESERVATION:-0.5}
+          cpus: ${DIFY_API_CPU_RESERVATION:-0.1}
           memory: ${DIFY_API_MEMORY_RESERVATION:-1G}
     healthcheck:
       test:
@@ -83,7 +83,7 @@ services:
           cpus: ${DIFY_WORKER_CPU_LIMIT:-1.0}
           memory: ${DIFY_WORKER_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${DIFY_WORKER_CPU_RESERVATION:-0.5}
+          cpus: ${DIFY_WORKER_CPU_RESERVATION:-0.1}
           memory: ${DIFY_WORKER_MEMORY_RESERVATION:-1G}
 
   dify-web:
@@ -104,7 +104,7 @@ services:
           cpus: ${DIFY_WEB_CPU_LIMIT:-0.5}
           memory: ${DIFY_WEB_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${DIFY_WEB_CPU_RESERVATION:-0.25}
+          cpus: ${DIFY_WEB_CPU_RESERVATION:-0.1}
           memory: ${DIFY_WEB_MEMORY_RESERVATION:-256M}
 
   dify-db:
@@ -124,7 +124,7 @@ services:
           cpus: ${DIFY_DB_CPU_LIMIT:-0.5}
           memory: ${DIFY_DB_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${DIFY_DB_CPU_RESERVATION:-0.25}
+          cpus: ${DIFY_DB_CPU_RESERVATION:-0.1}
           memory: ${DIFY_DB_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD-SHELL, pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB]
@@ -144,7 +144,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${DIFY_REDIS_CPU_LIMIT:-0.25}
+          cpus: ${DIFY_REDIS_CPU_LIMIT:-0.3}
           memory: ${DIFY_REDIS_MEMORY_LIMIT:-256M}
         reservations:
           cpus: ${DIFY_REDIS_CPU_RESERVATION:-0.1}
@@ -176,7 +176,7 @@ services:
           cpus: ${DIFY_WEAVIATE_CPU_LIMIT:-0.5}
           memory: ${DIFY_WEAVIATE_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${DIFY_WEAVIATE_CPU_RESERVATION:-0.25}
+          cpus: ${DIFY_WEAVIATE_CPU_RESERVATION:-0.1}
           memory: ${DIFY_WEAVIATE_MEMORY_RESERVATION:-512M}
     healthcheck:
       test:

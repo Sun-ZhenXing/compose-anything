@@ -28,10 +28,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${ZOOKEEPER_CPU_LIMIT:-1.00}
+          cpus: ${ZOOKEEPER_CPU_LIMIT:-1.0}
           memory: ${ZOOKEEPER_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${ZOOKEEPER_CPU_RESERVATION:-0.25}
+          cpus: ${ZOOKEEPER_CPU_RESERVATION:-0.1}
           memory: ${ZOOKEEPER_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD-SHELL, 'echo ruok | nc localhost 2181 | grep imok']
@@ -76,10 +76,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${KAFKA_CPU_LIMIT:-2.00}
+          cpus: ${KAFKA_CPU_LIMIT:-2.0}
           memory: ${KAFKA_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${KAFKA_CPU_RESERVATION:-0.50}
+          cpus: ${KAFKA_CPU_RESERVATION:-0.1}
           memory: ${KAFKA_MEMORY_RESERVATION:-1G}
     healthcheck:
       test:
@@ -113,10 +113,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${KAFKA_UI_CPU_LIMIT:-0.50}
+          cpus: ${KAFKA_UI_CPU_LIMIT:-0.5}
           memory: ${KAFKA_UI_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${KAFKA_UI_CPU_RESERVATION:-0.10}
+          cpus: ${KAFKA_UI_CPU_RESERVATION:-0.1}
           memory: ${KAFKA_UI_MEMORY_RESERVATION:-128M}
 
 volumes:

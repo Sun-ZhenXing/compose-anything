@@ -61,10 +61,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${OPENFANG_CPU_LIMIT:-2.00}
+          cpus: ${OPENFANG_CPU_LIMIT:-2.0}
           memory: ${OPENFANG_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${OPENFANG_CPU_RESERVATION:-0.50}
+          cpus: ${OPENFANG_CPU_RESERVATION:-0.1}
           memory: ${OPENFANG_MEMORY_RESERVATION:-512M}
 
 volumes:

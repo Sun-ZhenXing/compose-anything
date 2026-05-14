@@ -34,7 +34,7 @@ services:
           cpus: ${GRAFANA_CPU_LIMIT:-1.0}
           memory: ${GRAFANA_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${GRAFANA_CPU_RESERVATION:-0.25}
+          cpus: ${GRAFANA_CPU_RESERVATION:-0.1}
           memory: ${GRAFANA_MEMORY_RESERVATION:-256M}
     healthcheck:
       test:

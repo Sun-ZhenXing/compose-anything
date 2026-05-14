@@ -25,7 +25,7 @@ services:
           cpus: ${LOKI_CPU_LIMIT:-1.0}
           memory: ${LOKI_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${LOKI_CPU_RESERVATION:-0.25}
+          cpus: ${LOKI_CPU_RESERVATION:-0.1}
           memory: ${LOKI_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:3100/ready']

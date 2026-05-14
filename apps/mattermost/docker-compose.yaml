@@ -27,10 +27,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${MATTERMOST_DB_CPU_LIMIT:-1.00}
+          cpus: ${MATTERMOST_DB_CPU_LIMIT:-1.0}
           memory: ${MATTERMOST_DB_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${MATTERMOST_DB_CPU_RESERVATION:-0.25}
+          cpus: ${MATTERMOST_DB_CPU_RESERVATION:-0.1}
           memory: ${MATTERMOST_DB_MEMORY_RESERVATION:-256M}
 
   mattermost:
@@ -68,10 +68,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${MATTERMOST_CPU_LIMIT:-2.00}
+          cpus: ${MATTERMOST_CPU_LIMIT:-2.0}
           memory: ${MATTERMOST_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${MATTERMOST_CPU_RESERVATION:-0.50}
+          cpus: ${MATTERMOST_CPU_RESERVATION:-0.1}
           memory: ${MATTERMOST_MEMORY_RESERVATION:-512M}
 
 volumes:

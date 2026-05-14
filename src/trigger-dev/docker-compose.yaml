@@ -100,7 +100,7 @@ services:
           cpus: ${WEBAPP_CPU_LIMIT:-3.0}
           memory: ${WEBAPP_MEMORY_LIMIT:-6G}
         reservations:
-          cpus: ${WEBAPP_CPU_RESERVATION:-1.0}
+          cpus: ${WEBAPP_CPU_RESERVATION:-0.1}
           memory: ${WEBAPP_MEMORY_RESERVATION:-2G}
 
   trigger-postgres:
@@ -133,7 +133,7 @@ services:
           cpus: ${POSTGRES_CPU_LIMIT:-2.0}
           memory: ${POSTGRES_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${POSTGRES_CPU_RESERVATION:-0.5}
+          cpus: ${POSTGRES_CPU_RESERVATION:-0.1}
           memory: ${POSTGRES_MEMORY_RESERVATION:-1G}
 
   trigger-redis:
@@ -154,7 +154,7 @@ services:
           cpus: ${REDIS_CPU_LIMIT:-1.0}
           memory: ${REDIS_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${REDIS_CPU_RESERVATION:-0.25}
+          cpus: ${REDIS_CPU_RESERVATION:-0.1}
           memory: ${REDIS_MEMORY_RESERVATION:-512M}
 
   trigger-clickhouse:
@@ -181,7 +181,7 @@ services:
           cpus: ${CLICKHOUSE_CPU_LIMIT:-2.0}
           memory: ${CLICKHOUSE_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${CLICKHOUSE_CPU_RESERVATION:-0.5}
+          cpus: ${CLICKHOUSE_CPU_RESERVATION:-0.1}
           memory: ${CLICKHOUSE_MEMORY_RESERVATION:-1G}
 
   trigger-minio:
@@ -209,7 +209,7 @@ services:
           cpus: ${MINIO_CPU_LIMIT:-1.0}
           memory: ${MINIO_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${MINIO_CPU_RESERVATION:-0.25}
+          cpus: ${MINIO_CPU_RESERVATION:-0.1}
           memory: ${MINIO_MEMORY_RESERVATION:-512M}
 
   # MinIO bucket initialization
@@ -250,7 +250,7 @@ services:
           cpus: ${ELECTRIC_CPU_LIMIT:-1.0}
           memory: ${ELECTRIC_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${ELECTRIC_CPU_RESERVATION:-0.25}
+          cpus: ${ELECTRIC_CPU_RESERVATION:-0.1}
           memory: ${ELECTRIC_MEMORY_RESERVATION:-256M}
 
   # Initialize registry htpasswd file on first run
@@ -345,7 +345,7 @@ services:
           cpus: ${SUPERVISOR_CPU_LIMIT:-2.0}
           memory: ${SUPERVISOR_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${SUPERVISOR_CPU_RESERVATION:-0.5}
+          cpus: ${SUPERVISOR_CPU_RESERVATION:-0.1}
           memory: ${SUPERVISOR_MEMORY_RESERVATION:-1G}
 
   docker-socket-proxy:

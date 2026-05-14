@@ -32,7 +32,7 @@ services:
           cpus: ${OLLAMA_CPU_LIMIT:-8.0}
           memory: ${OLLAMA_MEMORY_LIMIT:-16G}
         reservations:
-          cpus: ${OLLAMA_CPU_RESERVATION:-2.0}
+          cpus: ${OLLAMA_CPU_RESERVATION:-0.1}
           memory: ${OLLAMA_MEMORY_RESERVATION:-4G}
           devices:
             - driver: nvidia

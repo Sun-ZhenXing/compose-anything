@@ -30,10 +30,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${VALKEY_CPU_LIMIT:-0.50}
+          cpus: ${VALKEY_CPU_LIMIT:-0.5}
           memory: ${VALKEY_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${VALKEY_CPU_RESERVATION:-0.25}
+          cpus: ${VALKEY_CPU_RESERVATION:-0.1}
           memory: ${VALKEY_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, valkey-cli, ping]

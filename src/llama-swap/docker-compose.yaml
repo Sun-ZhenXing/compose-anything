@@ -40,7 +40,7 @@ services:
           cpus: ${LLAMA_SWAP_CPU_LIMIT:-4.0}
           memory: ${LLAMA_SWAP_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${LLAMA_SWAP_CPU_RESERVATION:-2.0}
+          cpus: ${LLAMA_SWAP_CPU_RESERVATION:-0.1}
           memory: ${LLAMA_SWAP_MEMORY_RESERVATION:-4G}
 
   # llama-swap - NVIDIA CUDA variant
@@ -73,7 +73,7 @@ services:
           cpus: ${LLAMA_SWAP_CPU_LIMIT:-4.0}
           memory: ${LLAMA_SWAP_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${LLAMA_SWAP_CPU_RESERVATION:-2.0}
+          cpus: ${LLAMA_SWAP_CPU_RESERVATION:-0.1}
           memory: ${LLAMA_SWAP_MEMORY_RESERVATION:-4G}
           devices:
             - driver: nvidia
@@ -117,7 +117,7 @@ services:
           cpus: ${LLAMA_SWAP_CPU_LIMIT:-4.0}
           memory: ${LLAMA_SWAP_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${LLAMA_SWAP_CPU_RESERVATION:-2.0}
+          cpus: ${LLAMA_SWAP_CPU_RESERVATION:-0.1}
           memory: ${LLAMA_SWAP_MEMORY_RESERVATION:-4G}
     profiles:
       - gpu-amd

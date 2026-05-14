@@ -70,7 +70,7 @@ services:
           cpus: ${TURBOOCR_CPU_LIMIT:-8.0}
           memory: ${TURBOOCR_MEMORY_LIMIT:-12G}
         reservations:
-          cpus: ${TURBOOCR_CPU_RESERVATION:-2.0}
+          cpus: ${TURBOOCR_CPU_RESERVATION:-0.1}
           memory: ${TURBOOCR_MEMORY_RESERVATION:-4G}
           devices:
             - driver: nvidia
@@ -102,7 +102,7 @@ services:
           cpus: ${TURBOOCR_CPU_LIMIT:-8.0}
           memory: ${TURBOOCR_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${TURBOOCR_CPU_RESERVATION:-2.0}
+          cpus: ${TURBOOCR_CPU_RESERVATION:-0.1}
           memory: ${TURBOOCR_MEMORY_RESERVATION:-1G}
     shm_size: ${TURBOOCR_SHM_SIZE:-512m}
 

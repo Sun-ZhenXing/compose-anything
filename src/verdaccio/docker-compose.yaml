@@ -30,10 +30,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${VERDACCIO_CPU_LIMIT:-1.00}
+          cpus: ${VERDACCIO_CPU_LIMIT:-1.0}
           memory: ${VERDACCIO_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${VERDACCIO_CPU_RESERVATION:-0.25}
+          cpus: ${VERDACCIO_CPU_RESERVATION:-0.1}
           memory: ${VERDACCIO_MEMORY_RESERVATION:-128M}
 
 networks:

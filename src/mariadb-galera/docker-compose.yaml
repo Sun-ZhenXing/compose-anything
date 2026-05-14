@@ -31,7 +31,7 @@ x-mariadb-galera: &mariadb-galera
         cpus: ${MARIADB_CPU_LIMIT:-2.0}
         memory: ${MARIADB_MEMORY_LIMIT:-2G}
       reservations:
-        cpus: ${MARIADB_CPU_RESERVATION:-1.0}
+        cpus: ${MARIADB_CPU_RESERVATION:-0.1}
         memory: ${MARIADB_MEMORY_RESERVATION:-1G}
   healthcheck:
     test: [CMD, healthcheck.sh, --connect, --innodb_initialized]

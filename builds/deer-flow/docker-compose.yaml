@@ -53,10 +53,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${DEER_FLOW_GATEWAY_CPU_LIMIT:-2.00}
+          cpus: ${DEER_FLOW_GATEWAY_CPU_LIMIT:-2.0}
           memory: ${DEER_FLOW_GATEWAY_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${DEER_FLOW_GATEWAY_CPU_RESERVATION:-0.50}
+          cpus: ${DEER_FLOW_GATEWAY_CPU_RESERVATION:-0.1}
           memory: ${DEER_FLOW_GATEWAY_MEMORY_RESERVATION:-512M}
 
   deerflow-langgraph:
@@ -102,10 +102,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${DEER_FLOW_LANGGRAPH_CPU_LIMIT:-2.00}
+          cpus: ${DEER_FLOW_LANGGRAPH_CPU_LIMIT:-2.0}
           memory: ${DEER_FLOW_LANGGRAPH_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${DEER_FLOW_LANGGRAPH_CPU_RESERVATION:-0.50}
+          cpus: ${DEER_FLOW_LANGGRAPH_CPU_RESERVATION:-0.1}
           memory: ${DEER_FLOW_LANGGRAPH_MEMORY_RESERVATION:-512M}
 
   deerflow-frontend:
@@ -133,10 +133,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${DEER_FLOW_FRONTEND_CPU_LIMIT:-1.00}
+          cpus: ${DEER_FLOW_FRONTEND_CPU_LIMIT:-1.0}
           memory: ${DEER_FLOW_FRONTEND_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${DEER_FLOW_FRONTEND_CPU_RESERVATION:-0.25}
+          cpus: ${DEER_FLOW_FRONTEND_CPU_RESERVATION:-0.1}
           memory: ${DEER_FLOW_FRONTEND_MEMORY_RESERVATION:-256M}
 
   deerflow-nginx:
@@ -164,8 +164,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${DEER_FLOW_NGINX_CPU_LIMIT:-0.50}
+          cpus: ${DEER_FLOW_NGINX_CPU_LIMIT:-0.5}
           memory: ${DEER_FLOW_NGINX_MEMORY_LIMIT:-256M}
         reservations:
-          cpus: ${DEER_FLOW_NGINX_CPU_RESERVATION:-0.10}
+          cpus: ${DEER_FLOW_NGINX_CPU_RESERVATION:-0.1}
           memory: ${DEER_FLOW_NGINX_MEMORY_RESERVATION:-64M}

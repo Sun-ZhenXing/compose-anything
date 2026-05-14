@@ -38,7 +38,7 @@ services:
           cpus: ${LMDEPLOY_CPU_LIMIT:-4.0}
           memory: ${LMDEPLOY_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${LMDEPLOY_CPU_RESERVATION:-2.0}
+          cpus: ${LMDEPLOY_CPU_RESERVATION:-0.1}
           memory: ${LMDEPLOY_MEMORY_RESERVATION:-4G}
           devices:
             - driver: nvidia

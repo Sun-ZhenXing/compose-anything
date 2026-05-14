@@ -28,10 +28,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${NGINX_CPU_LIMIT:-1.00}
+          cpus: ${NGINX_CPU_LIMIT:-1.0}
           memory: ${NGINX_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${NGINX_CPU_RESERVATION:-0.25}
+          cpus: ${NGINX_CPU_RESERVATION:-0.1}
           memory: ${NGINX_MEMORY_RESERVATION:-64M}
     healthcheck:
       test:

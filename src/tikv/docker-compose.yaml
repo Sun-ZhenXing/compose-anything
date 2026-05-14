@@ -30,7 +30,7 @@ services:
           cpus: ${TIKV_PD_CPU_LIMIT:-1.0}
           memory: ${TIKV_PD_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${TIKV_PD_CPU_RESERVATION:-0.25}
+          cpus: ${TIKV_PD_CPU_RESERVATION:-0.1}
           memory: ${TIKV_PD_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: [CMD-SHELL, 'wget -q -O - http://localhost:2379/health || exit 1']
@@ -66,7 +66,7 @@ services:
           cpus: ${TIKV_CPU_LIMIT:-2.0}
           memory: ${TIKV_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${TIKV_CPU_RESERVATION:-0.5}
+          cpus: ${TIKV_CPU_RESERVATION:-0.1}
           memory: ${TIKV_MEMORY_RESERVATION:-2G}
     healthcheck:
       test: [CMD-SHELL, 'wget -q -O - http://localhost:20180/status || exit 1']

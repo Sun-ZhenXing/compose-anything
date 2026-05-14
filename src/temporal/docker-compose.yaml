@@ -79,7 +79,7 @@ services:
           cpus: '${TEMPORAL_CPU_LIMIT:-2.0}'
           memory: '${TEMPORAL_MEMORY_LIMIT:-2G}'
         reservations:
-          cpus: '${TEMPORAL_CPU_RESERVATION:-0.5}'
+          cpus: '${TEMPORAL_CPU_RESERVATION:-0.1}'
           memory: '${TEMPORAL_MEMORY_RESERVATION:-512M}'
 
   temporal-ui:
@@ -155,7 +155,7 @@ services:
           cpus: '${POSTGRES_CPU_LIMIT:-1.0}'
           memory: '${POSTGRES_MEMORY_LIMIT:-1G}'
         reservations:
-          cpus: '${POSTGRES_CPU_RESERVATION:-0.25}'
+          cpus: '${POSTGRES_CPU_RESERVATION:-0.1}'
           memory: '${POSTGRES_MEMORY_RESERVATION:-256M}'
 
 volumes:

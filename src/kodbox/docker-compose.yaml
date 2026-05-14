@@ -35,7 +35,7 @@ services:
           cpus: ${KODBOX_CPU_LIMIT:-2.0}
           memory: ${KODBOX_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${KODBOX_CPU_RESERVATION:-0.5}
+          cpus: ${KODBOX_CPU_RESERVATION:-0.1}
           memory: ${KODBOX_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:80/']
@@ -71,7 +71,7 @@ services:
           cpus: ${KODBOX_DB_CPU_LIMIT:-1.0}
           memory: ${KODBOX_DB_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${KODBOX_DB_CPU_RESERVATION:-0.25}
+          cpus: ${KODBOX_DB_CPU_RESERVATION:-0.1}
           memory: ${KODBOX_DB_MEMORY_RESERVATION:-256M}
 
   kodbox-redis:
@@ -94,10 +94,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${KODBOX_REDIS_CPU_LIMIT:-0.50}
+          cpus: ${KODBOX_REDIS_CPU_LIMIT:-0.5}
           memory: ${KODBOX_REDIS_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${KODBOX_REDIS_CPU_RESERVATION:-0.25}
+          cpus: ${KODBOX_REDIS_CPU_RESERVATION:-0.1}
           memory: ${KODBOX_REDIS_MEMORY_RESERVATION:-128M}
 
 volumes:

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   frps:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}snowdreamtech/frps:${FRPS_VERSION:-0.65.0}
+    image: ${GLOBAL_REGISTRY:-}snowdreamtech/frps:${FRPS_VERSION:-0.68.1}
     volumes:
       - ./frps.toml:/etc/frp/frps.toml
     ports:

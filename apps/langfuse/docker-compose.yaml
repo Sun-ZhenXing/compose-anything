@@ -85,7 +85,7 @@ services:
           cpus: ${LANGFUSE_WORKER_CPU_LIMIT:-2.0}
           memory: ${LANGFUSE_WORKER_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${LANGFUSE_WORKER_CPU_RESERVATION:-0.5}
+          cpus: ${LANGFUSE_WORKER_CPU_RESERVATION:-0.1}
           memory: ${LANGFUSE_WORKER_MEMORY_RESERVATION:-512M}
     healthcheck:
       test:
@@ -126,7 +126,7 @@ services:
           cpus: ${LANGFUSE_WEB_CPU_LIMIT:-2.0}
           memory: ${LANGFUSE_WEB_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${LANGFUSE_WEB_CPU_RESERVATION:-0.5}
+          cpus: ${LANGFUSE_WEB_CPU_RESERVATION:-0.1}
           memory: ${LANGFUSE_WEB_MEMORY_RESERVATION:-512M}
     healthcheck:
       test:
@@ -171,7 +171,7 @@ services:
           cpus: ${CLICKHOUSE_CPU_LIMIT:-2.0}
           memory: ${CLICKHOUSE_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${CLICKHOUSE_CPU_RESERVATION:-0.5}
+          cpus: ${CLICKHOUSE_CPU_RESERVATION:-0.1}
           memory: ${CLICKHOUSE_MEMORY_RESERVATION:-1G}
 
   minio:
@@ -200,7 +200,7 @@ services:
           cpus: ${MINIO_CPU_LIMIT:-1.0}
           memory: ${MINIO_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${MINIO_CPU_RESERVATION:-0.25}
+          cpus: ${MINIO_CPU_RESERVATION:-0.1}
           memory: ${MINIO_MEMORY_RESERVATION:-256M}
 
   redis:
@@ -222,7 +222,7 @@ services:
           cpus: ${REDIS_CPU_LIMIT:-1.0}
           memory: ${REDIS_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${REDIS_CPU_RESERVATION:-0.25}
+          cpus: ${REDIS_CPU_RESERVATION:-0.1}
           memory: ${REDIS_MEMORY_RESERVATION:-256M}
 
   postgres:
@@ -249,7 +249,7 @@ services:
           cpus: ${POSTGRES_CPU_LIMIT:-2.0}
           memory: ${POSTGRES_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${POSTGRES_CPU_RESERVATION:-0.5}
+          cpus: ${POSTGRES_CPU_RESERVATION:-0.1}
           memory: ${POSTGRES_MEMORY_RESERVATION:-512M}
 
 volumes:

@@ -93,7 +93,7 @@ services:
           cpus: '${LANGFLOW_CPU_LIMIT:-2.0}'
           memory: '${LANGFLOW_MEMORY_LIMIT:-2G}'
         reservations:
-          cpus: '${LANGFLOW_CPU_RESERVATION:-0.5}'
+          cpus: '${LANGFLOW_CPU_RESERVATION:-0.1}'
           memory: '${LANGFLOW_MEMORY_RESERVATION:-512M}'
 
   postgres:
@@ -119,7 +119,7 @@ services:
           cpus: '${POSTGRES_CPU_LIMIT:-1.0}'
           memory: '${POSTGRES_MEMORY_LIMIT:-1G}'
         reservations:
-          cpus: '${POSTGRES_CPU_RESERVATION:-0.25}'
+          cpus: '${POSTGRES_CPU_RESERVATION:-0.1}'
           memory: '${POSTGRES_MEMORY_RESERVATION:-256M}'
 
 volumes:

@@ -89,19 +89,19 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - "curl -fsS http://127.0.0.1:3000/health && curl -fsS http://127.0.0.1:8089/notify/health && curl -fsS http://127.0.0.1:19090/healthz"
+        - 'curl -fsS http://127.0.0.1:3000/health && curl -fsS http://127.0.0.1:8089/notify/health && curl -fsS http://127.0.0.1:19090/healthz'
       interval: 30s
       timeout: 15s
       retries: 5
-      start_period: 600s   # First boot downloads ~400 MB + Docker images; be generous.
+      start_period: 600s # First boot downloads ~400 MB + Docker images; be generous.
 
     deploy:
       resources:
         limits:
-          cpus: '${CUBE_CPU_LIMIT:-8}'
+          cpus: '${CUBE_CPU_LIMIT:-8.0}'
           memory: ${CUBE_MEMORY_LIMIT:-16G}
         reservations:
-          cpus: '${CUBE_CPU_RESERVATION:-2}'
+          cpus: '${CUBE_CPU_RESERVATION:-0.1}'
           memory: ${CUBE_MEMORY_RESERVATION:-8G}
 
 volumes:

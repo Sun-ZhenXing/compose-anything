@@ -82,8 +82,8 @@ These services require building custom Docker images from source.
 | [FalkorDB](./src/falkordb)                                     | v4.14.11            |
 | [Firecrawl](./src/firecrawl)                                   | latest              |
 | [Flowise](./src/flowise)                                       | 3.0.12              |
-| [frpc](./src/frpc)                                             | 0.65.0              |
-| [frps](./src/frps)                                             | 0.65.0              |
+| [frpc](./src/frpc)                                             | 0.68.1              |
+| [frps](./src/frps)                                             | 0.68.1              |
 | [Gitea Runner](./src/gitea-runner)                             | 0.2.13              |
 | [Gitea](./src/gitea)                                           | 1.25.4-rootless     |
 | [GitLab Runner](./src/gitlab-runner)                           | 17.10.1             |
@@ -113,7 +113,7 @@ These services require building custom Docker images from source.
 | [libSQL Server](./src/libsql)                                  | latest              |
 | [LiteLLM](./src/litellm)                                       | main-stable         |
 | [llama-swap](./src/llama-swap)                                 | cpu                 |
-| [llama.cpp](./src/llama.cpp)                                   | server              |
+| [llama.cpp](./src/llama-cpp)                                   | server              |
 | [LMDeploy](./src/lmdeploy)                                     | v0.11.1             |
 | [LobeChat](./src/lobe-chat)                                    | 1.143.3             |
 | [Logstash](./src/logstash)                                     | 8.16.1              |

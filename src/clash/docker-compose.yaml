@@ -23,7 +23,7 @@ services:
           cpus: ${CLASH_CPU_LIMIT:-0.5}
           memory: ${CLASH_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${CLASH_CPU_RESERVATION:-0.25}
+          cpus: ${CLASH_CPU_RESERVATION:-0.1}
           memory: ${CLASH_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:80/']

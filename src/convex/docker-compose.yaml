@@ -125,7 +125,7 @@ services:
           cpus: '${CONVEX_BACKEND_CPU_LIMIT:-2.0}'
           memory: '${CONVEX_BACKEND_MEMORY_LIMIT:-2G}'
         reservations:
-          cpus: '${CONVEX_BACKEND_CPU_RESERVATION:-0.5}'
+          cpus: '${CONVEX_BACKEND_CPU_RESERVATION:-0.1}'
           memory: '${CONVEX_BACKEND_MEMORY_RESERVATION:-512M}'
 
   convex-dashboard:
@@ -159,7 +159,7 @@ services:
           cpus: '${CONVEX_DASHBOARD_CPU_LIMIT:-0.5}'
           memory: '${CONVEX_DASHBOARD_MEMORY_LIMIT:-256M}'
         reservations:
-          cpus: '${CONVEX_DASHBOARD_CPU_RESERVATION:-0.25}'
+          cpus: '${CONVEX_DASHBOARD_CPU_RESERVATION:-0.1}'
           memory: '${CONVEX_DASHBOARD_MEMORY_RESERVATION:-128M}'
 
   postgres:
@@ -187,7 +187,7 @@ services:
           cpus: '${POSTGRES_CPU_LIMIT:-1.0}'
           memory: '${POSTGRES_MEMORY_LIMIT:-1G}'
         reservations:
-          cpus: '${POSTGRES_CPU_RESERVATION:-0.25}'
+          cpus: '${POSTGRES_CPU_RESERVATION:-0.1}'
           memory: '${POSTGRES_MEMORY_RESERVATION:-256M}'
 
 volumes:

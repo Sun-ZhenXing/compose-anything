@@ -37,7 +37,7 @@ services:
           cpus: ${PODMAN_CPU_LIMIT:-2.0}
           memory: ${PODMAN_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${PODMAN_CPU_RESERVATION:-1.0}
+          cpus: ${PODMAN_CPU_RESERVATION:-0.1}
           memory: ${PODMAN_MEMORY_RESERVATION:-2G}
 
 volumes:

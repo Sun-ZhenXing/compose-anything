@@ -24,7 +24,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${NODE_EXPORTER_CPU_LIMIT:-0.25}
+          cpus: ${NODE_EXPORTER_CPU_LIMIT:-0.3}
           memory: ${NODE_EXPORTER_MEMORY_LIMIT:-128M}
         reservations:
           cpus: ${NODE_EXPORTER_CPU_RESERVATION:-0.1}

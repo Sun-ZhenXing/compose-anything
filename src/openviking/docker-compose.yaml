@@ -75,10 +75,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${OPENVIKING_CPU_LIMIT:-2.00}
+          cpus: ${OPENVIKING_CPU_LIMIT:-2.0}
           memory: ${OPENVIKING_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${OPENVIKING_CPU_RESERVATION:-0.50}
+          cpus: ${OPENVIKING_CPU_RESERVATION:-0.1}
           memory: ${OPENVIKING_MEMORY_RESERVATION:-512M}
 
 volumes:

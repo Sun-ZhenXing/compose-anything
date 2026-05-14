@@ -39,7 +39,7 @@ services:
           cpus: ${PROMETHEUS_CPU_LIMIT:-1.0}
           memory: ${PROMETHEUS_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${PROMETHEUS_CPU_RESERVATION:-0.25}
+          cpus: ${PROMETHEUS_CPU_RESERVATION:-0.1}
           memory: ${PROMETHEUS_MEMORY_RESERVATION:-512M}
     healthcheck:
       test:

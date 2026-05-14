@@ -48,7 +48,7 @@ services:
           cpus: ${SIM_CPU_LIMIT:-4.0}
           memory: ${SIM_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${SIM_CPU_RESERVATION:-2.0}
+          cpus: ${SIM_CPU_RESERVATION:-0.1}
           memory: ${SIM_MEMORY_RESERVATION:-4G}
 
   realtime:
@@ -77,7 +77,7 @@ services:
           cpus: ${SIM_REALTIME_CPU_LIMIT:-2.0}
           memory: ${SIM_REALTIME_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${SIM_REALTIME_CPU_RESERVATION:-1.0}
+          cpus: ${SIM_REALTIME_CPU_RESERVATION:-0.1}
           memory: ${SIM_REALTIME_MEMORY_RESERVATION:-2G}
 
   migrations:
@@ -102,7 +102,7 @@ services:
           cpus: ${SIM_MIGRATIONS_CPU_LIMIT:-1.0}
           memory: ${SIM_MIGRATIONS_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${SIM_MIGRATIONS_CPU_RESERVATION:-0.5}
+          cpus: ${SIM_MIGRATIONS_CPU_RESERVATION:-0.1}
           memory: ${SIM_MIGRATIONS_MEMORY_RESERVATION:-256M}
 
   db:
@@ -129,7 +129,7 @@ services:
           cpus: ${POSTGRES_CPU_LIMIT:-2.0}
           memory: ${POSTGRES_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${POSTGRES_CPU_RESERVATION:-1.0}
+          cpus: ${POSTGRES_CPU_RESERVATION:-0.1}
           memory: ${POSTGRES_MEMORY_RESERVATION:-1G}
 
 volumes:

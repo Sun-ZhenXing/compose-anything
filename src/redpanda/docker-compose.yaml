@@ -50,7 +50,7 @@ services:
           cpus: ${REDPANDA_CPU_LIMIT:-2.0}
           memory: ${REDPANDA_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${REDPANDA_CPU_RESERVATION:-1.0}
+          cpus: ${REDPANDA_CPU_RESERVATION:-0.1}
           memory: ${REDPANDA_MEMORY_RESERVATION:-1G}
 
   console:
@@ -83,7 +83,7 @@ services:
           cpus: ${REDPANDA_CONSOLE_CPU_LIMIT:-0.5}
           memory: ${REDPANDA_CONSOLE_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${REDPANDA_CONSOLE_CPU_RESERVATION:-0.25}
+          cpus: ${REDPANDA_CONSOLE_CPU_RESERVATION:-0.1}
           memory: ${REDPANDA_CONSOLE_MEMORY_RESERVATION:-256M}
 
 volumes:

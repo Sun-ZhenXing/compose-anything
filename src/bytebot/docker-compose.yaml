@@ -21,7 +21,7 @@ services:
           cpus: ${BYTEBOT_DESKTOP_CPU_LIMIT:-2.0}
           memory: ${BYTEBOT_DESKTOP_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${BYTEBOT_DESKTOP_CPU_RESERVATION:-1.0}
+          cpus: ${BYTEBOT_DESKTOP_CPU_RESERVATION:-0.1}
           memory: ${BYTEBOT_DESKTOP_MEMORY_RESERVATION:-2G}
     healthcheck:
       test:
@@ -60,7 +60,7 @@ services:
           cpus: ${BYTEBOT_AGENT_CPU_LIMIT:-1.0}
           memory: ${BYTEBOT_AGENT_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${BYTEBOT_AGENT_CPU_RESERVATION:-0.5}
+          cpus: ${BYTEBOT_AGENT_CPU_RESERVATION:-0.1}
           memory: ${BYTEBOT_AGENT_MEMORY_RESERVATION:-512M}
     healthcheck:
       test:
@@ -94,7 +94,7 @@ services:
           cpus: ${BYTEBOT_UI_CPU_LIMIT:-0.5}
           memory: ${BYTEBOT_UI_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${BYTEBOT_UI_CPU_RESERVATION:-0.25}
+          cpus: ${BYTEBOT_UI_CPU_RESERVATION:-0.1}
           memory: ${BYTEBOT_UI_MEMORY_RESERVATION:-256M}
     healthcheck:
       test:
@@ -127,7 +127,7 @@ services:
           cpus: ${BYTEBOT_DB_CPU_LIMIT:-0.5}
           memory: ${BYTEBOT_DB_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${BYTEBOT_DB_CPU_RESERVATION:-0.25}
+          cpus: ${BYTEBOT_DB_CPU_RESERVATION:-0.1}
           memory: ${BYTEBOT_DB_MEMORY_RESERVATION:-256M}
     healthcheck:
       test: [CMD-SHELL, pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB]

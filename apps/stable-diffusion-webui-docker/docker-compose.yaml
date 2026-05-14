@@ -26,7 +26,7 @@ services:
           cpus: ${SD_WEBUI_CPU_LIMIT:-4.0}
           memory: ${SD_WEBUI_MEMORY_LIMIT:-16G}
         reservations:
-          cpus: ${SD_WEBUI_CPU_RESERVATION:-2.0}
+          cpus: ${SD_WEBUI_CPU_RESERVATION:-0.1}
           memory: ${SD_WEBUI_MEMORY_RESERVATION:-8G}
           devices:
             - driver: nvidia

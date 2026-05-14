@@ -52,7 +52,7 @@ services:
           cpus: ${LLAMA_CPP_SERVER_CPU_LIMIT:-4.0}
           memory: ${LLAMA_CPP_SERVER_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${LLAMA_CPP_SERVER_CPU_RESERVATION:-2.0}
+          cpus: ${LLAMA_CPP_SERVER_CPU_RESERVATION:-0.1}
           memory: ${LLAMA_CPP_SERVER_MEMORY_RESERVATION:-4G}
     profiles:
       - server
@@ -97,7 +97,7 @@ services:
           cpus: ${LLAMA_CPP_SERVER_CPU_LIMIT:-4.0}
           memory: ${LLAMA_CPP_SERVER_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${LLAMA_CPP_SERVER_CPU_RESERVATION:-2.0}
+          cpus: ${LLAMA_CPP_SERVER_CPU_RESERVATION:-0.1}
           memory: ${LLAMA_CPP_SERVER_MEMORY_RESERVATION:-4G}
           devices:
             - driver: nvidia
@@ -150,7 +150,7 @@ services:
           cpus: ${LLAMA_CPP_SERVER_CPU_LIMIT:-4.0}
           memory: ${LLAMA_CPP_SERVER_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${LLAMA_CPP_SERVER_CPU_RESERVATION:-2.0}
+          cpus: ${LLAMA_CPP_SERVER_CPU_RESERVATION:-0.1}
           memory: ${LLAMA_CPP_SERVER_MEMORY_RESERVATION:-4G}
     profiles:
       - gpu
@@ -178,7 +178,7 @@ services:
           cpus: ${LLAMA_CPP_CLI_CPU_LIMIT:-2.0}
           memory: ${LLAMA_CPP_CLI_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${LLAMA_CPP_CLI_CPU_RESERVATION:-1.0}
+          cpus: ${LLAMA_CPP_CLI_CPU_RESERVATION:-0.1}
           memory: ${LLAMA_CPP_CLI_MEMORY_RESERVATION:-2G}
     profiles:
       - cli
@@ -198,7 +198,7 @@ services:
           cpus: ${LLAMA_CPP_FULL_CPU_LIMIT:-2.0}
           memory: ${LLAMA_CPP_FULL_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${LLAMA_CPP_FULL_CPU_RESERVATION:-1.0}
+          cpus: ${LLAMA_CPP_FULL_CPU_RESERVATION:-0.1}
           memory: ${LLAMA_CPP_FULL_MEMORY_RESERVATION:-2G}
     profiles:
       - full

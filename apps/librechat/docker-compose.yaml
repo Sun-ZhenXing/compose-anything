@@ -49,10 +49,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${LIBRECHAT_CPU_LIMIT:-2}
+          cpus: ${LIBRECHAT_CPU_LIMIT:-2.0}
           memory: ${LIBRECHAT_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${LIBRECHAT_CPU_RESERVATION:-0.5}
+          cpus: ${LIBRECHAT_CPU_RESERVATION:-0.1}
           memory: ${LIBRECHAT_MEMORY_RESERVATION:-512M}
 
   mongodb:
@@ -71,10 +71,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${MONGODB_CPU_LIMIT:-1}
+          cpus: ${MONGODB_CPU_LIMIT:-1.0}
           memory: ${MONGODB_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${MONGODB_CPU_RESERVATION:-0.25}
+          cpus: ${MONGODB_CPU_RESERVATION:-0.1}
           memory: ${MONGODB_MEMORY_RESERVATION:-256M}
 
   meilisearch:
@@ -87,7 +87,7 @@ services:
       - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-changeme_meili_master_key_CHANGEME}
       - MEILI_NO_ANALYTICS=true
     healthcheck:
-      test: [CMD-SHELL, "curl -sf http://localhost:7700/health || exit 1"]
+      test: [CMD-SHELL, 'curl -sf http://localhost:7700/health || exit 1']
       interval: 10s
       timeout: 10s
       retries: 5

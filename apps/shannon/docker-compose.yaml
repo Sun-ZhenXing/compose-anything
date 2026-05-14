@@ -39,7 +39,7 @@ services:
           cpus: ${POSTGRES_CPU_LIMIT:-1.0}
           memory: ${POSTGRES_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${POSTGRES_CPU_RESERVATION:-0.25}
+          cpus: ${POSTGRES_CPU_RESERVATION:-0.1}
           memory: ${POSTGRES_MEMORY_RESERVATION:-256M}
 
   redis:
@@ -81,7 +81,7 @@ services:
           cpus: ${QDRANT_CPU_LIMIT:-1.0}
           memory: ${QDRANT_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${QDRANT_CPU_RESERVATION:-0.25}
+          cpus: ${QDRANT_CPU_RESERVATION:-0.1}
           memory: ${QDRANT_MEMORY_RESERVATION:-256M}
 
   temporal:
@@ -109,7 +109,7 @@ services:
           cpus: ${TEMPORAL_CPU_LIMIT:-1.0}
           memory: ${TEMPORAL_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${TEMPORAL_CPU_RESERVATION:-0.25}
+          cpus: ${TEMPORAL_CPU_RESERVATION:-0.1}
           memory: ${TEMPORAL_MEMORY_RESERVATION:-256M}
 
   temporal-ui:
@@ -199,7 +199,7 @@ services:
           cpus: ${LLM_SERVICE_CPU_LIMIT:-2.0}
           memory: ${LLM_SERVICE_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${LLM_SERVICE_CPU_RESERVATION:-0.5}
+          cpus: ${LLM_SERVICE_CPU_RESERVATION:-0.1}
           memory: ${LLM_SERVICE_MEMORY_RESERVATION:-512M}
 
   agent-core:
@@ -233,7 +233,7 @@ services:
           cpus: ${AGENT_CORE_CPU_LIMIT:-2.0}
           memory: ${AGENT_CORE_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${AGENT_CORE_CPU_RESERVATION:-0.5}
+          cpus: ${AGENT_CORE_CPU_RESERVATION:-0.1}
           memory: ${AGENT_CORE_MEMORY_RESERVATION:-512M}
 
   orchestrator:
@@ -299,7 +299,7 @@ services:
           cpus: ${ORCHESTRATOR_CPU_LIMIT:-2.0}
           memory: ${ORCHESTRATOR_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${ORCHESTRATOR_CPU_RESERVATION:-0.5}
+          cpus: ${ORCHESTRATOR_CPU_RESERVATION:-0.1}
           memory: ${ORCHESTRATOR_MEMORY_RESERVATION:-512M}
 
   gateway:
@@ -343,7 +343,7 @@ services:
           cpus: ${GATEWAY_CPU_LIMIT:-1.0}
           memory: ${GATEWAY_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${GATEWAY_CPU_RESERVATION:-0.25}
+          cpus: ${GATEWAY_CPU_RESERVATION:-0.1}
           memory: ${GATEWAY_MEMORY_RESERVATION:-256M}
 
 volumes:

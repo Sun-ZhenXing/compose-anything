@@ -22,7 +22,7 @@ services:
       - DISABLE_HIDDEN_POLICY=${DOCKER_ANDROID_DISABLE_HIDDEN_POLICY:-false}
       - SKIP_AUTH=${DOCKER_ANDROID_SKIP_AUTH:-true}
       - MEMORY=${DOCKER_ANDROID_MEMORY:-8192}
-      - CORES=${DOCKER_ANDROID_CORES:-4}
+      - CORES=${DOCKER_ANDROID_CORES:-4.0}
     devices:
       - '${DOCKER_ANDROID_KVM_DEVICE:-/dev/kvm}:/dev/kvm'
     healthcheck:
@@ -34,10 +34,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${DOCKER_ANDROID_CPU_LIMIT:-2}
+          cpus: ${DOCKER_ANDROID_CPU_LIMIT:-2.0}
           memory: ${DOCKER_ANDROID_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${DOCKER_ANDROID_CPU_RESERVATION:-1}
+          cpus: ${DOCKER_ANDROID_CPU_RESERVATION:-0.1}
           memory: ${DOCKER_ANDROID_MEMORY_RESERVATION:-4G}
 
   docker_android_gpu:
@@ -57,7 +57,7 @@ services:
       - DISABLE_HIDDEN_POLICY=${DOCKER_ANDROID_DISABLE_HIDDEN_POLICY:-false}
       - SKIP_AUTH=${DOCKER_ANDROID_SKIP_AUTH:-true}
       - MEMORY=${DOCKER_ANDROID_MEMORY:-8192}
-      - CORES=${DOCKER_ANDROID_CORES:-4}
+      - CORES=${DOCKER_ANDROID_CORES:-4.0}
     devices:
       - '${DOCKER_ANDROID_KVM_DEVICE:-/dev/kvm}:/dev/kvm'
     healthcheck:
@@ -69,10 +69,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${DOCKER_ANDROID_CPU_LIMIT:-2}
+          cpus: ${DOCKER_ANDROID_CPU_LIMIT:-2.0}
           memory: ${DOCKER_ANDROID_MEMORY_LIMIT:-8G}
         reservations:
-          cpus: ${DOCKER_ANDROID_CPU_RESERVATION:-1}
+          cpus: ${DOCKER_ANDROID_CPU_RESERVATION:-0.1}
           memory: ${DOCKER_ANDROID_MEMORY_RESERVATION:-4G}
           devices:
             - driver: nvidia

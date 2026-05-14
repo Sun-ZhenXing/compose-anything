@@ -33,10 +33,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${LETTA_CPU_LIMIT:-1}
+          cpus: ${LETTA_CPU_LIMIT:-1.0}
           memory: ${LETTA_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${LETTA_CPU_RESERVATION:-0.25}
+          cpus: ${LETTA_CPU_RESERVATION:-0.1}
           memory: ${LETTA_MEMORY_RESERVATION:-256M}
 
 volumes:

@@ -27,7 +27,7 @@ services:
           cpus: ${GITEA_RUNNER_CPU_LIMIT:-1.0}
           memory: ${GITEA_RUNNER_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${GITEA_RUNNER_CPU_RESERVATION:-0.5}
+          cpus: ${GITEA_RUNNER_CPU_RESERVATION:-0.1}
           memory: ${GITEA_RUNNER_MEMORY_RESERVATION:-1G}
 
 volumes:

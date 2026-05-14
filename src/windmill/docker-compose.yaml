@@ -76,7 +76,7 @@ services:
           cpus: '${WINDMILL_SERVER_CPU_LIMIT:-1.0}'
           memory: '${WINDMILL_SERVER_MEMORY_LIMIT:-1G}'
         reservations:
-          cpus: '${WINDMILL_SERVER_CPU_RESERVATION:-0.25}'
+          cpus: '${WINDMILL_SERVER_CPU_RESERVATION:-0.1}'
           memory: '${WINDMILL_SERVER_MEMORY_RESERVATION:-256M}'
 
   windmill-worker:
@@ -109,7 +109,7 @@ services:
           cpus: '${WINDMILL_WORKER_CPU_LIMIT:-2.0}'
           memory: '${WINDMILL_WORKER_MEMORY_LIMIT:-2G}'
         reservations:
-          cpus: '${WINDMILL_WORKER_CPU_RESERVATION:-0.5}'
+          cpus: '${WINDMILL_WORKER_CPU_RESERVATION:-0.1}'
           memory: '${WINDMILL_WORKER_MEMORY_RESERVATION:-512M}'
 
   postgres:
@@ -134,7 +134,7 @@ services:
           cpus: '${POSTGRES_CPU_LIMIT:-1.0}'
           memory: '${POSTGRES_MEMORY_LIMIT:-1G}'
         reservations:
-          cpus: '${POSTGRES_CPU_RESERVATION:-0.25}'
+          cpus: '${POSTGRES_CPU_RESERVATION:-0.1}'
           memory: '${POSTGRES_MEMORY_RESERVATION:-256M}'
 
   # Optional: LSP service for code intelligence

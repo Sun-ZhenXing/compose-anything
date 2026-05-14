@@ -46,7 +46,7 @@ services:
           cpus: ${OPENCODE_CPU_LIMIT:-1.0}
           memory: ${OPENCODE_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${OPENCODE_CPU_RESERVATION:-0.25}
+          cpus: ${OPENCODE_CPU_RESERVATION:-0.1}
           memory: ${OPENCODE_MEMORY_RESERVATION:-512M}
 
 volumes:

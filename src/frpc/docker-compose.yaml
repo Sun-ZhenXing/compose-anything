@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   frpc:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}snowdreamtech/frpc:${FRPC_VERSION:-0.65.0}
+    image: ${GLOBAL_REGISTRY:-}snowdreamtech/frpc:${FRPC_VERSION:-0.68.1}
     ports:
       - '${FRP_ADMIN_PORT:-7400}:${FRP_ADMIN_PORT:-7400}'
     volumes:

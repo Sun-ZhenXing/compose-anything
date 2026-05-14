@@ -19,10 +19,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${BIFROST_CPU_LIMIT:-0.50}
+          cpus: ${BIFROST_CPU_LIMIT:-0.5}
           memory: ${BIFROST_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${BIFROST_CPU_RESERVATION:-0.10}
+          cpus: ${BIFROST_CPU_RESERVATION:-0.1}
           memory: ${BIFROST_MEMORY_RESERVATION:-128M}
     healthcheck:
       test:
@@ -68,10 +68,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${PROMETHEUS_CPU_LIMIT:-0.50}
+          cpus: ${PROMETHEUS_CPU_LIMIT:-0.5}
           memory: ${PROMETHEUS_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${PROMETHEUS_CPU_RESERVATION:-0.10}
+          cpus: ${PROMETHEUS_CPU_RESERVATION:-0.1}
           memory: ${PROMETHEUS_MEMORY_RESERVATION:-128M}
 
   grafana:
@@ -103,10 +103,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${GRAFANA_CPU_LIMIT:-0.50}
+          cpus: ${GRAFANA_CPU_LIMIT:-0.5}
           memory: ${GRAFANA_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${GRAFANA_CPU_RESERVATION:-0.10}
+          cpus: ${GRAFANA_CPU_RESERVATION:-0.1}
           memory: ${GRAFANA_MEMORY_RESERVATION:-128M}
 
 volumes:

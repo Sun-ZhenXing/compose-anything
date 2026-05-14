@@ -110,7 +110,7 @@ services:
           cpus: ${SIGNOZ_CLICKHOUSE_CPU_LIMIT:-2.0}
           memory: ${SIGNOZ_CLICKHOUSE_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${SIGNOZ_CLICKHOUSE_CPU_RESERVATION:-0.5}
+          cpus: ${SIGNOZ_CLICKHOUSE_CPU_RESERVATION:-0.1}
           memory: ${SIGNOZ_CLICKHOUSE_MEMORY_RESERVATION:-1G}
 
   # One-shot migration: bootstraps and runs schema migrations
@@ -163,7 +163,7 @@ services:
           cpus: ${SIGNOZ_CPU_LIMIT:-1.0}
           memory: ${SIGNOZ_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${SIGNOZ_CPU_RESERVATION:-0.25}
+          cpus: ${SIGNOZ_CPU_RESERVATION:-0.1}
           memory: ${SIGNOZ_MEMORY_RESERVATION:-256M}
 
   # OTel Collector for receiving telemetry data
@@ -202,7 +202,7 @@ services:
           cpus: ${SIGNOZ_OTEL_COLLECTOR_CPU_LIMIT:-1.0}
           memory: ${SIGNOZ_OTEL_COLLECTOR_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${SIGNOZ_OTEL_COLLECTOR_CPU_RESERVATION:-0.25}
+          cpus: ${SIGNOZ_OTEL_COLLECTOR_CPU_RESERVATION:-0.1}
           memory: ${SIGNOZ_OTEL_COLLECTOR_MEMORY_RESERVATION:-512M}
 
 volumes:

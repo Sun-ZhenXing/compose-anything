@@ -28,10 +28,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${OPENCUT_DB_CPU_LIMIT:-2.00}
+          cpus: ${OPENCUT_DB_CPU_LIMIT:-2.0}
           memory: ${OPENCUT_DB_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${OPENCUT_DB_CPU_RESERVATION:-0.50}
+          cpus: ${OPENCUT_DB_CPU_RESERVATION:-0.1}
           memory: ${OPENCUT_DB_MEMORY_RESERVATION:-256M}
 
   redis:
@@ -48,10 +48,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${OPENCUT_REDIS_CPU_LIMIT:-1.00}
+          cpus: ${OPENCUT_REDIS_CPU_LIMIT:-1.0}
           memory: ${OPENCUT_REDIS_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${OPENCUT_REDIS_CPU_RESERVATION:-0.25}
+          cpus: ${OPENCUT_REDIS_CPU_RESERVATION:-0.1}
           memory: ${OPENCUT_REDIS_MEMORY_RESERVATION:-128M}
 
   serverless-redis-http:
@@ -75,10 +75,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${OPENCUT_SRH_CPU_LIMIT:-1.00}
+          cpus: ${OPENCUT_SRH_CPU_LIMIT:-1.0}
           memory: ${OPENCUT_SRH_MEMORY_LIMIT:-256M}
         reservations:
-          cpus: ${OPENCUT_SRH_CPU_RESERVATION:-0.25}
+          cpus: ${OPENCUT_SRH_CPU_RESERVATION:-0.1}
           memory: ${OPENCUT_SRH_MEMORY_RESERVATION:-64M}
 
   web:
@@ -116,10 +116,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${OPENCUT_WEB_CPU_LIMIT:-2.00}
+          cpus: ${OPENCUT_WEB_CPU_LIMIT:-2.0}
           memory: ${OPENCUT_WEB_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${OPENCUT_WEB_CPU_RESERVATION:-0.50}
+          cpus: ${OPENCUT_WEB_CPU_RESERVATION:-0.1}
           memory: ${OPENCUT_WEB_MEMORY_RESERVATION:-512M}
 
 volumes:

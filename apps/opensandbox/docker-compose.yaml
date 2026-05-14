@@ -41,7 +41,7 @@ services:
           cpus: ${OPENSANDBOX_SERVER_CPU_LIMIT:-2.0}
           memory: ${OPENSANDBOX_SERVER_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${OPENSANDBOX_SERVER_CPU_RESERVATION:-1.0}
+          cpus: ${OPENSANDBOX_SERVER_CPU_RESERVATION:-0.1}
           memory: ${OPENSANDBOX_SERVER_MEMORY_RESERVATION:-1G}
 
 volumes:

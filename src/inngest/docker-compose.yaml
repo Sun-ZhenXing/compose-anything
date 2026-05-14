@@ -73,10 +73,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${INNGEST_CPU_LIMIT:-1.00}
+          cpus: ${INNGEST_CPU_LIMIT:-1.0}
           memory: ${INNGEST_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${INNGEST_CPU_RESERVATION:-0.50}
+          cpus: ${INNGEST_CPU_RESERVATION:-0.1}
           memory: ${INNGEST_MEMORY_RESERVATION:-256M}
 
   postgres:
@@ -109,10 +109,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${INNGEST_PG_CPU_LIMIT:-0.50}
+          cpus: ${INNGEST_PG_CPU_LIMIT:-0.5}
           memory: ${INNGEST_PG_MEMORY_LIMIT:-256M}
         reservations:
-          cpus: ${INNGEST_PG_CPU_RESERVATION:-0.25}
+          cpus: ${INNGEST_PG_CPU_RESERVATION:-0.1}
           memory: ${INNGEST_PG_MEMORY_RESERVATION:-128M}
 
   redis:
@@ -134,10 +134,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${INNGEST_REDIS_CPU_LIMIT:-0.50}
+          cpus: ${INNGEST_REDIS_CPU_LIMIT:-0.5}
           memory: ${INNGEST_REDIS_MEMORY_LIMIT:-128M}
         reservations:
-          cpus: ${INNGEST_REDIS_CPU_RESERVATION:-0.25}
+          cpus: ${INNGEST_REDIS_CPU_RESERVATION:-0.1}
           memory: ${INNGEST_REDIS_MEMORY_RESERVATION:-64M}
 
 volumes:

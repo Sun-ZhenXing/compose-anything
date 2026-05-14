@@ -40,7 +40,7 @@ services:
           cpus: ${BEDROCK_CPU_LIMIT:-2.0}
           memory: ${BEDROCK_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${BEDROCK_CPU_RESERVATION:-1.0}
+          cpus: ${BEDROCK_CPU_RESERVATION:-0.1}
           memory: ${BEDROCK_MEMORY_RESERVATION:-1G}
     healthcheck:
       test: [CMD-SHELL, '[ -f /data/valid_known_packs.json ]']

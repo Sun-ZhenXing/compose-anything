@@ -28,7 +28,7 @@ services:
       - pingap
       - --autoreload
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'echo >/dev/tcp/localhost/80' || exit 1"]
+      test: [CMD-SHELL, "bash -c 'echo >/dev/tcp/localhost/80' || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -39,7 +39,7 @@ services:
           cpus: ${PINGAP_CPU_LIMIT:-1.0}
           memory: ${PINGAP_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${PINGAP_CPU_RESERVATION:-0.5}
+          cpus: ${PINGAP_CPU_RESERVATION:-0.1}
           memory: ${PINGAP_MEMORY_RESERVATION:-256M}
 
 volumes:

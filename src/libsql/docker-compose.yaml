@@ -42,7 +42,7 @@ services:
           cpus: ${LIBSQL_CPU_LIMIT:-1.0}
           memory: ${LIBSQL_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${LIBSQL_CPU_RESERVATION:-0.5}
+          cpus: ${LIBSQL_CPU_RESERVATION:-0.1}
           memory: ${LIBSQL_MEMORY_RESERVATION:-256M}
 
   # Replica instance (optional, use with profile)
@@ -79,7 +79,7 @@ services:
           cpus: ${LIBSQL_REPLICA_CPU_LIMIT:-1.0}
           memory: ${LIBSQL_REPLICA_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${LIBSQL_REPLICA_CPU_RESERVATION:-0.5}
+          cpus: ${LIBSQL_REPLICA_CPU_RESERVATION:-0.1}
           memory: ${LIBSQL_REPLICA_MEMORY_RESERVATION:-256M}
 
 volumes:

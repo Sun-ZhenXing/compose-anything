@@ -33,13 +33,13 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${EASYTIER_CPU_LIMIT:-0.50}
+          cpus: ${EASYTIER_CPU_LIMIT:-0.5}
           memory: ${EASYTIER_MEMORY_LIMIT:-128M}
         reservations:
-          cpus: ${EASYTIER_CPU_RESERVATION:-0.10}
+          cpus: ${EASYTIER_CPU_RESERVATION:-0.1}
           memory: ${EASYTIER_MEMORY_RESERVATION:-32M}
     healthcheck:
-      test: ['CMD', 'easytier-cli', '-p', '127.0.0.1:15888', 'node', 'info']
+      test: [CMD, easytier-cli, -p, '127.0.0.1:15888', node, info]
       interval: 30s
       timeout: 10s
       retries: 3

@@ -29,7 +29,7 @@ services:
           cpus: ${TIDB_PD_CPU_LIMIT:-1.0}
           memory: ${TIDB_PD_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${TIDB_PD_CPU_RESERVATION:-0.25}
+          cpus: ${TIDB_PD_CPU_RESERVATION:-0.1}
           memory: ${TIDB_PD_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: [CMD-SHELL, 'wget -q -O - http://localhost:2379/health || exit 1']
@@ -61,7 +61,7 @@ services:
           cpus: ${TIDB_TIKV_CPU_LIMIT:-2.0}
           memory: ${TIDB_TIKV_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${TIDB_TIKV_CPU_RESERVATION:-0.5}
+          cpus: ${TIDB_TIKV_CPU_RESERVATION:-0.1}
           memory: ${TIDB_TIKV_MEMORY_RESERVATION:-1G}
     healthcheck:
       test: [CMD-SHELL, 'wget -q -O - http://localhost:20180/status || exit 1']
@@ -91,7 +91,7 @@ services:
           cpus: ${TIDB_CPU_LIMIT:-2.0}
           memory: ${TIDB_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${TIDB_CPU_RESERVATION:-0.5}
+          cpus: ${TIDB_CPU_RESERVATION:-0.1}
           memory: ${TIDB_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: [CMD-SHELL, 'wget -q -O - http://localhost:10080/status || exit 1']

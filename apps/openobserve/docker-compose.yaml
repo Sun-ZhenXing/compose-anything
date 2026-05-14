@@ -40,7 +40,7 @@ services:
           cpus: ${OPENOBSERVE_CPU_LIMIT:-2.0}
           memory: ${OPENOBSERVE_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${OPENOBSERVE_CPU_RESERVATION:-0.5}
+          cpus: ${OPENOBSERVE_CPU_RESERVATION:-0.1}
           memory: ${OPENOBSERVE_MEMORY_RESERVATION:-512M}
 
 volumes:

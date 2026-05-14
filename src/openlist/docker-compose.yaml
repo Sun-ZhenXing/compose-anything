@@ -25,7 +25,7 @@ services:
           cpus: ${OPENLIST_CPU_LIMIT:-1.0}
           memory: ${OPENLIST_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${OPENLIST_CPU_RESERVATION:-0.25}
+          cpus: ${OPENLIST_CPU_RESERVATION:-0.1}
           memory: ${OPENLIST_MEMORY_RESERVATION:-256M}
     healthcheck:
       test:

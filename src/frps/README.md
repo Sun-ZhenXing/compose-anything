@@ -73,7 +73,7 @@ services:
 ### Image Configuration
 
 - `GLOBAL_REGISTRY`: Optional global registry prefix for pulling images
-- `FRPS_VERSION`: FRPS image version (default: `0.65.0`)
+- `FRPS_VERSION`: FRPS image version (default: `0.68.1`)
 - `TZ`: Timezone setting (default: `UTC`)
 
 ### Server Configuration

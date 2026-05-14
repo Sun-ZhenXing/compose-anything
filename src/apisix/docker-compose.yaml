@@ -32,7 +32,7 @@ services:
           cpus: ${APISIX_CPU_LIMIT:-1.0}
           memory: ${APISIX_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${APISIX_CPU_RESERVATION:-0.25}
+          cpus: ${APISIX_CPU_RESERVATION:-0.1}
           memory: ${APISIX_MEMORY_RESERVATION:-256M}
     healthcheck:
       test:

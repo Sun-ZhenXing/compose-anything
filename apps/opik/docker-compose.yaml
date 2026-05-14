@@ -33,7 +33,7 @@ services:
           cpus: ${MYSQL_CPU_LIMIT:-1.0}
           memory: ${MYSQL_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${MYSQL_CPU_RESERVATION:-0.5}
+          cpus: ${MYSQL_CPU_RESERVATION:-0.1}
           memory: ${MYSQL_MEMORY_RESERVATION:-512M}
 
   redis:
@@ -56,7 +56,7 @@ services:
           cpus: ${REDIS_CPU_LIMIT:-0.5}
           memory: ${REDIS_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${REDIS_CPU_RESERVATION:-0.25}
+          cpus: ${REDIS_CPU_RESERVATION:-0.1}
           memory: ${REDIS_MEMORY_RESERVATION:-256M}
 
   zookeeper:
@@ -93,7 +93,7 @@ services:
           cpus: ${ZOOKEEPER_CPU_LIMIT:-0.5}
           memory: ${ZOOKEEPER_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${ZOOKEEPER_CPU_RESERVATION:-0.25}
+          cpus: ${ZOOKEEPER_CPU_RESERVATION:-0.1}
           memory: ${ZOOKEEPER_MEMORY_RESERVATION:-512M}
 
   clickhouse-init:
@@ -148,7 +148,7 @@ services:
           cpus: ${CLICKHOUSE_CPU_LIMIT:-2.0}
           memory: ${CLICKHOUSE_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${CLICKHOUSE_CPU_RESERVATION:-0.5}
+          cpus: ${CLICKHOUSE_CPU_RESERVATION:-0.1}
           memory: ${CLICKHOUSE_MEMORY_RESERVATION:-1G}
 
   minio:
@@ -176,7 +176,7 @@ services:
           cpus: ${MINIO_CPU_LIMIT:-1.0}
           memory: ${MINIO_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${MINIO_CPU_RESERVATION:-0.25}
+          cpus: ${MINIO_CPU_RESERVATION:-0.1}
           memory: ${MINIO_MEMORY_RESERVATION:-512M}
 
   minio-init:
@@ -258,7 +258,7 @@ services:
           cpus: ${BACKEND_CPU_LIMIT:-2.0}
           memory: ${BACKEND_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${BACKEND_CPU_RESERVATION:-0.5}
+          cpus: ${BACKEND_CPU_RESERVATION:-0.1}
           memory: ${BACKEND_MEMORY_RESERVATION:-1G}
     volumes:
       - backend_tmp:/tmp
@@ -307,7 +307,7 @@ services:
           cpus: ${PYTHON_BACKEND_CPU_LIMIT:-1.0}
           memory: ${PYTHON_BACKEND_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${PYTHON_BACKEND_CPU_RESERVATION:-0.5}
+          cpus: ${PYTHON_BACKEND_CPU_RESERVATION:-0.1}
           memory: ${PYTHON_BACKEND_MEMORY_RESERVATION:-512M}
     volumes:
       - python_backend_docker:/var/lib/docker
@@ -336,7 +336,7 @@ services:
           cpus: ${FRONTEND_CPU_LIMIT:-0.5}
           memory: ${FRONTEND_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${FRONTEND_CPU_RESERVATION:-0.25}
+          cpus: ${FRONTEND_CPU_RESERVATION:-0.1}
           memory: ${FRONTEND_MEMORY_RESERVATION:-256M}
 
 volumes:

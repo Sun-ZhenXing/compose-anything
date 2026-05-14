@@ -26,10 +26,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${FALKORDB_CPU_LIMIT:-1.00}
+          cpus: ${FALKORDB_CPU_LIMIT:-1.0}
           memory: ${FALKORDB_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${FALKORDB_CPU_RESERVATION:-0.25}
+          cpus: ${FALKORDB_CPU_RESERVATION:-0.1}
           memory: ${FALKORDB_MEMORY_RESERVATION:-512M}
 
 volumes:

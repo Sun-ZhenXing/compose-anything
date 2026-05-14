@@ -29,10 +29,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.00'
+          cpus: '1.0'
           memory: 512M
         reservations:
-          cpus: '0.25'
+          cpus: '0.1'
           memory: 128M
 
   grafana:
@@ -59,10 +59,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.00'
+          cpus: '2.0'
           memory: 1G
         reservations:
-          cpus: '0.5'
+          cpus: '0.1'
           memory: 256M
 
 volumes:

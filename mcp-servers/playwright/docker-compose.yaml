@@ -26,10 +26,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.00'
+          cpus: '2.0'
           memory: 2G
         reservations:
-          cpus: '0.5'
+          cpus: '0.1'
           memory: 512M
     security_opt:
       - seccomp:unconfined

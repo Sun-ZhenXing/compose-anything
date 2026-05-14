@@ -39,7 +39,7 @@ services:
           cpus: ${LAMINAR_POSTGRES_CPU_LIMIT:-1.0}
           memory: ${LAMINAR_POSTGRES_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${LAMINAR_POSTGRES_CPU_RESERVATION:-0.25}
+          cpus: ${LAMINAR_POSTGRES_CPU_RESERVATION:-0.1}
           memory: ${LAMINAR_POSTGRES_MEMORY_RESERVATION:-256M}
 
   clickhouse:
@@ -79,7 +79,7 @@ services:
           cpus: ${LAMINAR_CLICKHOUSE_CPU_LIMIT:-2.0}
           memory: ${LAMINAR_CLICKHOUSE_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${LAMINAR_CLICKHOUSE_CPU_RESERVATION:-0.5}
+          cpus: ${LAMINAR_CLICKHOUSE_CPU_RESERVATION:-0.1}
           memory: ${LAMINAR_CLICKHOUSE_MEMORY_RESERVATION:-512M}
 
   quickwit:
@@ -110,7 +110,7 @@ services:
           cpus: ${LAMINAR_QUICKWIT_CPU_LIMIT:-1.0}
           memory: ${LAMINAR_QUICKWIT_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${LAMINAR_QUICKWIT_CPU_RESERVATION:-0.25}
+          cpus: ${LAMINAR_QUICKWIT_CPU_RESERVATION:-0.1}
           memory: ${LAMINAR_QUICKWIT_MEMORY_RESERVATION:-256M}
 
   query-engine:
@@ -139,7 +139,7 @@ services:
           cpus: ${LAMINAR_QUERY_ENGINE_CPU_LIMIT:-1.0}
           memory: ${LAMINAR_QUERY_ENGINE_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${LAMINAR_QUERY_ENGINE_CPU_RESERVATION:-0.25}
+          cpus: ${LAMINAR_QUERY_ENGINE_CPU_RESERVATION:-0.1}
           memory: ${LAMINAR_QUERY_ENGINE_MEMORY_RESERVATION:-128M}
 
   app-server:
@@ -195,7 +195,7 @@ services:
           cpus: ${LAMINAR_APP_SERVER_CPU_LIMIT:-2.0}
           memory: ${LAMINAR_APP_SERVER_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${LAMINAR_APP_SERVER_CPU_RESERVATION:-0.5}
+          cpus: ${LAMINAR_APP_SERVER_CPU_RESERVATION:-0.1}
           memory: ${LAMINAR_APP_SERVER_MEMORY_RESERVATION:-512M}
 
   frontend:
@@ -252,7 +252,7 @@ services:
           cpus: ${LAMINAR_FRONTEND_CPU_LIMIT:-1.0}
           memory: ${LAMINAR_FRONTEND_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${LAMINAR_FRONTEND_CPU_RESERVATION:-0.25}
+          cpus: ${LAMINAR_FRONTEND_CPU_RESERVATION:-0.1}
           memory: ${LAMINAR_FRONTEND_MEMORY_RESERVATION:-256M}
 
 volumes:

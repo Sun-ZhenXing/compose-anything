@@ -38,10 +38,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${CONSUL_CPU_LIMIT:-1.00}
+          cpus: ${CONSUL_CPU_LIMIT:-1.0}
           memory: ${CONSUL_MEMORY_LIMIT:-512M}
         reservations:
-          cpus: ${CONSUL_CPU_RESERVATION:-0.25}
+          cpus: ${CONSUL_CPU_RESERVATION:-0.1}
           memory: ${CONSUL_MEMORY_RESERVATION:-128M}
     healthcheck:
       test: [CMD-SHELL, consul members]

@@ -57,7 +57,7 @@ services:
       - NANOBOT_GATEWAY__PORT=${GATEWAY_PORT:-18790}
     command: ${NANOBOT_COMMAND:-gateway}
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:18790/')"]
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:18790/')"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -68,7 +68,7 @@ services:
           cpus: ${NANOBOT_CPU_LIMIT:-1.0}
           memory: ${NANOBOT_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${NANOBOT_CPU_RESERVATION:-0.5}
+          cpus: ${NANOBOT_CPU_RESERVATION:-0.1}
           memory: ${NANOBOT_MEMORY_RESERVATION:-512M}
 
 volumes:

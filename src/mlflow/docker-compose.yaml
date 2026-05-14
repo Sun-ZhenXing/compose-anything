@@ -23,7 +23,7 @@ services:
           cpus: ${POSTGRES_MLFLOW_CPU_LIMIT:-1.0}
           memory: ${POSTGRES_MLFLOW_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${POSTGRES_MLFLOW_CPU_RESERVATION:-0.5}
+          cpus: ${POSTGRES_MLFLOW_CPU_RESERVATION:-0.1}
           memory: ${POSTGRES_MLFLOW_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-mlflow}']
@@ -51,7 +51,7 @@ services:
           cpus: ${MINIO_MLFLOW_CPU_LIMIT:-1.0}
           memory: ${MINIO_MLFLOW_MEMORY_LIMIT:-1G}
         reservations:
-          cpus: ${MINIO_MLFLOW_CPU_RESERVATION:-0.5}
+          cpus: ${MINIO_MLFLOW_CPU_RESERVATION:-0.1}
           memory: ${MINIO_MLFLOW_MEMORY_RESERVATION:-512M}
     healthcheck:
       test: [CMD, curl, -f, 'http://localhost:9000/minio/health/live']
@@ -111,7 +111,7 @@ services:
           cpus: ${MLFLOW_CPU_LIMIT:-2.0}
           memory: ${MLFLOW_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${MLFLOW_CPU_RESERVATION:-1.0}
+          cpus: ${MLFLOW_CPU_RESERVATION:-0.1}
           memory: ${MLFLOW_MEMORY_RESERVATION:-1G}
     healthcheck:
       test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:5000/health']

@@ -125,7 +125,7 @@ Access the admin dashboard at `http://localhost:7400` (default).
 ### Image Configuration
 
 - `GLOBAL_REGISTRY`: Optional global registry prefix for pulling images
-- `FRPC_VERSION`: FRPC image version (default: `0.65.0`)
+- `FRPC_VERSION`: FRPC image version (default: `0.68.1`)
 - `TZ`: Timezone setting (default: `UTC`)
 
 ### Server Connection

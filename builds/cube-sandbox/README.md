@@ -136,7 +136,7 @@ These permissions are equivalent to what `online-install.sh` would request if it
 - **`/dev/kvm not found`** — the host does not expose KVM to Docker. On WSL2, confirm nested virtualization is enabled and the kernel exposes `/dev/kvm`. On bare metal, ensure VT-x / AMD-V is enabled in BIOS.
 - **First boot hangs at "Running CubeSandbox one-click installer"** — the installer is downloading the bundle (~hundreds of MB) and pulling several Docker images. Check progress with `docker compose logs -f cube-sandbox`.
 - **`quickcheck.sh reported issues`** — open a shell in the container and inspect logs:
-  
+
   ```bash
   docker compose exec cube-sandbox bash
   ls /data/log/

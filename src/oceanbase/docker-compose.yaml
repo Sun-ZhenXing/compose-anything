@@ -31,7 +31,7 @@ services:
           cpus: ${OCEANBASE_CPU_LIMIT:-4.0}
           memory: ${OCEANBASE_MEMORY_LIMIT:-10G}
         reservations:
-          cpus: ${OCEANBASE_CPU_RESERVATION:-2.0}
+          cpus: ${OCEANBASE_CPU_RESERVATION:-0.1}
           memory: ${OCEANBASE_MEMORY_RESERVATION:-8G}
     healthcheck:
       test: [CMD-SHELL, "mysql -h127.0.0.1 -P2881 -uroot -p$$OB_ROOT_PASSWORD -e 'SELECT 1' || exit 1"]

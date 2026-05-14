@@ -36,10 +36,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${DORIS_FE_CPU_LIMIT:-1.00}
+          cpus: ${DORIS_FE_CPU_LIMIT:-1.0}
           memory: ${DORIS_FE_MEMORY_LIMIT:-2G}
         reservations:
-          cpus: ${DORIS_FE_CPU_RESERVATION:-0.50}
+          cpus: ${DORIS_FE_CPU_RESERVATION:-0.1}
           memory: ${DORIS_FE_MEMORY_RESERVATION:-1G}
 
   # Doris Backend (BE) node
@@ -68,10 +68,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${DORIS_BE_CPU_LIMIT:-2.00}
+          cpus: ${DORIS_BE_CPU_LIMIT:-2.0}
           memory: ${DORIS_BE_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${DORIS_BE_CPU_RESERVATION:-1.00}
+          cpus: ${DORIS_BE_CPU_RESERVATION:-0.1}
           memory: ${DORIS_BE_MEMORY_RESERVATION:-2G}
 
 volumes:

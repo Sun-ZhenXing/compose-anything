@@ -125,7 +125,7 @@ localPort = 3000
 ### 镜像配置
 
 - `GLOBAL_REGISTRY`：可选的全局镜像仓库前缀
-- `FRPC_VERSION`：FRPC 镜像版本（默认：`0.65.0`）
+- `FRPC_VERSION`：FRPC 镜像版本（默认：`0.68.1`）
 - `TZ`：时区设置（默认：`UTC`）
 
 ### 服务器连接

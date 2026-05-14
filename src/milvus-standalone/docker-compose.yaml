@@ -28,7 +28,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${ETCD_CPU_LIMIT:-0.25}
+          cpus: ${ETCD_CPU_LIMIT:-0.3}
           memory: ${ETCD_MEMORY_LIMIT:-256M}
         reservations:
           cpus: ${ETCD_CPU_RESERVATION:-0.1}
@@ -95,7 +95,7 @@ services:
           cpus: ${MILVUS_CPU_LIMIT:-2.0}
           memory: ${MILVUS_MEMORY_LIMIT:-4G}
         reservations:
-          cpus: ${MILVUS_CPU_RESERVATION:-1.0}
+          cpus: ${MILVUS_CPU_RESERVATION:-0.1}
           memory: ${MILVUS_MEMORY_RESERVATION:-2G}
 
   attu:
@@ -114,7 +114,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: ${ATTU_CPU_LIMIT:-0.25}
+          cpus: ${ATTU_CPU_LIMIT:-0.3}
           memory: ${ATTU_MEMORY_LIMIT:-256M}
         reservations:
           cpus: ${ATTU_CPU_RESERVATION:-0.1}
