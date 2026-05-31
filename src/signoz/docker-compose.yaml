@@ -116,7 +116,7 @@ services:
   # One-shot migration: bootstraps and runs schema migrations
   signoz-telemetrystore-migrator:
     <<: *db-depend
-    image: ${GLOBAL_REGISTRY:-}signoz/signoz-otel-collector:${SIGNOZ_OTEL_COLLECTOR_VERSION:-v0.144.2}
+    image: ${GLOBAL_REGISTRY:-}signoz/signoz-otel-collector:${SIGNOZ_OTEL_COLLECTOR_VERSION:-v0.144.4}
     restart: on-failure
     environment:
       - TZ=${TZ:-UTC}
@@ -140,7 +140,7 @@ services:
   # SigNoz all-in-one backend + frontend + alertmanager
   signoz:
     <<: *db-depend
-    image: ${GLOBAL_REGISTRY:-}signoz/signoz:${SIGNOZ_VERSION:-v0.118.0}
+    image: ${GLOBAL_REGISTRY:-}${SIGNOZ_IMAGE_NAME:-signoz/signoz}:${SIGNOZ_VERSION:-v0.125.1}
     ports:
       - '${SIGNOZ_PORT_OVERRIDE:-8080}:8080'
     volumes:
@@ -169,7 +169,7 @@ services:
   # OTel Collector for receiving telemetry data
   otel-collector:
     <<: *db-depend
-    image: ${GLOBAL_REGISTRY:-}signoz/signoz-otel-collector:${SIGNOZ_OTEL_COLLECTOR_VERSION:-v0.144.2}
+    image: ${GLOBAL_REGISTRY:-}signoz/signoz-otel-collector:${SIGNOZ_OTEL_COLLECTOR_VERSION:-v0.144.4}
     entrypoint: [/bin/sh]
     command:
       - -c

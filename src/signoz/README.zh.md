@@ -15,14 +15,14 @@ SigNoz 是一个开源的可观测性平台，为分布式应用程序提供监�
 
 ## 服务列表
 
-| 服务                             | 镜像                                  | 描述                                     |
-| -------------------------------- | ------------------------------------- | ---------------------------------------- |
-| `signoz`                         | signoz/signoz:v0.118.0                | 后端、前端 UI 和告警管理器的合体镜像     |
-| `otel-collector`                 | signoz/signoz-otel-collector:v0.144.2 | 接收、处理和导出遥测数据                 |
-| `clickhouse`                     | clickhouse/clickhouse-server:25.5.6   | 存储追踪、指标和日志的时序数据库         |
-| `zookeeper-1`                    | signoz/zookeeper:3.7.1                | ZooKeeper，用于 ClickHouse 副本元数据    |
-| `init-clickhouse`                | clickhouse/clickhouse-server:25.5.6   | 一次性初始化，下载 histogramQuantile UDF |
-| `signoz-telemetrystore-migrator` | signoz/signoz-otel-collector:v0.144.2 | 一次性 ClickHouse Schema 迁移            |
+| 服务                             | 镜像                                                              | 描述                                     |
+| -------------------------------- | ----------------------------------------------------------------- | ---------------------------------------- |
+| `signoz`                         | `${SIGNOZ_IMAGE_NAME:-signoz/signoz}:${SIGNOZ_VERSION:-v0.125.1}` | 后端、前端 UI 和告警管理器的合体镜像     |
+| `otel-collector`                 | signoz/signoz-otel-collector:v0.144.4                             | 接收、处理和导出遥测数据                 |
+| `clickhouse`                     | clickhouse/clickhouse-server:25.5.6                               | 存储追踪、指标和日志的时序数据库         |
+| `zookeeper-1`                    | signoz/zookeeper:3.7.1                                            | ZooKeeper，用于 ClickHouse 副本元数据    |
+| `init-clickhouse`                | clickhouse/clickhouse-server:25.5.6                               | 一次性初始化，下载 histogramQuantile UDF |
+| `signoz-telemetrystore-migrator` | signoz/signoz-otel-collector:v0.144.4                             | 一次性 ClickHouse Schema 迁移            |
 
 ## 快速开始
 
@@ -61,12 +61,15 @@ SigNoz 是一个开源的可观测性平台，为分布式应用程序提供监�
 | `SIGNOZ_PORT_OVERRIDE`           | `8080`                      | SigNoz UI 宿主机端口                |
 | `SIGNOZ_OTEL_GRPC_PORT_OVERRIDE` | `4317`                      | OTLP gRPC 接收器宿主机端口          |
 | `SIGNOZ_OTEL_HTTP_PORT_OVERRIDE` | `4318`                      | OTLP HTTP 接收器宿主机端口          |
-| `SIGNOZ_VERSION`                 | `v0.118.0`                  | SigNoz 镜像版本                     |
-| `SIGNOZ_OTEL_COLLECTOR_VERSION`  | `v0.144.2`                  | OTel Collector 镜像版本             |
+| `SIGNOZ_IMAGE_NAME`              | `signoz/signoz`             | SigNoz 镜像仓库名或镜像名           |
+| `SIGNOZ_VERSION`                 | `v0.125.1`                  | SigNoz 镜像版本                     |
+| `SIGNOZ_OTEL_COLLECTOR_VERSION`  | `v0.144.4`                  | OTel Collector 镜像版本             |
 | `SIGNOZ_CLICKHOUSE_VERSION`      | `25.5.6`                    | ClickHouse 镜像版本                 |
 | `TZ`                             | `UTC`                       | 时区                                |
 
 完整变量列表（含资源限制）请查看 `.env.example`。
+
+`SIGNOZ_IMAGE_NAME` 用于切换 SigNoz 镜像仓库，同时继续由 `SIGNOZ_VERSION` 控制标签版本。
 
 ### 发送遥测数据
 

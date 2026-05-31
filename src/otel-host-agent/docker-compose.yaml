@@ -1,0 +1,23 @@
+services:
+  collection-agent:
+    image: otel/opentelemetry-collector-contrib:${OTEL_COLLECTOR_VERSION:-0.153.0}
+    restart: unless-stopped
+    user: '0:0'
+    network_mode: host
+    environment:
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=${DEPLOY_ENV:-production}
+      - OTEL_EXPORTER_ENDPOINT=${OTEL_EXPORTER_ENDPOINT:-http://localhost:4318}
+    volumes:
+      - ./config.yaml:/etc/otelcol-contrib/config.yaml:ro
+      - /:/hostfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'

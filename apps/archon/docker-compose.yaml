@@ -1,0 +1,108 @@
+# Archon defaults to a single-container SQLite deployment.
+# Enable the with-db profile and set DATABASE_URL to use local PostgreSQL.
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  archon:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-ghcr.io/}coleam00/archon:${ARCHON_VERSION:-latest}
+    ports:
+      - '${ARCHON_PORT_OVERRIDE:-3000}:${PORT:-3000}'
+    environment:
+      - TZ=${TZ:-UTC}
+      - ARCHON_DOCKER=true
+      - PORT=${PORT:-3000}
+      - HOST=${HOST:-0.0.0.0}
+      - CLAUDE_USE_GLOBAL_AUTH=${CLAUDE_USE_GLOBAL_AUTH:-false}
+      - CLAUDE_CODE_OAUTH_TOKEN=${CLAUDE_CODE_OAUTH_TOKEN:-}
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY:-}
+      - CODEX_ID_TOKEN=${CODEX_ID_TOKEN:-}
+      - CODEX_ACCESS_TOKEN=${CODEX_ACCESS_TOKEN:-}
+      - CODEX_REFRESH_TOKEN=${CODEX_REFRESH_TOKEN:-}
+      - CODEX_ACCOUNT_ID=${CODEX_ACCOUNT_ID:-}
+      - DEFAULT_AI_ASSISTANT=${DEFAULT_AI_ASSISTANT:-claude}
+      - DATABASE_URL=${DATABASE_URL:-}
+      - GH_TOKEN=${GH_TOKEN:-}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET:-}
+      - GITLAB_URL=${GITLAB_URL:-https://gitlab.com}
+      - GITLAB_TOKEN=${GITLAB_TOKEN:-}
+      - GITLAB_WEBHOOK_SECRET=${GITLAB_WEBHOOK_SECRET:-}
+      - GITEA_URL=${GITEA_URL:-}
+      - GITEA_TOKEN=${GITEA_TOKEN:-}
+      - GITEA_WEBHOOK_SECRET=${GITEA_WEBHOOK_SECRET:-}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN:-}
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN:-}
+      - SLACK_APP_TOKEN=${SLACK_APP_TOKEN:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - BOT_DISPLAY_NAME=${BOT_DISPLAY_NAME:-Archon}
+      - TELEGRAM_STREAMING_MODE=${TELEGRAM_STREAMING_MODE:-stream}
+      - DISCORD_STREAMING_MODE=${DISCORD_STREAMING_MODE:-batch}
+      - SLACK_STREAMING_MODE=${SLACK_STREAMING_MODE:-batch}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - MAX_CONCURRENT_CONVERSATIONS=${MAX_CONCURRENT_CONVERSATIONS:-10}
+      - SESSION_RETENTION_DAYS=${SESSION_RETENTION_DAYS:-30}
+      - DO_NOT_TRACK=${DO_NOT_TRACK:-}
+    volumes:
+      - ${ARCHON_DATA:-archon_data}:/.archon
+      - ${ARCHON_USER_HOME:-archon_user_home}:/home/appuser
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost:${PORT:-3000}/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: ${ARCHON_CPU_LIMIT:-2.0}
+          memory: ${ARCHON_MEMORY_LIMIT:-4G}
+        reservations:
+          cpus: ${ARCHON_CPU_RESERVATION:-0.1}
+          memory: ${ARCHON_MEMORY_RESERVATION:-1G}
+
+  postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17-alpine}
+    profiles:
+      - with-db
+    environment:
+      - TZ=${TZ:-UTC}
+      - POSTGRES_DB=remote_coding_agent
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - '127.0.0.1:${POSTGRES_PORT_OVERRIDE:-5432}:5432'
+    volumes:
+      - archon_postgres_data:/var/lib/postgresql/data
+      - ./migrations/000_combined.sql:/docker-entrypoint-initdb.d/000_combined.sql:ro
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U postgres -d remote_coding_agent']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: ${POSTGRES_CPU_LIMIT:-1.0}
+          memory: ${POSTGRES_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${POSTGRES_CPU_RESERVATION:-0.1}
+          memory: ${POSTGRES_MEMORY_RESERVATION:-256M}
+
+volumes:
+  archon_data:
+  archon_user_home:
+  archon_postgres_data:

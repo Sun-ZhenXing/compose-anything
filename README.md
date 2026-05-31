@@ -56,6 +56,7 @@ These services require building custom Docker images from source.
 | [Apache Kafka](./src/kafka)                                    | 7.8.0               |
 | [Apache Pulsar](./src/pulsar)                                  | 4.0.7               |
 | [Apache RocketMQ](./src/rocketmq)                              | 5.3.1               |
+| [Archon](./apps/archon)                                        | latest              |
 | [Agentgateway](./src/agentgateway)                             | 0.11.2              |
 | [AnythingLLM](./src/anythingllm)                               | latest              |
 | [Bifrost Gateway](./src/bifrost-gateway)                       | v1.4.17             |

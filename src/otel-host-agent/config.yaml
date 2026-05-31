@@ -1,0 +1,121 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  hostmetrics:
+    root_path: /hostfs
+    collection_interval: 60s
+    scrapers:
+      cpu: {}
+      disk: {}
+      load: {}
+      filesystem:
+        exclude_fs_types:
+          match_type: strict
+          fs_types:
+            - autofs
+            - binfmt_misc
+            - cgroup
+            - configfs
+            - debugfs
+            - devpts
+            - devtmpfs
+            - fusectl
+            - hugetlbfs
+            - mqueue
+            - nsfs
+            - overlay
+            - proc
+            - procfs
+            - pstore
+            - rpc_pipefs
+            - securityfs
+            - squashfs
+            - sysfs
+            - tmpfs
+            - tracefs
+        exclude_mount_points:
+          match_type: regexp
+          mount_points:
+            - ^/dev/.*$
+            - ^/proc/.*$
+            - ^/sys/.*$
+            - ^/run/.*$
+            - ^/var/lib/docker/.*$
+            - ^/snap/.*$
+      memory: {}
+      network:
+        exclude:
+          match_type: regexp
+          interfaces:
+            - '^veth.*$'
+            - '^docker.*$'
+            - '^br-.*$'
+            - ^lo$
+      paging: {}
+      process:
+        mute_process_name_error: true
+        mute_process_exe_error: true
+        mute_process_io_error: true
+        mute_process_user_error: true
+      processes: {}
+      system: {}
+
+  docker_stats:
+    endpoint: unix:///var/run/docker.sock
+    collection_interval: 10s
+    timeout: 20s
+
+processors:
+  batch:
+    send_batch_size: 1000
+    timeout: 10s
+  resourcedetection:
+    detectors: [env, system]
+    timeout: 2s
+    system:
+      hostname_sources: [os]
+  memory_limiter:
+    check_interval: 5s
+    limit_mib: 4000
+    spike_limit_mib: 800
+
+exporters:
+  otlphttp:
+    endpoint: ${OTEL_EXPORTER_ENDPOINT}
+    tls:
+      insecure: true
+    compression: gzip
+    sending_queue:
+      enabled: true
+      num_consumers: 10
+      queue_size: 10000
+    retry_on_failure:
+      enabled: true
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+  pprof:
+    endpoint: 0.0.0.0:1777
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [otlphttp]
+    metrics:
+      receivers: [otlp, hostmetrics, docker_stats]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [otlphttp]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [otlphttp]
