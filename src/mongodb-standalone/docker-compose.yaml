@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   mongo:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}mongo:${MONGO_VERSION:-8.2.3}
+    image: ${GLOBAL_REGISTRY:-}mongo:${MONGO_VERSION:-8.3.3}
     environment:
       TZ: ${TZ:-UTC}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
@@ -19,6 +19,7 @@ services:
       - '${MONGO_PORT_OVERRIDE:-27017}:27017'
     volumes:
       - mongo_data:/data/db
+      - mongo_configdb:/data/configdb
     healthcheck:
       test: [CMD, mongosh, --eval, "db.adminCommand('ping')"]
       interval: 30s
@@ -36,3 +37,4 @@ services:
 
 volumes:
   mongo_data:
+  mongo_configdb:

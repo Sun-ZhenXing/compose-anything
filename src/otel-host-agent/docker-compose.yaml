@@ -1,7 +1,15 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 10m
+      max-file: '3'
+
 services:
   collection-agent:
-    image: otel/opentelemetry-collector-contrib:${OTEL_COLLECTOR_VERSION:-0.153.0}
-    restart: unless-stopped
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}otel/opentelemetry-collector-contrib:${OTEL_COLLECTOR_VERSION:-0.153.0}
     user: '0:0'
     network_mode: host
     environment:
@@ -14,10 +22,20 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 2G
-    logging:
-      driver: json-file
-      options:
-        max-size: 10m
-        max-file: '3'
+          cpus: ${OTEL_COLLECTOR_CPU_LIMIT:-1.0}
+          memory: ${OTEL_COLLECTOR_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${OTEL_COLLECTOR_CPU_RESERVATION:-0.1}
+          memory: ${OTEL_COLLECTOR_MEMORY_RESERVATION:-512M}
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - 'http://localhost:13133/'
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
