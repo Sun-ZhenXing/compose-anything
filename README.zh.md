@@ -160,6 +160,7 @@ docker compose exec redis redis-cli ping
 | [OpenTelemetry Collector](./src/otel-collector)                | 0.115.1             |
 | [OpenViking](./src/openviking)                                 | 0.1.0               |
 | [Overleaf](./src/overleaf)                                     | 5.2.1               |
+| [Paca](./apps/paca)                                            | 0.5.2               |
 | [PocketBase](./src/pocketbase)                                 | 0.30.0              |
 | [Podman](./src/podman)                                         | v5.7.1              |
 | [Pogocache](./src/pogocache)                                   | 1.3.1               |

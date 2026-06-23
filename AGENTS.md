@@ -16,6 +16,7 @@ Compose Anything is a collection of production-ready, portable Docker Compose st
 3. Update these files together when a service changes: `docker-compose.yaml`, `.env.example`, `README.md`, and `README.zh.md`.
 4. Update the root `README.md` and `README.zh.md` whenever a service is added, renamed, removed, or needs a new quick-start entry.
 5. Keep the default startup path within `docker compose up -d`. If extra setup is unavoidable, document it clearly and prefer a `Makefile` over ad-hoc instructions.
+6. If a user requests to test locally, ensure that each service is healthy (if the service has health checks) and that there are no unnamed volumes.
 
 ## Compose Standards
 

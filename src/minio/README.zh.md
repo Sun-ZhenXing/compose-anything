@@ -12,7 +12,7 @@ MinIO 是一个高性能的 S3 兼容对象存储系统，可以用于存储和�
 
 ## 配置
 
-- `MINIO_VERSION`: MinIO 镜像的版本，默认为 `0.20251015`。
+- `MINIO_VERSION`: MinIO 镜像的版本，默认为 `latest`。
 - `MINIO_PORT_OVERRIDE_API`: MinIO API 的主机端口，默认为 `9000`。
 - `MINIO_PORT_OVERRIDE_WEBUI`: MinIO Web UI 的主机端口，默认为 `9001`。
 - `MINIO_ROOT_USER`: MinIO 的根用户名，默认为 `minioadmin`。

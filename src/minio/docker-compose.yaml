@@ -1,3 +1,4 @@
+# https://images.chainguard.dev/directory/image/minio/versions#/
 x-defaults: &defaults
   restart: unless-stopped
   logging:
@@ -9,7 +10,7 @@ x-defaults: &defaults
 services:
   minio:
     <<: *defaults
-    image: ${CGR_DEV_REGISTRY:cgr.dev-}/chainguard/minio:${MINIO_VERSION:-0.20251015}
+    image: ${CGR_DEV_REGISTRY:cgr.dev-}/chainguard/minio:${MINIO_VERSION:-latest}
     ports:
       - '${MINIO_PORT_OVERRIDE_API:-9000}:9000'
       - '${MINIO_PORT_OVERRIDE_WEBUI:-9001}:9001'

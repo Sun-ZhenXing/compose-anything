@@ -1,0 +1,272 @@
+# Paca - Self-hosted project management platform for humans + AI
+# https://github.com/Paca-AI/paca
+#
+# Paca is a project management platform designed for human + AI collaboration
+# as Scrum team members. It features a real-time Scrumban board, BDD
+# collaborative editing, system design docs, a plugin system (WASM backend +
+# frontend modules), and a built-in MCP server.
+#
+# Key Features:
+# - Real-time Scrumban board for task management
+# - AI agents as Scrum team members
+# - BDD (Behavior-Driven Development) collaborative editor
+# - System design documentation
+# - Plugin system with WASM backend and frontend modules
+# - Built-in MCP (Model Context Protocol) server
+# - Connects with Claude and other MCP-compatible clients
+#
+# Default Access:
+# - Access UI at http://localhost (after setting PUBLIC_URL)
+# - Default admin: configured via ADMIN_USERNAME / ADMIN_PASSWORD
+#
+# Security Notes:
+# - Change ADMIN_USERNAME and ADMIN_PASSWORD immediately
+# - Use strong JWT_SECRET and ENCRYPTION_KEY in production
+# - Generate keys with: openssl rand -hex 32
+# - Use STORAGE_PROVIDER=s3 for production instead of bundled MinIO
+# - Set COOKIE_SECURE=true when serving over HTTPS
+#
+# License: AGPL-3.0 (https://github.com/Paca-AI/paca/blob/main/LICENSE)
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  # ── PostgreSQL ──────────────────────────────────────────────────────────
+  paca-postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}postgres:${PACA_POSTGRES_VERSION:-16-alpine}
+    environment:
+      - TZ=${TZ:-UTC}
+      - POSTGRES_DB=${PACA_POSTGRES_DB:-paca}
+      - POSTGRES_USER=${PACA_POSTGRES_USER:-paca}
+      - POSTGRES_PASSWORD=${PACA_POSTGRES_PASSWORD:-changeme}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - paca_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${PACA_POSTGRES_USER:-paca} -d ${PACA_POSTGRES_DB:-paca}
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '${PACA_POSTGRES_CPU_LIMIT:-1.0}'
+          memory: '${PACA_POSTGRES_MEMORY_LIMIT:-1G}'
+        reservations:
+          cpus: '${PACA_POSTGRES_CPU_RESERVATION:-0.1}'
+          memory: '${PACA_POSTGRES_MEMORY_RESERVATION:-256M}'
+
+  # ── Valkey (Redis-compatible cache / pub-sub) ───────────────────────────
+  paca-valkey:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}valkey/valkey:${PACA_VALKEY_VERSION:-8-alpine}
+    command: valkey-server --appendonly yes
+    environment:
+      - TZ=${TZ:-UTC}
+    volumes:
+      - paca_valkey_data:/data
+    healthcheck:
+      test:
+        - CMD
+        - valkey-cli
+        - ping
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: '${PACA_VALKEY_CPU_LIMIT:-0.5}'
+          memory: '${PACA_VALKEY_MEMORY_LIMIT:-512M}'
+        reservations:
+          cpus: '${PACA_VALKEY_CPU_RESERVATION:-0.1}'
+          memory: '${PACA_VALKEY_MEMORY_RESERVATION:-128M}'
+
+  # ── MinIO (S3-compatible object store) ──────────────────────────────────
+  paca-minio:
+    <<: *defaults
+    user: root
+    image: ${CGR_DEV_REGISTRY:-cgr.dev/}chainguard/minio:${PACA_MINIO_VERSION:-latest}
+    command: server /data --console-address ":9001"
+    environment:
+      - TZ=${TZ:-UTC}
+      - MINIO_ROOT_USER=${PACA_STORAGE_ACCESS_KEY_ID:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${PACA_STORAGE_SECRET_ACCESS_KEY:-minioadmin}
+    volumes:
+      - paca_minio_data:/data
+    healthcheck:
+      test:
+        - CMD
+        - mc
+        - ready
+        - local
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '${PACA_MINIO_CPU_LIMIT:-0.5}'
+          memory: '${PACA_MINIO_MEMORY_LIMIT:-512M}'
+        reservations:
+          cpus: '${PACA_MINIO_CPU_RESERVATION:-0.1}'
+          memory: '${PACA_MINIO_MEMORY_RESERVATION:-256M}'
+
+  # ── API (Go backend) ────────────────────────────────────────────────────
+  paca-api:
+    <<: *defaults
+    image: ${PACA_API_IMAGE:-${GLOBAL_REGISTRY:-}pacaai/paca-api:${PACA_VERSION:-0.5.2}}
+    environment:
+      - TZ=${TZ:-UTC}
+      - ENV=${PACA_ENVIRONMENT:-production}
+      - PORT=8080
+      # Database. Set DATABASE_URL for an external Postgres and scale paca-postgres to 0.
+      - DATABASE_URL=${PACA_DATABASE_URL:-postgres://${PACA_POSTGRES_USER:-paca}:${PACA_POSTGRES_PASSWORD:-changeme}@paca-postgres:5432/${PACA_POSTGRES_DB:-paca}?sslmode=disable}
+      - REDIS_URL=${PACA_REDIS_URL:-redis://paca-valkey:6379/0}
+      - JWT_SECRET=${PACA_JWT_SECRET:-changeme_jwt_secret_minimum_32_chars}
+      - JWT_ACCESS_TTL=${PACA_JWT_ACCESS_TTL:-15m}
+      - JWT_REFRESH_TTL=${PACA_JWT_REFRESH_TTL:-168h}
+      - JWT_REFRESH_SESSION_TTL=${PACA_JWT_REFRESH_SESSION_TTL:-24h}
+      - COOKIE_SECURE=${PACA_COOKIE_SECURE:-false}
+      - ADMIN_USERNAME=${PACA_ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${PACA_ADMIN_PASSWORD:-changeme}
+      # Object storage. Set STORAGE_PROVIDER=s3 for AWS S3 and scale paca-minio to 0.
+      - STORAGE_PROVIDER=${PACA_STORAGE_PROVIDER:-minio}
+      - STORAGE_ENDPOINT=${PACA_STORAGE_ENDPOINT:-paca-minio:9000}
+      - STORAGE_PUBLIC_URL=${PACA_STORAGE_PUBLIC_URL:-http://localhost/storage}
+      - STORAGE_REGION=${PACA_STORAGE_REGION:-us-east-1}
+      - STORAGE_BUCKET=${PACA_STORAGE_BUCKET:-paca}
+      - STORAGE_ACCESS_KEY_ID=${PACA_STORAGE_ACCESS_KEY_ID:-minioadmin}
+      - STORAGE_SECRET_ACCESS_KEY=${PACA_STORAGE_SECRET_ACCESS_KEY:-minioadmin}
+      - STORAGE_USE_SSL=${PACA_STORAGE_USE_SSL:-false}
+      - ENCRYPTION_KEY=${PACA_ENCRYPTION_KEY:-}
+      - PUBLIC_URL=${PACA_PUBLIC_URL:-http://localhost}
+      # Plugin directories
+      - PLUGINS_WASM_DIR=/plugins
+      - PLUGINS_FRONTEND_DIR=/plugins-frontend
+      - PLUGINS_MCP_DIR=/plugins-mcp
+      # Pre-shared key for AI agent integration
+      - AGENT_API_KEY=${PACA_AGENT_API_KEY:-}
+    depends_on:
+      paca-postgres:
+        condition: service_healthy
+      paca-valkey:
+        condition: service_healthy
+      paca-minio:
+        condition: service_healthy
+    volumes:
+      - paca_backend_plugins:/plugins
+      - paca_frontend_plugins:/plugins-frontend
+      - paca_mcp_plugins:/plugins-mcp
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:8080/api/healthz
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '${PACA_API_CPU_LIMIT:-1.0}'
+          memory: '${PACA_API_MEMORY_LIMIT:-1G}'
+        reservations:
+          cpus: '${PACA_API_CPU_RESERVATION:-0.1}'
+          memory: '${PACA_API_MEMORY_RESERVATION:-256M}'
+
+  # ── Web (React SPA served via nginx) ────────────────────────────────────
+  paca-web:
+    <<: *defaults
+    image: ${PACA_WEB_IMAGE:-${GLOBAL_REGISTRY:-}pacaai/paca-web:${PACA_VERSION:-0.5.2}}
+    environment:
+      - TZ=${TZ:-UTC}
+    depends_on:
+      paca-api:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '${PACA_WEB_CPU_LIMIT:-0.5}'
+          memory: '${PACA_WEB_MEMORY_LIMIT:-512M}'
+        reservations:
+          cpus: '${PACA_WEB_CPU_RESERVATION:-0.1}'
+          memory: '${PACA_WEB_MEMORY_RESERVATION:-128M}'
+
+  # ── Realtime (Socket.IO event hub) ──────────────────────────────────────
+  paca-realtime:
+    <<: *defaults
+    image: ${PACA_REALTIME_IMAGE:-${GLOBAL_REGISTRY:-}pacaai/paca-realtime:${PACA_VERSION:-0.5.2}}
+    environment:
+      - TZ=${TZ:-UTC}
+      - PORT=3001
+      - NODE_ENV=${PACA_ENVIRONMENT:-production}
+      - API_URL=http://paca-api:8080
+      - REDIS_URL=${PACA_REDIS_URL:-redis://paca-valkey:6379/0}
+      - CORS_ORIGINS=${PACA_CORS_ORIGINS:-${PACA_PUBLIC_URL:-http://localhost}}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    depends_on:
+      paca-valkey:
+        condition: service_healthy
+      paca-api:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '${PACA_REALTIME_CPU_LIMIT:-0.5}'
+          memory: '${PACA_REALTIME_MEMORY_LIMIT:-512M}'
+        reservations:
+          cpus: '${PACA_REALTIME_CPU_RESERVATION:-0.1}'
+          memory: '${PACA_REALTIME_MEMORY_RESERVATION:-128M}'
+
+  # ── Gateway (nginx reverse proxy) ───────────────────────────────────────
+  paca-gateway:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}nginx:${PACA_NGINX_VERSION:-1.27-alpine}
+    ports:
+      - '${PACA_PORT_OVERRIDE:-80}:80'
+    environment:
+      - TZ=${TZ:-UTC}
+    volumes:
+      - ./gateway.conf:/etc/nginx/conf.d/default.conf:ro
+      - paca_frontend_plugins:/var/www/plugins:ro
+      - paca_mcp_plugins:/var/www/plugins-mcp:ro
+    depends_on:
+      paca-api:
+        condition: service_started
+      paca-web:
+        condition: service_started
+      paca-realtime:
+        condition: service_started
+    deploy:
+      resources:
+        limits:
+          cpus: '${PACA_GATEWAY_CPU_LIMIT:-0.5}'
+          memory: '${PACA_GATEWAY_MEMORY_LIMIT:-256M}'
+        reservations:
+          cpus: '${PACA_GATEWAY_CPU_RESERVATION:-0.1}'
+          memory: '${PACA_GATEWAY_MEMORY_RESERVATION:-128M}'
+
+volumes:
+  paca_postgres_data:
+  paca_valkey_data:
+  paca_minio_data:
+  paca_backend_plugins:
+  paca_frontend_plugins:
+  paca_mcp_plugins:

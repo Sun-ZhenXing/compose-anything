@@ -12,7 +12,7 @@ Open the Web UI: <http://localhost:9001>.
 
 ## Configuration
 
-- `MINIO_VERSION`: The version of the MinIO image, default is `0.20251015`.
+- `MINIO_VERSION`: The version of the MinIO image, default is `latest`.
 - `MINIO_PORT_OVERRIDE_API`: The host port for the MinIO API, default is `9000`.
 - `MINIO_PORT_OVERRIDE_WEBUI`: The host port for the MinIO Web UI, default is `9001`.
 - `MINIO_ROOT_USER`: The root username for MinIO, default is `minioadmin`.
