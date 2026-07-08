@@ -1,0 +1,55 @@
+# https://github.com/rustfs/rustfs
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  rustfs:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}rustfs/rustfs:${RUSTFS_VERSION:-1.0.0-beta.8-glibc}
+    ports:
+      - '${RUSTFS_PORT_OVERRIDE_API:-9000}:9000'
+      - '${RUSTFS_PORT_OVERRIDE_CONSOLE:-9001}:9001'
+    environment:
+      TZ: ${TZ:-UTC}
+      RUSTFS_ADDRESS: ${RUSTFS_ADDRESS:-0.0.0.0:9000}
+      RUSTFS_CONSOLE_ADDRESS: ${RUSTFS_CONSOLE_ADDRESS:-0.0.0.0:9001}
+      RUSTFS_CONSOLE_ENABLE: ${RUSTFS_CONSOLE_ENABLE:-true}
+      RUSTFS_CONSOLE_CORS_ALLOWED_ORIGINS: ${RUSTFS_CONSOLE_CORS_ALLOWED_ORIGINS:-*}
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY:-rustfsadmin}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:-rustfsadmin}
+      RUSTFS_OBS_LOGGER_LEVEL: ${RUSTFS_OBS_LOGGER_LEVEL:-info}
+      RUSTFS_VOLUMES: /data/rustfs0
+      RUSTFS_UNSAFE_BYPASS_DISK_CHECK: ${RUSTFS_UNSAFE_BYPASS_DISK_CHECK:-false}
+    volumes:
+      - rustfs_data:/data
+    user: 10001:10001
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        [
+          CMD,
+          sh,
+          -ec,
+          "curl -fsS http://127.0.0.1:9000/health && curl -fsS http://127.0.0.1:9001/rustfs/console/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: ${RUSTFS_CPU_LIMIT:-2.0}
+          memory: ${RUSTFS_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${RUSTFS_CPU_RESERVATION:-0.5}
+          memory: ${RUSTFS_MEMORY_RESERVATION:-512M}
+
+volumes:
+  rustfs_data:

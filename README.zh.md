@@ -38,7 +38,7 @@ docker compose exec redis redis-cli ping
 | [goose](./builds/goose)                     | 1.18.0  |
 | [IOPaint](./builds/io-paint)                | 1.6.0   |
 | [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2   |
-| [MinerU vLLM](./builds/mineru)              | 3.1.0   |
+| [MinerU vLLM](./builds/mineru)              | 3.4.2   |
 | [Multica](./builds/multica)                 | v0.1.32 |
 | [OpenFang](./builds/openfang)               | 0.1.0   |
 | [Paperclip](./builds/paperclip)             | main    |
@@ -179,10 +179,11 @@ docker compose exec redis redis-cli ping
 | [Renovate](./src/renovate)                                     | 42.85.4-full        |
 | [Restate Cluster](./src/restate-cluster)                       | 1.5.3               |
 | [Restate](./src/restate)                                       | 1.5.3               |
+| [RustFS](./src/rustfs)                                         | 1.0.0-beta.8-glibc  |
 | [SearXNG](./src/searxng)                                       | 2025.1.20-1ce14ef99 |
 | [Selenium](./src/selenium)                                     | 144.0-20260120      |
 | [Shannon](./apps/shannon)                                      | v0.3.1              |
-| [SigNoz](./src/signoz)                                         | 0.55.0              |
+| [SigNoz](./src/signoz)                                         | v0.131.1            |
 | [Sim](./apps/sim)                                              | latest              |
 | [Skyvern](./apps/skyvern)                                      | v1.0.31             |
 | [Stable Diffusion WebUI](./apps/stable-diffusion-webui-docker) | latest              |

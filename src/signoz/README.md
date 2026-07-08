@@ -17,12 +17,12 @@ SigNoz is an open-source observability platform that provides monitoring and tro
 
 | Service                          | Image                                                             | Description                                            |
 | -------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------ |
-| `signoz`                         | `${SIGNOZ_IMAGE_NAME:-signoz/signoz}:${SIGNOZ_VERSION:-v0.125.1}` | All-in-one backend, frontend UI, and alert manager     |
-| `otel-collector`                 | signoz/signoz-otel-collector:v0.144.4                             | Receives, processes, and exports telemetry data        |
-| `clickhouse`                     | clickhouse/clickhouse-server:25.5.6                               | Time-series database for traces, metrics, and logs     |
+| `signoz`                         | `${SIGNOZ_IMAGE_NAME:-signoz/signoz}:${SIGNOZ_VERSION:-v0.131.1}` | All-in-one backend, frontend UI, and alert manager     |
+| `otel-collector`                 | signoz/signoz-otel-collector:v0.144.5                             | Receives, processes, and exports telemetry data        |
+| `clickhouse`                     | clickhouse/clickhouse-server:26.4.4                               | Time-series database for traces, metrics, and logs     |
 | `zookeeper-1`                    | signoz/zookeeper:3.7.1                                            | ZooKeeper for ClickHouse replication metadata          |
-| `init-clickhouse`                | clickhouse/clickhouse-server:25.5.6                               | One-shot init that downloads the histogramQuantile UDF |
-| `signoz-telemetrystore-migrator` | signoz/signoz-otel-collector:v0.144.4                             | One-shot schema migration for ClickHouse               |
+| `init-clickhouse`                | clickhouse/clickhouse-server:26.4.4                               | One-shot init that downloads the histogramQuantile UDF |
+| `signoz-telemetrystore-migrator` | signoz/signoz-otel-collector:v0.144.5                             | One-shot schema migration for ClickHouse               |
 
 ## Quick Start
 
@@ -62,9 +62,9 @@ SigNoz is an open-source observability platform that provides monitoring and tro
 | `SIGNOZ_OTEL_GRPC_PORT_OVERRIDE` | `4317`                      | OTLP gRPC receiver host port                   |
 | `SIGNOZ_OTEL_HTTP_PORT_OVERRIDE` | `4318`                      | OTLP HTTP receiver host port                   |
 | `SIGNOZ_IMAGE_NAME`              | `signoz/signoz`             | SigNoz image repository/name                   |
-| `SIGNOZ_VERSION`                 | `v0.125.1`                  | SigNoz image version                           |
-| `SIGNOZ_OTEL_COLLECTOR_VERSION`  | `v0.144.4`                  | OTel Collector image version                   |
-| `SIGNOZ_CLICKHOUSE_VERSION`      | `25.5.6`                    | ClickHouse image version                       |
+| `SIGNOZ_VERSION`                 | `v0.131.1`                  | SigNoz image version                           |
+| `SIGNOZ_OTEL_COLLECTOR_VERSION`  | `v0.144.5`                  | OTel Collector image version                   |
+| `SIGNOZ_CLICKHOUSE_VERSION`      | `26.4.4`                    | ClickHouse image version                       |
 | `TZ`                             | `UTC`                       | Timezone                                       |
 
 See `.env.example` for the complete list including resource limits.

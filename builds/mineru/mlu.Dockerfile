@@ -22,11 +22,13 @@ RUN /bin/bash -c '\
   source /torch/venv3/pytorch_infer/bin/activate; \
   fi && \
   python3 -m pip install -U pip -i https://mirrors.aliyun.com/pypi/simple && \
-  python3 -m pip install "mineru[core]>=3.0.0" \
+  python3 -m pip install "mineru[core]>=3.4.0" \
   numpy==1.26.4 \
   opencv-python==4.11.0.86 \
   -i https://mirrors.aliyun.com/pypi/simple && \
-  python3 -m pip install $(if [ "$BACKEND" = "lmdeploy" ]; then echo "accelerate==1.2.0"; else echo "transformers==4.50.3"; fi) && \
+  python3 -m pip install \
+  $(if [ "$BACKEND" = "lmdeploy" ]; then echo "qwen-vl-utils>=0.0.14,<1 accelerate==1.2.0"; else echo "transformers==4.50.3"; fi) \
+  -i https://mirrors.aliyun.com/pypi/simple && \
   python3 -m pip cache purge'
 
 # Download models and update the configuration file
