@@ -10,7 +10,7 @@
 
 ## 配置
 
-- `RABBITMQ_VERSION`: RabbitMQ 镜像的版本，默认为 `4.1.4-management-alpine`。
+- `RABBITMQ_VERSION`: RabbitMQ 镜像的版本，默认为 `4.2.4-management-alpine`。
 - `RABBITMQ_PORT`: RabbitMQ 的主机端口，默认为 `5672`。
 - `RABBITMQ_MANAGEMENT_PORT`: RabbitMQ 管理界面的主机端口，默认为 `15672`。
 - `RABBITMQ_DEFAULT_USER`: 默认用户名，默认为 `admin`。

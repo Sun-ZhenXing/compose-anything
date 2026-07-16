@@ -10,7 +10,7 @@
 
 ## 配置
 
-- `MYSQL_VERSION`: MySQL 镜像的版本，默认为 `9.4.0`。
+- `MYSQL_VERSION`: MySQL 镜像的版本，默认为 `9.7.1`。
 - `MYSQL_PORT_OVERRIDE`: MySQL 的主机端口，默认为 `3306`。
 - `MYSQL_ROOT_PASSWORD`: root 密码，默认为 `password`。
 - `MYSQL_ROOT_HOST`: root 主机，默认为 `%`。

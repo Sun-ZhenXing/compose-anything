@@ -12,7 +12,7 @@
 
 | 变量名                 | 描述                                             | 默认值                  |
 | ---------------------- | ------------------------------------------------ | ----------------------- |
-| GRAFANA_VERSION        | Grafana 镜像版本                                 | `12.1.1`                |
+| GRAFANA_VERSION        | Grafana 镜像版本                                 | `12.3.3`                |
 | GRAFANA_PORT_OVERRIDE  | 主机端口映射（映射到容器中的 Grafana 端口 3000） | `3000`                  |
 | GRAFANA_ADMIN_USER     | 管理员用户名                                     | `admin`                 |
 | GRAFANA_ADMIN_PASSWORD | 管理员密码                                       | `admin`                 |

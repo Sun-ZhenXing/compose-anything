@@ -14,8 +14,8 @@ This service deploys Apache Kafka, a distributed streaming platform, along with 
 
 | Variable Name                    | Description                                          | Default Value   |
 | -------------------------------- | ---------------------------------------------------- | --------------- |
-| KAFKA_VERSION                    | Kafka image version                                  | `7.8.0`         |
-| KAFKA_UI_VERSION                 | Kafka UI image version                               | `latest`        |
+| KAFKA_VERSION                    | Kafka image version                                  | `8.2.0`         |
+| KAFKA_UI_VERSION                 | Kafka UI image version                               | `v0.7.2`        |
 | ZOOKEEPER_CLIENT_PORT_OVERRIDE   | Host port mapping for Zookeeper (maps to port 2181)  | 2181            |
 | KAFKA_BROKER_PORT_OVERRIDE       | Host port mapping for Kafka (maps to port 9092)      | 9092            |
 | KAFKA_JMX_PORT_OVERRIDE          | Host port mapping for JMX (maps to port 9999)        | 9999            |

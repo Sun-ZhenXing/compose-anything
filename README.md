@@ -53,7 +53,7 @@ These services require building custom Docker images from source.
 | [Apache Flink](./src/flink)                                    | 1.20.0              |
 | [Apache HBase](./src/hbase)                                    | 2.6                 |
 | [Apache HTTP Server](./src/apache)                             | 2.4.62              |
-| [Apache Kafka](./src/kafka)                                    | 7.8.0               |
+| [Apache Kafka](./src/kafka)                                    | 8.2.0               |
 | [Apache Pulsar](./src/pulsar)                                  | 4.0.7               |
 | [Apache RocketMQ](./src/rocketmq)                              | 5.3.1               |
 | [Archon](./apps/archon)                                        | latest              |
@@ -78,7 +78,7 @@ These services require building custom Docker images from source.
 | [DuckDB](./src/duckdb)                                         | v1.1.3              |
 | [Easy Dataset](./apps/easy-dataset)                            | 1.5.1               |
 | [EasyTier](./src/easytier)                                     | v2.6.0              |
-| [Elasticsearch](./src/elasticsearch)                           | 9.3.0               |
+| [Elasticsearch](./src/elasticsearch)                           | 9.4.2               |
 | [etcd](./src/etcd)                                             | 3.6.0               |
 | [FalkorDB](./src/falkordb)                                     | v4.14.11            |
 | [Firecrawl](./src/firecrawl)                                   | latest              |
@@ -91,7 +91,7 @@ These services require building custom Docker images from source.
 | [GitLab](./src/gitlab)                                         | 18.8.3-ce.0         |
 | [GoModel](./src/gomodel)                                       | v0.1.27             |
 | [GPUStack](./src/gpustack)                                     | v0.5.3              |
-| [Grafana](./src/grafana)                                       | 12.3.2              |
+| [Grafana](./src/grafana)                                       | 12.3.3              |
 | [Grafana Loki](./src/loki)                                     | 3.3.2               |
 | [Grafana Tempo](./src/tempo)                                   | 2.7.2               |
 | [Halo](./src/halo)                                             | 2.21.9              |
@@ -124,13 +124,13 @@ These services require building custom Docker images from source.
 | [Milvus Standalone Embed](./src/milvus-standalone-embed)       | v2.6.7              |
 | [Milvus Standalone](./src/milvus-standalone)                   | v2.6.7              |
 | [Minecraft Bedrock Server](./src/minecraft-bedrock-server)     | latest              |
-| [MinIO](./src/minio)                                           | 0.20260202          |
+| [MinIO](./src/minio)                                           | latest              |
 | [MLflow](./src/mlflow)                                         | v2.20.2             |
 | [OpenClaw](./apps/openclaw)                                    | 2026.2.3            |
 | [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)   | 8.2.3               |
 | [MongoDB ReplicaSet](./src/mongodb-replicaset)                 | 8.2.3               |
-| [MongoDB Standalone](./src/mongodb-standalone)                 | 8.2.3               |
-| [MySQL](./src/mysql)                                           | 9.4.0               |
+| [MongoDB Standalone](./src/mongodb-standalone)                 | 8.3.4               |
+| [MySQL](./src/mysql)                                           | 9.7.1               |
 | [n8n](./apps/n8n)                                              | 1.114.0             |
 | [Nanobot](./apps/nanobot)                                      | v0.1.3.post4        |
 | [Nacos](./src/nacos)                                           | v3.1.0              |
@@ -138,7 +138,7 @@ These services require building custom Docker images from source.
 | [NexaSDK](./src/nexa-sdk)                                      | v0.2.62             |
 | [Neo4j](./src/neo4j)                                           | 5.27.4              |
 | [Netdata](./src/netdata)                                       | latest              |
-| [Nginx](./src/nginx)                                           | 1.28.2              |
+| [Nginx](./src/nginx)                                           | 1.29.4              |
 | [Node Exporter](./src/node-exporter)                           | v1.8.2              |
 | [OceanBase](./src/oceanbase)                                   | 4.3.3               |
 | [Odoo](./src/odoo)                                             | 19.0                |
@@ -166,16 +166,16 @@ These services require building custom Docker images from source.
 | [Pogocache](./src/pogocache)                                   | 1.3.1               |
 | [Portainer](./src/portainer)                                   | 2.27.3-alpine       |
 | [Portkey AI Gateway](./src/portkey-gateway)                    | latest              |
-| [PostgreSQL](./src/postgres)                                   | 17.6                |
+| [PostgreSQL](./src/postgres)                                   | 17.10               |
 | [Prometheus](./src/prometheus)                                 | 3.5.1               |
 | [PyTorch](./src/pytorch)                                       | 2.6.0               |
 | [Qdrant](./src/qdrant)                                         | 1.15.4              |
-| [RabbitMQ](./src/rabbitmq)                                     | 4.2.3               |
+| [RabbitMQ](./src/rabbitmq)                                     | 4.2.4               |
 | [RAGFlow](./apps/ragflow)                                      | v0.24.0             |
 | [Ray](./src/ray)                                               | 2.42.1              |
 | [Redpanda](./src/redpanda)                                     | v24.3.1             |
 | [Redis Cluster](./src/redis-cluster)                           | 8.2.1               |
-| [Redis](./src/redis)                                           | 8.2.1               |
+| [Redis](./src/redis)                                           | 8.8.0               |
 | [Renovate](./src/renovate)                                     | 42.85.4-full        |
 | [Restate Cluster](./src/restate-cluster)                       | 1.5.3               |
 | [Restate](./src/restate)                                       | 1.5.3               |
@@ -183,7 +183,7 @@ These services require building custom Docker images from source.
 | [SearXNG](./src/searxng)                                       | 2025.1.20-1ce14ef99 |
 | [Selenium](./src/selenium)                                     | 144.0-20260120      |
 | [Shannon](./apps/shannon)                                      | v0.3.1              |
-| [SigNoz](./src/signoz)                                         | v0.131.1            |
+| [SigNoz](./src/signoz)                                         | v0.132.2            |
 | [Sim](./apps/sim)                                              | latest              |
 | [Skyvern](./apps/skyvern)                                      | v1.0.31             |
 | [Stable Diffusion WebUI](./apps/stable-diffusion-webui-docker) | latest              |
@@ -233,6 +233,7 @@ These services require building custom Docker images from source.
 | [Redis MCP](./mcp-servers/redis)                        | latest  |
 | [Rust Filesystem](./mcp-servers/rust-mcp-filesystem)    | latest  |
 | [Sequential Thinking](./mcp-servers/sequentialthinking) | latest  |
+| [SigNoz MCP Server](./mcp-servers/signoz-mcp-server)    | v0.8.0  |
 | [SQLite](./mcp-servers/sqlite)                          | latest  |
 | [Tavily](./mcp-servers/tavily)                          | latest  |
 | [Text to GraphQL](./mcp-servers/text-to-graphql)        | latest  |

@@ -12,7 +12,7 @@
 
 | 变量名                                  | 说明                                  | 默认值           |
 | --------------------------------------- | ------------------------------------- | ---------------- |
-| `ELASTICSEARCH_VERSION`                 | Elasticsearch 镜像版本                | `8.16.1`         |
+| `ELASTICSEARCH_VERSION`                 | Elasticsearch 镜像版本                | `9.4.2`          |
 | `ELASTICSEARCH_HTTP_PORT_OVERRIDE`      | HTTP 主机端口映射（映射到端口 9200）  | `9200`           |
 | `ELASTICSEARCH_TRANSPORT_PORT_OVERRIDE` | 传输层主机端口映射（映射到端口 9300） | `9300`           |
 | `ELASTICSEARCH_CLUSTER_NAME`            | Elasticsearch 集群名称                | `docker-cluster` |

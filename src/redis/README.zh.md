@@ -19,7 +19,7 @@ docker compose up -d
 | 变量名                     | 说明                                         | 默认值             |
 | -------------------------- | -------------------------------------------- | ------------------ |
 | `GLOBAL_REGISTRY`          | 全局镜像仓库前缀                             | `""`               |
-| `REDIS_VERSION`            | Redis 镜像版本                               | `8.2.1-alpine3.22` |
+| `REDIS_VERSION`            | Redis 镜像版本                               | `8.8.0-alpine3.23` |
 | `REDIS_PASSWORD`           | Redis 认证密码（留空表示不启用认证）         | `""`               |
 | `REDIS_PORT_OVERRIDE`      | 主机端口映射（映射到容器内 Redis 端口 6379） | `6379`             |
 | `TZ`                       | 时区                                         | `UTC`              |

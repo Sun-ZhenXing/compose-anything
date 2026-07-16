@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   nginx:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}nginx:${NGINX_VERSION:-1.29.3-alpine3.23}
+    image: ${GLOBAL_REGISTRY:-}nginx:${NGINX_VERSION:-1.29.4-alpine3.23}
     ports:
       - '${NGINX_HTTP_PORT_OVERRIDE:-80}:80'
       - '${NGINX_HTTPS_PORT_OVERRIDE:-443}:443'

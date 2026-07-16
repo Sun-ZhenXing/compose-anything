@@ -12,7 +12,7 @@ This service deploys Grafana, an open-source analytics and monitoring platform f
 
 | Variable Name          | Description                                                | Default Value           |
 | ---------------------- | ---------------------------------------------------------- | ----------------------- |
-| GRAFANA_VERSION        | Grafana image version                                      | `12.1.1`                |
+| GRAFANA_VERSION        | Grafana image version                                      | `12.3.3`                |
 | GRAFANA_PORT_OVERRIDE  | Host port mapping (maps to Grafana port 3000 in container) | `3000`                  |
 | GRAFANA_ADMIN_USER     | Admin username                                             | `admin`                 |
 | GRAFANA_ADMIN_PASSWORD | Admin password                                             | `admin`                 |

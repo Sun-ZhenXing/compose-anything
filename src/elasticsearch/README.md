@@ -12,7 +12,7 @@ This service deploys Elasticsearch, a distributed search and analytics engine.
 
 | Variable Name                         | Description                                         | Default Value    |
 | ------------------------------------- | --------------------------------------------------- | ---------------- |
-| ELASTICSEARCH_VERSION                 | Elasticsearch image version                         | `8.16.1`         |
+| ELASTICSEARCH_VERSION                 | Elasticsearch image version                         | `9.4.2`          |
 | ELASTICSEARCH_HTTP_PORT_OVERRIDE      | Host port mapping for HTTP (maps to port 9200)      | 9200             |
 | ELASTICSEARCH_TRANSPORT_PORT_OVERRIDE | Host port mapping for transport (maps to port 9300) | 9300             |
 | ELASTICSEARCH_CLUSTER_NAME            | Name of the Elasticsearch cluster                   | `docker-cluster` |

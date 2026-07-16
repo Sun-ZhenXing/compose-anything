@@ -140,7 +140,7 @@ services:
   # SigNoz all-in-one backend + frontend + alertmanager
   signoz:
     <<: *db-depend
-    image: ${GLOBAL_REGISTRY:-}${SIGNOZ_IMAGE_NAME:-signoz/signoz}:${SIGNOZ_VERSION:-v0.131.1}
+    image: ${GLOBAL_REGISTRY:-}${SIGNOZ_IMAGE_NAME:-signoz/signoz}:${SIGNOZ_VERSION:-v0.132.2}
     ports:
       - '${SIGNOZ_PORT_OVERRIDE:-8080}:8080'
     volumes:

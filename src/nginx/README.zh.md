@@ -12,7 +12,7 @@
 
 | 变量名                    | 描述                                 | 默认值              |
 | ------------------------- | ------------------------------------ | ------------------- |
-| NGINX_VERSION             | Nginx 镜像版本                       | `1.29.1-alpine3.20` |
+| NGINX_VERSION             | Nginx 镜像版本                       | `1.29.4-alpine3.23` |
 | NGINX_HTTP_PORT_OVERRIDE  | HTTP 主机端口映射（映射到端口 80）   | 80                  |
 | NGINX_HTTPS_PORT_OVERRIDE | HTTPS 主机端口映射（映射到端口 443） | 443                 |
 | NGINX_HOST                | 配置的服务器主机名                   | `localhost`         |

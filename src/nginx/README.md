@@ -12,7 +12,7 @@ This service deploys Nginx, a high-performance web server and reverse proxy serv
 
 | Variable Name             | Description                                    | Default Value       |
 | ------------------------- | ---------------------------------------------- | ------------------- |
-| NGINX_VERSION             | Nginx image version                            | `1.29.1-alpine3.20` |
+| NGINX_VERSION             | Nginx image version                            | `1.29.4-alpine3.23` |
 | NGINX_HTTP_PORT_OVERRIDE  | Host port mapping for HTTP (maps to port 80)   | 80                  |
 | NGINX_HTTPS_PORT_OVERRIDE | Host port mapping for HTTPS (maps to port 443) | 443                 |
 | NGINX_HOST                | Server hostname for configuration              | `localhost`         |

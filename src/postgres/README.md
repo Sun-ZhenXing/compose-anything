@@ -10,7 +10,7 @@ This service deploys a PostgreSQL database.
 
 ## Configuration
 
-- `POSTGRES_VERSION`: The version of the PostgreSQL image, default is `17.6`.
+- `POSTGRES_VERSION`: The version of the PostgreSQL image, default is `17.10`.
 - `POSTGRES_USER`: The database username, default is `postgres`.
 - `POSTGRES_PASSWORD`: The database password, default is `postgres`.
 - `POSTGRES_DB`: The database name, default is `postgres`.

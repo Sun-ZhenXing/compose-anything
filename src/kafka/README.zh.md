@@ -14,8 +14,8 @@
 
 | 变量名                             | 说明                                      | 默认值          |
 | ---------------------------------- | ----------------------------------------- | --------------- |
-| `KAFKA_VERSION`                    | Kafka 镜像版本                            | `7.8.0`         |
-| `KAFKA_UI_VERSION`                 | Kafka UI 镜像版本                         | `latest`        |
+| `KAFKA_VERSION`                    | Kafka 镜像版本                            | `8.2.0`         |
+| `KAFKA_UI_VERSION`                 | Kafka UI 镜像版本                         | `v0.7.2`        |
 | `ZOOKEEPER_CLIENT_PORT_OVERRIDE`   | Zookeeper 主机端口映射（映射到端口 2181） | `2181`          |
 | `KAFKA_BROKER_PORT_OVERRIDE`       | Kafka 主机端口映射（映射到端口 9092）     | `9092`          |
 | `KAFKA_JMX_PORT_OVERRIDE`          | JMX 主机端口映射（映射到端口 9999）       | `9999`          |

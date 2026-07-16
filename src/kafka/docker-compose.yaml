@@ -94,7 +94,7 @@ services:
   # Kafka UI (optional)
   kafka-ui:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}provectuslabs/kafka-ui:${KAFKA_UI_VERSION:-latest}
+    image: ${GLOBAL_REGISTRY:-}provectuslabs/kafka-ui:${KAFKA_UI_VERSION:-v0.7.2}
     profiles:
       - ui
     depends_on:

@@ -10,7 +10,7 @@
 
 ## 配置
 
-- `POSTGRES_VERSION`: PostgreSQL 镜像的版本，默认为 `17.6`。
+- `POSTGRES_VERSION`: PostgreSQL 镜像的版本，默认为 `17.10`。
 - `POSTGRES_USER`: 数据库用户名，默认为 `postgres`。
 - `POSTGRES_PASSWORD`: 数据库密码，默认为 `postgres`。
 - `POSTGRES_DB`: 数据库名称，默认为 `postgres`。
