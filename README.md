@@ -140,7 +140,7 @@ These services require building custom Docker images from source.
 | [Netdata](./src/netdata)                                       | latest              |
 | [Nginx](./src/nginx)                                           | 1.29.4              |
 | [Node Exporter](./src/node-exporter)                           | v1.8.2              |
-| [OceanBase](./src/oceanbase)                                   | 4.3.3               |
+| [OceanBase](./src/oceanbase)                                   | 4.4.2.1             |
 | [Odoo](./src/odoo)                                             | 19.0                |
 | [Ollama](./src/ollama)                                         | 0.14.3              |
 | [Open WebUI](./src/open-webui)                                 | main                |

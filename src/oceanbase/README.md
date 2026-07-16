@@ -12,7 +12,8 @@ docker compose up -d
 
 Key environment variables:
 
-- `OB_ROOT_PASSWORD`: Root user password (default: `oceanbase`)
+- `OCEANBASE_VERSION`: Exact image version (default: `4.4.2.1-101000022026050611`)
+- `OB_SYS_PASSWORD`: sys tenant root password (default: `oceanbase`)
 - `OB_TENANT_NAME`: Tenant name (default: `test`)
 - `OB_TENANT_PASSWORD`: Tenant password (default: `oceanbase`)
 - `OB_MEMORY_LIMIT`: Memory limit (default: `8G`, minimum: `8G`)
@@ -26,24 +27,33 @@ Key environment variables:
 
 ## Connection
 
-Connect using MySQL client:
+Connect to the default tenant with `OB_TENANT_PASSWORD` (default: `oceanbase`):
 
 ```bash
 mysql -h127.0.0.1 -P2881 -uroot@test -poceanbase
 ```
 
-Or connect to sys tenant:
+Or connect to the sys tenant with `OB_SYS_PASSWORD` (default: `oceanbase`):
 
 ```bash
 mysql -h127.0.0.1 -P2881 -uroot -poceanbase
 ```
 
+## Storage
+
+Database data is stored in the named volume `oceanbase_data`.
+
+## Security
+
+Change the default values of `OB_SYS_PASSWORD` and `OB_TENANT_PASSWORD` before exposing OceanBase beyond a trusted local environment.
+
 ## Notes
 
 - OceanBase requires at least 8GB of memory to run properly
 - First startup may take several minutes to initialize
-- Use `slim` mode for development/testing environments
-- For production, consider using `normal` mode and a dedicated cluster
+- This stack defaults to `mini` mode; use `normal` mode for dedicated production clusters
+- Avoid `slim` fastboot mode because it ignores sys password and resource configuration
+- A direct in-place upgrade from 4.3.3 to 4.4.2 is not documented here. Back up your data and follow the official upgrade path instead of reusing an old volume.
 
 ## References
 
