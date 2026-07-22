@@ -85,8 +85,8 @@ These services require building custom Docker images from source.
 | [Flowise](./src/flowise)                                       | 3.0.12              |
 | [frpc](./src/frpc)                                             | 0.68.1              |
 | [frps](./src/frps)                                             | 0.68.1              |
-| [Gitea Runner](./src/gitea-runner)                             | 0.2.13              |
-| [Gitea](./src/gitea)                                           | 1.25.4-rootless     |
+| [Gitea Runner](./src/gitea-runner)                             | 2.1.0               |
+| [Gitea](./src/gitea)                                           | 1.27.0-rootless     |
 | [GitLab Runner](./src/gitlab-runner)                           | 17.10.1             |
 | [GitLab](./src/gitlab)                                         | 18.8.3-ce.0         |
 | [GoModel](./src/gomodel)                                       | v0.1.27             |

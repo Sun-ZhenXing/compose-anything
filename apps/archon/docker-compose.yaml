@@ -88,7 +88,7 @@ services:
       - archon_postgres_data:/var/lib/postgresql/data
       - ./migrations/000_combined.sql:/docker-entrypoint-initdb.d/000_combined.sql:ro
     healthcheck:
-      test: [CMD-SHELL, 'pg_isready -U postgres -d remote_coding_agent']
+      test: [CMD-SHELL, pg_isready -U postgres -d remote_coding_agent]
       interval: 10s
       timeout: 5s
       retries: 5

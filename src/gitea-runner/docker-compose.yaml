@@ -9,18 +9,26 @@ x-defaults: &defaults
 services:
   gitea_runner:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}gitea/act_runner:${GITEA_RUNNER_VERSION:-0.2.13}
+    image: ${GLOBAL_REGISTRY:-}gitea/runner:${GITEA_RUNNER_VERSION:-2.1.0}
     environment:
       TZ: ${TZ:-UTC}
       CONFIG_FILE: /config.yaml
-      GITEA_INSTANCE_URL: ${INSTANCE_URL:-http://localhost:3000}
-      GITEA_RUNNER_REGISTRATION_TOKEN: ${REGISTRATION_TOKEN}
-      GITEA_RUNNER_NAME: ${RUNNER_NAME:-Gitea-Runner}
-      GITEA_RUNNER_LABELS: ${RUNNER_LABELS:-DockerRunner}
+      GITEA_INSTANCE_URL: ${GITEA_INSTANCE_URL:-http://host.docker.internal:3000}
+      GITEA_RUNNER_REGISTRATION_TOKEN: ${GITEA_RUNNER_REGISTRATION_TOKEN}
+      GITEA_RUNNER_NAME: ${GITEA_RUNNER_NAME:-Gitea-Runner}
+      GITEA_RUNNER_LABELS: ${GITEA_RUNNER_LABELS:-ubuntu-latest:docker://docker.io/gitea/runner-images:ubuntu-latest,ubuntu-24.04:docker://docker.io/gitea/runner-images:ubuntu-24.04,ubuntu-22.04:docker://docker.io/gitea/runner-images:ubuntu-22.04}
+    extra_hosts:
+      - host.docker.internal:host-gateway
     volumes:
       - ./config.yaml:/config.yaml:ro
       - gitea_runner_data:/data
       - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: [CMD-SHELL, '/bin/busybox wget -q -O /dev/null http://127.0.0.1:9101/healthz || exit 1']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     deploy:
       resources:
         limits:
