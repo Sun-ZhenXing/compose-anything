@@ -1,0 +1,41 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  opa:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}openpolicyagent/opa:${OPA_VERSION:-1.18.2}
+    user: '1000:1000'
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - '127.0.0.1:${OPA_PORT_OVERRIDE:-8181}:8181'
+    volumes:
+      - ./policies:/policies:ro
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    environment:
+      - TZ=${TZ:-UTC}
+    command: [run, --server, '--addr=0.0.0.0:8181', /policies]
+    healthcheck:
+      test: [CMD, /opa, eval, --fail, 'http.send({"url":"http://127.0.0.1:8181/health","timeout":"1s"}).status_code == 200']
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: ${OPA_CPU_LIMIT:-0.5}
+          memory: ${OPA_MEMORY_LIMIT:-256M}
+        reservations:
+          cpus: ${OPA_CPU_RESERVATION:-0.1}
+          memory: ${OPA_MEMORY_RESERVATION:-128M}

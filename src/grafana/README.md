@@ -12,7 +12,7 @@ This service deploys Grafana, an open-source analytics and monitoring platform f
 
 | Variable Name          | Description                                                | Default Value           |
 | ---------------------- | ---------------------------------------------------------- | ----------------------- |
-| GRAFANA_VERSION        | Grafana image version                                      | `12.3.3`                |
+| GRAFANA_VERSION        | Grafana image version                                      | `13.1.1`                |
 | GRAFANA_PORT_OVERRIDE  | Host port mapping (maps to Grafana port 3000 in container) | `3000`                  |
 | GRAFANA_ADMIN_USER     | Admin username                                             | `admin`                 |
 | GRAFANA_ADMIN_PASSWORD | Admin password                                             | `admin`                 |
@@ -41,6 +41,10 @@ Please modify the `.env` file as needed for your use case.
 - Set a strong `GRAFANA_SECRET_KEY` for production use.
 - Consider disabling sign-up (`GRAFANA_ALLOW_SIGN_UP=false`) in production.
 - Use HTTPS in production by configuring a reverse proxy or Grafana's TLS settings.
+
+## Upgrading
+
+Before upgrading, back up the Grafana database, plugins, and configuration. Grafana v13's unified-storage migration makes downgrade unsafe without restoring the pre-upgrade database. Validate plugins for React 19 compatibility; the image-renderer plugin has been removed.
 
 ## Common Use Cases
 

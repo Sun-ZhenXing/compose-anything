@@ -10,7 +10,7 @@ This service deploys a MySQL database.
 
 ## Configuration
 
-- `MYSQL_VERSION`: The version of the MySQL image, default is `9.7.1`.
+- `MYSQL_VERSION`: The version of the MySQL image, default is `9.7.2`.
 - `MYSQL_PORT_OVERRIDE`: The host port for MySQL, default is `3306`.
 - `MYSQL_ROOT_PASSWORD`: The root password, default is `password`.
 - `MYSQL_ROOT_HOST`: The root host, default is `%`.

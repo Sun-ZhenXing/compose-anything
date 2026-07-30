@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   prometheus:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}prom/prometheus:${PROMETHEUS_VERSION:-v3.5.1}
+    image: ${GLOBAL_REGISTRY:-}prom/prometheus:${PROMETHEUS_VERSION:-v3.13.1}
     ports:
       - '${PROMETHEUS_PORT_OVERRIDE:-9090}:9090'
     volumes:
@@ -48,7 +48,7 @@ services:
         - --no-verbose
         - --tries=1
         - --spider
-        - 'http://localhost:9090/-/healthy'
+        - 'http://localhost:9090/-/ready'
 
       interval: 30s
       timeout: 10s

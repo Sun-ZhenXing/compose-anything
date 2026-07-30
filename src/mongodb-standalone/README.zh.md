@@ -33,7 +33,7 @@ MongoDB 是一个为应用程序开发和扩展的简易性而设计的文档数
 
 | 变量                         | 描述         | 默认值     |
 | ---------------------------- | ------------ | ---------- |
-| `MONGO_VERSION`              | MongoDB 版本 | `8.3.4`    |
+| `MONGO_VERSION`              | MongoDB 版本 | `8.3.7`    |
 | `MONGO_INITDB_ROOT_USERNAME` | 根用户名     | `root`     |
 | `MONGO_INITDB_ROOT_PASSWORD` | 根密码       | `password` |
 | `MONGO_INITDB_DATABASE`      | 初始数据库   | `admin`    |
@@ -42,6 +42,8 @@ MongoDB 是一个为应用程序开发和扩展的简易性而设计的文档数
 ## 卷
 
 - `mongo_data`: 用于存储 MongoDB 数据的卷。
+
+跨 MongoDB 版本升级前，请先备份，遵循受支持的相邻版本升级路径，并在每一步验证功能兼容性版本（FCV）。
 
 ```bash
 # 使用 mongo shell

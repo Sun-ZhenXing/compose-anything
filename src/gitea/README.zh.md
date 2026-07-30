@@ -2,7 +2,7 @@
 
 [English](./README.md) | [中文](./README.zh.md)
 
-此配置使用 rootless 镜像运行 Gitea 1.27.0，并使用 PostgreSQL 17.6 作为数据库。
+此配置使用 rootless 镜像运行 Gitea 1.27.1，并使用 PostgreSQL 17.10 作为数据库。
 
 ## 服务
 
@@ -37,10 +37,10 @@ docker compose up -d
 
 | 变量 | 默认值 | 说明 |
 | --- | --- | --- |
-| `GITEA_VERSION` | `1.27.0-rootless` | Gitea 镜像标签。 |
+| `GITEA_VERSION` | `1.27.1-rootless` | Gitea 镜像标签。 |
 | `GITEA_DB_TYPE` | `postgres` | Gitea 数据库类型。 |
 | `GITEA_POSTGRES_HOST` | `db:5432` | Compose 网络内的 PostgreSQL 地址。 |
-| `POSTGRES_VERSION` | `17.6` | PostgreSQL 镜像版本。 |
+| `POSTGRES_VERSION` | `17.10` | PostgreSQL 镜像版本。 |
 | `POSTGRES_USER` | `gitea` | 数据库用户。 |
 | `POSTGRES_PASSWORD` | `gitea` | 数据库密码，生产环境必须修改。 |
 | `POSTGRES_DB` | `gitea` | 数据库名称。 |

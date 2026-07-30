@@ -2,7 +2,7 @@
 
 [English](./README.md) | [中文](./README.zh.md)
 
-This stack runs Gitea 1.27.0 with the rootless image and PostgreSQL 17.6.
+This stack runs Gitea 1.27.1 with the rootless image and PostgreSQL 17.10.
 
 ## Services
 
@@ -37,10 +37,10 @@ The first registered user becomes an administrator.
 
 | Variable | Default | Description |
 | --- | --- | --- |
-| `GITEA_VERSION` | `1.27.0-rootless` | Gitea image tag. |
+| `GITEA_VERSION` | `1.27.1-rootless` | Gitea image tag. |
 | `GITEA_DB_TYPE` | `postgres` | Gitea database type. |
 | `GITEA_POSTGRES_HOST` | `db:5432` | PostgreSQL address inside the Compose network. |
-| `POSTGRES_VERSION` | `17.6` | PostgreSQL image version. |
+| `POSTGRES_VERSION` | `17.10` | PostgreSQL image version. |
 | `POSTGRES_USER` | `gitea` | Database user. |
 | `POSTGRES_PASSWORD` | `gitea` | Database password; change it for production. |
 | `POSTGRES_DB` | `gitea` | Database name. |

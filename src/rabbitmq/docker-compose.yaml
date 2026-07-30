@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   rabbitmq:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}rabbitmq:${RABBITMQ_VERSION:-4.2.4-management-alpine}
+    image: ${GLOBAL_REGISTRY:-}rabbitmq:${RABBITMQ_VERSION:-4.3.4-management-alpine}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     ports:

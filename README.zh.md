@@ -86,12 +86,12 @@ docker compose exec redis redis-cli ping
 | [frpc](./src/frpc)                                             | 0.68.1              |
 | [frps](./src/frps)                                             | 0.68.1              |
 | [Gitea Runner](./src/gitea-runner)                             | 2.1.0               |
-| [Gitea](./src/gitea)                                           | 1.27.0-rootless     |
+| [Gitea](./src/gitea)                                           | 1.27.1-rootless     |
 | [GitLab Runner](./src/gitlab-runner)                           | 17.10.1             |
 | [GitLab](./src/gitlab)                                         | 18.8.3-ce.0         |
 | [GoModel](./src/gomodel)                                       | v0.1.27             |
 | [GPUStack](./src/gpustack)                                     | v0.5.3              |
-| [Grafana](./src/grafana)                                       | 12.3.3              |
+| [Grafana](./src/grafana)                                       | 13.1.1              |
 | [Grafana Loki](./src/loki)                                     | 3.3.2               |
 | [Grafana Tempo](./src/tempo)                                   | 2.7.2               |
 | [Halo](./src/halo)                                             | 2.21.9              |
@@ -129,8 +129,8 @@ docker compose exec redis redis-cli ping
 | [OpenClaw](./apps/openclaw)                                    | 2026.2.3            |
 | [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)   | 8.2.3               |
 | [MongoDB ReplicaSet](./src/mongodb-replicaset)                 | 8.2.3               |
-| [MongoDB Standalone](./src/mongodb-standalone)                 | 8.3.4               |
-| [MySQL](./src/mysql)                                           | 9.7.1               |
+| [MongoDB Standalone](./src/mongodb-standalone)                 | 8.3.7               |
+| [MySQL](./src/mysql)                                           | 9.7.2               |
 | [n8n](./apps/n8n)                                              | 1.114.0             |
 | [Nanobot](./apps/nanobot)                                      | v0.1.3.post4        |
 | [Nacos](./src/nacos)                                           | v3.1.0              |
@@ -138,7 +138,7 @@ docker compose exec redis redis-cli ping
 | [NexaSDK](./src/nexa-sdk)                                      | v0.2.62             |
 | [Neo4j](./src/neo4j)                                           | 5.27.4              |
 | [Netdata](./src/netdata)                                       | latest              |
-| [Nginx](./src/nginx)                                           | 1.29.4              |
+| [Nginx](./src/nginx)                                           | 1.30.4              |
 | [Node Exporter](./src/node-exporter)                           | v1.8.2              |
 | [OceanBase](./src/oceanbase)                                   | 4.4.2.1             |
 | [Odoo](./src/odoo)                                             | 19.0                |
@@ -159,6 +159,7 @@ docker compose exec redis redis-cli ping
 | [OpenSearch](./src/opensearch)                                 | 2.19.0              |
 | [OpenTelemetry Collector](./src/otel-collector)                | 0.115.1             |
 | [OpenViking](./src/openviking)                                 | 0.1.0               |
+| [Open Policy Agent (OPA)](./src/opa)                            | 1.18.2              |
 | [Overleaf](./src/overleaf)                                     | 5.2.1               |
 | [Paca](./apps/paca)                                            | 0.5.2               |
 | [PocketBase](./src/pocketbase)                                 | 0.30.0              |
@@ -166,16 +167,16 @@ docker compose exec redis redis-cli ping
 | [Pogocache](./src/pogocache)                                   | 1.3.1               |
 | [Portainer](./src/portainer)                                   | 2.27.3-alpine       |
 | [Portkey AI Gateway](./src/portkey-gateway)                    | latest              |
-| [PostgreSQL](./src/postgres)                                   | 17.10               |
-| [Prometheus](./src/prometheus)                                 | 3.5.1               |
+| [PostgreSQL](./src/postgres)                                   | 18.4                |
+| [Prometheus](./src/prometheus)                                 | 3.13.1              |
 | [PyTorch](./src/pytorch)                                       | 2.6.0               |
 | [Qdrant](./src/qdrant)                                         | 1.15.4              |
-| [RabbitMQ](./src/rabbitmq)                                     | 4.2.4               |
+| [RabbitMQ](./src/rabbitmq)                                     | 4.3.4               |
 | [RAGFlow](./apps/ragflow)                                      | v0.24.0             |
 | [Ray](./src/ray)                                               | 2.42.1              |
 | [Redpanda](./src/redpanda)                                     | v24.3.1             |
 | [Redis Cluster](./src/redis-cluster)                           | 8.2.1               |
-| [Redis](./src/redis)                                           | 8.8.0               |
+| [Redis](./src/redis)                                           | 8.8.1               |
 | [Renovate](./src/renovate)                                     | 42.85.4-full        |
 | [Restate Cluster](./src/restate-cluster)                       | 1.5.3               |
 | [Restate](./src/restate)                                       | 1.5.3               |

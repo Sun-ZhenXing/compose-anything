@@ -12,7 +12,7 @@
 
 | 变量名                    | 描述                                                | 默认值                  |
 | ------------------------- | --------------------------------------------------- | ----------------------- |
-| PROMETHEUS_VERSION        | Prometheus 镜像版本                                 | `v3.5.0`                |
+| PROMETHEUS_VERSION        | Prometheus 镜像版本                                 | `v3.13.1`               |
 | PROMETHEUS_PORT_OVERRIDE  | 主机端口映射（映射到容器中的 Prometheus 端口 9090） | `9090`                  |
 | PROMETHEUS_RETENTION_TIME | 数据保留时间                                        | `15d`                   |
 | PROMETHEUS_RETENTION_SIZE | 最大存储大小（空值 = 无限制）                       | `""`                    |
@@ -89,6 +89,10 @@ volumes:
 - 考虑在生产环境中限制对管理 API 的访问
 - 为生产部署使用身份验证/授权代理
 - 监控资源使用情况，因为 Prometheus 可能消耗大量存储和内存
+
+## 升级
+
+升级到 Prometheus v3 前，请备份 TSDB 并查看 migration guide。将 v3 TSDB 回滚到旧版本需要使用 Prometheus v2.55 或更高版本。
 
 ## 常见用例
 

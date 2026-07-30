@@ -19,7 +19,7 @@ docker compose up -d
 | Variable Name              | Description                                              | Default Value      |
 | -------------------------- | -------------------------------------------------------- | ------------------ |
 | `GLOBAL_REGISTRY`          | Global registry prefix for all images                    | `""`               |
-| `REDIS_VERSION`            | Redis image version                                      | `8.8.0-alpine3.23` |
+| `REDIS_VERSION`            | Redis image version                                      | `8.8.1-alpine3.23` |
 | `REDIS_PASSWORD`           | Password for Redis authentication (empty = no auth)      | `""`               |
 | `REDIS_PORT_OVERRIDE`      | Host port mapping (maps to Redis port 6379 in container) | `6379`             |
 | `TZ`                       | Timezone                                                 | `UTC`              |

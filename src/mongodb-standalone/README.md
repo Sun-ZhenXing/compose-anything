@@ -33,7 +33,7 @@ MongoDB is a document database designed for ease of application development and 
 
 | Variable                     | Description      | Default    |
 | ---------------------------- | ---------------- | ---------- |
-| `MONGO_VERSION`              | MongoDB version  | `8.3.4`    |
+| `MONGO_VERSION`              | MongoDB version  | `8.3.7`    |
 | `MONGO_INITDB_ROOT_USERNAME` | Root username    | `root`     |
 | `MONGO_INITDB_ROOT_PASSWORD` | Root password    | `password` |
 | `MONGO_INITDB_DATABASE`      | Initial database | `admin`    |
@@ -42,6 +42,8 @@ MongoDB is a document database designed for ease of application development and 
 ## Volumes
 
 - `mongo_data`: A volume for storing MongoDB data.
+
+Before upgrading across MongoDB releases, back up first, follow supported adjacent-release upgrade paths, and verify Feature Compatibility Version (FCV) at each step.
 
 ```bash
 # Using mongo shell

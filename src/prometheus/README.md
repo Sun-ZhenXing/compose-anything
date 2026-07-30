@@ -12,7 +12,7 @@ This service deploys Prometheus, an open-source system monitoring and alerting t
 
 | Variable Name             | Description                                                   | Default Value           |
 | ------------------------- | ------------------------------------------------------------- | ----------------------- |
-| PROMETHEUS_VERSION        | Prometheus image version                                      | `v3.5.0`                |
+| PROMETHEUS_VERSION        | Prometheus image version                                      | `v3.13.1`               |
 | PROMETHEUS_PORT_OVERRIDE  | Host port mapping (maps to Prometheus port 9090 in container) | `9090`                  |
 | PROMETHEUS_RETENTION_TIME | How long to retain data                                       | `15d`                   |
 | PROMETHEUS_RETENTION_SIZE | Maximum storage size (empty = unlimited)                      | `""`                    |
@@ -89,6 +89,10 @@ Configure data retention using environment variables:
 - Consider restricting access to the admin API in production
 - Use authentication/authorization proxy for production deployments
 - Monitor resource usage as Prometheus can consume significant storage and memory
+
+## Upgrading
+
+Before upgrading to Prometheus v3, back up the TSDB and review the migration guide. Rolling a v3 TSDB back requires Prometheus v2.55 or newer.
 
 ## Common Use Cases
 

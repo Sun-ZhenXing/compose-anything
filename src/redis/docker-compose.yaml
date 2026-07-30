@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   redis:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-8.8.0-alpine3.23}
+    image: ${GLOBAL_REGISTRY:-}redis:${REDIS_VERSION:-8.8.1-alpine3.23}
     ports:
       - '${REDIS_PORT_OVERRIDE:-6379}:6379'
     volumes:
