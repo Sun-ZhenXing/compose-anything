@@ -33,6 +33,9 @@ docker compose up -d
 | `GITEA_RUNNER_REGISTRATION_TOKEN`                               | 空                                                            | 必填的注册令牌。                                                                    |
 | `GITEA_RUNNER_NAME`                                             | `Gitea-Runner`                                                | Gitea 中显示的 Runner 名称。                                                        |
 | `GITEA_RUNNER_LABELS`                                           | `ubuntu-latest`、`ubuntu-24.04`、`ubuntu-22.04` Docker labels | 以逗号分隔的 labels，默认 job image repository 为 `docker.io/gitea/runner-images`。 |
+| `GITEA_RUNNER_HTTP_PROXY`                                       | 空                                                            | Runner 和每个任务容器使用的 HTTP 代理。留空则禁用代理。                             |
+| `GITEA_RUNNER_HTTPS_PROXY`                                      | 空                                                            | HTTPS 代理。通常与 HTTP 代理使用同一地址。                                          |
+| `GITEA_RUNNER_NO_PROXY`                                         | `localhost,127.0.0.1,::1,host.docker.internal`                | 不经过代理的主机列表。                                                              |
 | `GITEA_RUNNER_CPU_LIMIT` / `GITEA_RUNNER_CPU_RESERVATION`       | `1.0` / `0.1`                                                 | CPU 限制和预留。                                                                    |
 | `GITEA_RUNNER_MEMORY_LIMIT` / `GITEA_RUNNER_MEMORY_RESERVATION` | `2G` / `1G`                                                   | 内存限制和预留。                                                                    |
 
@@ -41,6 +44,35 @@ docker compose up -d
 ```bash
 docker run --entrypoint="" --rm gitea/runner:2.1.0 gitea-runner generate-config > config.yaml
 ```
+
+## 代理
+
+在 `.env` 中设置 `GITEA_RUNNER_HTTP_PROXY` 和 `GITEA_RUNNER_HTTPS_PROXY`，整个栈即使用代理。两者默认为空，即不启用代理。
+
+代理必须在宿主机上监听 `0.0.0.0` 而非仅 `127.0.0.1`，否则容器无法通过 `host.docker.internal` 访问。如果代理是同一网络上的另一个容器，请使用其服务名代替。
+
+覆盖范围：
+
+- Runner 自身对 Gitea 和 action 仓库的请求。
+- 每个任务容器，因为 Runner 会同时注入大写和小写形式的代理变量。
+
+### 为构建配置代理
+
+Docker CLI 不从环境变量读取代理设置，但会从其自身的配置文件中读取。在任务的第一步写入该文件后，该任务中后续的 `docker build`、`docker compose build` 和 `docker buildx build` 都会自动使用代理，无需任何命令行参数。
+
+```yaml
+- run: mkdir -p ~/.docker && printf '{"proxies":{"default":{"httpProxy":"%s","httpsProxy":"%s","noProxy":"%s"}}}' "$HTTP_PROXY" "$HTTPS_PROXY" "$NO_PROXY" > ~/.docker/config.json
+```
+
+任务容器已经拥有这三个变量，因为 Runner 会注入它们，因此该步骤无需额外配置。当代理被禁用时，这些值为空，构建行为与之前相同。
+
+Dockerfiles 无需为此添加 `ARG` 行，因为这些代理变量是预定义的构建参数。
+
+请在同任务的任何 `docker login` 之前运行此步骤。`docker login` 会合并到同一文件并保留代理部分，但在登录之后写入该文件会丢弃已存储的凭据。
+
+不覆盖：镜像拉取。任务容器镜像以及 `docker build` 期间拉取的基础镜像由宿主机 Docker 守护进程获取，该守护进程仅使用自身的代理配置。请单独配置：Docker Desktop 在 **Settings -> Resources -> Proxies** 中设置（Docker Desktop 会忽略 `daemon.json` 中的 `proxies` 键），在 Linux 上可在 `/etc/systemd/system/docker.service.d/http-proxy.conf` 中配置 systemd drop-in 并设置 `Environment="HTTP_PROXY=..."`，或在 Docker Engine 23.0 及以上版本的 `daemon.json` 中使用 `proxies` 键。
+
+请勿在 `GITEA_RUNNER_NO_PROXY` 中使用 CIDR 格式。Runner 可以接受，但任务容器中的 `curl` 不支持。
 
 ## 存储与健康检查
 

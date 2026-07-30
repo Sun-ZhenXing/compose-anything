@@ -17,6 +17,9 @@ services:
       GITEA_RUNNER_REGISTRATION_TOKEN: ${GITEA_RUNNER_REGISTRATION_TOKEN}
       GITEA_RUNNER_NAME: ${GITEA_RUNNER_NAME:-Gitea-Runner}
       GITEA_RUNNER_LABELS: ${GITEA_RUNNER_LABELS:-ubuntu-latest:docker://docker.io/gitea/runner-images:ubuntu-latest,ubuntu-24.04:docker://docker.io/gitea/runner-images:ubuntu-24.04,ubuntu-22.04:docker://docker.io/gitea/runner-images:ubuntu-22.04}
+      HTTP_PROXY: ${GITEA_RUNNER_HTTP_PROXY:-}
+      HTTPS_PROXY: ${GITEA_RUNNER_HTTPS_PROXY:-}
+      NO_PROXY: ${GITEA_RUNNER_NO_PROXY:-localhost,127.0.0.1,::1,host.docker.internal}
     extra_hosts:
       - host.docker.internal:host-gateway
     volumes:
