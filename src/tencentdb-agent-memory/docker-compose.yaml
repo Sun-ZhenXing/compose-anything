@@ -1,0 +1,43 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  tencentdb-agent-memory:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}agentmemory/memory-core:${TDAI_MEMORY_VERSION:-1.0.0}
+    ports:
+      - '${TDAI_MEMORY_PORT_OVERRIDE:-8420}:8420'
+    volumes:
+      - tdai_memory_data:/data/tdai-memory
+    environment:
+      - TZ=${TZ:-UTC}
+      - TDAI_DEPLOY_MODE=standalone
+      - TDAI_GATEWAY_PORT=8420
+      - TDAI_LLM_API_KEY=${TDAI_LLM_API_KEY:-}
+      - TDAI_LLM_BASE_URL=${TDAI_LLM_BASE_URL:-https://api.openai.com/v1}
+      - TDAI_LLM_MODEL=${TDAI_LLM_MODEL:-gpt-4o}
+      - TDAI_LLM_MAX_TOKENS=${TDAI_LLM_MAX_TOKENS:-4096}
+      - TDAI_DATA_DIR=/data/tdai-memory
+      - TDAI_GATEWAY_API_KEY=${TDAI_GATEWAY_API_KEY:-}
+    healthcheck:
+      test: [CMD, curl, -fsS, 'http://127.0.0.1:8420/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          cpus: ${TDAI_MEMORY_CPU_LIMIT:-1.0}
+          memory: ${TDAI_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${TDAI_MEMORY_CPU_RESERVATION:-0.1}
+          memory: ${TDAI_MEMORY_RESERVATION:-256M}
+
+volumes:
+  tdai_memory_data:

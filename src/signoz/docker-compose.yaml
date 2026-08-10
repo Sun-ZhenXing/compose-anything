@@ -8,7 +8,7 @@ x-defaults: &defaults
 
 x-clickhouse-defaults: &clickhouse-defaults
   <<: *defaults
-  image: ${GLOBAL_REGISTRY:-}clickhouse/clickhouse-server:${SIGNOZ_CLICKHOUSE_VERSION:-26.4.4}
+  image: ${GLOBAL_REGISTRY:-}clickhouse/clickhouse-server:${SIGNOZ_CLICKHOUSE_VERSION:-26.4.5}
   depends_on:
     init-clickhouse:
       condition: service_completed_successfully
@@ -34,7 +34,7 @@ x-db-depend: &db-depend
 services:
   # One-shot init: downloads histogramQuantile UDF binary into the shared volume
   init-clickhouse:
-    image: ${GLOBAL_REGISTRY:-}clickhouse/clickhouse-server:${SIGNOZ_CLICKHOUSE_VERSION:-26.4.4}
+    image: ${GLOBAL_REGISTRY:-}clickhouse/clickhouse-server:${SIGNOZ_CLICKHOUSE_VERSION:-26.4.5}
     restart: on-failure
     logging:
       driver: json-file
@@ -65,7 +65,7 @@ services:
   # ZooKeeper for ClickHouse replication metadata
   zookeeper-1:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}signoz/zookeeper:${SIGNOZ_ZOOKEEPER_VERSION:-3.7.1}
+    image: ${GLOBAL_REGISTRY:-}signoz/zookeeper:${SIGNOZ_ZOOKEEPER_VERSION:-3.9.3}
     user: root
     environment:
       - TZ=${TZ:-UTC}
@@ -116,7 +116,7 @@ services:
   # One-shot migration: bootstraps and runs schema migrations
   signoz-telemetrystore-migrator:
     <<: *db-depend
-    image: ${GLOBAL_REGISTRY:-}signoz/signoz-otel-collector:${SIGNOZ_OTEL_COLLECTOR_VERSION:-v0.144.5}
+    image: ${GLOBAL_REGISTRY:-}signoz/signoz-otel-collector:${SIGNOZ_OTEL_COLLECTOR_VERSION:-v0.144.7}
     restart: on-failure
     environment:
       - TZ=${TZ:-UTC}
@@ -140,7 +140,7 @@ services:
   # SigNoz all-in-one backend + frontend + alertmanager
   signoz:
     <<: *db-depend
-    image: ${GLOBAL_REGISTRY:-}${SIGNOZ_IMAGE_NAME:-signoz/signoz}:${SIGNOZ_VERSION:-v0.132.2}
+    image: ${GLOBAL_REGISTRY:-}${SIGNOZ_IMAGE_NAME:-signoz/signoz}:${SIGNOZ_VERSION:-v0.136.1}
     ports:
       - '${SIGNOZ_PORT_OVERRIDE:-8080}:8080'
     volumes:
@@ -169,7 +169,7 @@ services:
   # OTel Collector for receiving telemetry data
   otel-collector:
     <<: *db-depend
-    image: ${GLOBAL_REGISTRY:-}signoz/signoz-otel-collector:${SIGNOZ_OTEL_COLLECTOR_VERSION:-v0.144.5}
+    image: ${GLOBAL_REGISTRY:-}signoz/signoz-otel-collector:${SIGNOZ_OTEL_COLLECTOR_VERSION:-v0.144.7}
     entrypoint: [/bin/sh]
     command:
       - -c

@@ -1,0 +1,69 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  kaneo:
+    <<: *defaults
+    image: ${GHCR_IO_REGISTRY:-ghcr.io}/usekaneo/kaneo:${KANEO_VERSION:-2.16.2}
+    ports:
+      - '${KANEO_PORT_OVERRIDE:-5173}:5173'
+    environment:
+      - TZ=${TZ:-UTC}
+      - KANEO_CLIENT_URL=${KANEO_CLIENT_URL:-http://localhost:5173}
+      # Required: AUTH_SECRET must be set (min 32 chars). Generate with: openssl rand -hex 32
+      - AUTH_SECRET=${AUTH_SECRET:-}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-kaneo}
+      - POSTGRES_USER=${POSTGRES_USER:-kaneo}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-kaneo123}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://127.0.0.1:5173/api/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${KANEO_CPU_LIMIT:-1.0}
+          memory: ${KANEO_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${KANEO_CPU_RESERVATION:-0.1}
+          memory: ${KANEO_MEMORY_RESERVATION:-256M}
+
+  postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-16.14-alpine}
+    environment:
+      - TZ=${TZ:-UTC}
+      - POSTGRES_DB=${POSTGRES_DB:-kaneo}
+      - POSTGRES_USER=${POSTGRES_USER:-kaneo}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-kaneo123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-kaneo} -d ${POSTGRES_DB:-kaneo}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${POSTGRES_CPU_LIMIT:-1.0}
+          memory: ${POSTGRES_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${POSTGRES_CPU_RESERVATION:-0.1}
+          memory: ${POSTGRES_MEMORY_RESERVATION:-256M}
+
+volumes:
+  postgres_data:

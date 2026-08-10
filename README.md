@@ -102,6 +102,7 @@ These services require building custom Docker images from source.
 | [Jenkins](./src/jenkins)                                       | 2.541-lts           |
 | [JODConverter](./src/jodconverter)                             | latest              |
 | [Kestra](./src/kestra)                                         | latest-full         |
+| [Kaneo](./src/kaneo)                                           | 2.16.2              |
 | [Kibana](./src/kibana)                                         | 8.16.1              |
 | [Kodbox](./src/kodbox)                                         | 1.62                |
 | [Kong](./src/kong)                                             | 3.8.0               |
@@ -184,13 +185,14 @@ These services require building custom Docker images from source.
 | [SearXNG](./src/searxng)                                       | 2025.1.20-1ce14ef99 |
 | [Selenium](./src/selenium)                                     | 144.0-20260120      |
 | [Shannon](./apps/shannon)                                      | v0.3.1              |
-| [SigNoz](./src/signoz)                                         | v0.132.2            |
+| [SigNoz](./src/signoz)                                         | v0.136.1            |
 | [Sim](./apps/sim)                                              | latest              |
 | [Skyvern](./apps/skyvern)                                      | v1.0.31             |
 | [Stable Diffusion WebUI](./apps/stable-diffusion-webui-docker) | latest              |
 | [Stirling-PDF](./apps/stirling-pdf)                            | latest              |
 | [Sub2API](./src/sub2api)                                       | 0.1.124             |
 | [Temporal](./src/temporal)                                     | 1.24.2              |
+| [TencentDB Agent Memory](./src/tencentdb-agent-memory)         | 1.0.0               |
 | [TiDB](./src/tidb)                                             | v8.5.0              |
 | [TiKV](./src/tikv)                                             | v8.5.0              |
 | [Trigger.dev](./src/trigger-dev)                               | v4.2.0              |
