@@ -60,6 +60,7 @@ services:
     image: ${GLOBAL_REGISTRY:-}mongo:${MONGODB_VERSION:-8.0}
     volumes:
       - librechat_mongo_data:/data/db
+      - librechat_mongo_configdb:/data/configdb
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
@@ -105,4 +106,5 @@ volumes:
   librechat_images:
   librechat_logs:
   librechat_mongo_data:
+  librechat_mongo_configdb:
   librechat_meilisearch_data:

@@ -57,6 +57,7 @@ These services require building custom Docker images from source.
 | [Apache Pulsar](./src/pulsar)                                  | 4.0.7               |
 | [Apache RocketMQ](./src/rocketmq)                              | 5.3.1               |
 | [Archon](./apps/archon)                                        | latest              |
+| [AFFiNE](./apps/affine)                                        | 0.27.4              |
 | [Agentgateway](./src/agentgateway)                             | 0.11.2              |
 | [AnythingLLM](./src/anythingllm)                               | latest              |
 | [Bifrost Gateway](./src/bifrost-gateway)                       | v1.4.17             |
@@ -118,6 +119,7 @@ These services require building custom Docker images from source.
 | [llama.cpp](./src/llama-cpp)                                   | server              |
 | [LMDeploy](./src/lmdeploy)                                     | v0.11.1             |
 | [LobeChat](./src/lobe-chat)                                    | 1.143.3             |
+| [Logseq](./src/logseq)                                        | Web (digest-pinned) |
 | [Logstash](./src/logstash)                                     | 8.16.1              |
 | [MariaDB Galera Cluster](./src/mariadb-galera)                 | 11.7.2              |
 | [Mattermost](./apps/mattermost)                                | 11.3                |

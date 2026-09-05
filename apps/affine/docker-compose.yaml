@@ -1,0 +1,119 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  logging:
+    driver: json-file
+    options:
+      max-size: ${AFFINE_LOG_MAX_SIZE:-100m}
+      max-file: ${AFFINE_LOG_MAX_FILE:-3}
+
+x-affine-common: &affine-common
+  image: ${GHCR_REGISTRY:-ghcr.io/}toeverything/affine:${AFFINE_VERSION:-0.27.4}
+  environment:
+    TZ: ${TZ:-UTC}
+    DATABASE_URL: postgresql://${AFFINE_POSTGRES_USER:-affine}:${AFFINE_POSTGRES_PASSWORD:-affine-local-password}@postgres:5432/${AFFINE_POSTGRES_DB:-affine}
+    REDIS_SERVER_HOST: redis
+    AFFINE_INDEXER_ENABLED: ${AFFINE_INDEXER_ENABLED:-false}
+    AFFINE_SERVER_EXTERNAL_URL: ${AFFINE_SERVER_EXTERNAL_URL:-http://localhost:${AFFINE_PORT_OVERRIDE:-3010}}
+  volumes:
+    - affine_storage:/root/.affine/storage
+    - affine_config:/root/.affine/config
+
+services:
+  affine-migration:
+    <<: [*defaults, *affine-common]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: [sh, -c, node ./scripts/self-host-predeploy.js]
+    restart: no
+    deploy:
+      resources:
+        limits:
+          cpus: ${AFFINE_MIGRATION_CPU_LIMIT:-2.0}
+          memory: ${AFFINE_MIGRATION_MEMORY_LIMIT:-2G}
+
+  affine:
+    <<: [*defaults, *affine-common]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      affine-migration:
+        condition: service_completed_successfully
+    ports:
+      - '${AFFINE_BIND_HOST:-127.0.0.1}:${AFFINE_PORT_OVERRIDE:-3010}:3010'
+    healthcheck:
+      test: [CMD-SHELL, "node -e \"fetch('http://127.0.0.1:3010/info').then(r => process.exit(r.status === 200 ? 0 : 1)).catch(() => process.exit(1))\""]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: ${AFFINE_CPU_LIMIT:-2.0}
+          memory: ${AFFINE_MEMORY_LIMIT:-2G}
+
+  postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}pgvector/pgvector:${AFFINE_POSTGRES_VERSION:-0.8.1-pg16-bookworm}
+    environment:
+      TZ: ${TZ:-UTC}
+      POSTGRES_USER: ${AFFINE_POSTGRES_USER:-affine}
+      POSTGRES_DB: ${AFFINE_POSTGRES_DB:-affine}
+      POSTGRES_PASSWORD: ${AFFINE_POSTGRES_PASSWORD:-affine-local-password}
+    volumes:
+      - affine_postgres_data:/var/lib/postgresql/data
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${AFFINE_POSTGRES_CPU_LIMIT:-1.0}
+          memory: ${AFFINE_POSTGRES_MEMORY_LIMIT:-1G}
+
+  redis:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}redis:${AFFINE_REDIS_VERSION:-7.4.11-alpine3.21}
+    user: redis
+    environment:
+      TZ: ${TZ:-UTC}
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      - affine_redis_data:/data
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${AFFINE_REDIS_CPU_LIMIT:-0.5}
+          memory: ${AFFINE_REDIS_MEMORY_LIMIT:-256M}
+
+volumes:
+  affine_storage:
+  affine_config:
+  affine_postgres_data:
+  affine_redis_data:

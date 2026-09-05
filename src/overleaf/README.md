@@ -37,6 +37,13 @@ See `.env.example` for all available options.
 - **MongoDB**: Project and user data storage
 - **Redis**: Session and cache management
 
+## Volumes
+
+- `mongo_data`: MongoDB database files at `/data/db`.
+- `mongo_configdb`: MongoDB configuration database files at `/data/configdb`.
+- `redis_data`: Redis data at `/data`.
+- `overleaf_data`: Overleaf data at `/var/lib/overleaf`.
+
 ## Features
 
 - Real-time collaborative editing

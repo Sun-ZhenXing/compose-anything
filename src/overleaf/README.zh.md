@@ -37,6 +37,13 @@ docker compose up -d
 - **MongoDB**：项目和用户数据存储
 - **Redis**：会话和缓存管理
 
+## 数据卷
+
+- `mongo_data`：MongoDB 数据库文件，挂载到 `/data/db`。
+- `mongo_configdb`：MongoDB 配置数据库文件，挂载到 `/data/configdb`。
+- `redis_data`：Redis 数据，挂载到 `/data`。
+- `overleaf_data`：Overleaf 数据，挂载到 `/var/lib/overleaf`。
+
 ## 功能特性
 
 - 实时协作编辑

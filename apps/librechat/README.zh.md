@@ -54,6 +54,7 @@
 - `librechat_images`：用户上传的图片，由 Web UI 提供服务。
 - `librechat_logs`：应用日志文件。
 - `librechat_mongo_data`：MongoDB 数据持久化。
+- `librechat_mongo_configdb`：MongoDB 配置数据库文件，挂载到 `/data/configdb`。
 - `librechat_meilisearch_data`：Meilisearch 索引数据。
 
 ## 端口

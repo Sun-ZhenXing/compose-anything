@@ -54,6 +54,7 @@ This service deploys LibreChat, an open-source AI chat platform that supports Op
 - `librechat_images`: User-uploaded images served by the web UI.
 - `librechat_logs`: Application log files.
 - `librechat_mongo_data`: MongoDB data persistence.
+- `librechat_mongo_configdb`: MongoDB configuration database files at `/data/configdb`.
 - `librechat_meilisearch_data`: Meilisearch index data.
 
 ## Ports

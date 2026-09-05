@@ -18,6 +18,7 @@ services:
     hostname: overleaf-mongo
     volumes:
       - mongo_data:/data/db
+      - mongo_configdb:/data/configdb
     environment:
       - TZ=${TZ:-UTC}
     healthcheck:
@@ -102,5 +103,6 @@ services:
 
 volumes:
   mongo_data:
+  mongo_configdb:
   redis_data:
   overleaf_data:
