@@ -1,0 +1,213 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  security_opt: [no-new-privileges:true]
+  cap_drop: [ALL]
+  logging:
+    driver: json-file
+    options:
+      max-size: ${APPFLOWY_LOG_MAX_SIZE:-100m}
+      max-file: ${APPFLOWY_LOG_MAX_FILE:-3}
+
+services:
+  postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}pgvector/pgvector:${APPFLOWY_POSTGRES_VERSION:-0.8.1-pg16-bookworm}
+    environment:
+      POSTGRES_DB: appflowy
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${APPFLOWY_POSTGRES_PASSWORD:?Run setup.py to create .env secrets}
+    volumes: [appflowy_postgres_data:/var/lib/postgresql/data]
+    cap_add: [CHOWN, DAC_OVERRIDE, FOWNER, SETGID, SETUID]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U postgres -d appflowy]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${APPFLOWY_POSTGRES_CPU_LIMIT:-1.0}
+          memory: ${APPFLOWY_POSTGRES_MEMORY_LIMIT:-1G}
+
+  redis:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}redis:${APPFLOWY_REDIS_VERSION:-7.4.11-alpine3.21}
+    user: redis
+    command: [redis-server, --appendonly, yes]
+    read_only: true
+    tmpfs: [/tmp]
+    volumes: [appflowy_redis_data:/data]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: ${APPFLOWY_REDIS_CPU_LIMIT:-0.5}
+          memory: ${APPFLOWY_REDIS_MEMORY_LIMIT:-256M}
+
+  minio:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}minio/minio:${APPFLOWY_MINIO_VERSION:-RELEASE.2025-09-07T16-13-09Z}
+    command: [server, /data]
+    environment:
+      MINIO_ROOT_USER: ${APPFLOWY_MINIO_ACCESS_KEY:?Run setup.py to create .env secrets}
+      MINIO_ROOT_PASSWORD: ${APPFLOWY_MINIO_SECRET_KEY:?Run setup.py to create .env secrets}
+    volumes: [appflowy_minio_data:/data]
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:9000/minio/health/ready]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: ${APPFLOWY_MINIO_CPU_LIMIT:-1.0}
+          memory: ${APPFLOWY_MINIO_MEMORY_LIMIT:-1G}
+
+  gotrue:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}appflowyinc/gotrue:${APPFLOWY_GOTRUE_VERSION:-0.9.64@sha256:b6616aa6e0f93c7c8081f17a00018d06da6dae952efcfd23f3ca6444b4b19954}
+    environment:
+      API_EXTERNAL_URL: ${APPFLOWY_BASE_URL:-http://localhost:${APPFLOWY_PORT_OVERRIDE:-8080}}/gotrue
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_API_PORT: 9999
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:${APPFLOWY_POSTGRES_PASSWORD:?Run setup.py to create .env secrets}@postgres:5432/appflowy?search_path=auth
+      GOTRUE_SITE_URL: appflowy-flutter://
+      GOTRUE_URI_ALLOW_LIST: appflowy-flutter://*,${APPFLOWY_BASE_URL:-http://localhost:${APPFLOWY_PORT_OVERRIDE:-8080}}/*
+      GOTRUE_JWT_SECRET: ${APPFLOWY_JWT_SECRET:?Run setup.py to create .env secrets}
+      GOTRUE_ADMIN_EMAIL: ${APPFLOWY_ADMIN_EMAIL:-admin@example.com}
+      GOTRUE_ADMIN_PASSWORD: ${APPFLOWY_ADMIN_PASSWORD:?Run setup.py to create .env secrets}
+      GOTRUE_JWT_ADMIN_GROUP_NAME: supabase_admin
+      GOTRUE_MAILER_AUTOCONFIRM: 'true'
+      GOTRUE_DISABLE_SIGNUP: 'true'
+      GOTRUE_OPERATOR_TOKEN: ${APPFLOWY_GOTRUE_OPERATOR_TOKEN:?Run setup.py to create .env secrets}
+      GOTRUE_SMTP_HOST: 127.0.0.1
+      GOTRUE_SMTP_PORT: 25
+      GOTRUE_SMTP_ADMIN_EMAIL: ${APPFLOWY_ADMIN_EMAIL:-admin@example.com}
+      GOTRUE_SMTP_MAX_FREQUENCY: 1s
+      GOTRUE_SMTP_USER: ''
+      GOTRUE_SMTP_PASS: ''
+    depends_on:
+      postgres: {condition: service_healthy}
+    healthcheck:
+      test: [CMD-SHELL, 'wget -qO- http://127.0.0.1:9999/health >/dev/null']
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${APPFLOWY_GOTRUE_CPU_LIMIT:-0.5}
+          memory: ${APPFLOWY_GOTRUE_MEMORY_LIMIT:-256M}
+
+  appflowy_cloud:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}appflowyinc/appflowy_cloud:${APPFLOWY_CLOUD_VERSION:-0.9.64@sha256:d6ba6df1d8dc43336f24e6bb24d58e9077be29477214e45ff9cafcbec2aec1b5}
+    environment:
+      APPFLOWY_BASE_URL: ${APPFLOWY_BASE_URL:-http://localhost:${APPFLOWY_PORT_OVERRIDE:-8080}}
+      APPFLOWY_WEB_URL: ${APPFLOWY_BASE_URL:-http://localhost:${APPFLOWY_PORT_OVERRIDE:-8080}}
+      APPFLOWY_GOTRUE_BASE_URL: http://gotrue:9999
+      APPFLOWY_JWT_SECRET: ${APPFLOWY_JWT_SECRET:?Run setup.py to create .env secrets}
+      APPFLOWY_GOTRUE_JWT_SECRET: ${APPFLOWY_JWT_SECRET:?Run setup.py to create .env secrets}
+      APPFLOWY_DATABASE_URL: postgres://postgres:${APPFLOWY_POSTGRES_PASSWORD:?Run setup.py to create .env secrets}@postgres:5432/appflowy
+      APPFLOWY_REDIS_URI: redis://redis:6379
+      APPFLOWY_ACCESS_CONTROL: 'true'
+      APPFLOWY_INDEXER_ENABLED: 'false'
+      APPFLOWY_DATABASE_MAX_CONNECTIONS: 40
+      APPFLOWY_WS_MAILBOX: 6000
+      APPFLOWY_S3_USE_MINIO: 'true'
+      APPFLOWY_S3_CREATE_BUCKET: 'true'
+      APPFLOWY_S3_ENDPOINT: http://minio:9000
+      APPFLOWY_S3_MINIO_URL: http://minio:9000
+      APPFLOWY_S3_BUCKET: appflowy
+      APPFLOWY_S3_REGION: us-east-1
+      APPFLOWY_S3_ACCESS_KEY: ${APPFLOWY_MINIO_ACCESS_KEY:?Run setup.py to create .env secrets}
+      APPFLOWY_S3_SECRET_KEY: ${APPFLOWY_MINIO_SECRET_KEY:?Run setup.py to create .env secrets}
+      APPFLOWY_S3_PRESIGNED_URL_ENDPOINT: ${APPFLOWY_BASE_URL:-http://localhost:${APPFLOWY_PORT_OVERRIDE:-8080}}/minio-api
+      APPFLOWY_MAILER_SMTP_HOST: 127.0.0.1
+      APPFLOWY_MAILER_SMTP_PORT: 25
+      APPFLOWY_MAILER_SMTP_TLS_KIND: none
+      APPFLOWY_MAILER_SMTP_USERNAME: ''
+      APPFLOWY_MAILER_SMTP_PASSWORD: ''
+      APPFLOWY_MAILER_VALID_EMAIL: ${APPFLOWY_ADMIN_EMAIL:-admin@example.com}
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      minio: {condition: service_healthy}
+      gotrue: {condition: service_healthy}
+    read_only: true
+    tmpfs: [/tmp]
+    healthcheck:
+      test: [CMD-SHELL, 'curl -fsS http://127.0.0.1:8000/health >/dev/null']
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 45s
+    deploy:
+      resources:
+        limits:
+          cpus: ${APPFLOWY_CLOUD_CPU_LIMIT:-2.0}
+          memory: ${APPFLOWY_CLOUD_MEMORY_LIMIT:-2G}
+
+  admin_frontend:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}appflowyinc/admin_frontend:${APPFLOWY_ADMIN_VERSION:-0.9.64@sha256:7ce31fd818121e3b625be0464028af6a5e2a04b71455922fc3fe2c09f6280d14}
+    environment:
+      RUST_LOG: warn
+      ADMIN_FRONTEND_REDIS_URL: redis://redis:6379
+      ADMIN_FRONTEND_GOTRUE_URL: http://gotrue:9999
+      ADMIN_FRONTEND_APPFLOWY_CLOUD_URL: http://appflowy_cloud:8000
+      ADMIN_FRONTEND_PATH_PREFIX: /console
+      ADMIN_FRONTEND_OAUTH_CLIENT_ID: appflowy_cloud
+      ADMIN_FRONTEND_OAUTH_CLIENT_SECRET: ${APPFLOWY_ADMIN_OAUTH_CLIENT_SECRET:?Run setup.py to create .env secrets}
+      ADMIN_FRONTEND_OAUTH_ALLOWABLE_REDIRECT_URIS: ${APPFLOWY_BASE_URL:-http://localhost:${APPFLOWY_PORT_OVERRIDE:-8080}}/console
+    depends_on:
+      redis: {condition: service_healthy}
+      gotrue: {condition: service_healthy}
+      appflowy_cloud: {condition: service_healthy}
+    read_only: true
+    tmpfs: [/tmp]
+    healthcheck:
+      test: [CMD, bash, -c, "exec 3<>/dev/tcp/127.0.0.1/3000 && printf 'GET /console/web/login HTTP/1.0\r\n\r\n' >&3 && read -r line <&3 && case \"$$line\" in *200*|*301*|*302*) exit 0;; *) exit 1;; esac"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${APPFLOWY_ADMIN_CPU_LIMIT:-0.5}
+          memory: ${APPFLOWY_ADMIN_MEMORY_LIMIT:-256M}
+
+  nginx:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}nginxinc/nginx-unprivileged:${APPFLOWY_NGINX_VERSION:-1.28.0-alpine}
+    ports:
+      - '${APPFLOWY_BIND_ADDRESS:-127.0.0.1}:${APPFLOWY_PORT_OVERRIDE:-8080}:8080'
+    volumes: [./nginx.conf:/etc/nginx/nginx.conf:ro]
+    depends_on:
+      appflowy_cloud: {condition: service_healthy}
+      gotrue: {condition: service_healthy}
+      admin_frontend: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, wget, -qO-, http://127.0.0.1:8080/healthz]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${APPFLOWY_NGINX_CPU_LIMIT:-0.25}
+          memory: ${APPFLOWY_NGINX_MEMORY_LIMIT:-64M}
+
+volumes:
+  appflowy_postgres_data:
+  appflowy_redis_data:
+  appflowy_minio_data:

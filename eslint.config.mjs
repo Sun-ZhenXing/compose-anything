@@ -20,6 +20,8 @@ export default antfu({
   ignores: [
     '**/node_modules/**',
     '**/.git/**',
+    // Upstream config templates contain unrendered %PLACEHOLDERS%.
+    'apps/anytype/official/docker-generateconfig/etc/**',
   ],
   // Lint readme files
   markdown: true,

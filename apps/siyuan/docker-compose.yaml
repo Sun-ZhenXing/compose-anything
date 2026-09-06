@@ -1,0 +1,45 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  cap_add:
+    - CHOWN
+    - DAC_OVERRIDE
+    - SETGID
+    - SETUID
+  logging:
+    driver: json-file
+    options:
+      max-size: ${SIYUAN_LOG_MAX_SIZE:-100m}
+      max-file: ${SIYUAN_LOG_MAX_FILE:-3}
+
+services:
+  siyuan:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}b3log/siyuan:${SIYUAN_VERSION:-v3.8.2@sha256:af1442205fd60a8f5710c46c7e4c92bf3c8c1c9405026823496e4459f821549c}
+    command: [serve, --workspace=/siyuan/workspace]
+    environment:
+      PUID: ${SIYUAN_PUID:-1000}
+      PGID: ${SIYUAN_PGID:-1000}
+      TZ: ${TZ:-UTC}
+      SIYUAN_ACCESS_AUTH_CODE: ${SIYUAN_ACCESS_AUTH_CODE:?Run make init or python3 setup.py to generate an access code}
+    ports:
+      - '${SIYUAN_BIND_ADDRESS:-127.0.0.1}:${SIYUAN_PORT_OVERRIDE:-6806}:6806'
+    volumes:
+      - siyuan_data:/siyuan/workspace
+    healthcheck:
+      test: [CMD-SHELL, 'wget -qO- http://127.0.0.1:6806/api/health >/dev/null']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${SIYUAN_CPU_LIMIT:-1.0}
+          memory: ${SIYUAN_MEMORY_LIMIT:-1G}
+
+volumes:
+  siyuan_data:

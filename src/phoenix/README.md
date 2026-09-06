@@ -15,7 +15,13 @@ Arize Phoenix is an open-source AI observability platform for LLM applications. 
 This project supports two modes of operation via Docker Compose profiles:
 
 1. **sqlite** (Default): Uses SQLite for storage. Simple and good for local development.
+<<<<<<< Updated upstream
 2. **postgres**: Uses PostgreSQL for storage. Recommended for production.
+=======
+   Set `COMPOSE_PROFILES=sqlite` in `.env`.
+2. **postgres** (or **pg**): Uses PostgreSQL for storage. Recommended for production.
+   Set `COMPOSE_PROFILES=postgres` in `.env`.
+>>>>>>> Stashed changes
 
 ## Ports
 
@@ -27,19 +33,35 @@ This project supports two modes of operation via Docker Compose profiles:
 
 ## Environment Variables
 
+<<<<<<< Updated upstream
 | Variable Name                    | Description                              | Default Value                                   |
 | -------------------------------- | ---------------------------------------- | ----------------------------------------------- |
 | COMPOSE_PROFILES                 | Active profiles (`sqlite` or `postgres`) | `sqlite`                                        |
-| PHOENIX_VERSION                  | Phoenix image version                    | `15.5.0`                                        |
+| PHOENIX_VERSION                  | Phoenix image version                    | `20.8.0`                                        |
 | PHOENIX_PORT_OVERRIDE            | Host port for Phoenix UI and HTTP API    | `6006`                                          |
 | PHOENIX_GRPC_PORT_OVERRIDE       | Host port for OTLP gRPC collector        | `4317`                                          |
 | PHOENIX_PROMETHEUS_PORT_OVERRIDE | Host port for Prometheus metrics         | `9090`                                          |
 | PHOENIX_ENABLE_PROMETHEUS        | Enable Prometheus metrics endpoint       | `false`                                         |
-| PHOENIX_SECRET                   | Secret for authentication (optional)     | `"NOT_SECURE_0fdf298eefb2ceef8ab3d7bd5319060e"` |
+| PHOENIX_SECRET                   | Secret used when upstream authentication is enabled; does not enable it | `"NOT_SECURE_0fdf298eefb2ceef8ab3d7bd5319060e"` |
 | POSTGRES_VERSION                 | PostgreSQL image version                 | `17.2-alpine3.21`                               |
 | POSTGRES_USER                    | PostgreSQL username                      | `postgres`                                      |
 | POSTGRES_PASSWORD                | PostgreSQL password                      | `postgres`                                      |
 | POSTGRES_DB                      | PostgreSQL database name                 | `phoenix`                                       |
+=======
+| Variable Name                    | Description                              | Default Value     |
+| -------------------------------- | ---------------------------------------- | ----------------- |
+| COMPOSE_PROFILES                 | Active profiles (`sqlite` or `postgres`) | `sqlite`          |
+| PHOENIX_VERSION                  | Phoenix image version                    | `12.28.1-nonroot` |
+| PHOENIX_PORT_OVERRIDE            | Host port for Phoenix UI and HTTP API    | `6006`            |
+| PHOENIX_GRPC_PORT_OVERRIDE       | Host port for OTLP gRPC collector        | `4317`            |
+| PHOENIX_PROMETHEUS_PORT_OVERRIDE | Host port for Prometheus metrics         | `9090`            |
+| PHOENIX_ENABLE_PROMETHEUS        | Enable Prometheus metrics endpoint       | `false`           |
+| PHOENIX_SECRET                   | Secret for authentication (optional)     | `""`              |
+| POSTGRES_VERSION                 | PostgreSQL image version                 | `17.2-alpine3.21` |
+| POSTGRES_USER                    | PostgreSQL username                      | `postgres`        |
+| POSTGRES_PASSWORD                | PostgreSQL password                      | `postgres`        |
+| POSTGRES_DB                      | PostgreSQL database name                 | `phoenix`         |
+>>>>>>> Stashed changes
 
 ## Volumes
 
@@ -54,7 +76,11 @@ This project supports two modes of operation via Docker Compose profiles:
    cp .env.example .env
    ```
 
+<<<<<<< Updated upstream
+2. Select your deployment mode by setting `COMPOSE_PROFILES` in `.env` (the no-env default is `sqlite`). Use `COMPOSE_PROFILES=sqlite` for SQLite or `COMPOSE_PROFILES=postgres` for PostgreSQL; setting only `docker compose --profile postgres` is not the supported selection method.
+=======
 2. Select your deployment mode by editing `.env` (default is `sqlite`).
+>>>>>>> Stashed changes
 
    **For SQLite (Default):**
    Ensure `.env` contains:
@@ -77,6 +103,20 @@ This project supports two modes of operation via Docker Compose profiles:
    ```
 
 4. Access Phoenix UI at `http://localhost:6006`
+
+## Upgrading to Phoenix 20.8.0
+
+- Back up the `phoenix_data` named volume before SQLite migrations, or back up the PostgreSQL database before PostgreSQL migrations.
+- An existing `.env` overrides the defaults in `docker-compose.yaml`. Update its `PHOENIX_VERSION` to `20.8.0`.
+- Pull the new image, then start the existing profile workflow using the same `COMPOSE_PROFILES` value/profile for both commands. Existing PostgreSQL users must use `postgres`, not `sqlite`:
+
+  ```bash
+  docker compose pull
+  docker compose up -d
+  ```
+
+- Do not run `docker compose down -v`; it removes persistent data. Do not downgrade after a database migration unless you restore a matching backup first.
+- Review the [Phoenix migration guide](https://github.com/Arize-ai/phoenix/blob/main/MIGRATION.md) before migrating.
 
 ## Sending Traces
 
@@ -116,6 +156,8 @@ For more information, visit the [official Phoenix documentation](https://docs.ar
 ## Security Notes
 
 - Change default PostgreSQL password in production.
-- Set `PHOENIX_SECRET` for authentication if exposing Phoenix publicly.
+- Authentication is disabled by default, and `PHOENIX_SECRET` alone does not enable it. Do not expose an unprotected instance publicly.
+- For public deployment, explicitly configure `PHOENIX_ENABLE_AUTH=true` in the Phoenix service environment and replace the default `PHOENIX_SECRET` with a persistent secret of at least 32 characters. The current Compose file does not forward `PHOENIX_ENABLE_AUTH`; follow the upstream authentication configuration instead of assuming adding it to `.env` is sufficient.
+- Changing `PHOENIX_SECRET` can invalidate API keys and encrypted data.
 - Consider using a reverse proxy with SSL/TLS in production.
 - Regularly backup the PostgreSQL database.

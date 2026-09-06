@@ -9,13 +9,14 @@ x-defaults: &defaults
 services:
   bifrost:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}maximhq/bifrost:${BIFROST_VERSION:-v1.4.17}
+    image: ${GLOBAL_REGISTRY:-}maximhq/bifrost:${BIFROST_VERSION:-v2.0.0}
     volumes:
       - bifrost_data:/app/data
     ports:
       - '${BIFROST_PORT:-28080}:8080'
     environment:
       - TZ=${TZ:-UTC}
+      - BIFROST_SETUP_TOKEN=${BIFROST_SETUP_TOKEN:-}
     deploy:
       resources:
         limits:

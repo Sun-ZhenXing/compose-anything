@@ -1,0 +1,42 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  cap_add:
+    - CHOWN
+    - DAC_OVERRIDE
+    - SETGID
+    - SETUID
+  logging:
+    driver: json-file
+    options:
+      max-size: ${TRILIUM_LOG_MAX_SIZE:-100m}
+      max-file: ${TRILIUM_LOG_MAX_FILE:-3}
+
+services:
+  trilium:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}triliumnext/trilium:${TRILIUM_VERSION:-v0.103.0@sha256:8e6bc939a6d5dbeed42d1b5b155bc790b1c28ca3ac414382d04d626903c62081}
+    environment:
+      TRILIUM_DATA_DIR: /home/node/trilium-data
+      TZ: ${TZ:-UTC}
+    ports:
+      - '${TRILIUM_BIND_ADDRESS:-127.0.0.1}:${TRILIUM_PORT_OVERRIDE:-8080}:8080'
+    volumes:
+      - trilium_data:/home/node/trilium-data
+    healthcheck:
+      test: [CMD-SHELL, 'wget -qO- http://127.0.0.1:8080/api/health-check >/dev/null']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${TRILIUM_CPU_LIMIT:-1.0}
+          memory: ${TRILIUM_MEMORY_LIMIT:-1G}
+
+volumes:
+  trilium_data:

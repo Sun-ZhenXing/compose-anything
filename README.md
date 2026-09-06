@@ -38,11 +38,15 @@ These services require building custom Docker images from source.
 | [goose](./builds/goose)                     | 1.18.0  |
 | [IOPaint](./builds/io-paint)                | 1.6.0   |
 | [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2   |
+<<<<<<< Updated upstream
 | [MinerU vLLM](./builds/mineru)              | 3.4.2   |
 | [Multica](./builds/multica)                 | v0.1.32 |
 | [OpenFang](./builds/openfang)               | 0.1.0   |
 | [Paperclip](./builds/paperclip)             | main    |
 | [TurboOCR](./builds/turboocr)               | v2.1.1  |
+=======
+| [MinerU vLLM](./builds/mineru)              | 2.7.1   |
+>>>>>>> Stashed changes
 
 ## Supported Services
 
@@ -56,11 +60,13 @@ These services require building custom Docker images from source.
 | [Apache Kafka](./src/kafka)                                    | 8.2.0               |
 | [Apache Pulsar](./src/pulsar)                                  | 4.0.7               |
 | [Apache RocketMQ](./src/rocketmq)                              | 5.3.1               |
+| [AppFlowy Cloud (legacy)](./apps/appflowy)                      | 0.9.64              |
 | [Archon](./apps/archon)                                        | latest              |
 | [AFFiNE](./apps/affine)                                        | 0.27.4              |
 | [Agentgateway](./src/agentgateway)                             | 0.11.2              |
 | [AnythingLLM](./src/anythingllm)                               | latest              |
-| [Bifrost Gateway](./src/bifrost-gateway)                       | v1.4.17             |
+| [Anytype](./apps/anytype)                                      | 1.6.0 / v7.2.0      |
+| [Bifrost Gateway](./src/bifrost-gateway)                       | v2.0.0              |
 | [Bolt.diy](./apps/bolt-diy)                                    | latest              |
 | [Budibase](./src/budibase)                                     | 3.23.0              |
 | [BuildingAI](./apps/buildingai)                                | latest              |
@@ -123,7 +129,7 @@ These services require building custom Docker images from source.
 | [Logstash](./src/logstash)                                     | 8.16.1              |
 | [MariaDB Galera Cluster](./src/mariadb-galera)                 | 11.7.2              |
 | [Mattermost](./apps/mattermost)                                | 11.3                |
-| [Memos](./src/memos)                                           | 0.25.3              |
+| [Memos](./src/memos)                                           | 0.30.0              |
 | [Milvus Standalone Embed](./src/milvus-standalone-embed)       | v2.6.7              |
 | [Milvus Standalone](./src/milvus-standalone)                   | v2.6.7              |
 | [Minecraft Bedrock Server](./src/minecraft-bedrock-server)     | latest              |
@@ -147,8 +153,12 @@ These services require building custom Docker images from source.
 | [Odoo](./src/odoo)                                             | 19.0                |
 | [Ollama](./src/ollama)                                         | 0.14.3              |
 | [Open WebUI](./src/open-webui)                                 | main                |
-| [Phoenix (Arize)](./src/phoenix)                               | 15.5.0              |
+<<<<<<< Updated upstream
+| [Phoenix (Arize)](./src/phoenix)                               | 20.8.0              |
 | [Pingap](./src/pingap)                                         | 0.12.7-full         |
+=======
+| [Phoenix (Arize)](./src/phoenix)                               | 12.28.1-nonroot     |
+>>>>>>> Stashed changes
 | [Pingora Proxy Manager](./src/pingora-proxy-manager)           | v1.0.3              |
 | [Open WebUI Rust](./src/open-webui-rust)                       | latest              |
 | [OpenCode](./src/opencode)                                     | 1.1.27              |
@@ -188,6 +198,7 @@ These services require building custom Docker images from source.
 | [Selenium](./src/selenium)                                     | 144.0-20260120      |
 | [Shannon](./apps/shannon)                                      | v0.3.1              |
 | [SigNoz](./src/signoz)                                         | v0.136.1            |
+| [SiYuan](./apps/siyuan)                                        | v3.8.2              |
 | [Sim](./apps/sim)                                              | latest              |
 | [Skyvern](./apps/skyvern)                                      | v1.0.31             |
 | [Stable Diffusion WebUI](./apps/stable-diffusion-webui-docker) | latest              |
@@ -198,6 +209,7 @@ These services require building custom Docker images from source.
 | [TiDB](./src/tidb)                                             | v8.5.0              |
 | [TiKV](./src/tikv)                                             | v8.5.0              |
 | [Trigger.dev](./src/trigger-dev)                               | v4.2.0              |
+| [TriliumNext](./apps/trilium)                                  | v0.103.0            |
 | [TrailBase](./src/trailbase)                                   | 0.22.4              |
 | [TurboOCR](./src/turboocr)                                     | v2.1.1              |
 | [Valkey Cluster](./src/valkey-cluster)                         | 8.0                 |
