@@ -30,7 +30,6 @@ docker compose exec redis redis-cli ping
 
 这些服务需要从源代码构建自定义 Docker 镜像。
 
-<<<<<<< Updated upstream
 | 服务                                        | 版本    |
 | ------------------------------------------- | ------- |
 | [CubeSandbox](./builds/cube-sandbox)        | 0.1.7   |
@@ -44,15 +43,6 @@ docker compose exec redis redis-cli ping
 | [OpenFang](./builds/openfang)               | 0.1.0   |
 | [Paperclip](./builds/paperclip)             | main    |
 | [TurboOCR](./builds/turboocr)               | v2.1.1  |
-=======
-| 服务                                        | 版本   |
-| ------------------------------------------- | ------ |
-| [Debian DinD](./builds/debian-dind)         | 0.1.2  |
-| [goose](./builds/goose)                     | 1.18.0 |
-| [IOPaint](./builds/io-paint)                | 1.6.0  |
-| [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2  |
-| [MinerU vLLM](./builds/mineru)              | 2.7.1  |
->>>>>>> Stashed changes
 
 ## 已经支持的服务
 
@@ -159,12 +149,8 @@ docker compose exec redis redis-cli ping
 | [Odoo](./src/odoo)                                             | 19.0                |
 | [Ollama](./src/ollama)                                         | 0.14.3              |
 | [Open WebUI](./src/open-webui)                                 | main                |
-<<<<<<< Updated upstream
 | [Phoenix (Arize)](./src/phoenix)                               | 20.8.0              |
 | [Pingap](./src/pingap)                                         | 0.12.7-full         |
-=======
-| [Phoenix (Arize)](./src/phoenix)                               | 12.28.1-nonroot     |
->>>>>>> Stashed changes
 | [Pingora Proxy Manager](./src/pingora-proxy-manager)           | v1.0.3              |
 | [Open WebUI Rust](./src/open-webui-rust)                       | latest              |
 | [OpenCode](./src/opencode)                                     | 1.1.27              |
@@ -218,6 +204,7 @@ docker compose exec redis redis-cli ping
 | [TriliumNext](./apps/trilium)                                  | v0.103.0              |
 | [TrailBase](./src/trailbase)                                   | 0.22.4              |
 | [TurboOCR](./src/turboocr)                                     | v2.1.1              |
+| [Utopia](./src/utopia)                                         | 0.1.0-rc5           |
 | [Valkey Cluster](./src/valkey-cluster)                         | 8.0                 |
 | [Valkey](./src/valkey)                                         | 8.0                 |
 | [Verdaccio](./src/verdaccio)                                   | 6.1.2               |

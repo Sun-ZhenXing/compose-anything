@@ -15,13 +15,9 @@ Arize Phoenix is an open-source AI observability platform for LLM applications. 
 This project supports two modes of operation via Docker Compose profiles:
 
 1. **sqlite** (Default): Uses SQLite for storage. Simple and good for local development.
-<<<<<<< Updated upstream
-2. **postgres**: Uses PostgreSQL for storage. Recommended for production.
-=======
    Set `COMPOSE_PROFILES=sqlite` in `.env`.
-2. **postgres** (or **pg**): Uses PostgreSQL for storage. Recommended for production.
+2. **postgres**: Uses PostgreSQL for storage. Recommended for production.
    Set `COMPOSE_PROFILES=postgres` in `.env`.
->>>>>>> Stashed changes
 
 ## Ports
 
@@ -33,7 +29,6 @@ This project supports two modes of operation via Docker Compose profiles:
 
 ## Environment Variables
 
-<<<<<<< Updated upstream
 | Variable Name                    | Description                              | Default Value                                   |
 | -------------------------------- | ---------------------------------------- | ----------------------------------------------- |
 | COMPOSE_PROFILES                 | Active profiles (`sqlite` or `postgres`) | `sqlite`                                        |
@@ -47,21 +42,6 @@ This project supports two modes of operation via Docker Compose profiles:
 | POSTGRES_USER                    | PostgreSQL username                      | `postgres`                                      |
 | POSTGRES_PASSWORD                | PostgreSQL password                      | `postgres`                                      |
 | POSTGRES_DB                      | PostgreSQL database name                 | `phoenix`                                       |
-=======
-| Variable Name                    | Description                              | Default Value     |
-| -------------------------------- | ---------------------------------------- | ----------------- |
-| COMPOSE_PROFILES                 | Active profiles (`sqlite` or `postgres`) | `sqlite`          |
-| PHOENIX_VERSION                  | Phoenix image version                    | `12.28.1-nonroot` |
-| PHOENIX_PORT_OVERRIDE            | Host port for Phoenix UI and HTTP API    | `6006`            |
-| PHOENIX_GRPC_PORT_OVERRIDE       | Host port for OTLP gRPC collector        | `4317`            |
-| PHOENIX_PROMETHEUS_PORT_OVERRIDE | Host port for Prometheus metrics         | `9090`            |
-| PHOENIX_ENABLE_PROMETHEUS        | Enable Prometheus metrics endpoint       | `false`           |
-| PHOENIX_SECRET                   | Secret for authentication (optional)     | `""`              |
-| POSTGRES_VERSION                 | PostgreSQL image version                 | `17.2-alpine3.21` |
-| POSTGRES_USER                    | PostgreSQL username                      | `postgres`        |
-| POSTGRES_PASSWORD                | PostgreSQL password                      | `postgres`        |
-| POSTGRES_DB                      | PostgreSQL database name                 | `phoenix`         |
->>>>>>> Stashed changes
 
 ## Volumes
 
@@ -76,11 +56,7 @@ This project supports two modes of operation via Docker Compose profiles:
    cp .env.example .env
    ```
 
-<<<<<<< Updated upstream
 2. Select your deployment mode by setting `COMPOSE_PROFILES` in `.env` (the no-env default is `sqlite`). Use `COMPOSE_PROFILES=sqlite` for SQLite or `COMPOSE_PROFILES=postgres` for PostgreSQL; setting only `docker compose --profile postgres` is not the supported selection method.
-=======
-2. Select your deployment mode by editing `.env` (default is `sqlite`).
->>>>>>> Stashed changes
 
    **For SQLite (Default):**
    Ensure `.env` contains:

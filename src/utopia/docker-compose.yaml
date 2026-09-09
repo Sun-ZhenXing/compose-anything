@@ -1,0 +1,79 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  db:
+    <<: *defaults
+    image: ${UTOPIA_DB_IMAGE:-pgvector/pgvector:${UTOPIA_DB_VERSION:-pg16}}
+    ports:
+      - '${UTOPIA_DB_PORT_OVERRIDE:-1517}:5432'
+    volumes:
+      - utopia_db_data:/var/lib/postgresql/data
+    environment:
+      - TZ=${TZ:-UTC}
+      - POSTGRES_USER=utopia
+      - POSTGRES_DB=utopia
+      - POSTGRES_PASSWORD=${UTOPIA_DB_PASSWORD:-utopia}
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U utopia -d utopia]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: ${UTOPIA_DB_CPU_LIMIT:-2}
+          memory: ${UTOPIA_DB_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${UTOPIA_DB_CPU_RESERVATION:-0.1}
+          memory: ${UTOPIA_DB_MEMORY_RESERVATION:-512M}
+
+  app:
+    <<: *defaults
+    image: ${UTOPIA_IMAGE:-ghcr.io/deeplethe/utopia:${UTOPIA_VERSION:-0.1.0-rc5}}
+    ports:
+      - '${UTOPIA_PORT_OVERRIDE:-1516}:1516'
+    volumes:
+      - utopia_data:/app/data
+    environment:
+      - TZ=${TZ:-UTC}
+      - UTOPIA_DATABASE_URL=postgres://utopia:${UTOPIA_DB_PASSWORD:-utopia}@db:5432/utopia
+      - UTOPIA_BIND_ADDR=0.0.0.0:1516
+      - UTOPIA_JWT_SECRET=${UTOPIA_JWT_SECRET:-}
+      - UTOPIA_SECRET_KEY=${UTOPIA_SECRET_KEY:-}
+      - UTOPIA_DATA_DIR=/app/data
+      - UTOPIA_WEB_DIST=/app/web-dist
+      - UTOPIA_DB_MAX_CONNECTIONS=${UTOPIA_DB_MAX_CONNECTIONS:-32}
+      - UTOPIA_OPEN_REGISTRATION=${UTOPIA_OPEN_REGISTRATION:-true}
+    depends_on:
+      db:
+        condition: service_healthy
+    cap_drop:
+      - ALL
+    healthcheck:
+      # Image is debian:bookworm-slim with /bin/sh -> dash (no /dev/tcp support),
+      # but bash is available, so run the TCP probe explicitly under bash.
+      # The application-level health endpoint is GET /api/v1/health (returns {"status":"ok",...}).
+      test: [CMD-SHELL, 'bash -c "cat < /dev/null > /dev/tcp/127.0.0.1/1516" || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: ${UTOPIA_CPU_LIMIT:-2}
+          memory: ${UTOPIA_MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: ${UTOPIA_CPU_RESERVATION:-0.1}
+          memory: ${UTOPIA_MEMORY_RESERVATION:-256M}
+
+volumes:
+  utopia_data:
+  utopia_db_data:

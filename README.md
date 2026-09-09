@@ -38,15 +38,11 @@ These services require building custom Docker images from source.
 | [goose](./builds/goose)                     | 1.18.0  |
 | [IOPaint](./builds/io-paint)                | 1.6.0   |
 | [K3s inside DinD](./builds/k3s-inside-dind) | 0.2.2   |
-<<<<<<< Updated upstream
 | [MinerU vLLM](./builds/mineru)              | 3.4.2   |
 | [Multica](./builds/multica)                 | v0.1.32 |
 | [OpenFang](./builds/openfang)               | 0.1.0   |
 | [Paperclip](./builds/paperclip)             | main    |
 | [TurboOCR](./builds/turboocr)               | v2.1.1  |
-=======
-| [MinerU vLLM](./builds/mineru)              | 2.7.1   |
->>>>>>> Stashed changes
 
 ## Supported Services
 
@@ -60,7 +56,7 @@ These services require building custom Docker images from source.
 | [Apache Kafka](./src/kafka)                                    | 8.2.0               |
 | [Apache Pulsar](./src/pulsar)                                  | 4.0.7               |
 | [Apache RocketMQ](./src/rocketmq)                              | 5.3.1               |
-| [AppFlowy Cloud (legacy)](./apps/appflowy)                      | 0.9.64              |
+| [AppFlowy Cloud (legacy)](./apps/appflowy)                     | 0.9.64              |
 | [Archon](./apps/archon)                                        | latest              |
 | [AFFiNE](./apps/affine)                                        | 0.27.4              |
 | [Agentgateway](./src/agentgateway)                             | 0.11.2              |
@@ -125,7 +121,7 @@ These services require building custom Docker images from source.
 | [llama.cpp](./src/llama-cpp)                                   | server              |
 | [LMDeploy](./src/lmdeploy)                                     | v0.11.1             |
 | [LobeChat](./src/lobe-chat)                                    | 1.143.3             |
-| [Logseq](./src/logseq)                                        | Web (digest-pinned) |
+| [Logseq](./src/logseq)                                         | Web (digest-pinned) |
 | [Logstash](./src/logstash)                                     | 8.16.1              |
 | [MariaDB Galera Cluster](./src/mariadb-galera)                 | 11.7.2              |
 | [Mattermost](./apps/mattermost)                                | 11.3                |
@@ -153,12 +149,8 @@ These services require building custom Docker images from source.
 | [Odoo](./src/odoo)                                             | 19.0                |
 | [Ollama](./src/ollama)                                         | 0.14.3              |
 | [Open WebUI](./src/open-webui)                                 | main                |
-<<<<<<< Updated upstream
 | [Phoenix (Arize)](./src/phoenix)                               | 20.8.0              |
 | [Pingap](./src/pingap)                                         | 0.12.7-full         |
-=======
-| [Phoenix (Arize)](./src/phoenix)                               | 12.28.1-nonroot     |
->>>>>>> Stashed changes
 | [Pingora Proxy Manager](./src/pingora-proxy-manager)           | v1.0.3              |
 | [Open WebUI Rust](./src/open-webui-rust)                       | latest              |
 | [OpenCode](./src/opencode)                                     | 1.1.27              |
@@ -172,7 +164,7 @@ These services require building custom Docker images from source.
 | [OpenSearch](./src/opensearch)                                 | 2.19.0              |
 | [OpenTelemetry Collector](./src/otel-collector)                | 0.115.1             |
 | [OpenViking](./src/openviking)                                 | 0.1.0               |
-| [Open Policy Agent (OPA)](./src/opa)                            | 1.18.2              |
+| [Open Policy Agent (OPA)](./src/opa)                           | 1.18.2              |
 | [Overleaf](./src/overleaf)                                     | 5.2.1               |
 | [Paca](./apps/paca)                                            | 0.5.2               |
 | [PocketBase](./src/pocketbase)                                 | 0.30.0              |
@@ -212,6 +204,7 @@ These services require building custom Docker images from source.
 | [TriliumNext](./apps/trilium)                                  | v0.103.0            |
 | [TrailBase](./src/trailbase)                                   | 0.22.4              |
 | [TurboOCR](./src/turboocr)                                     | v2.1.1              |
+| [Utopia](./src/utopia)                                         | 0.1.0-rc5           |
 | [Valkey Cluster](./src/valkey-cluster)                         | 8.0                 |
 | [Valkey](./src/valkey)                                         | 8.0                 |
 | [Verdaccio](./src/verdaccio)                                   | 6.1.2               |
