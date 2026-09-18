@@ -58,6 +58,7 @@ docker compose exec redis redis-cli ping
 | [Apache RocketMQ](./src/rocketmq)                              | 5.3.1               |
 | [AppFlowy Cloud（legacy）](./apps/appflowy)                      | 0.9.64              |
 | [Archon](./apps/archon)                                        | latest              |
+| [Astron Agent](./apps/astron-agent)                            | 1.1.2               |
 | [AFFiNE](./apps/affine)                                        | 0.27.4              |
 | [Agentgateway](./src/agentgateway)                             | 0.11.2              |
 | [AnythingLLM](./src/anythingllm)                               | latest              |
