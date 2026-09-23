@@ -26,4 +26,5 @@ MinIO 是一个高性能的 S3 兼容对象存储系统，可以用于存储和�
 ## 注意事项
 
 - 该配置使用 Chainguard 的 MinIO 镜像（`cgr.dev/chainguard/minio`），提供增强的安全性，并持续维护。
+- Chainguard 免费层仅提供浮动的 `latest` 和 `latest-dev` 标签；带日期的版本标签需要付费的 Chainguard 账号。如需可复现的固定版本，请将 `MINIO_VERSION` 设置为摘要，例如 `latest@sha256:<digest>`。
 - 默认凭据为 `minioadmin` / `minioadmin`。在生产环境中请更改这些凭据。

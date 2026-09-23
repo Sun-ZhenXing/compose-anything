@@ -12,15 +12,15 @@ Bifrost is a lightweight, high-performance LLM gateway that supports multiple mo
 
 ## Configuration
 
-- `BIFROST_VERSION`: The version of the Bifrost image, default is `v2.0.0`.
+- `BIFROST_VERSION`: The version of the Bifrost image, default is `v2.2.1`.
 - `BIFROST_SETUP_TOKEN`: Empty by default. Required when using the first-administrator setup flow.
 - `BIFROST_PORT`: The port for the Bifrost service, default is `28080`.
 
 ### Telemetry
 
-- `PROMETHEUS_VERSION`: Prometheus version, default `v3.8.1`.
+- `PROMETHEUS_VERSION`: Prometheus version, default `v3.14.0`.
 - `PROMETHEUS_PORT`: Prometheus port, default `29090`.
-- `GRAFANA_VERSION`: Grafana version, default `12.3.1`.
+- `GRAFANA_VERSION`: Grafana version, default `13.2.2`.
 - `GRAFANA_PORT`: Grafana port, default `23000`.
 - `GRAFANA_ADMIN_USER`: Grafana admin user, default `admin`.
 - `GRAFANA_ADMIN_PASSWORD`: Grafana admin password, default `admin`.
@@ -55,7 +55,7 @@ docker compose --profile telemetry up -d
 
 ## Upgrade notes
 
-Back up the `bifrost_data` volume before upgrading. Update an existing `.env` to `BIFROST_VERSION=v2.0.0`, then pull and restart:
+Back up the `bifrost_data` volume before upgrading. Bifrost v2.1.0 introduced non-reversible database migrations that run automatically on first boot, including OAuth table merges, new MCP tables, and log-store column changes that take an exclusive lock on the logs table — run the upgrade in a low-activity window. Update an existing `.env` to `BIFROST_VERSION=v2.2.1`, then pull and restart:
 
 ```bash
 docker compose pull bifrost

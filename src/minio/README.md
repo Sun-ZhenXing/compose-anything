@@ -26,4 +26,5 @@ Open the Web UI: <http://localhost:9001>.
 ## Notes
 
 - This configuration uses Chainguard's MinIO image (`cgr.dev/chainguard/minio`), which provides enhanced security and is continuously maintained.
+- Chainguard's free tier publishes only the floating `latest` and `latest-dev` tags for this image; dated version tags require a paid Chainguard account. To get a reproducible pin, set `MINIO_VERSION` to a digest such as `latest@sha256:<digest>`.
 - The default credentials are `minioadmin` / `minioadmin`. Change these in production.

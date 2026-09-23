@@ -32,13 +32,13 @@ Arize Phoenix 是一个开源的 AI 可观测性平台，专为 LLM 应用设计
 | 变量名                           | 描述                                     | 默认值                                          |
 | -------------------------------- | ---------------------------------------- | ----------------------------------------------- |
 | COMPOSE_PROFILES                 | 激活的配置文件（`sqlite` 或 `postgres`） | `sqlite`                                        |
-| PHOENIX_VERSION                  | Phoenix 镜像版本                         | `20.8.0`                                        |
+| PHOENIX_VERSION                  | Phoenix 镜像版本                         | `20.15.0`                                       |
 | PHOENIX_PORT_OVERRIDE            | Phoenix UI 和 HTTP API 的主机端口        | `6006`                                          |
 | PHOENIX_GRPC_PORT_OVERRIDE       | OTLP gRPC 采集器的主机端口               | `4317`                                          |
 | PHOENIX_PROMETHEUS_PORT_OVERRIDE | Prometheus 指标的主机端口                | `9090`                                          |
 | PHOENIX_ENABLE_PROMETHEUS        | 启用 Prometheus 指标端点                 | `false`                                         |
 | PHOENIX_SECRET                   | 启用上游认证后使用的密钥，不会单独启用认证 | `"NOT_SECURE_0fdf298eefb2ceef8ab3d7bd5319060e"` |
-| POSTGRES_VERSION                 | PostgreSQL 镜像版本                      | `17.2-alpine3.21`                               |
+| POSTGRES_VERSION                 | PostgreSQL 镜像版本                      | `17.11-alpine3.24`                              |
 | POSTGRES_USER                    | PostgreSQL 用户名                        | `postgres`                                      |
 | POSTGRES_PASSWORD                | PostgreSQL 密码                          | `postgres`                                      |
 | POSTGRES_DB                      | PostgreSQL 数据库名                      | `phoenix`                                       |
@@ -80,10 +80,10 @@ Arize Phoenix 是一个开源的 AI 可观测性平台，专为 LLM 应用设计
 
 4. 访问 Phoenix UI：`http://localhost:6006`
 
-## 升级到 Phoenix 20.8.0
+## 升级到 Phoenix 20.15.0
 
 - SQLite 迁移前，请备份 `phoenix_data` 命名数据卷；使用 PostgreSQL 时，请先备份 PostgreSQL 数据库。
-- 现有 `.env` 会覆盖 `docker-compose.yaml` 中的默认值，请将其中的 `PHOENIX_VERSION` 更新为 `20.8.0`。
+- 现有 `.env` 会覆盖 `docker-compose.yaml` 中的默认值，请将其中的 `PHOENIX_VERSION` 更新为 `20.15.0`。
 - 拉取新镜像，然后在两条命令中使用相同的 `COMPOSE_PROFILES` 值或配置文件。现有 PostgreSQL 用户必须使用 `postgres`，不要误用 `sqlite`：
 
   ```bash

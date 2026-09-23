@@ -2,7 +2,7 @@
 
 [English](./README.md) | [中文](./README.zh.md)
 
-This stack runs Gitea Runner 2.1.0 for Gitea Actions. The Compose service is `gitea_runner`; it executes jobs in Docker containers through the host Docker daemon.
+This stack runs Gitea Runner 3.5.0 for Gitea Actions. The Compose service is `gitea_runner`; it executes jobs in Docker containers through the host Docker daemon.
 
 ## Services
 
@@ -27,7 +27,7 @@ The default `http://host.docker.internal:3000` targets a Gitea server published 
 | Variable                                                        | Default                                                       | Description                                                                   |
 | --------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | `GLOBAL_REGISTRY`                                               | empty                                                         | Optional registry prefix, including its trailing `/`.                         |
-| `GITEA_RUNNER_VERSION`                                          | `2.1.0`                                                       | Runner image version.                                                         |
+| `GITEA_RUNNER_VERSION`                                          | `3.5.0`                                                       | Runner image version.                                                         |
 | `TZ`                                                            | `UTC`                                                         | Container time zone.                                                          |
 | `GITEA_INSTANCE_URL`                                            | `http://host.docker.internal:3000`                            | Gitea URL reachable by the runner and jobs.                                   |
 | `GITEA_RUNNER_REGISTRATION_TOKEN`                               | empty                                                         | Required registration token.                                                  |
@@ -39,11 +39,20 @@ The default `http://host.docker.internal:3000` targets a Gitea server published 
 | `GITEA_RUNNER_CPU_LIMIT` / `GITEA_RUNNER_CPU_RESERVATION`       | `1.0` / `0.1`                                                 | CPU limit and reservation.                                                    |
 | `GITEA_RUNNER_MEMORY_LIMIT` / `GITEA_RUNNER_MEMORY_RESERVATION` | `2G` / `1G`                                                   | Memory limit and reservation.                                                 |
 
-The repository includes a ready-to-use `config.yaml`. To inspect a fresh upstream 2.1.0 configuration instead, run:
+The repository includes a ready-to-use `config.yaml`. To inspect a fresh upstream 3.5.0 configuration instead, run:
 
 ```bash
-docker run --entrypoint="" --rm gitea/runner:2.1.0 gitea-runner generate-config > config.yaml
+docker run --entrypoint="" --rm gitea/runner:3.5.0 gitea-runner generate-config > config.yaml
 ```
+
+## Upgrading from runner 2.x
+
+Runner 3.x reads a 2.x `config.yaml` leniently: unknown keys are reported as warnings and ignored, and the registration file stays valid across versions, so no re-registration is required. Behaviour changes to be aware of:
+
+- Runner 3.0 serves cache v2 alongside v1 by default; set `cache.v2: false` in `config.yaml` to disable it.
+- Only one runner process may use a given `.runner` file. A second process refuses to start.
+- `container.options` entries that reach the host require privileged mode and are otherwise stripped with a warning.
+- Runner 3.3.1 rejects `--env-file` and `--label-file` in `container.options`, and a bare `--env NAME` no longer reads the runner's own environment.
 
 ## Proxy
 

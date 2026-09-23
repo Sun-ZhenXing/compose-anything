@@ -7,46 +7,10 @@ x-defaults: &defaults
       max-file: '3'
 
 services:
-  # Zookeeper for Kafka coordination
-  zookeeper:
-    <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}confluentinc/cp-zookeeper:${KAFKA_VERSION:-8.2.0}
-    ports:
-      - '${ZOOKEEPER_CLIENT_PORT_OVERRIDE:-2181}:2181'
-    volumes:
-      - zookeeper_data:/var/lib/zookeeper/data
-      - zookeeper_log:/var/lib/zookeeper/log
-    environment:
-      - TZ=${TZ:-UTC}
-      - ZOOKEEPER_CLIENT_PORT=2181
-      - ZOOKEEPER_TICK_TIME=2000
-      - ZOOKEEPER_SYNC_LIMIT=5
-      - ZOOKEEPER_INIT_LIMIT=10
-      - ZOOKEEPER_MAX_CLIENT_CNXNS=60
-      - ZOOKEEPER_AUTOPURGE_SNAP_RETAIN_COUNT=3
-      - ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL=24
-    deploy:
-      resources:
-        limits:
-          cpus: ${ZOOKEEPER_CPU_LIMIT:-1.0}
-          memory: ${ZOOKEEPER_MEMORY_LIMIT:-1G}
-        reservations:
-          cpus: ${ZOOKEEPER_CPU_RESERVATION:-0.1}
-          memory: ${ZOOKEEPER_MEMORY_RESERVATION:-256M}
-    healthcheck:
-      test: [CMD-SHELL, 'echo ruok | nc localhost 2181 | grep imok']
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-  # Kafka broker
+  # Kafka broker in KRaft mode (single node, combined broker + controller)
   kafka:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}confluentinc/cp-kafka:${KAFKA_VERSION:-8.2.0}
-    depends_on:
-      zookeeper:
-        condition: service_healthy
+    image: ${GLOBAL_REGISTRY:-}confluentinc/cp-kafka:${KAFKA_VERSION:-8.3.2}
     ports:
       - '${KAFKA_BROKER_PORT_OVERRIDE:-9092}:9092'
       - '${KAFKA_JMX_PORT_OVERRIDE:-9999}:9999'
@@ -54,11 +18,16 @@ services:
       - kafka_data:/var/lib/kafka/data
     environment:
       - TZ=${TZ:-UTC}
-      - KAFKA_BROKER_ID=1
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
-      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
+      # KRaft cluster metadata. Must stay stable for the lifetime of the kafka_data volume.
+      - CLUSTER_ID=${KAFKA_CLUSTER_ID:-MkU3OEVBNTcwNTJENDM2Qk}
+      - KAFKA_NODE_ID=1
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:29093
+      - KAFKA_LISTENERS=PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
       - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
       - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
@@ -100,15 +69,12 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
-      zookeeper:
-        condition: service_healthy
     ports:
       - '${KAFKA_UI_PORT_OVERRIDE:-8080}:8080'
     environment:
       - TZ=${TZ:-UTC}
       - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
-      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
       - KAFKA_CLUSTERS_0_READONLY=${KAFKA_UI_READONLY:-false}
     deploy:
       resources:
@@ -120,6 +86,4 @@ services:
           memory: ${KAFKA_UI_MEMORY_RESERVATION:-128M}
 
 volumes:
-  zookeeper_data:
-  zookeeper_log:
   kafka_data:

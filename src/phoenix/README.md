@@ -32,13 +32,13 @@ This project supports two modes of operation via Docker Compose profiles:
 | Variable Name                    | Description                              | Default Value                                   |
 | -------------------------------- | ---------------------------------------- | ----------------------------------------------- |
 | COMPOSE_PROFILES                 | Active profiles (`sqlite` or `postgres`) | `sqlite`                                        |
-| PHOENIX_VERSION                  | Phoenix image version                    | `20.8.0`                                        |
+| PHOENIX_VERSION                  | Phoenix image version                    | `20.15.0`                                       |
 | PHOENIX_PORT_OVERRIDE            | Host port for Phoenix UI and HTTP API    | `6006`                                          |
 | PHOENIX_GRPC_PORT_OVERRIDE       | Host port for OTLP gRPC collector        | `4317`                                          |
 | PHOENIX_PROMETHEUS_PORT_OVERRIDE | Host port for Prometheus metrics         | `9090`                                          |
 | PHOENIX_ENABLE_PROMETHEUS        | Enable Prometheus metrics endpoint       | `false`                                         |
 | PHOENIX_SECRET                   | Secret used when upstream authentication is enabled; does not enable it | `"NOT_SECURE_0fdf298eefb2ceef8ab3d7bd5319060e"` |
-| POSTGRES_VERSION                 | PostgreSQL image version                 | `17.2-alpine3.21`                               |
+| POSTGRES_VERSION                 | PostgreSQL image version                 | `17.11-alpine3.24`                              |
 | POSTGRES_USER                    | PostgreSQL username                      | `postgres`                                      |
 | POSTGRES_PASSWORD                | PostgreSQL password                      | `postgres`                                      |
 | POSTGRES_DB                      | PostgreSQL database name                 | `phoenix`                                       |
@@ -80,10 +80,10 @@ This project supports two modes of operation via Docker Compose profiles:
 
 4. Access Phoenix UI at `http://localhost:6006`
 
-## Upgrading to Phoenix 20.8.0
+## Upgrading to Phoenix 20.15.0
 
 - Back up the `phoenix_data` named volume before SQLite migrations, or back up the PostgreSQL database before PostgreSQL migrations.
-- An existing `.env` overrides the defaults in `docker-compose.yaml`. Update its `PHOENIX_VERSION` to `20.8.0`.
+- An existing `.env` overrides the defaults in `docker-compose.yaml`. Update its `PHOENIX_VERSION` to `20.15.0`.
 - Pull the new image, then start the existing profile workflow using the same `COMPOSE_PROFILES` value/profile for both commands. Existing PostgreSQL users must use `postgres`, not `sqlite`:
 
   ```bash

@@ -17,12 +17,12 @@ SigNoz is an open-source observability platform that provides monitoring and tro
 
 | Service                          | Image                                                             | Description                                            |
 | -------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------ |
-| `signoz`                         | `${SIGNOZ_IMAGE_NAME:-signoz/signoz}:${SIGNOZ_VERSION:-v0.136.1}` | All-in-one backend, frontend UI, and alert manager     |
-| `otel-collector`                 | signoz/signoz-otel-collector:v0.144.7                             | Receives, processes, and exports telemetry data        |
+| `signoz`                         | `${SIGNOZ_IMAGE_NAME:-signoz/signoz}:${SIGNOZ_VERSION:-v0.142.1}` | All-in-one backend, frontend UI, and alert manager     |
+| `otel-collector`                 | signoz/signoz-otel-collector:v0.144.11                            | Receives, processes, and exports telemetry data        |
 | `clickhouse`                     | clickhouse/clickhouse-server:26.4.5                               | Time-series database for traces, metrics, and logs     |
 | `zookeeper-1`                    | signoz/zookeeper:3.9.3                                            | ZooKeeper for ClickHouse replication metadata          |
 | `init-clickhouse`                | clickhouse/clickhouse-server:26.4.5                               | One-shot init that downloads the histogramQuantile UDF |
-| `signoz-telemetrystore-migrator` | signoz/signoz-otel-collector:v0.144.7                             | One-shot schema migration for ClickHouse               |
+| `signoz-telemetrystore-migrator` | signoz/signoz-otel-collector:v0.144.11                            | One-shot schema migration for ClickHouse               |
 
 ## Quick Start
 
@@ -62,14 +62,18 @@ SigNoz is an open-source observability platform that provides monitoring and tro
 | `SIGNOZ_OTEL_GRPC_PORT_OVERRIDE` | `4317`                      | OTLP gRPC receiver host port                   |
 | `SIGNOZ_OTEL_HTTP_PORT_OVERRIDE` | `4318`                      | OTLP HTTP receiver host port                   |
 | `SIGNOZ_IMAGE_NAME`              | `signoz/signoz`             | SigNoz image repository/name                   |
-| `SIGNOZ_VERSION`                 | `v0.136.1`                  | SigNoz image version                           |
-| `SIGNOZ_OTEL_COLLECTOR_VERSION`  | `v0.144.7`                  | OTel Collector image version                   |
+| `SIGNOZ_VERSION`                 | `v0.142.1`                  | SigNoz image version                           |
+| `SIGNOZ_OTEL_COLLECTOR_VERSION`  | `v0.144.11`                 | OTel Collector image version                   |
 | `SIGNOZ_CLICKHOUSE_VERSION`      | `26.4.5`                    | ClickHouse image version                       |
 | `TZ`                             | `UTC`                       | Timezone                                       |
 
 See `.env.example` for the complete list including resource limits.
 
 `SIGNOZ_IMAGE_NAME` lets you switch the SigNoz image repository while keeping the tag controlled by `SIGNOZ_VERSION`.
+
+### ClickHouse version pinning
+
+`SIGNOZ_CLICKHOUSE_VERSION` is deliberately not on the newest ClickHouse release. SigNoz requires ClickHouse `>= 25.12.5` — the schema migrator sets serialization settings that only exist from that version — and does not validate every ClickHouse release against its schema. The pin therefore stays on the tested `26.4` line. Move it to a newer `26.x` only after checking the SigNoz release notes and backing up `clickhouse_data`.
 
 ### Sending Telemetry Data
 

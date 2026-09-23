@@ -53,7 +53,7 @@ docker compose exec redis redis-cli ping
 | [Apache Flink](./src/flink)                                    | 1.20.0              |
 | [Apache HBase](./src/hbase)                                    | 2.6                 |
 | [Apache HTTP Server](./src/apache)                             | 2.4.62              |
-| [Apache Kafka](./src/kafka)                                    | 8.2.0               |
+| [Apache Kafka](./src/kafka)                                    | 8.3.2               |
 | [Apache Pulsar](./src/pulsar)                                  | 4.0.7               |
 | [Apache RocketMQ](./src/rocketmq)                              | 5.3.1               |
 | [AppFlowy Cloud（legacy）](./apps/appflowy)                      | 0.9.64              |
@@ -63,7 +63,7 @@ docker compose exec redis redis-cli ping
 | [Agentgateway](./src/agentgateway)                             | 0.11.2              |
 | [AnythingLLM](./src/anythingllm)                               | latest              |
 | [Anytype](./apps/anytype)                                      | 1.6.0 / v7.2.0      |
-| [Bifrost Gateway](./src/bifrost-gateway)                       | v2.0.0              |
+| [Bifrost Gateway](./src/bifrost-gateway)                       | v2.2.1              |
 | [Bolt.diy](./apps/bolt-diy)                                    | latest              |
 | [Budibase](./src/budibase)                                     | 3.23.0              |
 | [BuildingAI](./apps/buildingai)                                | latest              |
@@ -82,20 +82,20 @@ docker compose exec redis redis-cli ping
 | [DuckDB](./src/duckdb)                                         | v1.1.3              |
 | [Easy Dataset](./apps/easy-dataset)                            | 1.5.1               |
 | [EasyTier](./src/easytier)                                     | v2.6.0              |
-| [Elasticsearch](./src/elasticsearch)                           | 9.4.2               |
+| [Elasticsearch](./src/elasticsearch)                           | 9.5.4               |
 | [etcd](./src/etcd)                                             | 3.6.0               |
 | [FalkorDB](./src/falkordb)                                     | v4.14.11            |
 | [Firecrawl](./src/firecrawl)                                   | latest              |
 | [Flowise](./src/flowise)                                       | 3.0.12              |
 | [frpc](./src/frpc)                                             | 0.68.1              |
 | [frps](./src/frps)                                             | 0.68.1              |
-| [Gitea Runner](./src/gitea-runner)                             | 2.1.0               |
-| [Gitea](./src/gitea)                                           | 1.27.1-rootless     |
+| [Gitea Runner](./src/gitea-runner)                             | 3.5.0               |
+| [Gitea](./src/gitea)                                           | 1.27.3-rootless     |
 | [GitLab Runner](./src/gitlab-runner)                           | 17.10.1             |
 | [GitLab](./src/gitlab)                                         | 18.8.3-ce.0         |
 | [GoModel](./src/gomodel)                                       | v0.1.27             |
 | [GPUStack](./src/gpustack)                                     | v0.5.3              |
-| [Grafana](./src/grafana)                                       | 13.1.1              |
+| [Grafana](./src/grafana)                                       | 13.2.2              |
 | [Grafana Loki](./src/loki)                                     | 3.3.2               |
 | [Grafana Tempo](./src/tempo)                                   | 2.7.2               |
 | [Halo](./src/halo)                                             | 2.21.9              |
@@ -135,8 +135,8 @@ docker compose exec redis redis-cli ping
 | [OpenClaw](./apps/openclaw)                                    | 2026.2.3            |
 | [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)   | 8.2.3               |
 | [MongoDB ReplicaSet](./src/mongodb-replicaset)                 | 8.2.3               |
-| [MongoDB Standalone](./src/mongodb-standalone)                 | 8.3.7               |
-| [MySQL](./src/mysql)                                           | 9.7.2               |
+| [MongoDB Standalone](./src/mongodb-standalone)                 | 8.3.11              |
+| [MySQL](./src/mysql)                                           | 26.7.0              |
 | [n8n](./apps/n8n)                                              | 1.114.0             |
 | [Nanobot](./apps/nanobot)                                      | v0.1.3.post4        |
 | [Nacos](./src/nacos)                                           | v3.1.0              |
@@ -144,13 +144,13 @@ docker compose exec redis redis-cli ping
 | [NexaSDK](./src/nexa-sdk)                                      | v0.2.62             |
 | [Neo4j](./src/neo4j)                                           | 5.27.4              |
 | [Netdata](./src/netdata)                                       | latest              |
-| [Nginx](./src/nginx)                                           | 1.30.4              |
+| [Nginx](./src/nginx)                                           | 1.30.5              |
 | [Node Exporter](./src/node-exporter)                           | v1.8.2              |
 | [OceanBase](./src/oceanbase)                                   | 4.4.2.1             |
 | [Odoo](./src/odoo)                                             | 19.0                |
 | [Ollama](./src/ollama)                                         | 0.14.3              |
 | [Open WebUI](./src/open-webui)                                 | main                |
-| [Phoenix (Arize)](./src/phoenix)                               | 20.8.0              |
+| [Phoenix (Arize)](./src/phoenix)                               | 20.15.0             |
 | [Pingap](./src/pingap)                                         | 0.12.7-full         |
 | [Pingora Proxy Manager](./src/pingora-proxy-manager)           | v1.0.3              |
 | [Open WebUI Rust](./src/open-webui-rust)                       | latest              |
@@ -173,16 +173,16 @@ docker compose exec redis redis-cli ping
 | [Pogocache](./src/pogocache)                                   | 1.3.1               |
 | [Portainer](./src/portainer)                                   | 2.27.3-alpine       |
 | [Portkey AI Gateway](./src/portkey-gateway)                    | latest              |
-| [PostgreSQL](./src/postgres)                                   | 18.4                |
+| [PostgreSQL](./src/postgres)                                   | 18.6                |
 | [Prometheus](./src/prometheus)                                 | 3.13.1              |
 | [PyTorch](./src/pytorch)                                       | 2.6.0               |
 | [Qdrant](./src/qdrant)                                         | 1.15.4              |
-| [RabbitMQ](./src/rabbitmq)                                     | 4.3.4               |
+| [RabbitMQ](./src/rabbitmq)                                     | 4.3.6               |
 | [RAGFlow](./apps/ragflow)                                      | v0.24.0             |
 | [Ray](./src/ray)                                               | 2.42.1              |
 | [Redpanda](./src/redpanda)                                     | v24.3.1             |
 | [Redis Cluster](./src/redis-cluster)                           | 8.2.1               |
-| [Redis](./src/redis)                                           | 8.8.1               |
+| [Redis](./src/redis)                                           | 8.10.2              |
 | [Renovate](./src/renovate)                                     | 42.85.4-full        |
 | [Restate Cluster](./src/restate-cluster)                       | 1.5.3               |
 | [Restate](./src/restate)                                       | 1.5.3               |
@@ -190,7 +190,7 @@ docker compose exec redis redis-cli ping
 | [SearXNG](./src/searxng)                                       | 2025.1.20-1ce14ef99 |
 | [Selenium](./src/selenium)                                     | 144.0-20260120      |
 | [Shannon](./apps/shannon)                                      | v0.3.1              |
-| [SigNoz](./src/signoz)                                         | v0.136.1            |
+| [SigNoz](./src/signoz)                                         | v0.142.1            |
 | [SiYuan](./apps/siyuan)                                        | v3.8.2              |
 | [Sim](./apps/sim)                                              | latest              |
 | [Skyvern](./apps/skyvern)                                      | v1.0.31             |

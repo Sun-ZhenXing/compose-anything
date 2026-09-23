@@ -12,15 +12,15 @@ Bifrost 是一个轻量级、高性能的 LLM 网关，支持多种模型和提�
 
 ## 配置
 
-- `BIFROST_VERSION`：Bifrost 镜像的版本，默认为 `v2.0.0`。
+- `BIFROST_VERSION`：Bifrost 镜像的版本，默认为 `v2.2.1`。
 - `BIFROST_SETUP_TOKEN`：默认为空，使用首次管理员设置流程时必须提供。
 - `BIFROST_PORT`：Bifrost 服务的端口，默认为 `28080`。
 
 ### 遥测（Telemetry）
 
-- `PROMETHEUS_VERSION`：Prometheus 版本，默认为 `v3.8.1`。
+- `PROMETHEUS_VERSION`：Prometheus 版本，默认为 `v3.14.0`。
 - `PROMETHEUS_PORT`：Prometheus 端口，默认为 `29090`。
-- `GRAFANA_VERSION`：Grafana 版本，默认为 `12.3.1`。
+- `GRAFANA_VERSION`：Grafana 版本，默认为 `13.2.2`。
 - `GRAFANA_PORT`：Grafana 端口，默认为 `23000`。
 - `GRAFANA_ADMIN_USER`：Grafana 管理员用户，默认为 `admin`。
 - `GRAFANA_ADMIN_PASSWORD`：Grafana 管理员密码，默认为 `admin`。
@@ -55,7 +55,7 @@ docker compose --profile telemetry up -d
 
 ## 升级说明
 
-升级前请备份 `bifrost_data` 卷。将现有 `.env` 中的 `BIFROST_VERSION` 更新为 `v2.0.0`，然后拉取并重启：
+升级前请备份 `bifrost_data` 卷。Bifrost v2.1.0 引入了不可回退的数据库迁移，会在首次启动时自动执行，包括 OAuth 表合并、新增 MCP 表，以及对 logs 表加排他锁的日志存储列变更 —— 请在业务低峰期执行升级。将现有 `.env` 中的 `BIFROST_VERSION` 更新为 `v2.2.1`，然后拉取并重启：
 
 ```bash
 docker compose pull bifrost

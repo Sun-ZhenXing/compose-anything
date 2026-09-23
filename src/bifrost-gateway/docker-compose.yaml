@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   bifrost:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}maximhq/bifrost:${BIFROST_VERSION:-v2.0.0}
+    image: ${GLOBAL_REGISTRY:-}maximhq/bifrost:${BIFROST_VERSION:-v2.2.1}
     volumes:
       - bifrost_data:/app/data
     ports:
@@ -41,7 +41,7 @@ services:
 
   prometheus:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}prom/prometheus:${PROMETHEUS_VERSION:-v3.8.1}
+    image: ${GLOBAL_REGISTRY:-}prom/prometheus:${PROMETHEUS_VERSION:-v3.14.0}
     profiles: [telemetry]
     volumes:
       - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -77,7 +77,7 @@ services:
 
   grafana:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}grafana/grafana:${GRAFANA_VERSION:-12.3.1}
+    image: ${GLOBAL_REGISTRY:-}grafana/grafana:${GRAFANA_VERSION:-13.2.2}
     profiles: [telemetry]
     volumes:
       - ./config/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml

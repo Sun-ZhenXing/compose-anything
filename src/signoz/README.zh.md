@@ -17,12 +17,12 @@ SigNoz 是一个开源的可观测性平台，为分布式应用程序提供监�
 
 | 服务                             | 镜像                                                              | 描述                                     |
 | -------------------------------- | ----------------------------------------------------------------- | ---------------------------------------- |
-| `signoz`                         | `${SIGNOZ_IMAGE_NAME:-signoz/signoz}:${SIGNOZ_VERSION:-v0.136.1}` | 后端、前端 UI 和告警管理器的合体镜像     |
-| `otel-collector`                 | signoz/signoz-otel-collector:v0.144.7                             | 接收、处理和导出遥测数据                 |
+| `signoz`                         | `${SIGNOZ_IMAGE_NAME:-signoz/signoz}:${SIGNOZ_VERSION:-v0.142.1}` | 后端、前端 UI 和告警管理器的合体镜像     |
+| `otel-collector`                 | signoz/signoz-otel-collector:v0.144.11                            | 接收、处理和导出遥测数据                 |
 | `clickhouse`                     | clickhouse/clickhouse-server:26.4.5                               | 存储追踪、指标和日志的时序数据库         |
 | `zookeeper-1`                    | signoz/zookeeper:3.9.3                                            | ZooKeeper，用于 ClickHouse 副本元数据    |
 | `init-clickhouse`                | clickhouse/clickhouse-server:26.4.5                               | 一次性初始化，下载 histogramQuantile UDF |
-| `signoz-telemetrystore-migrator` | signoz/signoz-otel-collector:v0.144.7                             | 一次性 ClickHouse Schema 迁移            |
+| `signoz-telemetrystore-migrator` | signoz/signoz-otel-collector:v0.144.11                            | 一次性 ClickHouse Schema 迁移            |
 
 ## 快速开始
 
@@ -62,14 +62,18 @@ SigNoz 是一个开源的可观测性平台，为分布式应用程序提供监�
 | `SIGNOZ_OTEL_GRPC_PORT_OVERRIDE` | `4317`                      | OTLP gRPC 接收器宿主机端口          |
 | `SIGNOZ_OTEL_HTTP_PORT_OVERRIDE` | `4318`                      | OTLP HTTP 接收器宿主机端口          |
 | `SIGNOZ_IMAGE_NAME`              | `signoz/signoz`             | SigNoz 镜像仓库名或镜像名           |
-| `SIGNOZ_VERSION`                 | `v0.136.1`                  | SigNoz 镜像版本                     |
-| `SIGNOZ_OTEL_COLLECTOR_VERSION`  | `v0.144.7`                  | OTel Collector 镜像版本             |
+| `SIGNOZ_VERSION`                 | `v0.142.1`                  | SigNoz 镜像版本                     |
+| `SIGNOZ_OTEL_COLLECTOR_VERSION`  | `v0.144.11`                 | OTel Collector 镜像版本             |
 | `SIGNOZ_CLICKHOUSE_VERSION`      | `26.4.5`                    | ClickHouse 镜像版本                 |
 | `TZ`                             | `UTC`                       | 时区                                |
 
 完整变量列表（含资源限制）请查看 `.env.example`。
 
 `SIGNOZ_IMAGE_NAME` 用于切换 SigNoz 镜像仓库，同时继续由 `SIGNOZ_VERSION` 控制标签版本。
+
+### ClickHouse 版本固定说明
+
+`SIGNOZ_CLICKHOUSE_VERSION` 有意不跟随 ClickHouse 的最新版本。SigNoz 要求 ClickHouse `>= 25.12.5`（schema migrator 会设置该版本才提供的序列化参数），且并未针对每个 ClickHouse 版本验证其 schema。因此该版本固定在经过验证的 `26.4` 系列。若要升级到更新的 `26.x`，请先查阅 SigNoz 发布说明并备份 `clickhouse_data`。
 
 ### 发送遥测数据
 

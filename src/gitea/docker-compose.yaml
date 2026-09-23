@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   gitea:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}gitea/gitea:${GITEA_VERSION:-1.27.1-rootless}
+    image: ${GLOBAL_REGISTRY:-}gitea/gitea:${GITEA_VERSION:-1.27.3-rootless}
     environment:
       - USER_UID=1000
       - USER_GID=1000
@@ -50,11 +50,43 @@ services:
       retries: 3
       start_period: 30s
 
+  gitea_mcp:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}gitea/gitea-mcp-server:${GITEA_MCP_VERSION:-1.7.0}
+    profiles: [mcp]
+    command:
+      - /app/gitea-mcp
+      - -t
+      - http
+    environment:
+      - TZ=${TZ:-UTC}
+      - GITEA_HOST=${GITEA_MCP_HOST:-http://gitea:3000}
+      - GITEA_ACCESS_TOKEN=${GITEA_MCP_ACCESS_TOKEN:-}
+      - GITEA_INSECURE=${GITEA_MCP_INSECURE:-false}
+      - GITEA_READONLY=${GITEA_MCP_READONLY:-false}
+    ports:
+      - '${GITEA_MCP_PORT_OVERRIDE:-3001}:8080'
+    depends_on:
+      gitea:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, /app/gitea-mcp, -healthcheck]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: ${GITEA_MCP_CPU_LIMIT:-0.5}
+          memory: ${GITEA_MCP_MEMORY_LIMIT:-256M}
+        reservations:
+          cpus: ${GITEA_MCP_CPU_RESERVATION:-0.1}
+          memory: ${GITEA_MCP_MEMORY_RESERVATION:-128M}
+
   db:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.10}
-    profiles:
-      - ${COMPOSE_PROFILES:-}
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-17.11}
     environment:
       - TZ=${TZ:-UTC}
       - POSTGRES_USER=${POSTGRES_USER:-gitea}

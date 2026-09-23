@@ -1,4 +1,4 @@
-# Ready-to-use configuration for Gitea Runner 2.1.0.
+# Ready-to-use configuration for Gitea Runner 3.5.0.
 
 log:
   # Logging level: trace, debug, info, warn, error, or fatal.
