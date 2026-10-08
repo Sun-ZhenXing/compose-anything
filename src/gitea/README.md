@@ -2,7 +2,7 @@
 
 [English](./README.md) | [中文](./README.zh.md)
 
-This stack runs Gitea 1.27.3 with the rootless image and PostgreSQL 17.11.
+This stack runs Gitea 28.1.0 with the rootless image and PostgreSQL 17.11.
 
 ## Services
 
@@ -29,6 +29,8 @@ docker compose --profile mcp up -d
 ```
 
 ## Initial Setup
+
+The health check uses Gitea's `/api/healthz` endpoint, which responds before installation and checks database/cache connectivity after setup.
 
 Use these database settings on the Gitea installation page:
 
@@ -61,7 +63,7 @@ The service is stateless and stores no data. Its log file lives inside the conta
 
 | Variable | Default | Description |
 | --- | --- | --- |
-| `GITEA_VERSION` | `1.27.3-rootless` | Gitea image tag. |
+| `GITEA_VERSION` | `28.1.0-rootless` | Gitea image tag. |
 | `GITEA_DB_TYPE` | `postgres` | Gitea database type. |
 | `GITEA_POSTGRES_HOST` | `db:5432` | PostgreSQL address inside the Compose network. |
 | `POSTGRES_VERSION` | `17.11` | PostgreSQL image version. |
@@ -95,7 +97,9 @@ The service is stateless and stores no data. Its log file lives inside the conta
 
 ## Upgrading
 
-Before upgrading from an older release, back up the `postgres`, `gitea_data`, and `gitea_config` volumes. Gitea automatically runs database migrations during startup; do not downgrade directly after a migration. Restore a compatible backup instead.
+Upgrading from Gitea 1.27 to 28.1 crosses a major-version boundary. Back up PostgreSQL, `gitea_data`, and `gitea_config` before startup; Gitea runs native database migrations when the upgraded service starts. Test the upgrade and backup restoration on a clone first. This repository has not validated a direct 1.27.3-to-28.1.0 upgrade path; check the official release guidance and test a restored copy before production. Do not downgrade by switching the image tag back after migrations; restore the pre-upgrade database and Gitea data/config volumes instead. PostgreSQL 17.11 and the existing Gitea data/config mount paths are retained.
+
+See the official [Gitea upgrade guide](https://docs.gitea.com/installation/upgrade-from-gitea) and [rootless Docker installation guide](https://docs.gitea.com/installation/install-with-docker-rootless/).
 
 ## Security
 

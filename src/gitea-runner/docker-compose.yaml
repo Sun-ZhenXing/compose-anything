@@ -9,12 +9,12 @@ x-defaults: &defaults
 services:
   gitea_runner:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}gitea/runner:${GITEA_RUNNER_VERSION:-3.5.0}
+    image: ${GLOBAL_REGISTRY:-}gitea/runner:${GITEA_RUNNER_VERSION:-4.1.0}
     environment:
       TZ: ${TZ:-UTC}
       CONFIG_FILE: /config.yaml
       GITEA_INSTANCE_URL: ${GITEA_INSTANCE_URL:-http://host.docker.internal:3000}
-      GITEA_RUNNER_REGISTRATION_TOKEN: ${GITEA_RUNNER_REGISTRATION_TOKEN}
+      GITEA_RUNNER_REGISTRATION_TOKEN: ${GITEA_RUNNER_REGISTRATION_TOKEN:-}
       GITEA_RUNNER_NAME: ${GITEA_RUNNER_NAME:-Gitea-Runner}
       GITEA_RUNNER_LABELS: ${GITEA_RUNNER_LABELS:-ubuntu-latest:docker://docker.io/gitea/runner-images:ubuntu-latest,ubuntu-24.04:docker://docker.io/gitea/runner-images:ubuntu-24.04,ubuntu-22.04:docker://docker.io/gitea/runner-images:ubuntu-22.04}
       HTTP_PROXY: ${GITEA_RUNNER_HTTP_PROXY:-}

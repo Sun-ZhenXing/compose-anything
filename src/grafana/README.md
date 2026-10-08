@@ -12,7 +12,7 @@ This service deploys Grafana, an open-source analytics and monitoring platform f
 
 | Variable Name          | Description                                                | Default Value           |
 | ---------------------- | ---------------------------------------------------------- | ----------------------- |
-| GRAFANA_VERSION        | Grafana image version                                      | `13.2.2`                |
+| GRAFANA_VERSION        | Grafana image version                                      | `13.2.3`                |
 | GRAFANA_PORT_OVERRIDE  | Host port mapping (maps to Grafana port 3000 in container) | `3000`                  |
 | GRAFANA_ADMIN_USER     | Admin username                                             | `admin`                 |
 | GRAFANA_ADMIN_PASSWORD | Admin password                                             | `admin`                 |
@@ -44,7 +44,7 @@ Please modify the `.env` file as needed for your use case.
 
 ## Upgrading
 
-Before upgrading, back up the Grafana database, plugins, and configuration. Grafana v13's unified-storage migration makes downgrade unsafe without restoring the pre-upgrade database. Validate plugins for React 19 compatibility; the image-renderer plugin has been removed.
+Before upgrading, back up the Grafana database, plugins, and configuration. Editing the image tag alone does not migrate data; when the upgraded service starts, it may update persisted data automatically. Back up first and follow the supported upgrade path. Grafana v13's unified-storage migration makes downgrade unsafe without restoring the pre-upgrade database. Validate plugins for React 19 compatibility; the image-renderer plugin has been removed. See the [Grafana 13.2.3 release notes](https://github.com/grafana/grafana/releases/tag/v13.2.3).
 
 ## Common Use Cases
 

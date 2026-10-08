@@ -13,7 +13,7 @@ This service deploys a Redis Cluster with 6 nodes (3 masters + 3 replicas).
 
 | Variable Name | Description         | Default Value  |
 | ------------- | ------------------- | -------------- |
-| REDIS_VERSION | Redis image version | `8.2.1-alpine` |
+| REDIS_VERSION | Redis image version | `8.10.2-alpine3.23` |
 
 Please modify the `.env` file as needed for your use case.
 
@@ -114,6 +114,10 @@ command: redis-server --requirepass yourpassword --cluster-enabled yes ...
 
 - Use firewall rules to restrict access
 - Consider using TLS for inter-node communication in production
+
+## Upgrading
+
+Before upgrading, back up each node's RDB/AOF data. Upgrade replicas first, verify their health and synchronization, then perform planned failovers before upgrading the former primaries one at a time. Review the release notes for the exact source and target versions, and validate configuration directives and data-format compatibility. Updating the image tag does not make this a safe automatic data migration.
 
 ## License
 

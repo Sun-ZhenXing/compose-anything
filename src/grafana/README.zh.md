@@ -12,7 +12,7 @@
 
 | 变量名                 | 描述                                             | 默认值                  |
 | ---------------------- | ------------------------------------------------ | ----------------------- |
-| GRAFANA_VERSION        | Grafana 镜像版本                                 | `13.2.2`                |
+| GRAFANA_VERSION        | Grafana 镜像版本                                 | `13.2.3`                |
 | GRAFANA_PORT_OVERRIDE  | 主机端口映射（映射到容器中的 Grafana 端口 3000） | `3000`                  |
 | GRAFANA_ADMIN_USER     | 管理员用户名                                     | `admin`                 |
 | GRAFANA_ADMIN_PASSWORD | 管理员密码                                       | `admin`                 |
@@ -44,7 +44,7 @@
 
 ## 升级
 
-升级前，请备份 Grafana 数据库、插件和配置。Grafana v13 的 unified-storage migration 会导致直接降级不安全；如需回退，请恢复升级前的数据库。请验证插件与 React 19 的兼容性；image-renderer 插件已移除。
+升级前，请备份 Grafana 数据库、插件和配置。仅修改镜像标签不会迁移数据；升级后的服务启动时可能会自动更新持久化数据。请先备份，并遵循受支持的升级路径。Grafana v13 的 unified-storage migration 会导致直接降级不安全；如需回退，请恢复升级前的数据库。请验证插件与 React 19 的兼容性；image-renderer 插件已移除。详情请参阅 [Grafana 13.2.3 发布说明](https://github.com/grafana/grafana/releases/tag/v13.2.3)。
 
 ## 常见用例
 

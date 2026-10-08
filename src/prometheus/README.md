@@ -12,10 +12,10 @@ This service deploys Prometheus, an open-source system monitoring and alerting t
 
 | Variable Name             | Description                                                   | Default Value           |
 | ------------------------- | ------------------------------------------------------------- | ----------------------- |
-| PROMETHEUS_VERSION        | Prometheus image version                                      | `v3.13.1`               |
+| PROMETHEUS_VERSION        | Prometheus image version                                      | `v3.15.0`               |
 | PROMETHEUS_PORT_OVERRIDE  | Host port mapping (maps to Prometheus port 9090 in container) | `9090`                  |
 | PROMETHEUS_RETENTION_TIME | How long to retain data                                       | `15d`                   |
-| PROMETHEUS_RETENTION_SIZE | Maximum storage size (empty = unlimited)                      | `""`                    |
+| PROMETHEUS_RETENTION_SIZE | Maximum storage size (`0B` disables the size limit)            | `0B`                    |
 | PROMETHEUS_EXTERNAL_URL   | External URL for Prometheus (used for links and redirects)    | `http://localhost:9090` |
 
 Please modify the `.env` file as needed for your use case.
@@ -76,7 +76,7 @@ volumes:
 Configure data retention using environment variables:
 
 - `PROMETHEUS_RETENTION_TIME`: Time-based retention (e.g., `30d`, `1y`)
-- `PROMETHEUS_RETENTION_SIZE`: Size-based retention (e.g., `10GB`, `1TB`)
+- `PROMETHEUS_RETENTION_SIZE`: Size-based retention (e.g., `10GB`, `1TB`); defaults to `0B` (no size-based limit), while the 15-day time limit still applies.
 
 ## API Access
 
@@ -92,7 +92,7 @@ Configure data retention using environment variables:
 
 ## Upgrading
 
-Before upgrading to Prometheus v3, back up the TSDB and review the migration guide. Rolling a v3 TSDB back requires Prometheus v2.55 or newer.
+Before upgrading, back up the TSDB and review the [Prometheus release notes](https://github.com/prometheus/prometheus/releases/tag/v3.15.0). Editing the image tag alone does not migrate data; when the upgraded service starts, it may update persisted data automatically. Back up first and follow the supported upgrade path. Rolling a v3 TSDB back requires Prometheus v2.55 or newer.
 
 ## Common Use Cases
 

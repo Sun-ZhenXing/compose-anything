@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   gitea:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}gitea/gitea:${GITEA_VERSION:-1.27.3-rootless}
+    image: ${GLOBAL_REGISTRY:-}gitea/gitea:${GITEA_VERSION:-28.1.0-rootless}
     environment:
       - USER_UID=1000
       - USER_GID=1000
@@ -40,10 +40,10 @@ services:
       test:
         - CMD
         - wget
-        - --no-verbose
-        - --tries=1
-        - --spider
-        - 'http://localhost:3000/'
+        - -q
+        - -O
+        - /dev/null
+        - 'http://localhost:3000/api/healthz'
 
       interval: 30s
       timeout: 10s

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   prometheus:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}prom/prometheus:${PROMETHEUS_VERSION:-v3.13.1}
+    image: ${GLOBAL_REGISTRY:-}prom/prometheus:${PROMETHEUS_VERSION:-v3.15.0}
     ports:
       - '${PROMETHEUS_PORT_OVERRIDE:-9090}:9090'
     volumes:
@@ -24,14 +24,14 @@ services:
       - --web.console.libraries=/etc/prometheus/console_libraries
       - --web.console.templates=/etc/prometheus/consoles
       - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION_TIME:-15d}'
-      - '--storage.tsdb.retention.size=${PROMETHEUS_RETENTION_SIZE:-}'
+      - '--storage.tsdb.retention.size=${PROMETHEUS_RETENTION_SIZE:-0B}'
       - --web.enable-lifecycle
       - --web.enable-admin-api
       - '--web.external-url=${PROMETHEUS_EXTERNAL_URL:-http://localhost:9090}'
     environment:
       - TZ=${TZ:-UTC}
       - PROMETHEUS_RETENTION_TIME=${PROMETHEUS_RETENTION_TIME:-15d}
-      - PROMETHEUS_RETENTION_SIZE=${PROMETHEUS_RETENTION_SIZE:-}
+      - PROMETHEUS_RETENTION_SIZE=${PROMETHEUS_RETENTION_SIZE:-0B}
     user: '65534:65534' # nobody user
     deploy:
       resources:

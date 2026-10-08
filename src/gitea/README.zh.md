@@ -2,7 +2,7 @@
 
 [English](./README.md) | [中文](./README.zh.md)
 
-此配置使用 rootless 镜像运行 Gitea 1.27.3，并使用 PostgreSQL 17.11 作为数据库。
+此配置使用 rootless 镜像运行 Gitea 28.1.0，并使用 PostgreSQL 17.11 作为数据库。
 
 ## 服务
 
@@ -29,6 +29,8 @@ docker compose --profile mcp up -d
 ```
 
 ## 初始设置
+
+健康检查使用 Gitea 的 `/api/healthz` 端点：安装前该端点即可响应，完成设置后会检查数据库和缓存连接。
 
 在 Gitea 安装页面中使用以下数据库设置：
 
@@ -61,7 +63,7 @@ docker compose --profile mcp up -d
 
 | 变量 | 默认值 | 说明 |
 | --- | --- | --- |
-| `GITEA_VERSION` | `1.27.3-rootless` | Gitea 镜像标签。 |
+| `GITEA_VERSION` | `28.1.0-rootless` | Gitea 镜像标签。 |
 | `GITEA_DB_TYPE` | `postgres` | Gitea 数据库类型。 |
 | `GITEA_POSTGRES_HOST` | `db:5432` | Compose 网络内的 PostgreSQL 地址。 |
 | `POSTGRES_VERSION` | `17.11` | PostgreSQL 镜像版本。 |
@@ -95,7 +97,9 @@ docker compose --profile mcp up -d
 
 ## 升级
 
-从旧版本升级前，请备份 `postgres`、`gitea_data` 和 `gitea_config` volumes。Gitea 会在启动时自动执行数据库 migration；执行 migration 后不要直接降级，应恢复兼容版本的备份。
+从 Gitea 1.27 升级到 28.1 跨越了主版本边界。启动新版本前，请备份 PostgreSQL、`gitea_data` 和 `gitea_config`；升级后的服务启动时会由 Gitea 执行原生数据库迁移。请先在克隆副本上测试升级及备份恢复。本仓库尚未验证从 1.27.3 直接升级到 28.1.0 的路径；生产环境升级前，请查阅官方发布说明并在恢复出的副本上测试。数据库迁移后不要仅通过切回旧镜像标签降级；应恢复升级前的数据库及 Gitea 数据／配置卷。此配置保留 PostgreSQL 17.11，以及现有 Gitea 数据和配置挂载路径。
+
+请参阅官方 [Gitea 升级指南](https://docs.gitea.com/installation/upgrade-from-gitea) 和 [rootless Docker 安装指南](https://docs.gitea.com/installation/install-with-docker-rootless/)。
 
 ## 安全
 

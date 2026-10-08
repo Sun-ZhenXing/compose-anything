@@ -1,0 +1,42 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  rustdesk:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}rustdesk/rustdesk-server-s6:${RUSTDESK_VERSION:-1.1.16}
+    ports:
+      - '${RUSTDESK_NAT_PORT_OVERRIDE:-21115}:21115/tcp'
+      - '${RUSTDESK_ID_PORT_OVERRIDE:-21116}:21116/tcp'
+      - '${RUSTDESK_ID_PORT_OVERRIDE:-21116}:21116/udp'
+      - '${RUSTDESK_RELAY_PORT_OVERRIDE:-21117}:21117/tcp'
+    volumes:
+      - rustdesk_data:/data
+    environment:
+      - TZ=${TZ:-UTC}
+      - ENCRYPTED_ONLY=1
+      - RELAY=${RUSTDESK_RELAY_SERVER:-127.0.0.1:21117}
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: [CMD-SHELL, 'test "$$(/package/admin/s6/command/s6-svstat -o up /run/s6-rc/servicedirs/hbbs)" = true && test "$$(/package/admin/s6/command/s6-svstat -o up /run/s6-rc/servicedirs/hbbr)" = true']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: ${RUSTDESK_CPU_LIMIT:-1}
+          memory: ${RUSTDESK_MEMORY_LIMIT:-256M}
+        reservations:
+          cpus: ${RUSTDESK_CPU_RESERVATION:-0.1}
+          memory: ${RUSTDESK_MEMORY_RESERVATION:-64M}
+
+volumes:
+  rustdesk_data:

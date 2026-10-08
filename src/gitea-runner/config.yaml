@@ -1,4 +1,4 @@
-# Ready-to-use configuration for Gitea Runner 3.5.0.
+# Ready-to-use configuration for Gitea Runner 4.1.0. Existing settings are preserved.
 
 log:
   # Logging level: trace, debug, info, warn, error, or fatal.
@@ -8,7 +8,7 @@ runner:
   # Registration state file.
   file: .runner
   # Maximum number of concurrent tasks.
-  capacity: 1
+  capacity: 10
   # Extra environment variables passed to jobs.
   envs: {}
   # Optional file containing extra job environment variables.

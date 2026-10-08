@@ -2,7 +2,7 @@
 
 [English](./README.md) | [中文](./README.zh.md)
 
-This stack runs Gitea Runner 3.5.0 for Gitea Actions. The Compose service is `gitea_runner`; it executes jobs in Docker containers through the host Docker daemon.
+This stack runs Gitea Runner 4.1.0 for Gitea Actions. The Compose service is `gitea_runner`; it executes jobs in Docker containers through the host Docker daemon.
 
 ## Services
 
@@ -10,13 +10,13 @@ This stack runs Gitea Runner 3.5.0 for Gitea Actions. The Compose service is `gi
 
 ## Prerequisite
 
-Create a runner registration token in Gitea under **Settings -> Actions -> Runners**. The token is required.
+Enable Gitea Actions and create a runner registration token in Gitea under **Settings -> Actions -> Runners**. The token is required for initial registration; an existing registration in `gitea_runner_data` can be reused without one.
 
 ## Quick Start
 
 ```bash
 cp .env.example .env
-# Set GITEA_RUNNER_REGISTRATION_TOKEN in .env and, when needed, GITEA_INSTANCE_URL.
+# Set GITEA_RUNNER_REGISTRATION_TOKEN in .env for initial registration and, when needed, GITEA_INSTANCE_URL.
 docker compose up -d
 ```
 
@@ -27,10 +27,10 @@ The default `http://host.docker.internal:3000` targets a Gitea server published 
 | Variable                                                        | Default                                                       | Description                                                                   |
 | --------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | `GLOBAL_REGISTRY`                                               | empty                                                         | Optional registry prefix, including its trailing `/`.                         |
-| `GITEA_RUNNER_VERSION`                                          | `3.5.0`                                                       | Runner image version.                                                         |
+| `GITEA_RUNNER_VERSION`                                          | `4.1.0`                                                       | Runner image version.                                                         |
 | `TZ`                                                            | `UTC`                                                         | Container time zone.                                                          |
 | `GITEA_INSTANCE_URL`                                            | `http://host.docker.internal:3000`                            | Gitea URL reachable by the runner and jobs.                                   |
-| `GITEA_RUNNER_REGISTRATION_TOKEN`                               | empty                                                         | Required registration token.                                                  |
+| `GITEA_RUNNER_REGISTRATION_TOKEN`                               | empty                                                         | Required for initial registration only.                                       |
 | `GITEA_RUNNER_NAME`                                             | `Gitea-Runner`                                                | Runner name shown in Gitea.                                                   |
 | `GITEA_RUNNER_LABELS`                                           | `ubuntu-latest`, `ubuntu-24.04`, `ubuntu-22.04` Docker labels | Comma-separated labels using job images from `docker.io/gitea/runner-images`. |
 | `GITEA_RUNNER_HTTP_PROXY`                                       | empty                                                         | HTTP proxy for the runner and every job container. Empty disables proxying.   |
@@ -39,11 +39,25 @@ The default `http://host.docker.internal:3000` targets a Gitea server published 
 | `GITEA_RUNNER_CPU_LIMIT` / `GITEA_RUNNER_CPU_RESERVATION`       | `1.0` / `0.1`                                                 | CPU limit and reservation.                                                    |
 | `GITEA_RUNNER_MEMORY_LIMIT` / `GITEA_RUNNER_MEMORY_RESERVATION` | `2G` / `1G`                                                   | Memory limit and reservation.                                                 |
 
-The repository includes a ready-to-use `config.yaml`. To inspect a fresh upstream 3.5.0 configuration instead, run:
+The repository includes a ready-to-use `config.yaml`. To create a separate upstream 4.1.0 configuration for comparison (do not replace the repository's `config.yaml` blindly), run:
 
 ```bash
-docker run --entrypoint="" --rm gitea/runner:3.5.0 gitea-runner generate-config > config.yaml
+docker run --entrypoint="" --rm gitea/runner:4.1.0 gitea-runner generate-config > config.upstream.yaml
 ```
+
+Compare it with the existing `config.yaml`; see the [Runner 4.1.0 example config](https://gitea.com/gitea/runner/raw/tag/v4.1.0/internal/pkg/config/config.example.yaml). The generated comparison file is not created by this repository.
+
+The image also supports `GITEA_RUNNER_REGISTRATION_TOKEN_FILE` for a token file. Using it requires mounting the secret and wiring the corresponding environment variable; this stack does not configure a secret mount by default.
+
+## Upgrading from 3.5.0 to 4.1.0
+
+Back up `gitea_runner_data` and keep it mounted at `/data`; it contains the runner registration state. The existing `config.yaml` is retained, including its concurrency setting of 10. Runner 4.1.0 is tested for compatibility with the latest Gitea server, not every older server version.
+
+Compose CPU and memory limits apply only to the runner daemon, not Docker-created job containers. With capacity 10, size the host accordingly and configure per-job limits separately (for example, with native `container.options`).
+
+- Runner 4.0 changed the cache flow: the cache is served through the runner instead of the old standalone cache path, which can affect remote Docker/network setups. See the [4.0.0 release notes](https://gitea.com/gitea/runner/releases/tag/v4.0.0).
+- In `container.valid_volumes`, `*` no longer matches paths containing `/`; use `**` for nested paths if you intentionally allow such mounts. This configuration keeps the list empty (restrictive).
+- See the [official upgrade guide](https://docs.gitea.com/runner/upgrade/) and [Docker installation guide](https://docs.gitea.com/runner/installation/docker/).
 
 ## Upgrading from runner 2.x
 
@@ -92,7 +106,7 @@ Do not put CIDR ranges in `GITEA_RUNNER_NO_PROXY`. The runner accepts them but `
 
 ## Security
 
-Docker socket access is effectively host-level privilege. Do not run untrusted workflows on this runner. For stronger isolation, use a dedicated host or VM, or evaluate a rootless Docker-in-Docker setup.
+Docker socket access lets workflows control the host Docker daemon. Run trusted jobs and accept workflows only from trusted authors; for untrusted workloads, prefer an isolated host or daemon. Privileged Docker-in-Docker is not automatically safer or a drop-in toggle.
 
 ## Migrating from act_runner
 

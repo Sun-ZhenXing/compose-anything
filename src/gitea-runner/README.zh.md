@@ -2,7 +2,7 @@
 
 [English](./README.md) | [中文](./README.zh.md)
 
-此配置使用 Gitea Runner 3.5.0 运行 Gitea Actions。Compose 服务名为 `gitea_runner`，它通过宿主机的 Docker 守护进程在 Docker 容器中执行任务。
+此配置使用 Gitea Runner 4.1.0 运行 Gitea Actions。Compose 服务名为 `gitea_runner`，它通过宿主机的 Docker 守护进程在 Docker 容器中执行任务。
 
 ## 服务
 
@@ -10,13 +10,13 @@
 
 ## 前提条件
 
-在 Gitea 的“设置 -> Actions -> Runners”中创建 Runner 注册令牌。此令牌为必填项。
+启用 Gitea Actions，并在 Gitea 的“设置 -> Actions -> Runners”中创建 Runner 注册令牌。首次注册需要此令牌；已有的 `gitea_runner_data` 注册状态可在没有新令牌时继续使用。
 
 ## 快速开始
 
 ```bash
 cp .env.example .env
-# 在 .env 中设置 GITEA_RUNNER_REGISTRATION_TOKEN，并在需要时修改 GITEA_INSTANCE_URL。
+# 首次注册时，在 .env 中设置 GITEA_RUNNER_REGISTRATION_TOKEN；必要时修改 GITEA_INSTANCE_URL。
 docker compose up -d
 ```
 
@@ -27,10 +27,10 @@ docker compose up -d
 | 变量                                                            | 默认值                                                        | 说明                                                                                |
 | --------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | `GLOBAL_REGISTRY`                                               | 空                                                            | 可选镜像仓库前缀，必须包含末尾的 `/`。                                              |
-| `GITEA_RUNNER_VERSION`                                          | `3.5.0`                                                       | Runner 镜像版本。                                                                   |
+| `GITEA_RUNNER_VERSION`                                          | `4.1.0`                                                       | Runner 镜像版本。                                                                   |
 | `TZ`                                                            | `UTC`                                                         | 容器时区。                                                                          |
 | `GITEA_INSTANCE_URL`                                            | `http://host.docker.internal:3000`                            | Runner 和任务容器均可访问的 Gitea 地址。                                            |
-| `GITEA_RUNNER_REGISTRATION_TOKEN`                               | 空                                                            | 必填的注册令牌。                                                                    |
+| `GITEA_RUNNER_REGISTRATION_TOKEN`                               | 空                                                            | 仅首次注册时需要。                                                                  |
 | `GITEA_RUNNER_NAME`                                             | `Gitea-Runner`                                                | Gitea 中显示的 Runner 名称。                                                        |
 | `GITEA_RUNNER_LABELS`                                           | `ubuntu-latest`、`ubuntu-24.04`、`ubuntu-22.04` Docker labels | 以逗号分隔的 labels，默认 job image repository 为 `docker.io/gitea/runner-images`。 |
 | `GITEA_RUNNER_HTTP_PROXY`                                       | 空                                                            | Runner 和每个任务容器使用的 HTTP 代理。留空则禁用代理。                             |
@@ -39,11 +39,25 @@ docker compose up -d
 | `GITEA_RUNNER_CPU_LIMIT` / `GITEA_RUNNER_CPU_RESERVATION`       | `1.0` / `0.1`                                                 | CPU 限制和预留。                                                                    |
 | `GITEA_RUNNER_MEMORY_LIMIT` / `GITEA_RUNNER_MEMORY_RESERVATION` | `2G` / `1G`                                                   | 内存限制和预留。                                                                    |
 
-仓库已经提供可直接使用的 `config.yaml`，无需在启动前生成。如需查看上游 3.5.0 的新配置，可运行：
+仓库已经提供可直接使用的 `config.yaml`，无需在启动前生成。如需生成单独的上游 4.1.0 配置用于比较（请勿盲目覆盖仓库的 `config.yaml`），可运行：
 
 ```bash
-docker run --entrypoint="" --rm gitea/runner:3.5.0 gitea-runner generate-config > config.yaml
+docker run --entrypoint="" --rm gitea/runner:4.1.0 gitea-runner generate-config > config.upstream.yaml
 ```
+
+请将其与现有 `config.yaml` 比较；参见 [Runner 4.1.0 示例配置](https://gitea.com/gitea/runner/raw/tag/v4.1.0/internal/pkg/config/config.example.yaml)。本仓库不会创建该比较文件。
+
+该镜像也支持 `GITEA_RUNNER_REGISTRATION_TOKEN_FILE` 文件令牌方式，但需要挂载密钥文件并配置对应环境变量；本配置默认未设置密钥挂载。
+
+## 从 3.5.0 升级到 4.1.0
+
+请备份 `gitea_runner_data`，并继续将其挂载到 `/data`；其中保存 Runner 注册状态。现有 `config.yaml` 保持不变，包括并发数 10。Runner 4.1.0 针对最新 Gitea 服务端进行了兼容性测试，并不承诺兼容所有较旧版本。
+
+Compose 的 CPU 和内存限制仅作用于 Runner 守护进程，不作用于 Docker 创建的任务容器。并发数为 10 时，请据此配置宿主机资源，并单独设置每个任务的限制（例如使用原生 `container.options`）。
+
+- Runner 4.0 更改了缓存流程：缓存由 Runner 提供，而非旧的独立缓存路径，可能影响远程 Docker／网络配置。详见 [4.0.0 版本说明](https://gitea.com/gitea/runner/releases/tag/v4.0.0)。
+- `container.valid_volumes` 中的 `*` 不再匹配包含 `/` 的路径；若确实要允许嵌套路径挂载，请使用 `**`。当前配置保持列表为空（限制挂载）。
+- 详见 [官方升级指南](https://docs.gitea.com/runner/upgrade/)和 [Docker 安装指南](https://docs.gitea.com/runner/installation/docker/)。
 
 ## 从 Runner 2.x 升级
 
@@ -92,7 +106,7 @@ Dockerfiles 无需为此添加 `ARG` 行，因为这些代理变量是预定义�
 
 ## 安全
 
-访问 Docker 套接字等同于拥有宿主机级别的高权限。不要在此 Runner 上运行不可信 workflow。如需更强隔离，请使用专用宿主机或 VM，或评估 rootless Docker-in-Docker 方案。
+Docker 套接字访问权限意味着 workflow 可以控制宿主机 Docker 守护进程。仅运行可信任务，并只接受可信作者提交的 workflow；不可信任务应优先使用隔离的宿主机或守护进程。特权 Docker-in-Docker 并不会自动更安全，也不是可直接切换的替代方案。
 
 ## 从 act_runner 迁移
 

@@ -42,7 +42,7 @@ This service sets up a MongoDB replica set with three members.
 ## Configuration
 
 - `TZ`: The timezone for the container, default is `UTC`.
-- `MONGO_VERSION`: The version of the MongoDB image, default is `8.2.3`.
+- `MONGO_VERSION`: The version of the MongoDB image, default is `8.3.11`.
 - `MONGO_INITDB_ROOT_USERNAME`: The root username for the database, default is `root`.
 - `MONGO_INITDB_ROOT_PASSWORD`: The root password for the database, default is `password`.
 - `MONGO_INITDB_DATABASE`: The initial database to create, default is `admin`.
@@ -58,3 +58,7 @@ This service sets up a MongoDB replica set with three members.
 ## Security
 
 The replica set key file is mounted read-only and copied to `/tmp` inside the container with proper permissions (400). This approach ensures cross-platform compatibility (Windows/Linux/macOS) while maintaining security requirements. The key file is never modified on the host system.
+
+## Upgrading
+
+Back up the database and test the upgrade path before changing image tags. MongoDB upgrades should follow supported adjacent minor-version steps; upgrade secondaries first, wait for each to return to `SECONDARY`, then step down and upgrade the primary. After the binaries are upgraded, check and set the feature compatibility version (FCV) only as appropriate for the target release. Do not treat changing the image tag as an automatic or universally safe data migration.

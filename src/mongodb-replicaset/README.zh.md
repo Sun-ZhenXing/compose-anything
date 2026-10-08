@@ -42,7 +42,7 @@
 ## 配置
 
 - `TZ`: 容器的时区，默认为 `UTC`。
-- `MONGO_VERSION`: MongoDB 镜像的版本，默认为 `8.2.3`。
+- `MONGO_VERSION`: MongoDB 镜像的版本，默认为 `8.3.11`。
 - `MONGO_INITDB_ROOT_USERNAME`: 数据库的 root 用户名，默认为 `root`。
 - `MONGO_INITDB_ROOT_PASSWORD`: 数据库的 root 密码，默认为 `password`。
 - `MONGO_INITDB_DATABASE`: 要创建的初始数据库，默认为 `admin`。
@@ -58,3 +58,7 @@
 ## 安全性
 
 副本集密钥文件以只读方式挂载，并在容器内复制到 `/tmp` 目录，设置适当的权限（400）。这种方法确保了跨平台兼容性（Windows/Linux/macOS），同时满足安全要求。主机系统上的密钥文件永远不会被修改。
+
+## 升级
+
+更改镜像标签前，请备份数据库并测试升级路径。MongoDB 升级应遵循受支持的相邻次要版本步骤；先升级从节点，并等待每个节点恢复为 `SECONDARY`，然后对主节点执行 step down 并升级。二进制版本升级完成后，请检查 Feature Compatibility Version（FCV），并仅在符合目标版本要求时设置。不要将更改镜像标签视为自动或普遍安全的数据迁移。

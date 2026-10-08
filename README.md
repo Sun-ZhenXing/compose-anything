@@ -89,13 +89,13 @@ These services require building custom Docker images from source.
 | [Flowise](./src/flowise)                                       | 3.0.12              |
 | [frpc](./src/frpc)                                             | 0.68.1              |
 | [frps](./src/frps)                                             | 0.68.1              |
-| [Gitea Runner](./src/gitea-runner)                             | 3.5.0               |
-| [Gitea](./src/gitea)                                           | 1.27.3-rootless     |
+| [Gitea Runner](./src/gitea-runner)                             | 4.1.0               |
+| [Gitea](./src/gitea)                                           | 28.1.0-rootless     |
 | [GitLab Runner](./src/gitlab-runner)                           | 17.10.1             |
 | [GitLab](./src/gitlab)                                         | 18.8.3-ce.0         |
 | [GoModel](./src/gomodel)                                       | v0.1.27             |
 | [GPUStack](./src/gpustack)                                     | v0.5.3              |
-| [Grafana](./src/grafana)                                       | 13.2.2              |
+| [Grafana](./src/grafana)                                       | 13.2.3              |
 | [Grafana Loki](./src/loki)                                     | 3.3.2               |
 | [Grafana Tempo](./src/tempo)                                   | 2.7.2               |
 | [Halo](./src/halo)                                             | 2.21.9              |
@@ -133,8 +133,8 @@ These services require building custom Docker images from source.
 | [MinIO](./src/minio)                                           | latest              |
 | [MLflow](./src/mlflow)                                         | v2.20.2             |
 | [OpenClaw](./apps/openclaw)                                    | 2026.2.3            |
-| [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)   | 8.2.3               |
-| [MongoDB ReplicaSet](./src/mongodb-replicaset)                 | 8.2.3               |
+| [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)   | 8.3.11              |
+| [MongoDB ReplicaSet](./src/mongodb-replicaset)                 | 8.3.11              |
 | [MongoDB Standalone](./src/mongodb-standalone)                 | 8.3.11              |
 | [MySQL](./src/mysql)                                           | 26.7.0              |
 | [n8n](./apps/n8n)                                              | 1.114.0             |
@@ -174,18 +174,19 @@ These services require building custom Docker images from source.
 | [Portainer](./src/portainer)                                   | 2.27.3-alpine       |
 | [Portkey AI Gateway](./src/portkey-gateway)                    | latest              |
 | [PostgreSQL](./src/postgres)                                   | 18.6                |
-| [Prometheus](./src/prometheus)                                 | 3.13.1              |
+| [Prometheus](./src/prometheus)                                 | 3.15.0              |
 | [PyTorch](./src/pytorch)                                       | 2.6.0               |
 | [Qdrant](./src/qdrant)                                         | 1.15.4              |
 | [RabbitMQ](./src/rabbitmq)                                     | 4.3.6               |
 | [RAGFlow](./apps/ragflow)                                      | v0.24.0             |
 | [Ray](./src/ray)                                               | 2.42.1              |
 | [Redpanda](./src/redpanda)                                     | v24.3.1             |
-| [Redis Cluster](./src/redis-cluster)                           | 8.2.1               |
+| [Redis Cluster](./src/redis-cluster)                           | 8.10.2              |
 | [Redis](./src/redis)                                           | 8.10.2              |
 | [Renovate](./src/renovate)                                     | 42.85.4-full        |
 | [Restate Cluster](./src/restate-cluster)                       | 1.5.3               |
 | [Restate](./src/restate)                                       | 1.5.3               |
+| [RustDesk Server OSS](./src/rustdesk)                          | 1.1.16              |
 | [RustFS](./src/rustfs)                                         | 1.0.0-beta.8-glibc  |
 | [SearXNG](./src/searxng)                                       | 2025.1.20-1ce14ef99 |
 | [Selenium](./src/selenium)                                     | 144.0-20260120      |
