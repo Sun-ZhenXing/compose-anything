@@ -2,7 +2,7 @@
 
 [English](./README.md) | [中文](./README.zh.md)
 
-This stack runs Gitea Runner 4.1.0 for Gitea Actions. The Compose service is `gitea_runner`; it executes jobs in Docker containers through the host Docker daemon.
+This stack runs Gitea Runner 5.1.0 for Gitea Actions. The Compose service is `gitea_runner`; it executes jobs in Docker containers through the host Docker daemon.
 
 ## Services
 
@@ -27,7 +27,7 @@ The default `http://host.docker.internal:3000` targets a Gitea server published 
 | Variable                                                        | Default                                                       | Description                                                                   |
 | --------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | `GLOBAL_REGISTRY`                                               | empty                                                         | Optional registry prefix, including its trailing `/`.                         |
-| `GITEA_RUNNER_VERSION`                                          | `4.1.0`                                                       | Runner image version.                                                         |
+| `GITEA_RUNNER_VERSION`                                          | `5.1.0`                                                       | Runner image version.                                                         |
 | `TZ`                                                            | `UTC`                                                         | Container time zone.                                                          |
 | `GITEA_INSTANCE_URL`                                            | `http://host.docker.internal:3000`                            | Gitea URL reachable by the runner and jobs.                                   |
 | `GITEA_RUNNER_REGISTRATION_TOKEN`                               | empty                                                         | Required for initial registration only.                                       |
@@ -39,15 +39,26 @@ The default `http://host.docker.internal:3000` targets a Gitea server published 
 | `GITEA_RUNNER_CPU_LIMIT` / `GITEA_RUNNER_CPU_RESERVATION`       | `1.0` / `0.1`                                                 | CPU limit and reservation.                                                    |
 | `GITEA_RUNNER_MEMORY_LIMIT` / `GITEA_RUNNER_MEMORY_RESERVATION` | `2G` / `1G`                                                   | Memory limit and reservation.                                                 |
 
-The repository includes a ready-to-use `config.yaml`. To create a separate upstream 4.1.0 configuration for comparison (do not replace the repository's `config.yaml` blindly), run:
+The repository includes a ready-to-use `config.yaml`. To create a separate upstream 5.1.0 configuration for comparison (do not replace the repository's `config.yaml` blindly), run:
 
 ```bash
-docker run --entrypoint="" --rm gitea/runner:4.1.0 gitea-runner generate-config > config.upstream.yaml
+docker run --entrypoint="" --rm gitea/runner:5.1.0 gitea-runner generate-config > config.upstream.yaml
 ```
 
-Compare it with the existing `config.yaml`; see the [Runner 4.1.0 example config](https://gitea.com/gitea/runner/raw/tag/v4.1.0/internal/pkg/config/config.example.yaml). The generated comparison file is not created by this repository.
+Compare it with the existing `config.yaml`; see the [Runner 5.1.0 example config](https://gitea.com/gitea/runner/raw/tag/v5.1.0/internal/pkg/config/config.example.yaml). The generated comparison file is not created by this repository.
 
 The image also supports `GITEA_RUNNER_REGISTRATION_TOKEN_FILE` for a token file. Using it requires mounting the secret and wiring the corresponding environment variable; this stack does not configure a secret mount by default.
+
+## Upgrading from 4.1.0 to 5.1.0
+
+Back up `gitea_runner_data` and keep it mounted at `/data`; it contains the runner registration state, which stays valid across versions. Runner 5.x requires Gitea server >= 1.21; this repository's sibling `src/gitea` stack (28.1.0) satisfies that requirement. Relevant v5 behavior changes:
+
+- Unset `${VAR}` references in `config.yaml` now fail startup instead of resolving empty; the included `config.yaml` contains none.
+- In unprivileged job containers (this stack's default), host-reaching `container.options` such as `--log-driver`, `--log-opt`, and OOM settings are stripped; use privileged mode only if you accept the risk. This stack sets no such options.
+- Metric names changed from `act_runner_*` to `gitea_runner_*` (not referenced by this stack; its healthcheck uses `/healthz`).
+- Workflows must declare `runs-on:`; the runner no longer falls back to a default image for jobs without it.
+
+See the [5.0.0 release announcement](https://blog.gitea.com/release-of-runner-5.0.0/), the [official upgrade guide](https://docs.gitea.com/runner/upgrade/), and the [Docker installation guide](https://docs.gitea.com/runner/installation/docker/).
 
 ## Upgrading from 3.5.0 to 4.1.0
 

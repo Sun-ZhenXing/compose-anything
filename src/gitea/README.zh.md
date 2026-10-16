@@ -72,7 +72,7 @@ docker compose --profile mcp up -d
 | `POSTGRES_DB` | `gitea` | 数据库名称。 |
 | `GITEA_HTTP_PORT` | `3000` | Gitea HTTP 发布端口。 |
 | `GITEA_SSH_PORT` | `2222` | Gitea SSH 发布端口。 |
-| `GITEA_MCP_VERSION` | `1.7.0` | Gitea MCP 服务镜像标签。 |
+| `GITEA_MCP_VERSION` | `1.8.1` | Gitea MCP 服务镜像标签。 |
 | `GITEA_MCP_PORT_OVERRIDE` | `3001` | MCP HTTP 端点的宿主机端口。 |
 | `GITEA_MCP_HOST` | `http://gitea:3000` | Compose 网络内访问 Gitea 的地址。 |
 | `GITEA_MCP_ACCESS_TOKEN` | 空 | 用于所有请求的 Gitea personal access token。 |

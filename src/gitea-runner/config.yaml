@@ -1,4 +1,4 @@
-# Ready-to-use configuration for Gitea Runner 4.1.0. Existing settings are preserved.
+# Ready-to-use configuration for Gitea Runner 5.1.0. Existing settings are preserved.
 
 log:
   # Logging level: trace, debug, info, warn, error, or fatal.

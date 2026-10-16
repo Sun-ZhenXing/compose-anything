@@ -72,7 +72,7 @@ The service is stateless and stores no data. Its log file lives inside the conta
 | `POSTGRES_DB` | `gitea` | Database name. |
 | `GITEA_HTTP_PORT` | `3000` | Published Gitea HTTP port. |
 | `GITEA_SSH_PORT` | `2222` | Published Gitea SSH port. |
-| `GITEA_MCP_VERSION` | `1.7.0` | Gitea MCP server image tag. |
+| `GITEA_MCP_VERSION` | `1.8.1` | Gitea MCP server image tag. |
 | `GITEA_MCP_PORT_OVERRIDE` | `3001` | Host port for the MCP HTTP endpoint. |
 | `GITEA_MCP_HOST` | `http://gitea:3000` | Gitea URL as seen from inside the Compose network. |
 | `GITEA_MCP_ACCESS_TOKEN` | empty | Gitea personal access token used for every request. |

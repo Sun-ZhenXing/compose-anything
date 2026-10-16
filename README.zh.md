@@ -48,6 +48,7 @@ docker compose exec redis redis-cli ping
 
 | 服务                                                           | 版本                |
 | -------------------------------------------------------------- | ------------------- |
+| [Apache Airflow](./src/airflow)                                | 3.3.2               |
 | [Apache APISIX](./src/apisix)                                  | 3.13.0              |
 | [Apache Cassandra](./src/cassandra)                            | 5.0.2               |
 | [Apache Flink](./src/flink)                                    | 1.20.0              |
@@ -89,7 +90,7 @@ docker compose exec redis redis-cli ping
 | [Flowise](./src/flowise)                                       | 3.0.12              |
 | [frpc](./src/frpc)                                             | 0.68.1              |
 | [frps](./src/frps)                                             | 0.68.1              |
-| [Gitea Runner](./src/gitea-runner)                             | 4.1.0               |
+| [Gitea Runner](./src/gitea-runner)                             | 5.1.0               |
 | [Gitea](./src/gitea)                                           | 28.1.0-rootless     |
 | [GitLab Runner](./src/gitlab-runner)                           | 17.10.1             |
 | [GitLab](./src/gitlab)                                         | 18.8.3-ce.0         |
@@ -212,6 +213,7 @@ docker compose exec redis redis-cli ping
 | [Verdaccio](./src/verdaccio)                                   | 6.1.2               |
 | [vLLM](./src/vllm)                                             | v0.13.0             |
 | [Windmill](./src/windmill)                                     | main                |
+| [ZenML](./src/zenml)                                           | 0.98.0              |
 | [ZooKeeper](./src/zookeeper)                                   | 3.9.3               |
 
 ## MCP 服务器

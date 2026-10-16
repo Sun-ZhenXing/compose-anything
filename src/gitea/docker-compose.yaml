@@ -52,7 +52,7 @@ services:
 
   gitea_mcp:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}gitea/gitea-mcp-server:${GITEA_MCP_VERSION:-1.7.0}
+    image: ${GLOBAL_REGISTRY:-}gitea/gitea-mcp-server:${GITEA_MCP_VERSION:-1.8.1}
     profiles: [mcp]
     command:
       - /app/gitea-mcp

@@ -1,0 +1,218 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  mysql:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}mysql:${MYSQL_VERSION:-8.4}
+    environment:
+      TZ: ${TZ:-UTC}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-zenml-root-pw}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-zenml}
+      MYSQL_USER: ${MYSQL_USER:-zenml}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-zenml}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: ${MYSQL_CPU_LIMIT:-1.0}
+          memory: ${MYSQL_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${MYSQL_CPU_RESERVATION:-0.25}
+          memory: ${MYSQL_MEMORY_RESERVATION:-512M}
+    healthcheck:
+      test: [CMD-SHELL, 'mysqladmin ping -h localhost -u root -p"$$MYSQL_ROOT_PASSWORD"']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  zenml:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}zenmldocker/zenml-server:${ZENML_VERSION:-0.98.0}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - '${ZENML_PORT_OVERRIDE:-8080}:8080'
+    environment:
+      TZ: ${TZ:-UTC}
+      ZENML_STORE_URL: ${ZENML_STORE_URL:-mysql://${MYSQL_USER:-zenml}:${MYSQL_PASSWORD:-zenml}@mysql:3306/${MYSQL_DATABASE:-zenml}}
+      ZENML_STORE_SSL_CA: ${ZENML_STORE_SSL_CA:-}
+      ZENML_STORE_SSL_CERT: ${ZENML_STORE_SSL_CERT:-}
+      ZENML_STORE_SSL_KEY: ${ZENML_STORE_SSL_KEY:-}
+      ZENML_STORE_SSL_VERIFY_SERVER_CERT: ${ZENML_STORE_SSL_VERIFY_SERVER_CERT:-false}
+      ZENML_LOCAL_STORES_PATH: ${ZENML_LOCAL_STORES_PATH:-}
+      ZENML_SERVER_DEPLOYMENT_TYPE: ${ZENML_SERVER_DEPLOYMENT_TYPE:-docker}
+      ZENML_SERVER_JWT_SECRET_KEY: ${ZENML_SERVER_JWT_SECRET_KEY:-}
+      ZENML_SECRETS_STORE_TYPE: ${ZENML_SECRETS_STORE_TYPE:-}
+      ZENML_SECRETS_STORE_ENCRYPTION_KEY: ${ZENML_SECRETS_STORE_ENCRYPTION_KEY:-}
+      ZENML_SECRETS_STORE_AWS_ACCESS_KEY_ID: ${ZENML_SECRETS_STORE_AWS_ACCESS_KEY_ID:-}
+      ZENML_SECRETS_STORE_AWS_SECRET_ACCESS_KEY: ${ZENML_SECRETS_STORE_AWS_SECRET_ACCESS_KEY:-}
+      ZENML_SECRETS_STORE_GCP_CREDENTIALS: ${ZENML_SECRETS_STORE_GCP_CREDENTIALS:-}
+      ZENML_SECRETS_STORE_AZURE_CREDENTIALS: ${ZENML_SECRETS_STORE_AZURE_CREDENTIALS:-}
+      ZENML_SECRETS_STORE_HASHICORP_TOKEN: ${ZENML_SECRETS_STORE_HASHICORP_TOKEN:-}
+      ZENML_SECRETS_STORE_HASHICORP_URL: ${ZENML_SECRETS_STORE_HASHICORP_URL:-}
+      ZENML_SECRETS_STORE_HASHICORP_MOUNT_PATH: ${ZENML_SECRETS_STORE_HASHICORP_MOUNT_PATH:-}
+      ZENML_SECRETS_STORE_CUSTOM_PLUGIN: ${ZENML_SECRETS_STORE_CUSTOM_PLUGIN:-}
+      ZENML_STORE_BACKUP_STRATEGY: ${ZENML_STORE_BACKUP_STRATEGY:-}
+      ZENML_STORE_BACKUP_DIRECTORY: ${ZENML_STORE_BACKUP_DIRECTORY:-}
+      ZENML_STORE_BACKUP_DATABASE: ${ZENML_STORE_BACKUP_DATABASE:-}
+      ZENML_ANALYTICS_OPT_IN: ${ZENML_ANALYTICS_OPT_IN:-false}
+      ZENML_LOGGING_VERBOSITY: ${ZENML_LOGGING_VERBOSITY:-INFO}
+      ZENML_CONSOLE_LOGGING_FORMAT: ${ZENML_CONSOLE_LOGGING_FORMAT:-}
+      ZENML_LOGGING_COLORS_DISABLED: ${ZENML_LOGGING_COLORS_DISABLED:-}
+      ZENML_DEFAULT_USER_NAME: ${ZENML_DEFAULT_USER_NAME:-default}
+      ZENML_DEFAULT_USER_PASSWORD: ${ZENML_DEFAULT_USER_PASSWORD:-}
+      ZENML_SERVER_AUTO_ACTIVATE: ${ZENML_SERVER_AUTO_ACTIVATE:-true}
+      ZENML_SERVER_SERVER_URL: ${ZENML_SERVER_SERVER_URL:-}
+      ZENML_SERVER_RATE_LIMIT_ENABLED: ${ZENML_SERVER_RATE_LIMIT_ENABLED:-}
+      ZENML_SERVER_RATE_LIMIT_REQUESTS_PER_SECOND: ${ZENML_SERVER_RATE_LIMIT_REQUESTS_PER_SECOND:-}
+      ZENML_SERVER_SECURE_HEADERS_CONTENT_SECURITY_POLICY: ${ZENML_SERVER_SECURE_HEADERS_CONTENT_SECURITY_POLICY:-}
+      ZENML_SERVER_SECURE_HEADERS_PERMISSIONS_POLICY: ${ZENML_SERVER_SECURE_HEADERS_PERMISSIONS_POLICY:-}
+      ZENML_SERVER_SECURE_HEADERS_STRICT_TRANSPORT_SECURITY: ${ZENML_SERVER_SECURE_HEADERS_STRICT_TRANSPORT_SECURITY:-}
+      ZENML_SERVER_SECURE_HEADERS_REFERRER_POLICY: ${ZENML_SERVER_SECURE_HEADERS_REFERRER_POLICY:-}
+      ZENML_SERVER_SECURE_HEADERS_X_CONTENT_TYPE_OPTIONS: ${ZENML_SERVER_SECURE_HEADERS_X_CONTENT_TYPE_OPTIONS:-}
+      ZENML_SERVER_OTEL_EXPORTER_OTLP_ENDPOINT: ${ZENML_SERVER_OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      ZENML_SERVER_OTEL_EXPORTER_SERVICE_NAME: ${ZENML_SERVER_OTEL_EXPORTER_SERVICE_NAME:-}
+      ZENML_SERVER_OTEL_EXPORTER_OTLP_INSECURE: ${ZENML_SERVER_OTEL_EXPORTER_OTLP_INSECURE:-true}
+    deploy:
+      resources:
+        limits:
+          cpus: ${ZENML_CPU_LIMIT:-1.0}
+          memory: ${ZENML_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${ZENML_CPU_RESERVATION:-0.25}
+          memory: ${ZENML_MEMORY_RESERVATION:-512M}
+    healthcheck:
+      test: [CMD-SHELL, "python -c \"import requests; r = requests.get('http://localhost:8080/health'); r.raise_for_status()\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Optional: SQLite-backed ZenML server without MySQL (dev profile only).
+  # Start with: docker compose --profile dev up -d
+  # Note: the default `zenml` service and this variant share the same port,
+  # so never enable both at once; --profile dev starts the SQLite variant instead.
+  zenml-sqlite:
+    <<: *defaults
+    profiles: [dev]
+    image: ${GLOBAL_REGISTRY:-}zenmldocker/zenml-server:${ZENML_VERSION:-0.98.0}
+    ports:
+      - '${ZENML_PORT_OVERRIDE:-8080}:8080'
+    environment:
+      TZ: ${TZ:-UTC}
+      ZENML_STORE_URL: sqlite:////zenml/.zenstore
+      ZENML_SERVER_DEPLOYMENT_TYPE: ${ZENML_SERVER_DEPLOYMENT_TYPE:-docker}
+      ZENML_SERVER_JWT_SECRET_KEY: ${ZENML_SERVER_JWT_SECRET_KEY:-}
+      ZENML_ANALYTICS_OPT_IN: ${ZENML_ANALYTICS_OPT_IN:-false}
+      ZENML_LOGGING_VERBOSITY: ${ZENML_LOGGING_VERBOSITY:-INFO}
+    volumes:
+      - zenml_data:/zenml/.zenstore
+    deploy:
+      resources:
+        limits:
+          cpus: ${ZENML_CPU_LIMIT:-1.0}
+          memory: ${ZENML_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${ZENML_CPU_RESERVATION:-0.25}
+          memory: ${ZENML_MEMORY_RESERVATION:-512M}
+    healthcheck:
+      test: [CMD-SHELL, "python -c \"import requests; r = requests.get('http://localhost:8080/health'); r.raise_for_status()\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  adminer:
+    <<: *defaults
+    profiles: [dev]
+    image: ${GLOBAL_REGISTRY:-}adminer:${ADMINER_VERSION:-4.8.1}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - '${ADMINER_PORT_OVERRIDE:-8081}:8080'
+    environment:
+      TZ: ${TZ:-UTC}
+      ADMINER_DEFAULT_SERVER: mysql
+    deploy:
+      resources:
+        limits:
+          cpus: ${ADMINER_CPU_LIMIT:-0.5}
+          memory: ${ADMINER_MEMORY_LIMIT:-256M}
+        reservations:
+          cpus: ${ADMINER_CPU_RESERVATION:-0.1}
+          memory: ${ADMINER_MEMORY_RESERVATION:-128M}
+
+  otel-collector:
+    <<: *defaults
+    profiles: [metrics]
+    image: ${GLOBAL_REGISTRY:-}otel/opentelemetry-collector-contrib:${OTEL_COLLECTOR_VERSION:-0.112.0}
+    command: [--config=/etc/otel-collector-config.yaml]
+    configs:
+      - source: otel_collector_config
+        target: /etc/otel-collector-config.yaml
+    ports:
+      - '${OTEL_COLLECTOR_PORT_OVERRIDE:-4317}:4317'
+    environment:
+      TZ: ${TZ:-UTC}
+    deploy:
+      resources:
+        limits:
+          cpus: ${OTEL_COLLECTOR_CPU_LIMIT:-0.5}
+          memory: ${OTEL_COLLECTOR_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${OTEL_COLLECTOR_CPU_RESERVATION:-0.1}
+          memory: ${OTEL_COLLECTOR_MEMORY_RESERVATION:-128M}
+
+  prometheus:
+    <<: *defaults
+    profiles: [metrics]
+    image: ${GLOBAL_REGISTRY:-}prom/prometheus:${PROMETHEUS_VERSION:-v2.53.1}
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=15d
+    ports:
+      - '${PROMETHEUS_PORT_OVERRIDE:-9090}:9090'
+    volumes:
+      - prometheus_data:/prometheus
+    environment:
+      TZ: ${TZ:-UTC}
+    deploy:
+      resources:
+        limits:
+          cpus: ${PROMETHEUS_CPU_LIMIT:-0.5}
+          memory: ${PROMETHEUS_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${PROMETHEUS_CPU_RESERVATION:-0.1}
+          memory: ${PROMETHEUS_MEMORY_RESERVATION:-256M}
+
+configs:
+  otel_collector_config:
+    content: |
+      receivers:
+        otlp:
+          protocols:
+            grpc:
+              endpoint: 0.0.0.0:4317
+      exporters:
+        prometheus:
+          endpoint: 0.0.0.0:8889
+      service:
+        pipelines:
+          metrics:
+            receivers: [otlp]
+            exporters: [prometheus]
+
+volumes:
+  mysql_data:
+  zenml_data:
+  prometheus_data:

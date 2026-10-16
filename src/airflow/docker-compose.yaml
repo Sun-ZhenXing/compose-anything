@@ -1,0 +1,212 @@
+# Apache Airflow - Programmatic Workflow Orchestration Platform
+# https://github.com/apache/airflow
+#
+# Airflow lets you author, schedule, and monitor workflows as directed acyclic
+# graphs (DAGs) written in Python.
+#
+# Topology (Airflow 3.x):
+# - airflow-apiserver: REST API and UI (single entrypoint)
+# - airflow-scheduler: schedules DAG runs
+# - airflow-dag-processor: parses DAG files
+# - airflow-triggerer: handles deferred/async triggers
+#
+# Key Notes:
+# - LocalExecutor runs tasks inside the scheduler container (simple single-node setup)
+# - DAGs are read from ./dags, logs written to ./logs (bind mounts are REQUIRED so
+#   all components share the same DAG files and task logs)
+# - DAGs are paused at creation by default; enable them in the UI when ready
+# - Default credentials from .env.example: airflow / change-me (CHANGE THEM via .env before production)
+# - Set AIRFLOW_UID to your host user ID to avoid permission issues on ./logs
+#   (defaults to 50000; on Windows/macOS Docker Desktop any value works)
+# - AIRFLOW_FERNET_KEY left empty generates an ephemeral key (saved DAG connections
+#   and variables are lost on restart); generate a stable one with:
+#   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key())"
+#
+# License: Apache-2.0 (https://github.com/apache/airflow/blob/main/LICENSE)
+
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+x-airflow-common: &airflow-common
+  <<: *defaults
+  image: ${GLOBAL_REGISTRY:-}apache/airflow:${AIRFLOW_VERSION:-3.3.2-python3.12}
+  user: '${AIRFLOW_UID:-50000}:0'
+  environment: &airflow-common-env
+    # Core
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY:-}
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    AIRFLOW__CORE__LOAD_EXAMPLES: ${AIRFLOW_LOAD_EXAMPLES:-false}
+    # Database
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@postgres/${POSTGRES_DB:-airflow}
+    # Task execution talks back to the apiserver (Airflow 3.x)
+    AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-apiserver:8080/execution/
+    # Scheduler
+    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
+    # Timezone
+    TZ: ${TZ:-UTC}
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+    - ./plugins:/opt/airflow/plugins
+    - ./config:/opt/airflow/config
+  depends_on:
+    postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}postgres:${POSTGRES_VERSION:-16}
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-airflow}
+      - POSTGRES_USER=${POSTGRES_USER:-airflow}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-airflow}
+      - TZ=${TZ:-UTC}
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U ${POSTGRES_USER:-airflow} -d ${POSTGRES_DB:-airflow}']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '${POSTGRES_CPU_LIMIT:-1.0}'
+          memory: '${POSTGRES_MEMORY_LIMIT:-1G}'
+        reservations:
+          cpus: '${POSTGRES_CPU_RESERVATION:-0.1}'
+          memory: '${POSTGRES_MEMORY_RESERVATION:-256M}'
+
+  airflow-init:
+    <<: *airflow-common
+    user: '0:0'
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - airflow version
+    restart: no
+    environment:
+      <<: *airflow-common-env
+      # Migrate DB metadata and create the initial admin user
+      _AIRFLOW_DB_MIGRATE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+    deploy:
+      resources:
+        limits:
+          cpus: '${AIRFLOW_INIT_CPU_LIMIT:-0.5}'
+          memory: '${AIRFLOW_INIT_MEMORY_LIMIT:-512M}'
+        reservations:
+          cpus: '${AIRFLOW_INIT_CPU_RESERVATION:-0.1}'
+          memory: '${AIRFLOW_INIT_MEMORY_RESERVATION:-128M}'
+
+  airflow-apiserver:
+    <<: *airflow-common
+    ports:
+      - '${AIRFLOW_PORT_OVERRIDE:-8080}:8080'
+    command: api-server
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [CMD-SHELL, 'curl --fail http://localhost:8080/api/v2/monitor/health || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '${AIRFLOW_APISERVER_CPU_LIMIT:-1.0}'
+          memory: '${AIRFLOW_APISERVER_MEMORY_LIMIT:-1G}'
+        reservations:
+          cpus: '${AIRFLOW_APISERVER_CPU_RESERVATION:-0.25}'
+          memory: '${AIRFLOW_APISERVER_MEMORY_RESERVATION:-512M}'
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+      airflow-apiserver:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD-SHELL, 'airflow jobs check --job-type SchedulerJob || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '${AIRFLOW_SCHEDULER_CPU_LIMIT:-1.0}'
+          memory: '${AIRFLOW_SCHEDULER_MEMORY_LIMIT:-1G}'
+        reservations:
+          cpus: '${AIRFLOW_SCHEDULER_CPU_RESERVATION:-0.25}'
+          memory: '${AIRFLOW_SCHEDULER_MEMORY_RESERVATION:-512M}'
+
+  airflow-dag-processor:
+    <<: *airflow-common
+    command: dag-processor
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+      airflow-apiserver:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD-SHELL, 'airflow jobs check --job-type DagProcessorJob || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '${AIRFLOW_DAG_PROCESSOR_CPU_LIMIT:-0.5}'
+          memory: '${AIRFLOW_DAG_PROCESSOR_MEMORY_LIMIT:-1G}'
+        reservations:
+          cpus: '${AIRFLOW_DAG_PROCESSOR_CPU_RESERVATION:-0.1}'
+          memory: '${AIRFLOW_DAG_PROCESSOR_MEMORY_RESERVATION:-256M}'
+
+  airflow-triggerer:
+    <<: *airflow-common
+    command: triggerer
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+      airflow-apiserver:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD-SHELL, 'airflow jobs check --job-type TriggererJob || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '${AIRFLOW_TRIGGERER_CPU_LIMIT:-0.5}'
+          memory: '${AIRFLOW_TRIGGERER_MEMORY_LIMIT:-1G}'
+        reservations:
+          cpus: '${AIRFLOW_TRIGGERER_CPU_RESERVATION:-0.1}'
+          memory: '${AIRFLOW_TRIGGERER_MEMORY_RESERVATION:-256M}'
+
+volumes:
+  postgres-db:
