@@ -192,7 +192,7 @@ These services require building custom Docker images from source.
 | [SearXNG](./src/searxng)                                       | 2025.1.20-1ce14ef99 |
 | [Selenium](./src/selenium)                                     | 144.0-20260120      |
 | [Shannon](./apps/shannon)                                      | v0.3.1              |
-| [SigNoz](./src/signoz)                                         | v0.142.1            |
+| [SigNoz](./src/signoz)                                         | v0.146.0            |
 | [SiYuan](./apps/siyuan)                                        | v3.8.2              |
 | [Sim](./apps/sim)                                              | latest              |
 | [Skyvern](./apps/skyvern)                                      | v1.0.31             |
