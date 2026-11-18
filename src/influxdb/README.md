@@ -40,7 +40,7 @@ InfluxDB is a high-performance, open-source time series database designed for ha
 
 | Variable                  | Description                         | Default          |
 | ------------------------- | ----------------------------------- | ---------------- |
-| `INFLUXDB_VERSION`        | InfluxDB version                    | `2.8.0`          |
+| `INFLUXDB_VERSION`        | InfluxDB version                    | `2.9.1`          |
 | `TZ`                      | Timezone                            | `UTC`            |
 | `INFLUXDB_INIT_MODE`      | Initialization mode (setup/upgrade) | `setup`          |
 | `INFLUXDB_ADMIN_USERNAME` | Admin username                      | `admin`          |

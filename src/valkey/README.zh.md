@@ -12,7 +12,7 @@
 
 | 变量名               | 说明                                          | 默认值       |
 | -------------------- | --------------------------------------------- | ------------ |
-| VALKEY_VERSION       | Valkey 镜像版本                               | `8.0-alpine` |
+| VALKEY_VERSION       | Valkey 镜像版本                               | `8.1-alpine` |
 | VALKEY_PASSWORD      | 认证密码                                      | `passw0rd`   |
 | VALKEY_PORT_OVERRIDE | 主机端口映射（映射到容器内 Valkey 端口 6379） | `6379`       |
 

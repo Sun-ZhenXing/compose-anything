@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   qdrant:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}qdrant/qdrant:${QDRANT_VERSION:-v1.15.4}
+    image: ${GLOBAL_REGISTRY:-}qdrant/qdrant:${QDRANT_VERSION:-v1.20.2}
     ports:
       - '${QDRANT_HTTP_PORT:-6333}:6333'
       - '${QDRANT_GRPC_PORT:-6334}:6334'
@@ -28,7 +28,8 @@ services:
           cpus: ${QDRANT_CPU_RESERVATION:-0.1}
           memory: ${QDRANT_MEMORY_RESERVATION:-256M}
     healthcheck:
-      test: [CMD, wget, --no-verbose, --tries=1, --spider, 'http://localhost:6333/']
+      # The qdrant image has no curl or wget; use bash's TCP support instead
+      test: [CMD-SHELL, 'bash -c "exec 3<>/dev/tcp/127.0.0.1/6333"']
       interval: 30s
       timeout: 10s
       retries: 3

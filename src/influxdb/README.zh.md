@@ -40,7 +40,7 @@ InfluxDB 是一个高性能的开源时序数据库，专为处理高写入和�
 
 | 变量                      | 说明                        | 默认值           |
 | ------------------------- | --------------------------- | ---------------- |
-| `INFLUXDB_VERSION`        | InfluxDB 版本               | `2.8.0`          |
+| `INFLUXDB_VERSION`        | InfluxDB 版本               | `2.9.1`          |
 | `TZ`                      | 时区                        | `UTC`            |
 | `INFLUXDB_INIT_MODE`      | 初始化模式（setup/upgrade） | `setup`          |
 | `INFLUXDB_ADMIN_USERNAME` | 管理员用户名                | `admin`          |

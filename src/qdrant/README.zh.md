@@ -14,7 +14,7 @@ Qdrant 支持 [API 密钥](https://qdrant.tech/documentation/guides/security/#re
 
 ## 配置
 
-- `QDRANT_VERSION`: Qdrant 镜像的版本，默认为 `v1.15.4`。
+- `QDRANT_VERSION`: Qdrant 镜像的版本，默认为 `v1.20.2`。
 - `QDRANT_HTTP_PORT`: Qdrant HTTP API 的主机端口，默认为 `6333`。
 - `QDRANT_GRPC_PORT`: Qdrant gRPC API 的主机端口，默认为 `6334`。
 - `QDRANT_API_KEY`: Qdrant 的 API 密钥。

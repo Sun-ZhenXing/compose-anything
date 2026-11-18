@@ -14,7 +14,7 @@ Qdrant supports [API keys](https://qdrant.tech/documentation/guides/security/#re
 
 ## Configuration
 
-- `QDRANT_VERSION`: The version of the Qdrant image, default is `v1.15.4`.
+- `QDRANT_VERSION`: The version of the Qdrant image, default is `v1.20.2`.
 - `QDRANT_HTTP_PORT`: The host port for Qdrant HTTP API, default is `6333`.
 - `QDRANT_GRPC_PORT`: The host port for Qdrant gRPC API, default is `6334`.
 - `QDRANT_API_KEY`: API key for Qdrant.

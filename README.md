@@ -54,7 +54,7 @@ These services require building custom Docker images from source.
 | [Apache Flink](./src/flink)                                    | 1.20.0              |
 | [Apache HBase](./src/hbase)                                    | 2.6                 |
 | [Apache HTTP Server](./src/apache)                             | 2.4.62              |
-| [Apache Kafka](./src/kafka)                                    | 8.3.2               |
+| [Apache Kafka](./src/kafka)                                    | 8.3.3               |
 | [Apache Pulsar](./src/pulsar)                                  | 4.0.7               |
 | [Apache RocketMQ](./src/rocketmq)                              | 5.3.1               |
 | [AppFlowy Cloud (legacy)](./apps/appflowy)                     | 0.9.64              |
@@ -64,13 +64,13 @@ These services require building custom Docker images from source.
 | [Agentgateway](./src/agentgateway)                             | 0.11.2              |
 | [AnythingLLM](./src/anythingllm)                               | latest              |
 | [Anytype](./apps/anytype)                                      | 1.6.0 / v7.2.0      |
-| [Bifrost Gateway](./src/bifrost-gateway)                       | v2.2.1              |
+| [Bifrost Gateway](./src/bifrost-gateway)                       | v2.5.1              |
 | [Bolt.diy](./apps/bolt-diy)                                    | latest              |
 | [Budibase](./src/budibase)                                     | 3.23.0              |
 | [BuildingAI](./apps/buildingai)                                | latest              |
 | [Bytebot](./src/bytebot)                                       | edge                |
 | [Clash](./src/clash)                                           | 1.18.0              |
-| [ClickHouse](./src/clickhouse)                                 | 24.11.1             |
+| [ClickHouse](./src/clickhouse)                                 | 25.8.33             |
 | [Conductor](./src/conductor)                                   | latest              |
 | [Convex](./src/convex)                                         | 33cef775            |
 | [DeepTutor](./apps/deeptutor)                                  | latest              |
@@ -90,19 +90,19 @@ These services require building custom Docker images from source.
 | [Flowise](./src/flowise)                                       | 3.0.12              |
 | [frpc](./src/frpc)                                             | 0.68.1              |
 | [frps](./src/frps)                                             | 0.68.1              |
-| [Gitea Runner](./src/gitea-runner)                             | 5.1.0               |
+| [Gitea Runner](./src/gitea-runner)                             | 6.0.0               |
 | [Gitea](./src/gitea)                                           | 28.1.0-rootless     |
 | [GitLab Runner](./src/gitlab-runner)                           | 17.10.1             |
 | [GitLab](./src/gitlab)                                         | 18.8.3-ce.0         |
 | [GoModel](./src/gomodel)                                       | v0.1.27             |
 | [GPUStack](./src/gpustack)                                     | v0.5.3              |
-| [Grafana](./src/grafana)                                       | 13.2.3              |
+| [Grafana](./src/grafana)                                       | 13.2.6              |
 | [Grafana Loki](./src/loki)                                     | 3.3.2               |
 | [Grafana Tempo](./src/tempo)                                   | 2.7.2               |
 | [Halo](./src/halo)                                             | 2.21.9              |
 | [Harbor](./src/harbor)                                         | v2.12.0             |
 | [HashiCorp Consul](./src/consul)                               | 1.20.3              |
-| [InfluxDB](./src/influxdb)                                     | 2.8.0               |
+| [InfluxDB](./src/influxdb)                                     | 2.9.1               |
 | [Inngest](./src/inngest)                                       | v1.16.3             |
 | [Jenkins](./src/jenkins)                                       | 2.541-lts           |
 | [JODConverter](./src/jodconverter)                             | latest              |
@@ -136,8 +136,9 @@ These services require building custom Docker images from source.
 | [OpenClaw](./apps/openclaw)                                    | 2026.2.3            |
 | [MongoDB ReplicaSet Single](./src/mongodb-replicaset-single)   | 8.3.11              |
 | [MongoDB ReplicaSet](./src/mongodb-replicaset)                 | 8.3.11              |
-| [MongoDB Standalone](./src/mongodb-standalone)                 | 8.3.11              |
-| [MySQL](./src/mysql)                                           | 26.7.0              |
+| [MongoDB Standalone](./src/mongodb-standalone)                 | 8.3.17              |
+| [MySQL](./src/mysql)                                           | 26.10.0             |
+| [NATS](./src/nats)                                             | 2.15.3              |
 | [n8n](./apps/n8n)                                              | 1.114.0             |
 | [Nanobot](./apps/nanobot)                                      | v0.1.3.post4        |
 | [Nacos](./src/nacos)                                           | v3.1.0              |
@@ -145,7 +146,7 @@ These services require building custom Docker images from source.
 | [NexaSDK](./src/nexa-sdk)                                      | v0.2.62             |
 | [Neo4j](./src/neo4j)                                           | 5.27.4              |
 | [Netdata](./src/netdata)                                       | latest              |
-| [Nginx](./src/nginx)                                           | 1.30.5              |
+| [Nginx](./src/nginx)                                           | 1.30.6              |
 | [Node Exporter](./src/node-exporter)                           | v1.8.2              |
 | [OceanBase](./src/oceanbase)                                   | 4.4.2.1             |
 | [Odoo](./src/odoo)                                             | 19.0                |
@@ -174,16 +175,16 @@ These services require building custom Docker images from source.
 | [Pogocache](./src/pogocache)                                   | 1.3.1               |
 | [Portainer](./src/portainer)                                   | 2.27.3-alpine       |
 | [Portkey AI Gateway](./src/portkey-gateway)                    | latest              |
-| [PostgreSQL](./src/postgres)                                   | 18.6                |
-| [Prometheus](./src/prometheus)                                 | 3.15.0              |
+| [PostgreSQL](./src/postgres)                                   | 18.7                |
+| [Prometheus](./src/prometheus)                                 | 3.16.0              |
 | [PyTorch](./src/pytorch)                                       | 2.6.0               |
-| [Qdrant](./src/qdrant)                                         | 1.15.4              |
-| [RabbitMQ](./src/rabbitmq)                                     | 4.3.6               |
+| [Qdrant](./src/qdrant)                                         | 1.20.2              |
+| [RabbitMQ](./src/rabbitmq)                                     | 4.4.1               |
 | [RAGFlow](./apps/ragflow)                                      | v0.24.0             |
 | [Ray](./src/ray)                                               | 2.42.1              |
 | [Redpanda](./src/redpanda)                                     | v24.3.1             |
 | [Redis Cluster](./src/redis-cluster)                           | 8.10.2              |
-| [Redis](./src/redis)                                           | 8.10.2              |
+| [Redis](./src/redis)                                           | 8.10.3              |
 | [Renovate](./src/renovate)                                     | 42.85.4-full        |
 | [Restate Cluster](./src/restate-cluster)                       | 1.5.3               |
 | [Restate](./src/restate)                                       | 1.5.3               |
@@ -209,7 +210,7 @@ These services require building custom Docker images from source.
 | [TurboOCR](./src/turboocr)                                     | v2.1.1              |
 | [Utopia](./src/utopia)                                         | 0.1.0-rc5           |
 | [Valkey Cluster](./src/valkey-cluster)                         | 8.0                 |
-| [Valkey](./src/valkey)                                         | 8.0                 |
+| [Valkey](./src/valkey)                                         | 8.1                 |
 | [Verdaccio](./src/verdaccio)                                   | 6.1.2               |
 | [vLLM](./src/vllm)                                             | v0.13.0             |
 | [Windmill](./src/windmill)                                     | main                |

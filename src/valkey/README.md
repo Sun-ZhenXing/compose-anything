@@ -12,7 +12,7 @@ This service deploys Valkey, an open-source alternative to Redis that began as a
 
 | Variable Name        | Description                                               | Default Value |
 | -------------------- | --------------------------------------------------------- | ------------- |
-| VALKEY_VERSION       | Valkey image version                                      | `8.0-alpine`  |
+| VALKEY_VERSION       | Valkey image version                                      | `8.1-alpine`  |
 | VALKEY_PASSWORD      | Password for authentication                               | `passw0rd`    |
 | VALKEY_PORT_OVERRIDE | Host port mapping (maps to Valkey port 6379 in container) | `6379`        |
 

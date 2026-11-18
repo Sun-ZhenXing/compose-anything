@@ -16,6 +16,7 @@ docker compose up -d
 - `CLICKHOUSE_USER`：默认用户名（默认：`default`）
 - `CLICKHOUSE_PASSWORD`：默认用户密码（默认：`clickhouse`）
 - `CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT`：启用 SQL 驱动的访问控制（默认：`1`）
+- `CLICKHOUSE_VERSION`：ClickHouse Server 镜像版本（默认：`25.8.33.6`，LTS 版本）
 
 ## 端口说明
 

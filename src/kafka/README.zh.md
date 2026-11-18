@@ -13,7 +13,7 @@
 
 | 变量名                             | 说明                                      | 默认值                   |
 | ---------------------------------- | ----------------------------------------- | ------------------------ |
-| `KAFKA_VERSION`                    | Kafka 镜像版本                            | `8.3.2`                  |
+| `KAFKA_VERSION`                    | Kafka 镜像版本                            | `8.3.3`                  |
 | `KAFKA_UI_VERSION`                 | Kafka UI 镜像版本                         | `v0.7.2`                 |
 | `KAFKA_CLUSTER_ID`                 | KRaft 集群 ID（base64 UUID）              | `MkU3OEVBNTcwNTJENDM2Qk` |
 | `KAFKA_BROKER_PORT_OVERRIDE`       | Kafka 主机端口映射（映射到端口 9092）     | `9092`                   |

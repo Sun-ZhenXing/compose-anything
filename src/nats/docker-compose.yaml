@@ -1,0 +1,50 @@
+x-defaults: &defaults
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: '3'
+
+services:
+  nats:
+    <<: *defaults
+    image: ${GLOBAL_REGISTRY:-}nats:${NATS_VERSION:-2.15.3-alpine3.22}
+    command:
+      - --jetstream
+      - --store_dir
+      - /data
+      - --http_port
+      - '8222'
+      - --user
+      - ${NATS_USER:-admin}
+      - --pass
+      - ${NATS_PASSWORD:-password}
+    ports:
+      - '${NATS_PORT_OVERRIDE:-4222}:4222'
+    volumes:
+      - nats_data:/data
+    environment:
+      - TZ=${TZ:-UTC}
+    read_only: true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp
+    healthcheck:
+      test: [CMD, wget, -qO-, http://127.0.0.1:8222/healthz]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: ${NATS_CPU_LIMIT:-1.0}
+          memory: ${NATS_MEMORY_LIMIT:-1G}
+        reservations:
+          cpus: ${NATS_CPU_RESERVATION:-0.1}
+          memory: ${NATS_MEMORY_RESERVATION:-256M}
+
+volumes:
+  nats_data:

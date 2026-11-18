@@ -13,7 +13,7 @@ This service deploys Apache Kafka, a distributed streaming platform, in single-n
 
 | Variable Name                    | Description                                           | Default Value             |
 | -------------------------------- | ----------------------------------------------------- | ------------------------- |
-| KAFKA_VERSION                    | Kafka image version                                   | `8.3.2`                   |
+| KAFKA_VERSION                    | Kafka image version                                   | `8.3.3`                   |
 | KAFKA_UI_VERSION                 | Kafka UI image version                                | `v0.7.2`                  |
 | KAFKA_CLUSTER_ID                 | KRaft cluster ID (base64 UUID)                        | `MkU3OEVBNTcwNTJENDM2Qk`  |
 | KAFKA_BROKER_PORT_OVERRIDE       | Host port mapping for Kafka (maps to port 9092)       | 9092                      |

@@ -9,7 +9,7 @@ x-defaults: &defaults
 services:
   influxdb:
     <<: *defaults
-    image: ${GLOBAL_REGISTRY:-}influxdb:${INFLUXDB_VERSION:-2.8.0}
+    image: ${GLOBAL_REGISTRY:-}influxdb:${INFLUXDB_VERSION:-2.9.1}
     environment:
       TZ: ${TZ:-UTC}
       # InfluxDB v2 initialization

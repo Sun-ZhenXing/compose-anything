@@ -16,6 +16,7 @@ Key environment variables:
 - `CLICKHOUSE_USER`: Default user name (default: `default`)
 - `CLICKHOUSE_PASSWORD`: Default user password (default: `clickhouse`)
 - `CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT`: Enable SQL-driven access control (default: `1`)
+- `CLICKHOUSE_VERSION`: ClickHouse Server image version (default: `25.8.33.6`, an LTS release)
 
 ## Ports
 

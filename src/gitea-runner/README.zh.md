@@ -2,7 +2,7 @@
 
 [English](./README.md) | [中文](./README.zh.md)
 
-此配置使用 Gitea Runner 5.1.0 运行 Gitea Actions。Compose 服务名为 `gitea_runner`，它通过宿主机的 Docker 守护进程在 Docker 容器中执行任务。
+此配置使用 Gitea Runner 6.0.0 运行 Gitea Actions。Compose 服务名为 `gitea_runner`，它通过宿主机的 Docker 守护进程在 Docker 容器中执行任务。
 
 ## 服务
 
@@ -27,7 +27,7 @@ docker compose up -d
 | 变量                                                            | 默认值                                                        | 说明                                                                                |
 | --------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | `GLOBAL_REGISTRY`                                               | 空                                                            | 可选镜像仓库前缀，必须包含末尾的 `/`。                                              |
-| `GITEA_RUNNER_VERSION`                                          | `5.1.0`                                                       | Runner 镜像版本。                                                                   |
+| `GITEA_RUNNER_VERSION`                                          | `6.0.0`                                                       | Runner 镜像版本。                                                                   |
 | `TZ`                                                            | `UTC`                                                         | 容器时区。                                                                          |
 | `GITEA_INSTANCE_URL`                                            | `http://host.docker.internal:3000`                            | Runner 和任务容器均可访问的 Gitea 地址。                                            |
 | `GITEA_RUNNER_REGISTRATION_TOKEN`                               | 空                                                            | 仅首次注册时需要。                                                                  |
@@ -39,15 +39,24 @@ docker compose up -d
 | `GITEA_RUNNER_CPU_LIMIT` / `GITEA_RUNNER_CPU_RESERVATION`       | `1.0` / `0.1`                                                 | CPU 限制和预留。                                                                    |
 | `GITEA_RUNNER_MEMORY_LIMIT` / `GITEA_RUNNER_MEMORY_RESERVATION` | `2G` / `1G`                                                   | 内存限制和预留。                                                                    |
 
-仓库已经提供可直接使用的 `config.yaml`，无需在启动前生成。如需生成单独的上游 5.1.0 配置用于比较（请勿盲目覆盖仓库的 `config.yaml`），可运行：
+仓库已经提供可直接使用的 `config.yaml`，无需在启动前生成。如需生成单独的上游 6.0.0 配置用于比较（请勿盲目覆盖仓库的 `config.yaml`），可运行：
 
 ```bash
-docker run --entrypoint="" --rm gitea/runner:5.1.0 gitea-runner generate-config > config.upstream.yaml
+docker run --entrypoint="" --rm gitea/runner:6.0.0 gitea-runner generate-config > config.upstream.yaml
 ```
 
-请将其与现有 `config.yaml` 比较；参见 [Runner 5.1.0 示例配置](https://gitea.com/gitea/runner/raw/tag/v5.1.0/internal/pkg/config/config.example.yaml)。本仓库不会创建该比较文件。
+请将其与现有 `config.yaml` 比较；参见 [Runner 6.0.0 示例配置](https://gitea.com/gitea/runner/raw/tag/v6.0.0/internal/pkg/config/config.example.yaml)。本仓库不会创建该比较文件。
 
 该镜像也支持 `GITEA_RUNNER_REGISTRATION_TOKEN_FILE` 文件令牌方式，但需要挂载密钥文件并配置对应环境变量；本配置默认未设置密钥挂载。
+
+## 升级到 6.0.0
+
+请备份 `gitea_runner_data`，并继续将其挂载到 `/data`；注册状态跨版本仍然有效。Runner 6.x 要求 Gitea 服务端 >= 1.26.2；本仓库配套的 `src/gitea`（28.1.0）满足该要求。破坏性变更：
+
+- 移除了 `builtin:checkout`；请改用 `actions/checkout` 或其他 checkout action。本仓库未使用 `builtin:checkout`。
+- Gitea 1.26.2 之前的版本会将大部分任务日志保留在数据库中，而不是归档。
+
+详见 [6.0.0 版本说明](https://gitea.com/gitea/runner/releases/tag/v6.0.0)和 [官方升级指南](https://docs.gitea.com/runner/upgrade/)。
 
 ## 从 4.1.0 升级到 5.1.0
 

@@ -12,7 +12,7 @@
 
 | 变量名                    | 描述                                                | 默认值                  |
 | ------------------------- | --------------------------------------------------- | ----------------------- |
-| PROMETHEUS_VERSION        | Prometheus 镜像版本                                 | `v3.15.0`               |
+| PROMETHEUS_VERSION        | Prometheus 镜像版本                                 | `v3.16.0`               |
 | PROMETHEUS_PORT_OVERRIDE  | 主机端口映射（映射到容器中的 Prometheus 端口 9090） | `9090`                  |
 | PROMETHEUS_RETENTION_TIME | 数据保留时间                                        | `15d`                   |
 | PROMETHEUS_RETENTION_SIZE | 最大存储大小（`0B` 表示禁用大小限制）               | `0B`                    |
@@ -92,7 +92,7 @@ volumes:
 
 ## 升级
 
-升级前，请备份 TSDB 并查看 [Prometheus 发布说明](https://github.com/prometheus/prometheus/releases/tag/v3.15.0)。仅修改镜像标签不会迁移数据；升级后的服务启动时可能会自动更新持久化数据。请先备份，并遵循受支持的升级路径。将 v3 TSDB 回滚到旧版本需要使用 Prometheus v2.55 或更高版本。
+升级前，请备份 TSDB 并查看 [Prometheus 发布说明](https://github.com/prometheus/prometheus/releases/tag/v3.16.0)。仅修改镜像标签不会迁移数据；升级后的服务启动时可能会自动更新持久化数据。请先备份，并遵循受支持的升级路径。将 v3 TSDB 回滚到旧版本需要使用 Prometheus v2.55 或更高版本。
 
 ## 常见用例
 
